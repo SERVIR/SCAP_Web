@@ -41,6 +41,7 @@ function onlyUnique(value, index, array) {
         var series_arr=[];
 
         let series = result.final;
+        console.log(series);
         $('#container').highcharts({
 
             chart: {
