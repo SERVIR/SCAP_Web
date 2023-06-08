@@ -45,7 +45,7 @@ function onlyUnique(value, index, array) {
         $('#container').highcharts({
 
             chart: {
-                type: 'line',
+                type: 'spline',
                 marginBottom: 30,
                 zoomType: 'x'
             },
@@ -80,9 +80,7 @@ function onlyUnique(value, index, array) {
 
     plotOptions: {
         series: {
-            label: {
-                connectorAllowed: false
-            },
+
             pointStart: 1980
         }
     },
