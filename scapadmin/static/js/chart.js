@@ -80,7 +80,9 @@ function onlyUnique(value, index, array) {
 
     plotOptions: {
         series: {
-
+label: {
+    enabled: false,
+},
             pointStart: 1980
         }
     },
