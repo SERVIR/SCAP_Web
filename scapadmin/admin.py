@@ -6,10 +6,10 @@ from .models import AGB, LC, Predefined_AOI, Value
 
 
 class AGBAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('agb_id',)
+    list_display = ('agb_id', 'agb_name')
 
 class LCAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('lc_id',)
+    list_display = ('lc_id', 'lc_name')
 
 class Predefined_AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('aoi_id', 'aoi_name', 'aoi_country')

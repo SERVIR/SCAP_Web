@@ -6,10 +6,17 @@ from django.db import models
 class LC(models.Model):
     lc_id = models.CharField(max_length=10, primary_key=True,
                              help_text="LC ID number")
+    lc_name = models.CharField(max_length=100, default="", help_text="LC Data Source name")
+    def __str__(self):
+        return self.lc_name
+
 
 class AGB(models.Model):
     agb_id = models.CharField(max_length=10, primary_key=True,
                               help_text="AGB ID number")
+    agb_name = models.CharField(max_length=100, default="", help_text="AGB Data Source name")
+    def __str__(self):
+        return self.agb_name
 
 class Value(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
