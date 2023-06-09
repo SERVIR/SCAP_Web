@@ -79,6 +79,14 @@ def chart(request):
     for i in range(len(ss)):
         g = nested_lookup(ss[i], final)
         if len(t['data']) == len(lcs) * len(agbs):
+            if len(g) == 0:
+                t['data'].append(None)
+                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
+            else:
+                t['data'].append(g[0])
+                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
             a1.append(t)
             t = {'data': [], 'name': "", 'years': years,
                  'color': 'black'}

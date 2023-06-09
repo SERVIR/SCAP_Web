@@ -41,6 +41,7 @@ function onlyUnique(value, index, array) {
         var series_arr=[];
 
         let series = result.final;
+        console.log(series);
         for (var i = 0; i < series.length; i++) {
             series[i]['selected']=true;
                series[i]['events']=
