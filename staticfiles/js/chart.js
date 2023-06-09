@@ -41,24 +41,34 @@ function onlyUnique(value, index, array) {
         var series_arr=[];
 
         let series = result.final;
+        console.log(series);
         for (var i = 0; i < series.length; i++) {
             series[i]['selected']=true;
+               series[i]['events']=
+            {
+                checkboxClick()
+                {
+                    if (this.visible) {
+                        this.hide();
+                    } else {
+                        this.show();
+                    }
+                }
+            ,
+                legendItemClick(e)
+                {
+                    const chart = e.target.chart,
+                        index = e.target.index;
+                    chart.series[index].checkbox.checked = this.selected = !this.visible;
+                }
+            };
         }
         $('#container').highcharts({
 
             chart: {
-                events: {
-                    load() {
-                        // Check all checkboxes on load
-                        const chart = this;
-                        chart.series.forEach(series => {
-                            series.checkbox.checked = true;
-                            series.selected = true;
-                        })
-                    }
-                },
+
                 type: 'spline',
-                marginBottom: 30,
+marginBottom: 120,
                 zoomType: 'x'
             },
             title: {
@@ -84,11 +94,15 @@ function onlyUnique(value, index, array) {
                 }
             },
 
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
+ legend: {
+        align: 'left',
+       floating: true,
+
+    // itemMarginBottom: 5,
+    // width: 180,
+    // itemWidth: 300,
+    // useHTML: true,
+    },
 
             plotOptions: {
                 series: {
