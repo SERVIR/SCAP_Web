@@ -95,8 +95,13 @@ marginBottom: 120,
             },
 
  legend: {
-        align: 'center',
+        align: 'left',
        floating: true,
+
+    // itemMarginBottom: 5,
+    // width: 180,
+    // itemWidth: 300,
+    // useHTML: true,
     },
 
             plotOptions: {

@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from nested_lookup import nested_lookup
-from scapadmin.models import LC, AGB, Value, Predefined_AOI
+from scapadmin.models import LC, AGB, Emissions, Predefined_AOI
 from array import *
 from SCAP_WebApp import settings
 
@@ -35,7 +35,7 @@ def findkeys(node, kv):
 
 
 def chart(request):
-    result = Value.objects.all().order_by('year')
+    result = Emissions.objects.all().order_by('year')
     data = list(result.values_list('year').distinct())
 
     years = []
