@@ -16,6 +16,7 @@ class Predefined_AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class ValueAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'lc_id', 'agb_id', 'year', 'lc_agb_value')
+    list_filter = ('lc_id', 'agb_id', 'year')
 
 admin.site.register(AGB, AGBAdmin)
 admin.site.register(LC, LCAdmin)
