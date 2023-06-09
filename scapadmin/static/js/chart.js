@@ -40,7 +40,7 @@ marginBottom: 120,
                 zoomType: 'x'
             },
             title: {
-                text: 'line Chart SCAP',
+                text: 'S-CAP Yearly Emissions Sample Chart (random values)',
                 align: 'left'
             },
 

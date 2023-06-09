@@ -5,6 +5,8 @@ from array import *
 from SCAP_WebApp import settings
 
 colors = []
+
+
 with open(settings.STATIC_ROOT + '\data\palette.txt') as f:
     for line in f:
         row = line.strip()
