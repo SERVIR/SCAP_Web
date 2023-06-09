@@ -44,11 +44,11 @@ def chart(request):
     agbs = []
     for x in range(len(data)):
         years.append(data[x][0])
-    data = list(LC.objects.all().values_list('lc_id').distinct())
+    data = list(Emissions.objects.order_by().values_list('lc_id').distinct())
     lc = len(data)
     for x in range(len(data)):
         lcs.append(data[x][0])
-    data = list(AGB.objects.all().values_list('agb_id').distinct())
+    data = list(Emissions.objects.order_by().values_list('agb_id').distinct())
     agb = len(data)
     for x in range(len(data)):
         agbs.append(data[x][0])
@@ -57,15 +57,17 @@ def chart(request):
     for x in range(len(data)):
         new_arr.append([data[x][0], data[x][1], data[x][2], data[x][3]])
     temp = {}
-    for lc in lcs:
-        for agb in agbs:
-            for x in range(len(new_arr)):
-                if new_arr[x][1] == lc and new_arr[x][2] == agb:
-                    for i in range(len(years)):
-                        if new_arr[x][3] == years[i]:
-                            temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
-            final.append(temp)
-            temp = {}
+    for m in range(lc * agb):
+        for lc in lcs:
+            for agb in agbs:
+                for x in range(len(new_arr)):
+                    if new_arr[x][1] == lc and new_arr[x][2] == agb:
+                        for i in range(len(years)):
+                            if new_arr[x][3] == years[i]:
+                                temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
+                final.append(temp)
+                temp = {}
+        break
     a1 = []
     ss = []
     for x in range(len(years)):
