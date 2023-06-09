@@ -68,7 +68,7 @@ function onlyUnique(value, index, array) {
             chart: {
 
                 type: 'spline',
-                marginBottom: 30,
+marginBottom: 120,
                 zoomType: 'x'
             },
             title: {
@@ -94,11 +94,10 @@ function onlyUnique(value, index, array) {
                 }
             },
 
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
+ legend: {
+        align: 'center',
+       floating: true,
+    },
 
             plotOptions: {
                 series: {
