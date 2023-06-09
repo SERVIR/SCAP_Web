@@ -41,17 +41,21 @@ def chart(request):
     years = []
     final = []
     lcs = []
+    lcnames = []
     agbs = []
+    agbnames= []
     for x in range(len(data)):
         years.append(data[x][0])
-    data = list(Emissions.objects.order_by().values_list('lc_id').distinct())
+    data = list(Emissions.objects.order_by().values_list('lc_id','lc_id__lc_name').distinct())
     lc = len(data)
     for x in range(len(data)):
         lcs.append(data[x][0])
-    data = list(Emissions.objects.order_by().values_list('agb_id').distinct())
+        lcnames.append(data[x][1])
+    data = list(Emissions.objects.order_by().values_list('agb_id','agb_id__agb_name').distinct())
     agb = len(data)
     for x in range(len(data)):
         agbs.append(data[x][0])
+        agbnames.append(data[x][1])
     new_arr = []
     data = list(result.values_list('lc_agb_value', 'lc_id', 'agb_id', 'year').order_by('year'))
     for x in range(len(data)):
@@ -100,4 +104,4 @@ def chart(request):
                 t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
                 t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
-    return JsonResponse({"final": new_l}, safe=False)
+    return JsonResponse({"final": new_l,"lcs":lcnames,"agbs":agbnames}, safe=False)

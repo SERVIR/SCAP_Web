@@ -9,9 +9,45 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 </head>
+<style>
+    .symbol {
+    width:20px;
+    height:20px;
+    margin-right:20px;
+    float:left;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+    #checkbox_selection {
+  width:1000px;
+  height: 200px;
+  margin: auto;
+  padding: 10px;
+}
+
+.LC_checkboxlist {
+  width: 15%;
+  height: 200px;
+  float: left;
+}
+
+.AGB_checkboxlist {
+  margin-left: 15%;
+  height: 200px;
+}
+</style>
 <body>
             <div id="container" style="height:1000px"></div>
             <div id="customLegend"></div>
+<div id="checkbox_selection">
+
+<div class="LC_checkboxlist" >
+Select LC:<br>
+</div>
+            <div class="AGB_checkboxlist">
+Select AGB:<br>
+</div>
+    </div>
 <script src="{% static '/js/chart.js' %}"></script>
 
 </body>

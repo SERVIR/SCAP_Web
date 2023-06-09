@@ -26,44 +26,12 @@ function ajax_call(ajax_url, ajax_data) {
             console.log(xhr.responseText);
         });
 }
-    const xhr = ajax_call("get-series", {
-
-    });
-function onlyUnique(value, index, array) {
-  return array.indexOf(value) === index;
-}
+var lcs=[];
+var agbs=[];
 
 
-    xhr.done(function (result) {
-        var colors = Highcharts.getOptions().colors;
-        var year_arr=[];
-        var value_arr=[];
-        var series_arr=[];
-
-        let series = result.final;
-        console.log(series);
-        for (var i = 0; i < series.length; i++) {
-            series[i]['selected']=true;
-               series[i]['events']=
-            {
-                checkboxClick()
-                {
-                    if (this.visible) {
-                        this.hide();
-                    } else {
-                        this.show();
-                    }
-                }
-            ,
-                legendItemClick(e)
-                {
-                    const chart = e.target.chart,
-                        index = e.target.index;
-                    chart.series[index].checkbox.checked = this.selected = !this.visible;
-                }
-            };
-        }
-        $('#container').highcharts({
+function get_chart(series){
+ $('#container').highcharts({
 
             chart: {
 
@@ -95,8 +63,9 @@ marginBottom: 120,
             },
 
  legend: {
-        align: 'left',
-       floating: true,
+                enabled: false
+       //  align: 'left',
+       // floating: true,
 
     // itemMarginBottom: 5,
     // width: 180,
@@ -130,5 +99,81 @@ marginBottom: 120,
                     }
                 }]
             }
-        });
+        }
+            );
+    };
+  const xhr = ajax_call("get-series", {
+
     });
+        var series_arr=[];
+
+    xhr.done(function (result) {
+        var colors = Highcharts.getOptions().colors;
+        var year_arr=[];
+        var value_arr=[];
+
+        let series = result.final;
+        lcs=result.lcs;
+        agbs=result.agbs;
+        $.each(lcs, function(index){
+	$('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
+});
+
+$.each(agbs, function(index){
+	$('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
+});
+        console.log(series);
+        for (var i = 0; i < series.length; i++) {
+            series[i]['selected']=true;
+               series[i]['events']=
+            {
+                checkboxClick()
+                {
+                    if (this.visible) {
+                        this.hide();
+                    } else {
+                        this.show();
+                    }
+                }
+            ,
+                legendItemClick(e)
+                {
+                    const chart = e.target.chart,
+                        index = e.target.index;
+                    chart.series[index].checkbox.checked = this.selected = !this.visible;
+                }
+            };
+        }
+        series_arr=series;
+        get_chart(series);
+
+    });
+
+function get_updated_chart(this_obj) {
+    console.log(series_arr);
+    var sarr = series_arr;
+    var temp_series_arr_uncheck = series_arr;
+    var temp_series_arr_check = series_arr;
+    var dataset = this_obj.value;
+    if (this_obj.checked) {
+        console.log("checked");
+        for (var i = 0; i < sarr.length; i++) {
+            if (sarr[i].name.includes(dataset)) {
+                sarr[i].visible = true;
+            }
+        }
+        get_chart(sarr);
+
+
+    } else {
+        for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
+            if (temp_series_arr_uncheck[j].name.includes(dataset)) {
+                temp_series_arr_uncheck[j].visible = false;
+            }
+
+        }
+        get_chart(temp_series_arr_uncheck);
+
+    }
+
+}

@@ -94,15 +94,15 @@ marginBottom: 120,
                 }
             },
 
- legend: {
-        align: 'left',
-       floating: true,
-
-    // itemMarginBottom: 5,
-    // width: 180,
-    // itemWidth: 300,
-    // useHTML: true,
-    },
+ // legend: {
+ //       //  align: 'left',
+ //       // floating: true,
+ //
+ //    // itemMarginBottom: 5,
+ //    // width: 180,
+ //    // itemWidth: 300,
+ //    // useHTML: true,
+ //    },
 
             plotOptions: {
                 series: {
@@ -130,5 +130,25 @@ marginBottom: 120,
                     }
                 }]
             }
+        }, function (chart) {
+
+            $legend = $('#customLegend');
+
+            $.each(chart.series[0].data, function (j, data) {
+
+                $legend.append('<div class="item"><div class="symbol" style="background-color:' + data.color + '"></div><div class="serieName" id="">' + data.name + '</div></div>');
+
+            });
+
+            $('#customLegend .item').click(function () {
+                var inx = $(this).index(), point = chart.series[0].data[inx];
+                if (point.visible) {
+                    point.setVisible(false);
+                } else {
+                    point.setVisible(true);
+
+                }
+            });
+
         });
     });
