@@ -57,17 +57,15 @@ def chart(request):
     for x in range(len(data)):
         new_arr.append([data[x][0], data[x][1], data[x][2], data[x][3]])
     temp = {}
-    for m in range(lc * agb):
-        for lc in lcs:
-            for agb in agbs:
-                for x in range(len(new_arr)):
-                    if new_arr[x][1] == lc and new_arr[x][2] == agb:
-                        for i in range(len(years)):
-                            if new_arr[x][3] == years[i]:
-                                temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
-                final.append(temp)
-                temp = {}
-        break
+    for lc in lcs:
+        for agb in agbs:
+            for x in range(len(new_arr)):
+                if new_arr[x][1] == lc and new_arr[x][2] == agb:
+                    for i in range(len(years)):
+                        if new_arr[x][3] == years[i]:
+                            temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
+            final.append(temp)
+            temp = {}
     a1 = []
     ss = []
     for x in range(len(years)):

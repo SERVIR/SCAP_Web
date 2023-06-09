@@ -25,7 +25,7 @@ class Predefined_AOI(models.Model):
     aoi_id = models.CharField(max_length=10, primary_key=True,
                               help_text="AOI ID number")
     aoi_name = models.CharField(max_length=100, default="", help_text="AOI Name")
-    aoi_country = models.IntegerField(help_text="AOI Country")
+    aoi_country = models.CharField(max_length=2, help_text="AOI Country")
 
     def __str__(self):
         return self.aoi_name
