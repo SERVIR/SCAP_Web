@@ -1,11 +1,43 @@
 from django.http import JsonResponse
 from nested_lookup import nested_lookup
+from django.db.models import Avg, Min, Max
+
 from scapadmin.models import LC, AGB, Emissions, Predefined_AOI
 from array import *
 from SCAP_WebApp import settings
 
-colors = []
+def get_agg_check(request):
+    result = Emissions.objects.all().order_by('year')
+    data = list(result.values_list('year').distinct())
+    years = []
+    for x in range(len(data)):
+        years.append(data[x][0])
+    if request.method == 'POST':
+        lcs = request.POST.getlist('lcs[]')
+        agbs = request.POST.getlist('agbs[]')
+        min_arr=[]
+        max_arr=[]
+        avg_arr=[]
+        data1=list(Emissions.objects.filter(lc_id__lc_name__in=lcs, agb_id__agb_name__in=agbs).values('year').annotate(min=Min('lc_agb_value'),max=Max('lc_agb_value'),avg=Avg('lc_agb_value')))
+        data=data1
+        if len(data1)<25:
+            for y in years:
+                if not any(d['year'] == y for d in data1):
+                    data1.append({'year':y,'min':None,'max':None,'avg':None})
+                else:
+                    pass
+        data1.sort(key=lambda x: x['year'])
+        print(data1)
 
+        for x in range(len(data1)):
+            min_arr.append(data1[x]['min'])
+            max_arr.append(data1[x]['max'])
+            avg_arr.append(data1[x]['avg'])
+
+        return JsonResponse({"min":min_arr,"max":max_arr,"avg":avg_arr}, safe=False)
+
+
+colors = []
 
 with open(settings.STATIC_ROOT + '\data\palette.txt') as f:
     for line in f:
