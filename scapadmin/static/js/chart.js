@@ -1,4 +1,3 @@
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -14,6 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 function ajax_call(ajax_url, ajax_data) {
     //update database
     return jQuery.ajax({
@@ -27,34 +27,37 @@ function ajax_call(ajax_url, ajax_data) {
             console.log(xhr.responseText);
         });
 }
+
 function get_checked_lcs() {
-var lcs = [];
-    $('.LC_checkboxlist input[type="checkbox"]:checked').each(function() {
-       console.log($(this).val());
-      lcs.push($(this).val());
+    var lcs = [];
+    $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
+
+        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
+        console.log(temp.replace('L','').replace('C',''));
+        lcs.push(temp.replace('L','').replace('C',''));
     });
     return lcs;
 }
+
 function get_checked_agbs() {
-var agbs = [];
-    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function() {
-      agbs.push($(this).val());
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
+        agbs.push(temp.replace('A','').replace('G','').replace('B',''));
     });
     return agbs;
 }
 
 
-var lcs=[];
-var agbs=[];
+var lcs = [];
+var agbs = [];
 
 
-function get_chart(series){
- $('#container').highcharts({
-
+function get_chart(series) {
+    $('#container').highcharts({
             chart: {
-
                 type: 'spline',
-marginBottom: 120,
+                marginBottom: 130,
                 zoomType: 'x'
             },
             title: {
@@ -80,20 +83,28 @@ marginBottom: 120,
                 }
             },
 
- legend: {
-                enabled: false
-       //  align: 'left',
-       // floating: true,
+            legend: {
+                enabled: true
+                //  align: 'left',
+                // floating: true,
 
-    // itemMarginBottom: 5,
-    // width: 180,
-    // itemWidth: 300,
-    // useHTML: true,
-    },
+                // itemMarginBottom: 5,
+                // width: 180,
+                // itemWidth: 300,
+                // useHTML: true,
+            },
 
             plotOptions: {
                 series: {
-                    showCheckbox: true,
+                    marker: {
+                        enabled: false,
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    showCheckbox: false,
                     label: {
                         enabled: false,
                     },
@@ -118,49 +129,47 @@ marginBottom: 120,
                 }]
             }
         }
-            );
-    };
-  const xhr = ajax_call("get-series", {
+    );
+};
+const xhr = ajax_call("get-series", {});
+var series_arr = [];
 
+xhr.done(function (result) {
+    var colors = Highcharts.getOptions().colors;
+
+    let series = result.final;
+    // series.push(min_arr, max_arr, avg_arr);
+    // console.log(series);
+    lcs = result.lcs;
+    agbs = result.agbs;
+    $.each(lcs, function (index) {
+        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
     });
-        var series_arr=[];
 
-    xhr.done(function (result) {
-        var colors = Highcharts.getOptions().colors;
-
-        let series = result.final;
-        // series.push(min_arr, max_arr, avg_arr);
-        // console.log(series);
-        lcs = result.lcs;
-        agbs = result.agbs;
-        $.each(lcs, function (index) {
-            $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
-        });
-
-        $.each(agbs, function (index) {
-            $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
-        });
-        console.log(series);
-        for (var i = 0; i < series.length; i++) {
-            series[i]['selected'] = true;
-            series[i]['events'] =
-                {
-                    checkboxClick() {
-                        if (this.visible) {
-                            this.hide();
-                        } else {
-                            this.show();
-                        }
+    $.each(agbs, function (index) {
+        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
+    });
+    console.log(series);
+    for (var i = 0; i < series.length; i++) {
+        series[i]['selected'] = true;
+        series[i]['events'] =
+            {
+                checkboxClick() {
+                    if (this.visible) {
+                        this.hide();
+                    } else {
+                        this.show();
                     }
-                    ,
-                    legendItemClick(e) {
-                        const chart = e.target.chart,
-                            index = e.target.index;
-                        chart.series[index].checkbox.checked = this.selected = !this.visible;
-                    }
-                };
-        }
-         var lcss = get_checked_lcs();
+                }
+                ,
+                legendItemClick(e) {
+                    const chart = e.target.chart,
+                        index = e.target.index;
+                    chart.series[index].checkbox.checked = this.selected = !this.visible;
+                }
+            };
+    }
+    var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
 
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
@@ -195,45 +204,49 @@ marginBottom: 120,
         get_chart(series);
     });
 
-    });
-function cleanData(data, deletingKeys) {
-  function isEmpty(obj) {
-    if (obj === null) return true;
-    if (Array.isArray(obj))
-      return obj.length === 0;
-    if (typeof obj === "object")
-      return Object.keys(obj).length === 0;
-  }
+});
 
-  function removeKeyFrom(aData) {
-    if (Array.isArray(aData)) {
-      const done = aData.reduce((accum, ele) => {
-        const done = removeKeyFrom(ele);
-        if (!isEmpty(done))
-          accum.push(done);
-        return accum;
-      }, []);
-      return done.length > 0 ? done : null;
+function cleanData(data, deletingKeys) {
+    function isEmpty(obj) {
+        if (obj === null) return true;
+        if (Array.isArray(obj))
+            return obj.length === 0;
+        if (typeof obj === "object")
+            return Object.keys(obj).length === 0;
     }
-    if (typeof aData === "object" && aData !== null) {
-      const done = Object.keys(aData).reduce((accum, key) => {
-        if (!deletingKeys.includes(key)) {
-          const done = removeKeyFrom(aData[key]);
-          if (!isEmpty(done)) // required for empty object element
-            accum[key] = done;
+
+    function removeKeyFrom(aData) {
+        if (Array.isArray(aData)) {
+            const done = aData.reduce((accum, ele) => {
+                const done = removeKeyFrom(ele);
+                if (!isEmpty(done))
+                    accum.push(done);
+                return accum;
+            }, []);
+            return done.length > 0 ? done : null;
         }
-        return accum;
-      }, {});
-      return (Object.keys(done).length > 0) ? done : null;
+        if (typeof aData === "object" && aData !== null) {
+            const done = Object.keys(aData).reduce((accum, key) => {
+                if (!deletingKeys.includes(key)) {
+                    const done = removeKeyFrom(aData[key]);
+                    if (!isEmpty(done)) // required for empty object element
+                        accum[key] = done;
+                }
+                return accum;
+            }, {});
+            return (Object.keys(done).length > 0) ? done : null;
+        }
+        return aData;
     }
-    return aData;
-  }
-  return removeKeyFrom(data);
+
+    return removeKeyFrom(data);
 }
+
 function get_updated_chart(this_obj) {
-    if (series_arr.length > 24 ){
-        series_arr.splice(-3,3);
-    };
+    if (series_arr.length > 24) {
+        series_arr.splice(-3, 3);
+    }
+    ;
     var sarr = series_arr;
     var temp_series_arr_uncheck = series_arr;
     var temp_series_arr_check = series_arr;
@@ -266,29 +279,29 @@ function get_updated_chart(this_obj) {
             lineWidth: 5,
             dashStyle: 'shortdash'
         };
-            var dataset = this_obj.value;
+        var dataset = this_obj.value;
 
-            if (this_obj.checked) {
+        if (this_obj.checked) {
 
-                console.log("checked");
-                for (var i = 0; i < sarr.length; i++) {
-                    if (sarr[i].name.includes(dataset)) {
-                        sarr[i].visible = true;
-                    }
+            console.log("checked");
+            for (var i = 0; i < sarr.length; i++) {
+                if (sarr[i].name.includes(dataset)) {
+                    sarr[i].visible = true;
                 }
-                get_chart(sarr.concat(min_arr, max_arr, avg_arr));
+            }
+            get_chart(sarr.concat(min_arr, max_arr, avg_arr));
 
 
-            } else {
-                for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
-                    if (temp_series_arr_uncheck[j].name.includes(dataset)) {
-                        temp_series_arr_uncheck[j].visible = false;
-                    }
-
+        } else {
+            for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
+                if (temp_series_arr_uncheck[j].name.includes(dataset)) {
+                    temp_series_arr_uncheck[j].visible = false;
                 }
-                get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
 
             }
+            get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
+
+        }
 
     });
 }

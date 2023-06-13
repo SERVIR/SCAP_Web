@@ -17,7 +17,6 @@ class AGB(models.Model):
                               help_text="AGB ID number")
     agb_name = models.CharField(max_length=100, default="", help_text="AGB Data Source name")
 
-
     def __str__(self):
         return self.agb_name
 

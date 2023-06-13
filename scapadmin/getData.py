@@ -1,10 +1,10 @@
+from django.db.models import Avg, Min, Max
 from django.http import JsonResponse
 from nested_lookup import nested_lookup
-from django.db.models import Avg, Min, Max
 
-from scapadmin.models import LC, AGB, Emissions, Predefined_AOI
-from array import *
 from SCAP_WebApp import settings
+from scapadmin.models import Emissions
+
 
 def get_agg_check(request):
     result = Emissions.objects.all().order_by('year')
@@ -15,15 +15,17 @@ def get_agg_check(request):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
-        min_arr=[]
-        max_arr=[]
-        avg_arr=[]
-        data1=list(Emissions.objects.filter(lc_id__lc_name__in=lcs, agb_id__agb_name__in=agbs).values('year').annotate(min=Min('lc_agb_value'),max=Max('lc_agb_value'),avg=Avg('lc_agb_value')))
-        data=data1
-        if len(data1)<25:
+        min_arr = []
+        max_arr = []
+        avg_arr = []
+        data1 = list(
+            Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs).values('year').annotate(
+                min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
+        data = data1
+        if len(data1) < 25:
             for y in years:
                 if not any(d['year'] == y for d in data1):
-                    data1.append({'year':y,'min':None,'max':None,'avg':None})
+                    data1.append({'year': y, 'min': None, 'max': None, 'avg': None})
                 else:
                     pass
         data1.sort(key=lambda x: x['year'])
@@ -34,7 +36,7 @@ def get_agg_check(request):
             max_arr.append(data1[x]['max'])
             avg_arr.append(data1[x]['avg'])
 
-        return JsonResponse({"min":min_arr,"max":max_arr,"avg":avg_arr}, safe=False)
+        return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 
 
 colors = []
@@ -42,7 +44,7 @@ colors = []
 with open(settings.STATIC_ROOT + '\data\palette.txt') as f:
     for line in f:
         row = line.strip()
-        temp={}
+        temp = {}
         temp['LC'] = int(row.split(',')[0][2:])
         temp['AGB'] = int(row.split(',')[1][3:])
         temp['color'] = row.split(',')[2]
@@ -77,19 +79,19 @@ def chart(request):
     lcs = []
     lcnames = []
     agbs = []
-    agbnames= []
+    agbnames = []
     for x in range(len(data)):
         years.append(data[x][0])
-    data = list(Emissions.objects.order_by().values_list('lc_id','lc_id__lc_name').distinct())
+    data = list(Emissions.objects.order_by().values_list('lc_id', 'lc_id__lc_name').distinct())
     lc = len(data)
     for x in range(len(data)):
         lcs.append(data[x][0])
-        lcnames.append(data[x][1])
-    data = list(Emissions.objects.order_by().values_list('agb_id','agb_id__agb_name').distinct())
+        lcnames.append(data[x][1] + ' (LC' + str(data[x][0]) + ')')
+    data = list(Emissions.objects.order_by().values_list('agb_id', 'agb_id__agb_name').distinct())
     agb = len(data)
     for x in range(len(data)):
         agbs.append(data[x][0])
-        agbnames.append(data[x][1])
+        agbnames.append(data[x][1] + ' (AGB' + str(data[x][0]) + ')')
     new_arr = []
     data = list(result.values_list('lc_agb_value', 'lc_id', 'agb_id', 'year').order_by('year'))
     for x in range(len(data)):
@@ -119,11 +121,11 @@ def chart(request):
         if len(t['data']) == len(lcs) * len(agbs):
             if len(g) == 0:
                 t['data'].append(None)
-                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
                 t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
             else:
                 t['data'].append(g[0])
-                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
                 t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
             a1.append(t)
             t = {'data': [], 'name': "", 'years': years,
@@ -131,11 +133,11 @@ def chart(request):
         else:
             if len(g) == 0:
                 t['data'].append(None)
-                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
 
             else:
                 t['data'].append(g[0])
-                t['name'] = 'LC' + ss[i].split('_')[1] + "_AGB" + ss[i].split('_')[2]
+                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
                 t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
-    return JsonResponse({"final": new_l,"lcs":lcnames,"agbs":agbnames}, safe=False)
+    return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)

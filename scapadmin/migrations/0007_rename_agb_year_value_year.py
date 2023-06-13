@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('scapadmin', '0006_remove_agb_agb_value_remove_agb_agb_year_and_more'),
     ]

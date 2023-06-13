@@ -13,6 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 function ajax_call(ajax_url, ajax_data) {
     //update database
     return jQuery.ajax({
@@ -26,129 +27,127 @@ function ajax_call(ajax_url, ajax_data) {
             console.log(xhr.responseText);
         });
 }
-    const xhr = ajax_call("get-series", {
 
-    });
+const xhr = ajax_call("get-series", {});
+
 function onlyUnique(value, index, array) {
-  return array.indexOf(value) === index;
+    return array.indexOf(value) === index;
 }
 
 
-    xhr.done(function (result) {
-        var colors = Highcharts.getOptions().colors;
-        var year_arr=[];
-        var value_arr=[];
-        var series_arr=[];
+xhr.done(function (result) {
+    var colors = Highcharts.getOptions().colors;
+    var year_arr = [];
+    var value_arr = [];
+    var series_arr = [];
 
-        let series = result.final;
-        console.log(series);
-        for (var i = 0; i < series.length; i++) {
-            series[i]['selected']=true;
-               series[i]['events']=
+    let series = result.final;
+    console.log(series);
+    for (var i = 0; i < series.length; i++) {
+        series[i]['selected'] = true;
+        series[i]['events'] =
             {
-                checkboxClick()
-                {
+                checkboxClick() {
                     if (this.visible) {
                         this.hide();
                     } else {
                         this.show();
                     }
                 }
-            ,
-                legendItemClick(e)
-                {
+                ,
+                legendItemClick(e) {
                     const chart = e.target.chart,
                         index = e.target.index;
                     chart.series[index].checkbox.checked = this.selected = !this.visible;
                 }
             };
-        }
-        $('#container').highcharts({
+    }
+    $('#container').highcharts({
 
-            chart: {
+        chart: {
 
-                type: 'spline',
-marginBottom: 120,
-                zoomType: 'x'
-            },
+            type: 'spline',
+            marginBottom: 120,
+            zoomType: 'x'
+        },
+        title: {
+            text: 'line Chart SCAP',
+            align: 'left'
+        },
+
+        subtitle: {
+            align: 'left'
+        },
+
+        yAxis: {
             title: {
-                text: 'line Chart SCAP',
-                align: 'left'
-            },
-
-            subtitle: {
-                align: 'left'
-            },
-
-            yAxis: {
-                title: {
-                    text: 'LC/AGB Value'
-                }
-            },
-
-            xAxis: {
-                tickInterval: 1,
-
-                accessibility: {
-                    rangeDescription: 'Range: 1980 to 2004'
-                }
-            },
-
- // legend: {
- //       //  align: 'left',
- //       // floating: true,
- //
- //    // itemMarginBottom: 5,
- //    // width: 180,
- //    // itemWidth: 300,
- //    // useHTML: true,
- //    },
-
-            plotOptions: {
-                series: {
-                    showCheckbox: true,
-                    label: {
-                        enabled: false,
-                    },
-                    pointStart: 1980
-                }
-            },
-
-            series: series,
-
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
-                    }
-                }]
+                text: 'LC/AGB Value'
             }
-        }, function (chart) {
+        },
 
-            $legend = $('#customLegend');
+        xAxis: {
+            tickInterval: 1,
 
-            $.each(chart.series[0].data, function (j, data) {
+            accessibility: {
+                rangeDescription: 'Range: 1980 to 2004'
+            }
+        },
 
-                $legend.append('<div class="item"><div class="symbol" style="background-color:' + data.color + '"></div><div class="serieName" id="">' + data.name + '</div></div>');
+        // legend: {
+        //       //  align: 'left',
+        //       // floating: true,
+        //
+        //    // itemMarginBottom: 5,
+        //    // width: 180,
+        //    // itemWidth: 300,
+        //    // useHTML: true,
+        //    },
 
-            });
+        plotOptions: {
+            series: {
+                showCheckbox: true,
+                label: {
+                    enabled: false,
+                },
+                pointStart: 1980
+            }
+        },
 
-            $('#customLegend .item').click(function () {
-                var inx = $(this).index(), point = chart.series[0].data[inx];
-                if (point.visible) {
-                    point.setVisible(false);
-                } else {
-                    point.setVisible(true);
+        series: series,
 
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
                 }
-            });
+            }]
+        }
+    }, function (chart) {
+
+        $legend = $('#customLegend');
+
+        $.each(chart.series[0].data, function (j, data) {
+
+            $legend.append('<div class="item"><div class="symbol" style="background-color:' + data.color + '"></div><div class="serieName" id="">' + data.name + '</div></div>');
 
         });
+
+        $('#customLegend .item').click(function () {
+            var inx = $(this).index(), point = chart.series[0].data[inx];
+            if (point.visible) {
+                point.setVisible(false);
+            } else {
+                point.setVisible(true);
+
+            }
+        });
+
     });
+});

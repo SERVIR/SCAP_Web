@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('scapadmin', '0007_rename_agb_year_value_year'),
     ]

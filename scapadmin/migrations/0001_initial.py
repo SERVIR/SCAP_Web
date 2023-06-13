@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -14,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AGB',
             fields=[
-                ('agb_id', models.CharField(help_text='AGB ID number', max_length=10, primary_key=True, serialize=False)),
+                ('agb_id',
+                 models.CharField(help_text='AGB ID number', max_length=10, primary_key=True, serialize=False)),
                 ('agb_year', models.IntegerField(help_text='AGB Year')),
                 ('agb_value', models.FloatField(help_text='AGB Value')),
             ],
@@ -22,7 +22,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LC',
             fields=[
-                ('lc_id', models.CharField(help_text='AGB ID number', max_length=10, primary_key=True, serialize=False)),
+                (
+                'lc_id', models.CharField(help_text='AGB ID number', max_length=10, primary_key=True, serialize=False)),
                 ('lc_year', models.IntegerField(help_text='AGB Year')),
                 ('lc_value', models.FloatField(help_text='AGB Value')),
             ],
@@ -30,7 +31,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Predefined_AOI',
             fields=[
-                ('aoi_id', models.CharField(help_text='AOI ID number', max_length=10, primary_key=True, serialize=False)),
+                ('aoi_id',
+                 models.CharField(help_text='AOI ID number', max_length=10, primary_key=True, serialize=False)),
                 ('aoi_year', models.IntegerField(help_text='AOI Year')),
                 ('aoi_value', models.TextField(help_text='AOI Value')),
             ],
