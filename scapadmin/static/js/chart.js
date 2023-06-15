@@ -142,11 +142,11 @@ xhr.done(function (result) {
     lcs = result.lcs;
     agbs = result.agbs;
     $.each(lcs, function (index) {
-        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
+        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' class='LC_cb' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
     });
 
     $.each(agbs, function (index) {
-        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
+        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]' class='AGB_cb' onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
     });
     console.log(series);
     for (var i = 0; i < series.length; i++) {
@@ -295,16 +295,43 @@ function get_updated_chart(this_obj) {
 
 
         } else {
-            for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
-                if (temp_series_arr_uncheck[j].name.includes(dataset1)) {
-                    temp_series_arr_uncheck[j].visible = false;
+            var msg = all_unchecked();
+            if (msg.length > 0) {
+                alert(msg);
+            } else {
+                for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
+                    if (temp_series_arr_uncheck[j].name.includes(dataset1)) {
+                        temp_series_arr_uncheck[j].visible = false;
+                    }
+
                 }
+                get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
 
             }
-            get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
-
         }
 
     });
 }
 
+function all_unchecked() {
+    var msg="";
+    var checked1 = document.querySelectorAll('input.LC_cb:checked');
+
+    if (checked1.length === 0) {
+
+        msg ='No LC checkboxes checked. Please select at least one Land Cover checkbox.';
+    } else {
+
+        console.log(checked1.length + ' checkboxes checked');
+    }
+      var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+
+    if (checked2.length === 0) {
+
+        msg ='No AGB checkboxes checked';
+    } else {
+
+        console.log(checked2.length + ' checkboxes checked. Please select at least one Above Ground Biomass checkbox.');
+    }
+    return msg;
+}
