@@ -28,20 +28,125 @@ function ajax_call(ajax_url, ajax_data) {
         });
 }
 
-const xhr = ajax_call("get-series", {});
+function get_checked_lcs() {
+    var lcs = [];
+    $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
 
-function onlyUnique(value, index, array) {
-    return array.indexOf(value) === index;
+        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
+        console.log(temp.replace('L','').replace('C',''));
+        lcs.push(temp.replace('L','').replace('C',''));
+    });
+    return lcs;
+}
+
+function get_checked_agbs() {
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
+        agbs.push(temp.replace('A','').replace('G','').replace('B',''));
+    });
+    return agbs;
 }
 
 
+var lcs = [];
+var agbs = [];
+
+
+function get_chart(series) {
+    $('#container').highcharts({
+            chart: {
+                type: 'spline',
+                marginBottom: 230,
+                zoomType: 'x'
+            },
+            title: {
+                text: 'S-CAP Yearly Emissions Sample Chart (random values)',
+                align: 'left'
+            },
+
+            subtitle: {
+                align: 'left'
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Emissions'
+                }
+            },
+
+            xAxis: {
+                tickInterval: 1,
+
+            },
+
+            legend: {
+                enabled: true
+                //  align: 'left',
+                // floating: true,
+
+                // itemMarginBottom: 5,
+                // width: 180,
+                // itemWidth: 300,
+                // useHTML: true,
+            },
+
+            plotOptions: {
+                series: {
+                    marker: {
+                        enabled: false,
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    showCheckbox: false,
+                    label: {
+                        enabled: false,
+                    },
+                    pointStart: series[0]['years'][0],
+
+                }
+            },
+
+            series: series,
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+        }
+    );
+};
+const xhr = ajax_call("get-series", {});
+var series_arr = [];
+
 xhr.done(function (result) {
     var colors = Highcharts.getOptions().colors;
-    var year_arr = [];
-    var value_arr = [];
-    var series_arr = [];
 
     let series = result.final;
+    // series.push(min_arr, max_arr, avg_arr);
+    // console.log(series);
+    lcs = result.lcs;
+    agbs = result.agbs;
+    $.each(lcs, function (index) {
+        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
+    });
+
+    $.each(agbs, function (index) {
+        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
+    });
     console.log(series);
     for (var i = 0; i < series.length; i++) {
         series[i]['selected'] = true;
@@ -62,92 +167,141 @@ xhr.done(function (result) {
                 }
             };
     }
-    $('#container').highcharts({
+    var lcss = get_checked_lcs();
+    var agbss = get_checked_agbs();
 
-        chart: {
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    xhr.done(function (result1) {
+        var min_arr = {
+            "name": "min",
+            "data": result1.min,
+            "color": 'green',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        var max_arr = {
+            "name": "max",
+            "data": result1.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        var avg_arr = {
+            "name": "avg",
+            "data": result1.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        series_arr = series;
+        series.push(min_arr, max_arr, avg_arr);
+        console.log(series);
+        get_chart(series);
+    });
 
-            type: 'spline',
-            marginBottom: 120,
-            zoomType: 'x'
-        },
-        title: {
-            text: 'line Chart SCAP',
-            align: 'left'
-        },
+});
 
-        subtitle: {
-            align: 'left'
-        },
+function cleanData(data, deletingKeys) {
+    function isEmpty(obj) {
+        if (obj === null) return true;
+        if (Array.isArray(obj))
+            return obj.length === 0;
+        if (typeof obj === "object")
+            return Object.keys(obj).length === 0;
+    }
 
-        yAxis: {
-            title: {
-                text: 'LC/AGB Value'
-            }
-        },
-
-        xAxis: {
-            tickInterval: 1,
-
-            accessibility: {
-                rangeDescription: 'Range: 1980 to 2004'
-            }
-        },
-
-        // legend: {
-        //       //  align: 'left',
-        //       // floating: true,
-        //
-        //    // itemMarginBottom: 5,
-        //    // width: 180,
-        //    // itemWidth: 300,
-        //    // useHTML: true,
-        //    },
-
-        plotOptions: {
-            series: {
-                showCheckbox: true,
-                label: {
-                    enabled: false,
-                },
-                pointStart: 1980
-            }
-        },
-
-        series: series,
-
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        verticalAlign: 'bottom'
-                    }
-                }
-            }]
+    function removeKeyFrom(aData) {
+        if (Array.isArray(aData)) {
+            const done = aData.reduce((accum, ele) => {
+                const done = removeKeyFrom(ele);
+                if (!isEmpty(done))
+                    accum.push(done);
+                return accum;
+            }, []);
+            return done.length > 0 ? done : null;
         }
-    }, function (chart) {
+        if (typeof aData === "object" && aData !== null) {
+            const done = Object.keys(aData).reduce((accum, key) => {
+                if (!deletingKeys.includes(key)) {
+                    const done = removeKeyFrom(aData[key]);
+                    if (!isEmpty(done)) // required for empty object element
+                        accum[key] = done;
+                }
+                return accum;
+            }, {});
+            return (Object.keys(done).length > 0) ? done : null;
+        }
+        return aData;
+    }
 
-        $legend = $('#customLegend');
+    return removeKeyFrom(data);
+}
 
-        $.each(chart.series[0].data, function (j, data) {
+function get_updated_chart(this_obj) {
+    if (series_arr.length > 24) {
+        series_arr.splice(-3, 3);
+    }
+    ;
+    var sarr = series_arr;
+    var temp_series_arr_uncheck = series_arr;
+    var temp_series_arr_check = series_arr;
+    var lcs = get_checked_lcs();
+    console.log(lcs);
+    var agbs = get_checked_agbs();
+    const xhr = ajax_call("get-min-max", {"lcs": lcs, "agbs": agbs});
+    xhr.done(function (result) {
+        var min_arr = {
+            "name": "min",
+            "data": result.min,
+            "color": 'green',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        var max_arr = {
+            "name": "max",
+            "data": result.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        var avg_arr = {
+            "name": "avg",
+            "data": result.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        var dataset = this_obj.value;
+        console.log(dataset);
 
-            $legend.append('<div class="item"><div class="symbol" style="background-color:' + data.color + '"></div><div class="serieName" id="">' + data.name + '</div></div>');
+        if (this_obj.checked) {
 
-        });
+            console.log("checked");
+            for (var i = 0; i < sarr.length; i++) {
+                if (sarr[i].name.includes(dataset)) {
+                    sarr[i].visible = true;
+                }
+            }
+            get_chart(sarr.concat(min_arr, max_arr, avg_arr));
 
-        $('#customLegend .item').click(function () {
-            var inx = $(this).index(), point = chart.series[0].data[inx];
-            if (point.visible) {
-                point.setVisible(false);
-            } else {
-                point.setVisible(true);
+
+        } else {
+            for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
+                if (temp_series_arr_uncheck[j].name.includes(dataset)) {
+                    temp_series_arr_uncheck[j].visible = false;
+                }
 
             }
-        });
+            get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
+
+        }
 
     });
-});
+}
+

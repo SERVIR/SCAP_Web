@@ -21,7 +21,7 @@ def get_agg_check(request):
         data1 = list(
             Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs).values('year').annotate(
                 min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
-        data = data1
+
         if len(data1) < 25:
             for y in years:
                 if not any(d['year'] == y for d in data1):
@@ -50,11 +50,11 @@ with open(settings.STATIC_ROOT + '\data\palette.txt') as f:
         temp['color'] = row.split(',')[2]
         colors.append(temp)
 
-
 def getColor(lc, agb):
     for x in colors:
-        if x['LC'] == lc and x['AGB'] == agb:
-            return x['color']
+        if x['LC'] == lc:
+            if x['AGB'] == agb:
+                return x['color']
 
 
 def findkeys(node, kv):
@@ -85,13 +85,15 @@ def chart(request):
     data = list(Emissions.objects.order_by().values_list('lc_id', 'lc_id__lc_name').distinct())
     lc = len(data)
     for x in range(len(data)):
-        lcs.append(data[x][0])
+        lcs.append(int(data[x][0]))
         lcnames.append(data[x][1] + ' (LC' + str(data[x][0]) + ')')
     data = list(Emissions.objects.order_by().values_list('agb_id', 'agb_id__agb_name').distinct())
     agb = len(data)
     for x in range(len(data)):
-        agbs.append(data[x][0])
+        agbs.append(int(data[x][0]))
         agbnames.append(data[x][1] + ' (AGB' + str(data[x][0]) + ')')
+    lcs.sort()
+    agbs.sort()
     new_arr = []
     data = list(result.values_list('lc_agb_value', 'lc_id', 'agb_id', 'year').order_by('year'))
     for x in range(len(data)):
@@ -101,14 +103,15 @@ def chart(request):
         for lc in lcs:
             for agb in agbs:
                 for x in range(len(new_arr)):
-                    if new_arr[x][1] == lc and new_arr[x][2] == agb:
+                    if new_arr[x][1] == str(lc) and new_arr[x][2] == str(agb):
                         for i in range(len(years)):
                             if new_arr[x][3] == years[i]:
                                 temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
                 final.append(temp)
                 temp = {}
+            print("LC" + str(lc) + " done")
         break
-    a1 = []
+    a1 =  [None] * len(final)
     ss = []
     for x in range(len(years)):
         for lc in lcs:
@@ -116,28 +119,20 @@ def chart(request):
                 for x in range(len(years)):
                     ss.append(str(years[x]) + "_" + str(lc) + '_' + str(agb))
     t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
-    for i in range(len(ss)):
-        g = nested_lookup(ss[i], final)
-        if len(t['data']) == len(lcs) * len(agbs):
-            if len(g) == 0:
-                t['data'].append(None)
-                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
-                t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
-            else:
-                t['data'].append(g[0])
-                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
-                t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
-            a1.append(t)
-            t = {'data': [], 'name': "", 'years': years,
-                 'color': 'black'}
-        else:
-            if len(g) == 0:
-                t['data'].append(None)
-                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
+    for i in range(len(final)):
+        t['name'] = 'LC' + list(final[i].keys())[0].split('_')[1] + "/AGB" +  list(final[i].keys())[0].split('_')[2]
+        print(t['name'])
+        t['color'] = getColor(int( list(final[i].keys())[0].split('_')[1]),
+                              int( list(final[i].keys())[0].split('_')[2]))
+        t['years'] = years
+        # print(final[i])
+        for m in list(final[i].keys()):
+            t['data'].append(final[i][m])
+        a1[i]= t
+        t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
 
-            else:
-                t['data'].append(g[0])
-                t['name'] = 'LC' + ss[i].split('_')[1] + "/AGB" + ss[i].split('_')[2]
-                t['color'] = getColor(int(ss[i].split('_')[1]), int(ss[i].split('_')[2]))
+    print(a1)
+
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
+    print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)

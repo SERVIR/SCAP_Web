@@ -57,7 +57,7 @@ function get_chart(series) {
     $('#container').highcharts({
             chart: {
                 type: 'spline',
-                marginBottom: 130,
+                marginBottom: 230,
                 zoomType: 'x'
             },
             title: {
@@ -71,20 +71,18 @@ function get_chart(series) {
 
             yAxis: {
                 title: {
-                    text: 'LC/AGB Value'
+                    text: 'Emissions'
                 }
             },
 
             xAxis: {
                 tickInterval: 1,
 
-                accessibility: {
-                    rangeDescription: 'Range: 1980 to 2004'
-                }
             },
 
             legend: {
-                enabled: true
+                enabled: true,
+                height:500,
                 //  align: 'left',
                 // floating: true,
 
@@ -108,7 +106,8 @@ function get_chart(series) {
                     label: {
                         enabled: false,
                     },
-                    pointStart: 1980
+                    pointStart: series[0]['years'][0],
+
                 }
             },
 
@@ -280,12 +279,15 @@ function get_updated_chart(this_obj) {
             dashStyle: 'shortdash'
         };
         var dataset = this_obj.value;
+        var si=dataset.indexOf('(');
+        var ei=dataset.indexOf(')');
+        var dataset1=dataset.substring(si+1,ei);
 
         if (this_obj.checked) {
 
             console.log("checked");
             for (var i = 0; i < sarr.length; i++) {
-                if (sarr[i].name.includes(dataset)) {
+                if (sarr[i].name.includes(dataset1)) {
                     sarr[i].visible = true;
                 }
             }
@@ -294,7 +296,7 @@ function get_updated_chart(this_obj) {
 
         } else {
             for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
-                if (temp_series_arr_uncheck[j].name.includes(dataset)) {
+                if (temp_series_arr_uncheck[j].name.includes(dataset1)) {
                     temp_series_arr_uncheck[j].visible = false;
                 }
 
