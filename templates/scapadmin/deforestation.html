@@ -29,8 +29,8 @@
                 <ul class="lcf_list">
         {% for lc in lcs %}
             <li class="lc_list-item">{{ lc.lc_name }}
-                <input type="checkbox" checked class="lc_list-item-checkbox"
-                       value="{{ lc.lc_id }}" onchange="test()" name="lc"/>
+                <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
+                       value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>
             </li>
         {% endfor %}
     </ul>

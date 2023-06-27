@@ -32,7 +32,7 @@
                 <ul class="lc_list">
         {% for lc in lcs %}
             <li class="lc_list-item">{{ lc.lc_name }}
-                <input type="checkbox" checked class="lc_list-item-checkbox"
+                <input type="checkbox" checked class="lc_list-item-checkbox LC_cb" onchange="access_lines(this,'LC')"
                        value="{{ lc.lc_id }}" name="lc"/>
             </li>
         {% endfor %}
@@ -44,7 +44,7 @@
                    <ul class="agb_list">
         {% for agb in agbs %}
             <li class="agb_list-item">{{ agb.agb_name }}
-                <input type="checkbox" checked class="agb_list-item-checkbox"
+                <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb" onchange="access_lines(this,'AGB')"
                        value="{{ agb.agb_id }}" name="agb"/>
             </li>
         {% endfor %}
