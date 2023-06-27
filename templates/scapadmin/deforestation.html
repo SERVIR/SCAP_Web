@@ -1,3 +1,4 @@
+
 <html>
 <head>
     {% load static %}
@@ -22,45 +23,26 @@
 
 <div class="container-fluid">
     <div class="row h-100 ">
-
-
-        <div class="col-3" id="checkbox_selection">
-            <div><a href="{% url "deforestation" %}">Deforestation</a></div>
-
-            <div class="LC_checkboxlist">
-                <b>Land Cover Datasets:</b><br>
-                <ul class="lc_list">
+        <div><a href="{% url "emissions" %}">Emissions</a></div>
+    <div  class="col-3">
+            <b>Land Cover Datasets:</b><br>
+                <ul class="lcf_list">
         {% for lc in lcs %}
             <li class="lc_list-item">{{ lc.lc_name }}
                 <input type="checkbox" checked class="lc_list-item-checkbox"
-                       value="{{ lc.lc_id }}" name="lc"/>
+                       value="{{ lc.lc_id }}" onchange="test()" name="lc"/>
             </li>
         {% endfor %}
     </ul>
-            </div>
-            <hr width="50%">
-            <div class="AGB_checkboxlist">
-                <b>Above Ground Biomass Datasets:</b><br>
-                   <ul class="agb_list">
-        {% for agb in agbs %}
-            <li class="agb_list-item">{{ agb.agb_name }}
-                <input type="checkbox" checked class="agb_list-item-checkbox"
-                       value="{{ agb.agb_id }}" name="agb"/>
-            </li>
-        {% endfor %}
-    </ul>
-            </div>
-        </div>
-
-        <div class="col-9" id="container">
-            <script type="text/javascript">
+</div>
+        <div class="col-9" id="container1">
+               <script type="text/javascript">
   new Highcharts.Chart({{chart|safe}});
 </script>
         </div>
     </div>
 </div>
-
-<script src="{% static '/js/main.js' %}"></script>
+<script src="{% static '/js/forestcover.js' %}"></script>
 
 </body>
 </html>

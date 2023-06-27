@@ -32,9 +32,9 @@ function get_checked_lcs() {
     var lcs = [];
     $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
 
-        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
-        console.log(temp.replace('L','').replace('C',''));
-        lcs.push(temp.replace('L','').replace('C',''));
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
     });
     return lcs;
 }
@@ -42,8 +42,8 @@ function get_checked_lcs() {
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
-        var temp=$(this).val().split(' ').pop().replace('(','').replace(')','');
-        agbs.push(temp.replace('A','').replace('G','').replace('B',''));
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
     });
     return agbs;
 }
@@ -58,7 +58,8 @@ function get_chart(series) {
             chart: {
                 type: 'spline',
                 marginBottom: 230,
-                zoomType: 'x'
+
+                zoomType: 'x',
             },
             title: {
                 text: 'S-CAP Yearly Emissions Sample Chart (random values)',
@@ -77,19 +78,19 @@ function get_chart(series) {
 
             xAxis: {
                 tickInterval: 1,
-
+            title: {
+                    text: 'Years'
+                }
             },
 
-            legend: {
-                enabled: true
-                //  align: 'left',
-                // floating: true,
+          legend: {
+    useHTML: true,
+    enabled: true,
+    reversed: false,
+		itemWidth:120,
 
-                // itemMarginBottom: 5,
-                // width: 180,
-                // itemWidth: 300,
-                // useHTML: true,
-            },
+
+  },
 
             plotOptions: {
                 series: {
@@ -128,7 +129,7 @@ function get_chart(series) {
             }
         }
     );
-};
+}
 const xhr = ajax_call("get-series", {});
 var series_arr = [];
 
@@ -141,11 +142,11 @@ xhr.done(function (result) {
     lcs = result.lcs;
     agbs = result.agbs;
     $.each(lcs, function (index) {
-        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
+        $('.LC_checkboxlist').append("<input type='checkbox' checked name='students[]' class='LC_cb' onclick='get_updated_chart(this)' value='" + lcs[index] + "' />" + lcs[index] + "<br/>");
     });
 
     $.each(agbs, function (index) {
-        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]'  onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
+        $('.AGB_checkboxlist').append("<input type='checkbox' checked name='students[]' class='AGB_cb' onclick='get_updated_chart(this)' value='" + agbs[index] + "' />" + agbs[index] + "<br/>");
     });
     console.log(series);
     for (var i = 0; i < series.length; i++) {
@@ -244,7 +245,7 @@ function get_updated_chart(this_obj) {
     if (series_arr.length > 24) {
         series_arr.splice(-3, 3);
     }
-    ;
+
     var sarr = series_arr;
     var temp_series_arr_uncheck = series_arr;
     var temp_series_arr_check = series_arr;
@@ -278,13 +279,15 @@ function get_updated_chart(this_obj) {
             dashStyle: 'shortdash'
         };
         var dataset = this_obj.value;
-        console.log(dataset);
+        var si = dataset.indexOf('(');
+        var ei = dataset.indexOf(')');
+        var dataset1 = dataset.substring(si + 1, ei);
 
         if (this_obj.checked) {
 
             console.log("checked");
             for (var i = 0; i < sarr.length; i++) {
-                if (sarr[i].name.includes(dataset)) {
+                if (sarr[i].name.includes(dataset1)) {
                     sarr[i].visible = true;
                 }
             }
@@ -292,16 +295,43 @@ function get_updated_chart(this_obj) {
 
 
         } else {
-            for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
-                if (temp_series_arr_uncheck[j].name.includes(dataset)) {
-                    temp_series_arr_uncheck[j].visible = false;
+            var msg = all_unchecked();
+            if (msg.length > 0) {
+                alert(msg);
+            } else {
+                for (var j = 0; j < temp_series_arr_uncheck.length; j++) {
+                    if (temp_series_arr_uncheck[j].name.includes(dataset1)) {
+                        temp_series_arr_uncheck[j].visible = false;
+                    }
+
                 }
+                get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
 
             }
-            get_chart(temp_series_arr_uncheck.concat(min_arr, max_arr, avg_arr));
-
         }
 
     });
 }
 
+function all_unchecked() {
+    var msg = "";
+    var checked1 = document.querySelectorAll('input.LC_cb:checked');
+
+    if (checked1.length === 0) {
+
+        msg = 'No LC checkboxes checked. Please select at least one Land Cover checkbox.';
+    } else {
+
+        console.log(checked1.length + ' checkboxes checked');
+    }
+    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+
+    if (checked2.length === 0) {
+
+        msg = 'No AGB checkboxes checked';
+    } else {
+
+        console.log(checked2.length + ' checkboxes checked. Please select at least one Above Ground Biomass checkbox.');
+    }
+    return msg;
+}

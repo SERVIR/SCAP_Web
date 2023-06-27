@@ -61,9 +61,9 @@ class ForestCoverChange(models.Model):
     year = models.IntegerField(help_text="Year")
     baseline_year = models.IntegerField(help_text="Baseline Year for forest cover calculations", blank=True, null=True)
     initial_forest_area = models.FloatField(help_text="Initial forest area for baseline year")
-    forest_gain = models.FloatField(help_text="Forest Gain")
+    forest_gain = models.FloatField(help_text="Forest Gain", null=True)
     forest_loss = models.FloatField(help_text="Forest Loss")
-    
+
     def net_forest_change(self):
         return self.forest_gain - self.forest_loss
     

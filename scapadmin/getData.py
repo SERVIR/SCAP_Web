@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from django.db.models import Avg, Min, Max
 from django.http import JsonResponse
 from nested_lookup import nested_lookup
-
+import pandas as pd
+import matplotlib.pyplot as plt
 from SCAP_WebApp import settings
 from scapadmin.models import Emissions
-
+import pandas_highcharts
 
 def get_agg_check(request):
     result = Emissions.objects.all().order_by('year')
@@ -136,3 +139,6 @@ def chart(request):
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
     print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
+
+
+
