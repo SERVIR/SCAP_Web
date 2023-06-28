@@ -1,12 +1,14 @@
 import uuid
 
 from django.db import models
-
+from colorfield.fields import ColorField
 
 class LC(models.Model):
     lc_id = models.CharField(max_length=10, primary_key=True,
                              help_text="LC ID number")
     lc_name = models.CharField(max_length=100, default="", help_text="LC Data Source name")
+
+    lc_color = ColorField(default="#FF0000")
 
     def __str__(self):
         return self.lc_name

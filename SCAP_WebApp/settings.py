@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'scapadmin.apps.ScapadminConfig',
     'import_export',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
