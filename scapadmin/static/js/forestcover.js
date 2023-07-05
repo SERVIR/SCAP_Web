@@ -34,8 +34,6 @@ for (var i = 0; i < newseries.length; i++) {
         percent = percent + 5;
     }
     for (var j = 0; j < lc_colors.length; j++) {
-        console.log('LC' + lc_colors[j]['lc_id']);
-        console.log(newseries[i].name[1]);
         if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[1])) {
             chart.series[i].update({
                 color: increase_brightness(lc_colors[j]['lc_color'], percent)
