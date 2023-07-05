@@ -24,6 +24,7 @@ function increase_brightness(hex, percent) {
 var percent = 10;
 // Loop through each series and set the color
 for (var i = 0; i < newseries.length; i++) {
+    var color = "#000000";
 
     // Making the percentage 100 will makes the lines black
     if (percent > 50) {
@@ -32,17 +33,13 @@ for (var i = 0; i < newseries.length; i++) {
         percent = percent + 5;
     }
     for (var j = 0; j < lc_colors.length; j++) {
-        console.log('LC' + lc_colors[j]['lc_id']);
-        console.log(newseries[i].name);
-        console.log(percent);
-
         if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[0])) {
-            chart.series[i].update({
-                color: increase_brightness(lc_colors[j]['lc_color'], percent)
-            });
+            color = increase_brightness(lc_colors[j]['lc_color'], percent);
         }
     }
-
+    chart.series[i].update({
+        color: color
+    });
 }
 // Update chart options
 chart.update({

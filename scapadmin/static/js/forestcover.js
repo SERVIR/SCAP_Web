@@ -33,15 +33,15 @@ for (var i = 0; i < newseries.length; i++) {
     } else {
         percent = percent + 5;
     }
+    var color = "#000000";
     for (var j = 0; j < lc_colors.length; j++) {
         if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[1])) {
-            chart.series[i].update({
-                color: increase_brightness(lc_colors[j]['lc_color'], percent)
-            });
+            color = increase_brightness(lc_colors[j]['lc_color'], percent);
         }
     }
-
+    chart.series[i].update({color: color});
 }
+
 
 // Update chart options
 chart.update({
