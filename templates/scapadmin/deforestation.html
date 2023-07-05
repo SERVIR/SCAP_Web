@@ -1,4 +1,3 @@
-
 <html>
 <head>
     {% load static %}
@@ -19,26 +18,28 @@
 </head>
 
 <body>
-
+<script>
+    var lc_colors = {{lcs|safe}};
+</script>
 
 <div class="container-fluid">
     <div class="row h-100 ">
         <div><a href="{% url "emissions" %}">Emissions</a></div>
-    <div  class="col-3">
+        <div class="col-3">
             <b>Land Cover Datasets:</b><br>
-                <ul class="lcf_list">
-        {% for lc in lcs %}
-            <li class="lc_list-item">{{ lc.lc_name }}
-                <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
-                       value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
+            <ul class="lcf_list">
+                {% for lc in lc_data %}
+                    <li class="lc_list-item">{{ lc.lc_name }}(LC{{ lc.lc_id }})
+                        <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
+                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         <div class="col-9" id="container1">
-               <script type="text/javascript">
-  new Highcharts.Chart({{chart|safe}});
-</script>
+            <script type="text/javascript">
+                new Highcharts.Chart({{chart|safe}});
+            </script>
         </div>
     </div>
 </div>

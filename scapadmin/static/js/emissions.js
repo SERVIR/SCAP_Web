@@ -1,18 +1,16 @@
-var index = $("#container1").data('highchartsChart');
+// Retrieve the chart from the DOM, and instantiate it
+var index = $("#container").data('highchartsChart');
 var chart = Highcharts.charts[index];
-
 var series = chart.series;
 var newseries = series;
 
 // This function is to set the brightness of the lines on the chart
 function increase_brightness(hex, percent) {
     hex = hex.replace(/^\s*#|\s*$/g, '');
-
     // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
     if (hex.length == 3) {
         hex = hex.replace(/(.)/g, '$1$1');
     }
-
     var r = parseInt(hex.substr(0, 2), 16),
         g = parseInt(hex.substr(2, 2), 16),
         b = parseInt(hex.substr(4, 2), 16);
@@ -35,8 +33,10 @@ for (var i = 0; i < newseries.length; i++) {
     }
     for (var j = 0; j < lc_colors.length; j++) {
         console.log('LC' + lc_colors[j]['lc_id']);
-        console.log(newseries[i].name[1]);
-        if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[1])) {
+        console.log(newseries[i].name);
+        console.log(percent);
+
+        if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[0])) {
             chart.series[i].update({
                 color: increase_brightness(lc_colors[j]['lc_color'], percent)
             });
@@ -44,7 +44,6 @@ for (var i = 0; i < newseries.length; i++) {
     }
 
 }
-
 // Update chart options
 chart.update({
         chart: {
@@ -78,12 +77,12 @@ chart.update({
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
-    var index = $("#container1").data('highchartsChart');
+    var index = $("#container").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name[1] === elem) {
+        if (newseries[i].name.includes(elem)) {
             chart.series[i].hide();
         }
     }
@@ -91,12 +90,12 @@ function hide_line(elem) {
 
 // Show lines on the chart based on checkbox selection
 function show_line(elem) {
-    var index = $("#container1").data('highchartsChart');
+    var index = $("#container").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name[1] === elem) {
+        if (newseries[i].name.includes(elem)) {
             chart.series[i].show();
         }
     }
@@ -129,6 +128,15 @@ function all_unchecked() {
     } else {
 
         console.log(checked1.length + ' checkboxes checked');
+    }
+    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+
+    if (checked2.length === 0) {
+
+        msg = 'No AGB checkboxes checked. Please select at least one Above Ground Biomass checkbox.';
+    } else {
+
+        console.log(checked2.length + ' checkboxes checked');
     }
     return msg;
 }

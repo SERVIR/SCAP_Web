@@ -18,49 +18,50 @@
 </head>
 
 <body>
-
+<script>
+    var lc_colors = {{lcs|safe}};
+</script>
 
 <div class="container-fluid">
     <div class="row h-100 ">
-
-
         <div class="col-3" id="checkbox_selection">
             <div><a href="{% url "deforestation" %}">Deforestation</a></div>
-
             <div class="LC_checkboxlist">
                 <b>Land Cover Datasets:</b><br>
                 <ul class="lc_list">
-        {% for lc in lcs %}
-            <li class="lc_list-item">{{ lc.lc_name }}
-                <input type="checkbox" checked class="lc_list-item-checkbox LC_cb" onchange="access_lines(this,'LC')"
-                       value="{{ lc.lc_id }}" name="lc"/>
-            </li>
-        {% endfor %}
-    </ul>
+                    {% for lc in lcs %}
+                        <li class="lc_list-item">{{ lc.lc_name }}(LC{{ lc.lc_id }})
+                            <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
+                                   onchange="access_lines(this,'LC')"
+                                   value="{{ lc.lc_id }}" name="lc"/>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
             <hr width="50%">
             <div class="AGB_checkboxlist">
                 <b>Above Ground Biomass Datasets:</b><br>
-                   <ul class="agb_list">
-        {% for agb in agbs %}
-            <li class="agb_list-item">{{ agb.agb_name }}
-                <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb" onchange="access_lines(this,'AGB')"
-                       value="{{ agb.agb_id }}" name="agb"/>
-            </li>
-        {% endfor %}
-    </ul>
+                <ul class="agb_list">
+                    {% for agb in agbs %}
+                        <li class="agb_list-item">{{ agb.agb_name }}(AGB{{ agb.agb_id }})
+                            <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
+                                   onchange="access_lines(this,'AGB')"
+                                   value="{{ agb.agb_id }}" name="agb"/>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 
         <div class="col-9" id="container">
             <script type="text/javascript">
-  new Highcharts.Chart({{chart|safe}});
-</script>
+                new Highcharts.Chart({{chart|safe}});
+            </script>
         </div>
     </div>
 </div>
 
-<script src="{% static '/js/main.js' %}"></script>
+<script src="{% static '/js/emissions.js' %}"></script>
 
 </body>
 </html>
