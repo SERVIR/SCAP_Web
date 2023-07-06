@@ -62,7 +62,7 @@ for (var i = 0; i < newseries.length; i++) {
             const lc=ss[0];
             const color=this.series.color;
             const s_name = get_name(ss);
-             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Forest Cover '+ this.x +' -  (' + (this.y).toLocaleString('en-US') + ') Tons</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> </span><div>';
+             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Forest Cover '+ this.x +' -  (' + (this.y).toLocaleString('en-US') + ') Ha</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> </span><div>';
                 return value;
         }
     }
