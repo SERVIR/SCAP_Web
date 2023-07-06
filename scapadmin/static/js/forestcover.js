@@ -57,7 +57,7 @@ chart.update({
                             enabled: false
                         }
                     }
-                }, showCheckbox: true,
+                }, showCheckbox: false,
                 selected: true,
 
                 events: {

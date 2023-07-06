@@ -43,11 +43,24 @@ $.each(chart.series, function (i, s) {
 
 });
 chart.update({series: ns});
-
+ chart.update({
+    tooltip: {
+       useHTML: true,
+        enabled: true,
+        backgroundColor: null,
+        borderWidth: 0,
+        shadow: false,
+        formatter: function () {
+            var value = '<div style="background-color:'+ this.series.color+';padding:10px"><span><b>Emissions<span style=\'padding-left:50px\'>' + this.x + '</span></b><br/> ' + this.series.name + ': ' + this.y + '</span><div>';
+            return value;
+        }
+    }
+  });
 chart.update({
         chart: {
             type: 'spline'
         },
+
         plotOptions: {
             series: {
                 marker: {
@@ -57,7 +70,7 @@ chart.update({
                             enabled: false
                         }
                     }
-                }, showCheckbox: true,
+                }, showCheckbox: false,
                 selected: true,
 
                 events: {

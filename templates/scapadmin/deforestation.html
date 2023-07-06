@@ -31,7 +31,7 @@
                 {% for lc in lc_data %}
                     <li class="lc_list-item">
                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
-                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>{{ lc.lc_name }}(LC{{ lc.lc_id }})
+                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/><label style="padding-left: 10px">{{ lc.lc_name }}(LC{{ lc.lc_id }})</label>
                     </li>
                 {% endfor %}
             </ul>
