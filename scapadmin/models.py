@@ -1,7 +1,6 @@
-import uuid
-
-from django.db import models
 from colorfield.fields import ColorField
+from django.db import models
+
 
 class LC(models.Model):
     lc_id = models.CharField(max_length=10, primary_key=True,
@@ -12,6 +11,7 @@ class LC(models.Model):
 
     def __str__(self):
         return self.lc_name
+
     def lc_label(self):
         return "LC" + self.lc_id
 
@@ -23,6 +23,7 @@ class AGB(models.Model):
 
     def __str__(self):
         return self.agb_name
+
     def agb_label(self):
         return "AGB" + self.agb_id
 
@@ -35,8 +36,10 @@ class Predefined_AOI(models.Model):
 
     def __str__(self):
         return self.aoi_name
+
     def aoi_label(self):
         return "AOI" + self.aoi_id
+
 
 # -----------------------------------------------------------------
 # Emissions model: This model stores pre-calculated emission for each predefined AOI, land cover, and AGB data source
@@ -50,6 +53,7 @@ class Emissions(models.Model):
     year = models.IntegerField(help_text="Year")
     baseline_year = models.IntegerField(help_text="Baseline Year for emissions calculations", blank=True, null=True)
     lc_agb_value = models.FloatField(help_text="Value")
+
 
 # -----------------------------------------------------------------
 # LandCoverChange model: This model stores pre-calculated land cover change data for each predefined AOI (forest gain 
@@ -68,4 +72,3 @@ class ForestCoverChange(models.Model):
 
     def net_forest_change(self):
         return self.forest_gain - self.forest_loss
-    

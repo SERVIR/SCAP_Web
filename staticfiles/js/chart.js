@@ -78,19 +78,19 @@ function get_chart(series) {
 
             xAxis: {
                 tickInterval: 1,
-            title: {
+                title: {
                     text: 'Years'
                 }
             },
 
-          legend: {
-    useHTML: true,
-    enabled: true,
-    reversed: false,
-		itemWidth:120,
+            legend: {
+                useHTML: true,
+                enabled: true,
+                reversed: false,
+                itemWidth: 120,
 
 
-  },
+            },
 
             plotOptions: {
                 series: {
@@ -130,6 +130,7 @@ function get_chart(series) {
         }
     );
 }
+
 const xhr = ajax_call("get-series", {});
 var series_arr = [];
 

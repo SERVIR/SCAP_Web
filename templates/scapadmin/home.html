@@ -28,12 +28,12 @@
             <div><a href="{% url "deforestation" %}">Deforestation</a></div>
             <div class="LC_checkboxlist">
                 <b>Land Cover Datasets:</b><br>
-                <ul class="lc_list">
+                <ul class="lc_list" style="list-style-type: none">
                     {% for lc in lcs %}
-                        <li class="lc_list-item">{{ lc.lc_name }}(LC{{ lc.lc_id }})
+                        <li class="lc_list-item">
                             <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                    onchange="access_lines(this,'LC')"
-                                   value="{{ lc.lc_id }}" name="lc"/>
+                                   value="{{ lc.lc_id }}" name="lc"/>{{ lc.lc_name }}(LC{{ lc.lc_id }})
                         </li>
                     {% endfor %}
                 </ul>
@@ -41,12 +41,12 @@
             <hr width="50%">
             <div class="AGB_checkboxlist">
                 <b>Above Ground Biomass Datasets:</b><br>
-                <ul class="agb_list">
+                <ul class="agb_list" style="list-style-type: none">
                     {% for agb in agbs %}
-                        <li class="agb_list-item">{{ agb.agb_name }}(AGB{{ agb.agb_id }})
+                        <li class="agb_list-item">
                             <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
                                    onchange="access_lines(this,'AGB')"
-                                   value="{{ agb.agb_id }}" name="agb"/>
+                                   value="{{ agb.agb_id }}" name="agb"/>{{ agb.agb_name }}(AGB{{ agb.agb_id }})
                         </li>
                     {% endfor %}
                 </ul>

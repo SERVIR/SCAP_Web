@@ -1,13 +1,9 @@
-from datetime import datetime
-
 from django.db.models import Avg, Min, Max
 from django.http import JsonResponse
-from nested_lookup import nested_lookup
-import pandas as pd
-import matplotlib.pyplot as plt
+
 from SCAP_WebApp import settings
 from scapadmin.models import Emissions
-import pandas_highcharts
+
 
 def get_agg_check(request):
     result = Emissions.objects.all().order_by('year')
@@ -52,6 +48,7 @@ with open(settings.STATIC_ROOT + '\data\palette.txt') as f:
         temp['AGB'] = int(row.split(',')[1][3:])
         temp['color'] = row.split(',')[2]
         colors.append(temp)
+
 
 def getColor(lc, agb):
     for x in colors:
@@ -114,7 +111,7 @@ def chart(request):
                 temp = {}
             print("LC" + str(lc) + " done")
         break
-    a1 =  [None] * len(final)
+    a1 = [None] * len(final)
     ss = []
     for x in range(len(years)):
         for lc in lcs:
@@ -123,15 +120,15 @@ def chart(request):
                     ss.append(str(years[x]) + "_" + str(lc) + '_' + str(agb))
     t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
     for i in range(len(final)):
-        t['name'] = 'LC' + list(final[i].keys())[0].split('_')[1] + "/AGB" +  list(final[i].keys())[0].split('_')[2]
+        t['name'] = 'LC' + list(final[i].keys())[0].split('_')[1] + "/AGB" + list(final[i].keys())[0].split('_')[2]
         print(t['name'])
-        t['color'] = getColor(int( list(final[i].keys())[0].split('_')[1]),
-                              int( list(final[i].keys())[0].split('_')[2]))
+        t['color'] = getColor(int(list(final[i].keys())[0].split('_')[1]),
+                              int(list(final[i].keys())[0].split('_')[2]))
         t['years'] = years
         # print(final[i])
         for m in list(final[i].keys()):
             t['data'].append(final[i][m])
-        a1[i]= t
+        a1[i] = t
         t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
 
     print(a1)
@@ -139,6 +136,3 @@ def chart(request):
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
     print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
-
-
-

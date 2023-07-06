@@ -3,6 +3,7 @@ var index = $("#container").data('highchartsChart');
 var chart = Highcharts.charts[index];
 var series = chart.series;
 var newseries = series;
+var new_updated = series;
 
 // This function is to set the brightness of the lines on the chart
 function increase_brightness(hex, percent) {
@@ -22,10 +23,11 @@ function increase_brightness(hex, percent) {
 }
 
 var percent = 10;
-// Loop through each series and set the color
-for (var i = 0; i < newseries.length; i++) {
+var ns = [];
+$.each(chart.series, function (i, s) {
     var color = "#000000";
-
+    var data = s.data;
+    var name = s.name;
     // Making the percentage 100 will makes the lines black
     if (percent > 50) {
         percent = percent - 5;
@@ -33,15 +35,15 @@ for (var i = 0; i < newseries.length; i++) {
         percent = percent + 5;
     }
     for (var j = 0; j < lc_colors.length; j++) {
-        if ('LC' + lc_colors[j]['lc_id'] == (newseries[i].name[0])) {
+        if ('LC' + lc_colors[j]['lc_id'] == (s.name[0])) {
             color = increase_brightness(lc_colors[j]['lc_color'], percent);
         }
     }
-    chart.series[i].update({
-        color: color
-    });
-}
-// Update chart options
+    ns.push({name: name, data: data, color: color});
+
+});
+chart.update({series: ns});
+
 chart.update({
         chart: {
             type: 'spline'

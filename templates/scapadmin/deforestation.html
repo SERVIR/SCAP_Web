@@ -27,11 +27,11 @@
         <div><a href="{% url "emissions" %}">Emissions</a></div>
         <div class="col-3">
             <b>Land Cover Datasets:</b><br>
-            <ul class="lcf_list">
+            <ul class="lcf_list" style="list-style-type: none">
                 {% for lc in lc_data %}
-                    <li class="lc_list-item">{{ lc.lc_name }}(LC{{ lc.lc_id }})
+                    <li class="lc_list-item">
                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
-                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>
+                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/>{{ lc.lc_name }}(LC{{ lc.lc_id }})
                     </li>
                 {% endfor %}
             </ul>
