@@ -65,7 +65,7 @@ chart.update({series: ns});
             const agb=ss[1];
             const color=this.series.color;
             const s_name = get_name(ss);
-             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Emissions '+ this.x +' -  ' + this.y + '</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> ' + result1.split(',')[1]   +' ('+ agb+')</span><div>';
+             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Emissions '+ this.x +' -  ' + (this.y).toLocaleString('en-US') + ' Tons</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> ' + result1.split(',')[1]   +' ('+ agb+')</span><div>';
                 return value;
         }
     }
