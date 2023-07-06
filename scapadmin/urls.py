@@ -9,4 +9,5 @@ urlpatterns = [
     path('emissions/', views.home, name='emissions'),
     path('deforestation/', views.deforestation, name='deforestation'),
     path('get-min-max/', getData.get_agg_check, name='get-min-max'),
+    path('emissions/get-series-name/', getData.get_series_name, name='get-series-name'),
 ]
