@@ -4,6 +4,15 @@ var chart = Highcharts.charts[index];
 var series = chart.series;
 var newseries = series;
 
+var result1="";
+
+function get_name(elem) {
+    // var result1="";
+    const xhr = ajax_call("get-series-name", {'ds_lc': elem[0],'ds_agb':elem[1]});
+    xhr.done(function (result) {
+        result1=result.name;
+    });
+}
 // This function is to set the brightness of the lines on the chart
 function increase_brightness(hex, percent) {
     hex = hex.replace(/^\s*#|\s*$/g, '');
@@ -49,8 +58,12 @@ for (var i = 0; i < newseries.length; i++) {
         borderWidth: 0,
         shadow: false,
         formatter: function () {
-            var value = '<div style="background-color:'+ this.series.color+';padding:10px"><span><b>Change in Forest Cover<span style=\'padding-left:50px\'>' + this.x + '</span></b><br/> ' + this.series.name + ': ' + this.y + '</span><div>';
-            return value;
+             const ss = this.series.name;
+            const lc=ss[0];
+            const color=this.series.color;
+            const s_name = get_name(ss);
+             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Forest Cover '+ this.x +' -  (' + (this.y).toLocaleString('en-US') + ') Tons</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> </span><div>';
+                return value;
         }
     }
   });
@@ -142,3 +155,33 @@ function all_unchecked() {
     }
     return msg;
 }
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function ajax_call(ajax_url, ajax_data) {
+    //update database
+    return jQuery.ajax({
+        type: "POST",
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        url: ajax_url.replace(/\/?$/, '/'),
+        dataType: "json",
+        data: ajax_data
+    })
+        .fail(function (xhr, status, error) {
+            console.log(xhr.responseText);
+        });
+}
+
