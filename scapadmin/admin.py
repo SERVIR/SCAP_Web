@@ -7,15 +7,17 @@ from .models import AGB, LC, Predefined_AOI, Emissions, ForestCoverChange
 # Register your models here.
 
 class AGBAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('agb_id', 'agb_name')
+    list_display = ('agb_id', 'agb_label', 'agb_name')
+    list_display_links = ('agb_id', 'agb_label')
 
 
 class LCAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('lc_id', 'lc_name')
-
+    list_display = ('lc_id', 'lc_label', 'lc_name')
+    list_display_links = ('lc_id', 'lc_label')
 
 class Predefined_AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('aoi_id', 'aoi_name', 'aoi_country')
+    list_display = ('aoi_id', 'aoi_label', 'aoi_name', 'aoi_country')
+    list_display_links = ('aoi_id', 'aoi_label')
 
 
 class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
