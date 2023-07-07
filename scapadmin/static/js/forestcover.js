@@ -58,11 +58,18 @@ for (var i = 0; i < newseries.length; i++) {
         borderWidth: 0,
         shadow: false,
         formatter: function () {
-             const ss = this.series.name;
+            const ss = this.series.name;
             const lc=ss[0];
             const color=this.series.color;
             const s_name = get_name(ss);
-             var value = '<div style="background-color:' + color + ';padding:10px"><span><b>Forest Cover '+ this.x +' -  (' + (this.y).toLocaleString('en-US') + ') Ha</b><span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> </span><div>';
+            if (this.y > 0) {
+                label = "Forest Gain";
+            } else {   
+                label = "Forest Loss";
+            }
+            var value = '<div style="background-color:' + color + ';padding:10px">'+
+                '<span><b>'+ label + ' ' + this.x +':  ' + (this.y).toLocaleString('en-US') + ' Ha</b>'+
+                '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc +')<br/> </span><div>';
                 return value;
         }
     }
