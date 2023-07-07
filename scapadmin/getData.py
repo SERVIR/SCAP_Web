@@ -141,9 +141,13 @@ def chart(request):
 def get_series_name(request):
     if request.method == 'POST':
         lc_id = request.POST.get('ds_lc')
+        print(lc_id)
         agb_id = request.POST.get('ds_agb')
         ds = LC.objects.get(lc_id=lc_id[2:])
         lc_name= ds.lc_name
-        ds= AGB.objects.get(agb_id=agb_id[3:])
-        agb_name= ds.agb_name
+        if agb_id != "":
+            ds= AGB.objects.get(agb_id=agb_id[3:])
+            agb_name= ds.agb_name
+        else:
+            agb_name= ''
         return JsonResponse({"name": lc_name+', '+agb_name}, safe=False)

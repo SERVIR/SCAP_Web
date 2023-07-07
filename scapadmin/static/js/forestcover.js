@@ -8,9 +8,10 @@ var result1="";
 
 function get_name(elem) {
     // var result1="";
-    const xhr = ajax_call("get-series-name", {'ds_lc': elem[0],'ds_agb':elem[1]});
+    const xhr = ajax_call("get-series-name1", {'ds_lc': elem[1],'ds_agb':""});
     xhr.done(function (result) {
         result1=result.name;
+console.log(result1);
     });
 }
 // This function is to set the brightness of the lines on the chart
@@ -68,8 +69,8 @@ for (var i = 0; i < newseries.length; i++) {
                 label = "Forest Loss";
             }
             var value = '<div style="background-color:' + color + ';padding:10px">'+
-                '<span><b>'+ label + ' ' + this.x +':  ' + (this.y).toLocaleString('en-US') + ' Ha</b>'+
-                '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc +')<br/> </span><div>';
+                '<span><b>'+ label + ' ' + this.x +':  ' + Math.abs(this.y).toLocaleString('en-US') + ' Ha</b>'+
+                '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +'<br/> </span><div>';
                 return value;
         }
     }

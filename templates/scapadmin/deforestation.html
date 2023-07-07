@@ -25,7 +25,7 @@
 <div class="container-fluid">
     <div class="row h-100 ">
         <div><a href="{% url "emissions" %}">Emissions</a></div>
-        <div class="col-3">
+        <div class="col-3 m-auto">
             <b>Land Cover Datasets:</b><br>
             <ul class="lcf_list" style="list-style-type: none">
                 {% for lc in lc_data %}
@@ -36,7 +36,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <div class="col-9" id="container1">
+        <div class="col-9" id="container1" style="height: 90%">
             <script type="text/javascript">
                 new Highcharts.Chart({{chart|safe}});
             </script>

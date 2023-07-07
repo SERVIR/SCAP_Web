@@ -24,8 +24,9 @@
 
 <div class="container-fluid">
     <div class="row h-100 ">
-        <div class="col-3" id="checkbox_selection">
-            <div><a href="{% url "deforestation" %}">Deforestation</a></div>
+                <div><a href="{% url "deforestation" %}">Deforestation</a></div>
+
+        <div class="col-3 m-auto" id="checkbox_selection">
             <div class="LC_checkboxlist">
                 <b>Land Cover Datasets:</b><br>
                 <ul class="lc_list" style="list-style-type: none">
@@ -53,7 +54,7 @@
             </div>
         </div>
 
-        <div class="col-9" id="container">
+        <div class="col-9" id="container" style="height: 90%">
             <script type="text/javascript">
                 new Highcharts.Chart({{chart|safe}});
             </script>
