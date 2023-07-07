@@ -33,7 +33,7 @@
                         <li class="lc_list-item">
                             <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                    onchange="access_lines(this,'LC')"
-                                   value="{{ lc.lc_id }}" name="lc"/><label style="padding-left: 10px">{{ lc.lc_name }} (LC{{ lc.lc_id }})</label>
+                                   value="{{ lc.lc_id }}" name="lc"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">LC{{ lc.lc_id }}</span> {{ lc.lc_name }} </label>
                         </li>
                     {% endfor %}
                 </ul>
@@ -46,7 +46,7 @@
                         <li class="agb_list-item">
                             <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
                                    onchange="access_lines(this,'AGB')"
-                                   value="{{ agb.agb_id }}" name="agb"/><label style="padding-left: 10px">{{ agb.agb_name }} (AGB{{ agb.agb_id }})</label>
+                                   value="{{ agb.agb_id }}" name="agb"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">AGB{{ agb.agb_id }}</span> {{ agb.agb_name }} </label>
                         </li>
                     {% endfor %}
                 </ul>
