@@ -43,6 +43,7 @@
             <div class="AGB_checkboxlist">
                 <b>Above Ground Biomass Datasets:</b><br>
                 <ul class="agb_list" style="list-style-type: none">
+                {% csrf_token %}
                     {% for agb in agbs %}
                         <li class="agb_list-item">
                             <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"

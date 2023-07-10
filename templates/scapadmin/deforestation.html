@@ -28,6 +28,7 @@
         <div class="col-3 m-auto">
             <b>Land Cover Datasets:</b><br>
             <ul class="lcf_list" style="list-style-type: none">
+            {% csrf_token %}
                 {% for lc in lc_data %}
                     <li class="lc_list-item">
                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
