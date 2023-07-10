@@ -1,38 +1,25 @@
-asgiref @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_cchykh5sgr/croots/recipe/asgiref_1661287542702/work
 asttokens==2.2.1
 backcall==0.2.0
-Bottleneck @ file:///C:/Windows/Temp/abs_3198ca53-903d-42fd-87b4-03e6d03a8381yfwsuve8/croots/recipe/bottleneck_1657175565403/work
 colorama==0.4.6
-contourpy @ file:///C:/b/abs_d5rpy288vc/croots/recipe/contourpy_1663827418189/work
 coverage==7.2.7
-cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
 decorator==5.1.1
 defusedxml==0.7.1
 diff-match-patch==20230430
-Django @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_eeor5o9jj8/croots/recipe/django_1661292534510/work
 django-colorfield==0.9.0
 django-import-export==3.2.0
 et-xmlfile==1.1.0
 executing==1.2.0
 fonttools==4.25.0
-importlib-resources @ file:///tmp/build/80754af9/importlib_resources_1625135880749/work
 ipython==8.14.0
 jedi==0.18.2
-kiwisolver @ file:///C:/b/abs_88mdhvtahm/croot/kiwisolver_1672387921783/work
 MarkupPy==1.14
-matplotlib @ file:///C:/b/abs_49b2acwxd4/croot/matplotlib-suite_1679593486357/work
 matplotlib-inline==0.1.6
 mkl-fft==1.3.6
-mkl-random @ file:///C:/Users/dev-admin/mkl/mkl_random_1682977971003/work
 mkl-service==2.4.0
 munkres==1.1.4
 nested-lookup==0.2.25
-numexpr @ file:///C:/b/abs_afm0oewmmt/croot/numexpr_1683221839116/work
-numpy @ file:///C:/Users/dev-admin/mkl/numpy_and_numpy_base_1682982345978/work
 odfpy==1.4.1
 openpyxl==3.1.2
-packaging @ file:///C:/b/abs_ed_kb9w6g4/croot/packaging_1678965418855/work
-pandas @ file:///C:/b/abs_b9kefbuby2/croot/pandas_1677835593760/work
 pandas-highcharts==0.5.2
 parso==0.8.3
 pickleshare==0.7.5
@@ -41,24 +28,13 @@ ply==3.11
 prompt-toolkit==3.0.38
 pure-eval==0.2.2
 Pygments==2.15.1
-pyparsing @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_7f_7lba6rl/croots/recipe/pyparsing_1661452540662/work
 PyQt5==5.15.7
-PyQt5-sip @ file:///C:/Windows/Temp/abs_d7gmd2jg8i/croots/recipe/pyqt-split_1659273064801/work/pyqt_sip
-python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
-pytz @ file:///C:/b/abs_22fofvpn1x/croot/pytz_1671698059864/work
 PyYAML==6.0
-sip @ file:///C:/Windows/Temp/abs_b8fxd17m2u/croots/recipe/sip_1659012372737/work
-six @ file:///tmp/build/80754af9/six_1644875935023/work
-sqlparse @ file:///C:/b/abs_83jn6owfpc/croot/sqlparse_1668793499314/work
 stack-data==0.6.2
 tablib==3.4.0
-toml @ file:///tmp/build/80754af9/toml_1616166611790/work
-tornado @ file:///C:/ci/tornado_1662458743919/work
 traitlets==5.9.0
 typing_extensions==4.6.3
-tzdata @ file:///tmp/build/80754af9/python-tzdata_1611693927741/work
 uuid==1.30
 wcwidth==0.2.6
 xlrd==2.0.1
 xlwt==1.3.0
-zipp @ file:///C:/b/abs_b9jfdr908q/croot/zipp_1672387552360/work
