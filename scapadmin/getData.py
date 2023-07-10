@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 from SCAP_WebApp import settings
 from scapadmin.models import Emissions, LC, AGB
-
+from django.views.decorators.csrf import csrf_exempt
 
 def get_agg_check(request):
     result = Emissions.objects.all().order_by('year')
@@ -137,7 +137,7 @@ def chart(request):
     print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
 
-
+@csrf_exempt
 def get_series_name(request):
     if request.method == 'POST':
         lc_id = request.POST.get('ds_lc')
