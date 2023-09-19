@@ -30,8 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
 CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]
 
-GDAL_LIBRARY_PATH=r'C:\OSGeo4W\bin\gdal307.dll'
-GEOS_LIBRARY_PATH=r'C:\OSGeo4W\bin\geos_c.dll'
+GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
+GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
 
 # Application definition
 
@@ -79,19 +79,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ScapTestProject.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        'NAME': 'USERNAME',
-        'PASSWORD':'PASSWORD',
-        'USER':'DBUSER'
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        'NAME': data["USERNAME"],
+        'PASSWORD': data["PASSWORD"],
+        'USER': data["DBUSER"]
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -111,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -122,7 +119,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
