@@ -9,23 +9,27 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import json
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+f = open(str(BASE_DIR) + '/data.json', )
+data = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o3fre=@i7)ev1a%sx8ase#x8fn_%f!_r1cz+3q9ps$39%&70y%'
+SECRET_KEY = data["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
+CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]
+
 GDAL_LIBRARY_PATH=r'C:\OSGeo4W\bin\gdal307.dll'
 GEOS_LIBRARY_PATH=r'C:\OSGeo4W\bin\geos_c.dll'
 
@@ -82,9 +86,9 @@ WSGI_APPLICATION = 'ScapTestProject.wsgi.application'
 DATABASES = {
     'default': {
          "ENGINE": "django.contrib.gis.db.backends.postgis",
-        'NAME': 'postgres',
-        'PASSWORD':'pass',
-        'USER':'geouser'
+        'NAME': 'USERNAME',
+        'PASSWORD':'PASSWORD',
+        'USER':'DBUSER'
     }
 }
 
