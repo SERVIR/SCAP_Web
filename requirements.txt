@@ -1,5 +1,4 @@
 affine==2.4.0
-asgiref @ file:///C:/ci_311/asgiref_1676448296195/work
 attrs==23.1.0
 boto3==1.28.54
 botocore==1.31.54
@@ -10,11 +9,9 @@ cligj==0.7.2
 colorama==0.4.6
 defusedxml==0.7.1
 diff-match-patch==20230430
-Django @ file:///C:/ci_311/django_1676469589007/work
 django-import-export==3.3.1
 et-xmlfile==1.1.0
 Fiona==1.9.4.post1
-GDAL @ file:///C:/Users/gtondapu/Downloads/GDAL-3.4.3-cp311-cp311-win_amd64.whl#sha256=f78861fb5115d5c2f8cf3c52a492ff548da9e1256dc84088947379f90e77e5b6
 geopandas==0.13.2
 jmespath==1.0.1
 MarkupPy==1.14
@@ -35,9 +32,7 @@ s3transfer==0.6.2
 shapely==2.0.1
 six==1.16.0
 snuggs==1.4.7
-sqlparse @ file:///C:/b/abs_88361ub_qu/croot/sqlparse_1690904577514/work
 tablib==3.5.0
-tzdata @ file:///croot/python-tzdata_1690578112552/work
 urllib3==1.26.16
 xlrd==2.0.1
 xlwt==1.3.0
