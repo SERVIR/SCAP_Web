@@ -14,12 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
+from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
+    saveAOItomodel
 from scap.views import test, home
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home,name='home'),
+    path("", include("allauth.account.urls")),
+    path('savetomodel/',savetomodel,name='savetomodel'),
     path('test/', test, name='test'),
+    path('google-login/', include('allauth.urls')),
+    path('getcollections/',getcollections,name='getcollections'),
+    path('getfilesfromcollection/',getfilesfromcollection,name='getfilesfromcollection'),
+    path('saveAOItomodel/',saveAOItomodel,name='saveAOItomodel'),
+    path('updatetomodel/',updatetomodel,name='updatetomodel'),
+    path('check_if_coll_exists/',   check_if_coll_exists,name='check_if_coll_exists'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
 ]

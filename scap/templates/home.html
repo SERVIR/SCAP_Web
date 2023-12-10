@@ -30,7 +30,7 @@
 <div id="login_logout" class="text-center">
 {% if user.is_authenticated %}
   <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
-    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
 
 {#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
 
@@ -77,7 +77,7 @@
             <option>Private</option>
         </select>
     </div>
-    <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary</button> <button type="button" class="mb-3 btn btn-primary common" id="clear_new">Clear Form</button>
+    <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary</button> <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()" id="clear_new">Clear Form</button>
 
 
 
@@ -162,7 +162,7 @@
 
 
             </form>
-<form>
+<form id="upload-aoi">
 <div id="aoiModal" class="modal">
 
     <!-- Modal content -->
@@ -191,10 +191,12 @@
                 <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review Summary</button><button type="button" class="mb-3 btn btn-primary common" id="clear_aois">Clear Form</button>
 
 </div>
-
+    </div>
 
 </form>
 
+</div>
+</div>
 <script src="{% static "js/main.js" %}"></script>
 
 </body>

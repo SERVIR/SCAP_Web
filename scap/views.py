@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from scap.api import generate_fcc_fields, generate_geodjango_objects, generate_from_lambda
-from scap.forms import LoginForm
+# from scap.forms import LoginForm
 from scap.generate_files import generate_fc_file
 from scap.utils import mask_with_tif
 

@@ -16,7 +16,7 @@ from scap.models import BoundaryFiles, AOI, ForestCoverChange, ForestCoverChange
     UserProvidedAOI
 
 from scap.utils import percent_inside, gdal_polygonize, getArea, create_temp_dir, delete_temp_dir, \
-    get_projection_of_tif, get_resolution_of_tif
+    get_projection_of_tif, get_resolution_of_tif, get_projection_of_boundary
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
@@ -216,6 +216,7 @@ def savetomodel(request):
     print("in")
     print(request.FILES['boundaryFile'] )
     uploaded_tiffs=request.FILES.getlist('FC_tiffs[]')
+    original_names=request.POST.getlist('FC_tiffs_OriginalNames[]')
     # print(type(uploaded_tiffs[0]))
     # proj=get_projection_of_tif(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public\fc_yghug_77_1ha.tif')
     # res=get_resolution_of_tif(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public\fc_yghug_77_1ha.tif')
@@ -224,30 +225,49 @@ def savetomodel(request):
     # if "Mollweide" in proj:
     #     print("yes in correct projection")
     uploaded_tiffs_names=request.POST.getlist('FC_tiffs_Name[]')
+    path_to_boundary = os.path.join(params['PATH_TO_DATA'], request.POST['access'], request.user.username,
+                                    "Collections",request.POST['coll_name'], "BoundaryFiles")
+    path_to_tiffs = os.path.join(params['PATH_TO_DATA'], request.POST['access'], request.user.username,
+                                    "Collections",request.POST['coll_name'], "FC_Tiffs")
+
+    if not os.path.exists(path_to_boundary):
+        os.makedirs(path_to_boundary)
+    if not os.path.exists(path_to_tiffs):
+        os.makedirs(path_to_tiffs)
+
     for i in range(len(uploaded_tiffs)):
-        with open(os.path.join(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public', uploaded_tiffs_names[i]),
+
+        with open(os.path.join(path_to_tiffs,uploaded_tiffs_names[i]),
                   "wb") as file1:
             file1.write(uploaded_tiffs[i].read())
-    with open(os.path.join(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public', request.POST['boundaryFileName']), "wb") as file1:
+
+    with open(os.path.join(path_to_boundary,request.POST['boundaryFileName']), "wb") as file1:
         file1.write(request.FILES['boundaryFile'].read())
 
     try:
+        print(original_names)
         tiffs = uploaded_tiffs_names
-        for tiff in tiffs:
+        print(get_projection_of_boundary(os.path.join(path_to_boundary, request.POST['boundaryFileName'])))
+
+        for i in range(len(tiffs)):
             new_collection = NewCollection()
             new_collection.collection_name = request.POST['coll_name']
             new_collection.collection_description = request.POST['coll_desc']
             new_collection.boundary_file = request.POST['boundaryFileName']
-            new_collection.tiff_file = tiff
+            new_collection.tiff_file = tiffs[i]
             new_collection.access_level = request.POST['access']
             new_collection.username = request.user.username
-            print(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public'+'\\'+tiff)
-            new_collection.projection=get_projection_of_tif(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public'+'\\'+tiff)
-            new_collection.resolution=get_resolution_of_tif(r'C:\Users\gtondapu\Downloads\SCAP\Data\Public'+'\\'+tiff)
-
-            new_collection.save()
-            print(request.user.username)
-
+            tiff_file_path=os.path.join(path_to_tiffs,tiffs[i])
+            new_collection.path_to_tif_file = path_to_tiffs
+            new_collection.path_to_boundary_file=path_to_boundary
+            proj=get_projection_of_tif(tiff_file_path)
+            new_collection.projection=proj
+            print(proj)
+            new_collection.resolution=get_resolution_of_tif(tiff_file_path)
+            if 'Mollweide' in proj:
+                new_collection.save()
+            else:
+                return JsonResponse({"result": "error", "error_message": "Invalid file "+original_names[i]})
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error","error_message":str(e)})
@@ -315,24 +335,24 @@ def getfilesfromcollection(request):
 
 @csrf_exempt
 def saveAOItomodel(request):
+
     try:
-        aois = request.POST.getlist('aois[]')
-        for aoi in aois:
+        aoi_path=os.path.join(params['PATH_TO_DATA'], "Private", request.user.username,
+                                           "AOIs")
+        if not os.path.exists(aoi_path):
+            os.makedirs(aoi_path)
+        aois = request.FILES.getlist('aois[]')
+        aoi_names = request.POST.getlist('aoi_names[]')
+        for i in range(len(aois)):
+            with open(os.path.join(aoi_path, aois[i]), "wb") as file1:
+                file1.write(aois[i].read())
             new_aoi = UserProvidedAOI()
-            new_aoi.aoi_name = aoi
-            new_aoi.aoi_shape_file = "path_to_shape_file"
+            new_aoi.aoi_name = aoi_names[i]
+            new_aoi.aoi_shape_file = os.path.join(aoi_path,aois[i])
+            new_aoi.path_to_aoi_file=aoi_path
             new_aoi.username = request.user.username
-            existing_aois = list(UserProvidedAOI.objects.values('aoi_name').distinct())
-            arr=[]
-            for a in existing_aois:
-                arr.append(a['aoi_name'])
-
-            if aoi not in arr:
-                new_aoi.save()
-                return JsonResponse({"result": "success"})
-            else:
-                return JsonResponse({"result": "error","error_message":"Please choose a different name for your aois"})
-
+            new_aoi.save()
+            return JsonResponse({"result": "success"})
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error","error_message":str(e)})

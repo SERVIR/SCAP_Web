@@ -30,8 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
 CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]
 
-GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
-GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
+# GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
+# GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
 
 # Application definition
 
@@ -146,8 +146,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         "APP": {
-            "client_id": '799108393497-n5cihlum5fhmpn13rj7a2v0a3mfcc4er.apps.googleusercontent.com',
-            "secret": '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',
+            "client_id": data["GOOGLE_CLIENT_ID"],
+            "secret": data["GOOGLE_SECRET_KEY"],
             "key": ""
         },
         'SCOPE': [
@@ -160,7 +160,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SITE_ID = 3
+SITE_ID = data['SITE_ID']
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

@@ -274,18 +274,47 @@ def upload_file(request):
 
 
 def get_resolution_of_tif(tif):
-    src = gdal.Open(tif)
-    xres, yres = operator.itemgetter(1, 5)(src.GetGeoTransform())
-    return abs(xres * yres)
+    try:
+        print("in res try")
+        src = gdal.Open(tif)
+        xres, yres = operator.itemgetter(1, 5)(src.GetGeoTransform())
+        return abs(xres * yres)
+    except Exception as e:
+        print(e)
 
 
 def get_projection_of_tif(tif):
+    print("proj")
+    print(tif)
     from osgeo import gdal, osr
+
     ds = gdal.Open(tif)
     prj = ds.GetProjection()
     srs = osr.SpatialReference(wkt=prj)
-    if srs.IsProjected:
-        print(srs.GetAttrValue('projcs'))
-        return srs.GetAttrValue('projcs')
-    return ""
+    print(srs.GetAttrValue('projcs'))
+    try:
+        if srs.GetAttrValue('projcs') is None:
+            return "INVALID"
+
+            # print("inside if")
+                # polygons = gpd.read_file(tif)
+                # polygons.to_crs(CRS("ESRI:54009"), inplace=True)
+                # import rioxarray
+                # polygons.rio.to_raster("myfile.tif")
+        else:
+            return srs.GetAttrValue('projcs')
+    except Exception as e:
+        return "INVALID"
+        print(e)
     # print(srs.GetAttrValue('geogcs'))
+
+def get_projection_of_boundary(shp):
+    try:
+        c = fiona.open(shp)
+        crs = c.crs
+        print(crs)
+        print("from bound")
+        return crs
+    except Exception as e:
+        print(e)
+        return "INVALID"
