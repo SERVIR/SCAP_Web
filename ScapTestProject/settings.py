@@ -29,9 +29,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
 CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]
-
-# GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
-# GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
+if os.name == 'nt':
+    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
+    GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
 
 # Application definition
 
