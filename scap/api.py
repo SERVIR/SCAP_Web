@@ -247,7 +247,11 @@ def savetomodel(request):
     try:
         print(original_names)
         tiffs = uploaded_tiffs_names
-        print(get_projection_of_boundary(os.path.join(path_to_boundary, request.POST['boundaryFileName'])))
+        # boundary_proj=get_projection_of_boundary(os.path.join(path_to_boundary, request.POST['boundaryFileName']))
+        # if 'Mollweide' in boundary_proj:
+        #     pass
+        # else:
+        #     return JsonResponse({"result": "error", "error_message": "Invalid file " + original_names[i]})
 
         for i in range(len(tiffs)):
             new_collection = NewCollection()

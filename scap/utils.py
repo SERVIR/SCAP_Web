@@ -295,12 +295,6 @@ def get_projection_of_tif(tif):
     try:
         if srs.GetAttrValue('projcs') is None:
             return "INVALID"
-
-            # print("inside if")
-                # polygons = gpd.read_file(tif)
-                # polygons.to_crs(CRS("ESRI:54009"), inplace=True)
-                # import rioxarray
-                # polygons.rio.to_raster("myfile.tif")
         else:
             return srs.GetAttrValue('projcs')
     except Exception as e:
@@ -310,11 +304,10 @@ def get_projection_of_tif(tif):
 
 def get_projection_of_boundary(shp):
     try:
-        c = fiona.open(shp)
+        print("in try block")
+        c = gpd.read_file(shp)
         crs = c.crs
-        print(crs)
-        print("from bound")
-        return crs
+        return str(crs)
     except Exception as e:
         print(e)
         return "INVALID"
