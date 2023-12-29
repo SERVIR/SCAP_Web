@@ -10,9 +10,12 @@ from scap.generate_files import generate_fc_file
 from scap.utils import mask_with_tif
 
 from django.contrib.auth import authenticate, login, logout
+
+
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")
     return redirect("homepage")
+
 
 # from scap.utils import test_py, test_method
 
@@ -29,5 +32,8 @@ def test(req):
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'scap/index.html')
 
+
+def aoi(request):
+    return render(request, 'scap/aoi.html')

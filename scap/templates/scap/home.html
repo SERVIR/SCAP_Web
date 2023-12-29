@@ -25,11 +25,18 @@
 <h1 style="text-align: center;"><a style="color:gray;text-decoration: none" href="{% url "home" %}">SCAP - Testing</a>
 
 </h1>
-<div class="text-center" style="background: peachpuff;width:40%;display: inline-flex">
+<div class="text-center" style="background: peachpuff;width:40%;margin:auto;>
 
 <div id="login_logout" class="text-center">
 {% if user.is_authenticated %}
   <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
+      <p><a href="{% url 'logout' %}">Log Out</a></p>
+
+      <a href="{% url 'home' %}">Add/Update Collection
+    </a>&nbsp;
+    <a href="{% url 'aoi' %}">
+    Add AOI(s)
+    </a>
 {#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
 
 {#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
@@ -128,7 +135,7 @@
 {#    </ul>#}
       <ul id="list_new_added">
     </ul>
-        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary</button><button type="button" class="mb-3 btn btn-primary common" id="clear_existing">Clear Form</button>
+        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary</button><button type="button" class="mb-3 btn btn-primary common" id="clear_existing" onclick="clearForm()">Clear Form</button>
 
     </div>
 
@@ -162,38 +169,7 @@
 
 
             </form>
-<form id="upload-aoi">
-<div id="aoiModal" class="modal">
 
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <label>AOI Name: </label>
-        <p id="c_aoi_names"></p>
-
-
-        <button type="button" class="btn btn-primary common" id="storeAOI" onclick="savetoLocalPath(this)">Submit</button>
-
-    </div>
-
-</div>
-
-
-    <div id="new_aoi_info" style="background:lightskyblue;width: 40%;">
-    <div class="mb-3 common">
-        <label for="formFileMultiple" class="form-label">Upload AOI Shp files </label>
-        <input class="form-control aoifileupload" type="file" id="aoifiles" multiple accept="application/zip">
-    </div>
-    <ul id="aoi_list">
-    </ul>
-        <br>
-        <div>
-                <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review Summary</button><button type="button" class="mb-3 btn btn-primary common" id="clear_aois">Clear Form</button>
-
-</div>
-    </div>
-
-</form>
 
 </div>
 </div>

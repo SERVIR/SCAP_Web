@@ -48,36 +48,43 @@ $("#savetoDB").click(function (e) {
 
 
 });
-$("#storeAOI").click(function (e) {
-    e.preventDefault();
-    var upload_form = $('#upload-aoi')[0];
+function savetoLocalPath(btn) {
+    if (btn.id === 'updatetoDB') {
+         var upload_form = $('#upload-file')[0];
     var form_data = new FormData(upload_form);
-        let files = $('input[type=file]')[3].files;
+         form_data.append('coll_name', $('#existing_list').find(":selected").val());
+        let files = $('input[type=file]')[2].files;
         for (let i = 0; i < files.length; i++) {
-            form_data.append('aois[]', files[i]);
-            form_data.append('aoi_names[]',  document.getElementsByClassName("aoi_names")[i].value);
+            form_data.append('FC_tiffs_New[]', files[i]);
+            form_data.append('FC_tiffs_New_OriginalNames[]', files[i].name);
+            form_data.append('FC_tiffs_New_Name[]', "fc_" + $('#existing_list').find(":selected").val()+ "_" + document.getElementsByClassName("years")[i].value + "_1ha.tif");
         }
         $.ajax({
             type: 'POST',
-            url: '/saveAOItomodel/',
+            url: '/updatetomodel/',
             data: form_data,
             contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
             processData: false,
             success: function (data) {
                 console.log(data);
-                if (data.result == "success")
+                if (data.result === "success")
                     console.log('Success!');
-                else
+                else {
+                    document.getElementById("existing_list").innerHTML="";
                     alert(data.error_message)
+
+                }
             },
         });
-        let yrs = document.getElementsByClassName("aoi_names");
+
+        // $('#myModal').hide();
+        let yrs = document.getElementsByClassName("years");
         for (var i = 0; i < yrs.length; i++) {
             yrs[i].value = '';
         }
-        modal_new.style.display = "none";
-
-});
+        modal.style.display = "none";
+    }
+}
 $("#coll_name").on("keyup", function () {
     var coll = $(this).val().trim();
     $.ajax({
@@ -113,21 +120,7 @@ document.getElementById("tifffiles").onchange = () => {
     }
 
 }
-document.getElementById("aoifiles").onchange = () => {
-    if (document.getElementById("aoi_list"))
-        document.getElementById("aoi_list").innerHTML = "";
-    let ul = document.getElementById("aoi_list");
-    let files = document.getElementById("aoifiles").files;
-    for (let i = 0; i < files.length; i++) {
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode("Enter the  name for the file " + files[i].name + ':'));
-        ul.appendChild(li);
-        var input = document.createElement('input');
-        input.className = "aoi_names";
-        input.type = "text";
-        li.appendChild(input);
-    }
-}
+
 
 document.getElementById("new_tifffiles").onchange = () => {
     if (document.getElementById("list_new_added"))
@@ -266,82 +259,9 @@ window.onclick = function (event) {
     }
 
 }
-// Get the modal
-var modal_aoi = document.getElementById("aoiModal");
-
-// Get the button that opens the modal
-var btn_aoi = document.getElementById("review_aois");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[2];
-
-// When the user clicks the button, open the modal
-btn_aoi.onclick = function () {
-    document.getElementById("c_aoi_names").innerHTML = "";
-    modal_aoi.style.display = "block";
 
 
-    let files = document.getElementById("aoifiles").files;
-    // alert(checkforduplicates(files);
-    var ul = document.createElement('ul');
-    for (let i = 0; i < files.length; i++) {
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(files[i].name + " -> " + document.getElementsByClassName("aoi_names")[i].value + ".zip"));
-        ul.appendChild(li);
-    }
-    var aoi_names = document.getElementById("c_aoi_names");
-    aoi_names.appendChild(ul);
 
-
-}
-span.onclick = function () {
-    modal_aoi.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-    if (event.target == modal_aoi) {
-        modal_aoi.style.display = "none";
-    }
-
-}
-
-function savetoLocalPath(btn) {
-    if (btn.id === 'updatetoDB') {
-        let files = document.getElementById("new_tifffiles").files;
-        var tiffs = [];
-        for (let i = 0; i < files.length; i++) {
-            tiffs.push("fc_" + ($('#existing_list').find(":selected").val()) + "_" + document.getElementsByClassName("years")[i].value + "_1ha.tif");
-        }
-        console.log(tiffs);
-        $.ajax({
-            type: 'POST',
-            url: '/updatetomodel/',
-            data: {
-
-                "coll_name": ($('#existing_list').find(":selected").val()),
-
-                "tiffs": tiffs
-
-
-            },
-
-            success: function (data) {
-                if (data.result == "success")
-                    console.log('Success!');
-                else {
-                    alert(data.error_message)
-                }
-            },
-        });
-        // $('#myModal').hide();
-        let yrs = document.getElementsByClassName("years");
-        for (var i = 0; i < yrs.length; i++) {
-            yrs[i].value = '';
-        }
-        modal.style.display = "none";
-    }
-}
 
 function populateCollections() {
     document.getElementById("existing_list").innerHTML = "";
