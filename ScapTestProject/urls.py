@@ -18,7 +18,7 @@ from django.urls import path, include
 
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
     saveAOItomodel, get_aoi_list, delete_AOI
-from scap.views import test, home,aoi
+from scap.views import test, home, aoi, pilot1
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -37,5 +37,6 @@ urlpatterns = [
     path('check_if_coll_exists/',   check_if_coll_exists,name='check_if_coll_exists'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('get_aoi_list/',get_aoi_list,name='get_aoi_list'),
-    path('aoi',aoi,name='aoi')
+    path('aoi',aoi,name='aoi'),
+    path('pilot1/', pilot1, name='pilot1')
 ]

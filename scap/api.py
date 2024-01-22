@@ -75,7 +75,7 @@ def generate_geodjango_objects(verbose=True):
     }
 
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r'C:\Users\gtondapu\Documents\nepal.shp'),
+        os.path.join(os.path.dirname(__file__), 'data', r'/Users/githuvenky/Desktop/peru/peru.shp'),
     )
 
     # lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
@@ -120,7 +120,7 @@ def getInitialForestArea_new(year, dir, dataset, pa, val):
 def getInitialForestArea(year, dir, dataset, pa, val):
     # print("year", year)
     dataset = dataset.lower()
-    file = dir + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
+    file = dir + "/"+"fc_" + dataset + "_" + str(year) + "_1ha.tif"
     print(pa.name)
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
@@ -187,14 +187,14 @@ def generate_fcc_fields(dataset, year):
                 fcchange.baseline_year = fcc.baseline_year
                 fcchange.year = year
                 fcchange.aoi = aoi
-                fcchange.initial_forest_area = getInitialForestArea_new(fcc.baseline_year,
+                fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
                                                                         fc.file_directory, fc.fc_source.name_es, aoi,
                                                                         val)
-                # fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, 1, fcc.year, val)
-                # fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, -1, fcc.year, val)
-                # end = time.time()
-                # fcchange.processing_time = end - start
-                # fcchange.save()
+                fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, 1, fcc.year, val)
+                fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, -1, fcc.year, val)
+                end = time.time()
+                fcchange.processing_time = end - start
+                fcchange.save()
     except Exception as e:
         print(e)
     # finally:

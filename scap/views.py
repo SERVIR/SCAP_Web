@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from scap.api import generate_fcc_fields, generate_geodjango_objects, generate_from_lambda
 # from scap.forms import LoginForm
-from scap.generate_files import generate_fc_file
+from scap.generate_files import generate_fc_file, generate_fcc_file
 from scap.utils import mask_with_tif
 
 from django.contrib.auth import authenticate, login, logout
@@ -24,15 +24,19 @@ def signup_redirect(request):
 def test(req):
     # test_method()
     # generate_from_lambda()
-    mask_with_tif()
+    # mask_with_tif()
+    # generate_fcc_file(req)
     # generate_fcc_fields("Mapbiomas", 2001)
     # return HttpResponse("The fields were generated. Please check http://127.0.0.1:8000/admin/scap/forestcoverchange/")
     # generate_geodjango_objects()
-    # generate_fc_file(req)
+    generate_fc_file(req)
 
 
 def home(request):
     return render(request, 'scap/index.html')
+
+def pilot1(request):
+    return render(request,'scap/pilotcountry1.html')
 
 
 def aoi(request):

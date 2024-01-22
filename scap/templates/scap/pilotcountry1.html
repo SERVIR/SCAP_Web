@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load socialaccount %}
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>SERVIR S-CAP</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+{#        <link href="{% static "css/styles.css" %}" rel="stylesheet" />#}
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/streamgraph.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/annotations.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    </head>
+<style>
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.hero-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}");
+  height: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.hero-text button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 25px;
+  color: black;
+  background-color: #ddd;
+  text-align: center;
+  cursor: pointer;
+}
+
+.hero-text button:hover {
+  background-color: #555;
+  color: white;
+}
+</style>
+
+<body>
+<div class="hero-image">
+  <div class="hero-text">
+    <h1 style="font-size:50px">PERU</h1>
+
+  </div>
+</div>
+
+{# <div class="container">#}
+{#                        <div class="row justify-content-center">#}
+{#                            <div class="col-lg-12">#}
+{##}
+{#                                    <!-- Project details-->#}
+{#                                    <h2 class="text-uppercase">Peru</h2>#}
+{#                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>#}
+{#                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}" alt="Peru" />#}
+{#                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>#}
+{#                                    <ul class="list-inline">#}
+{#                                        <li>#}
+{#                                            <strong>Region:</strong>#}
+{#                                            South America#}
+{#                                        </li>#}
+{#                                        <li>#}
+{#                                            <strong>Ecological Zones:</strong>#}
+{#                                            Tropical/Subtropical Mountain System, Tropical/Subtropical Drylands, Tropical/Subtropical Moist Broadleaf Forest#}
+{#                                        </li>#}
+{#                                    </ul>#}
+{#                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">#}
+{#                                        <i class="fas fa-xmark me-1"></i>#}
+{#                                        Close#}
+{#                                    </button>#}
+{##}
+{#                            </div>#}
+{##}
+{#                        </div>#}
+{# </div>#}
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+<div>
+            <label>
+               Select an year <select class="form-control">
+      <option selected>2020</option>
+      <option value="1">2010</option>
+      <option value="2">2011</option>
+      <option value="3">2012</option>
+    </select>
+            </label>
+    </div>
+            <div>
+                <label> Select AGB
+                    <select>
+                        <option>AGB1</option>
+                    </select>
+                </label>
+            </div>
+            <div>
+                <label> Select LandCover
+                    <select>
+                        <option>LC1</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="col-8">
+     <script type="text/javascript">
+                {#new Highcharts.Chart({{chart|safe}});#}
+            </script>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

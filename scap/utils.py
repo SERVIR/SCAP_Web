@@ -37,7 +37,6 @@ def gdal_polygonize(dir, in_path):
 
     sp_ref = osr.SpatialReference()
     sp_ref.SetFromUserInput('EPSG:4326')
-
     dst_layer = dst_ds.CreateLayer(dst_layername, srs=sp_ref)
 
     fld = ogr.FieldDefn("DN", ogr.OFTInteger)
@@ -73,7 +72,7 @@ def convert_tif_to_shp(filename):
 def getArea(file, value=99):
     file_out = file
     polygons = gpd.read_file(file_out)
-    polygons.set_crs(epsg="4326", inplace=True)
+    # polygons.set_crs(epsg="4326", inplace=True)
     area = 0
     new_polygons = polygons
     new_polygons.to_crs(CRS("ESRI:54009"), inplace=True)
