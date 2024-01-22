@@ -105,31 +105,40 @@ body, html {
 {##}
 {#                        </div>#}
 {# </div>#}
-<div class="container">
+<div class="container" style="margin-left: 20px;margin-top: 20px">
     <div class="row">
         <div class="col-4">
 <div>
             <label>
                Select an year <select class="form-control">
       <option selected>2020</option>
-      <option value="1">2010</option>
-      <option value="2">2011</option>
-      <option value="3">2012</option>
+      <option value="1">2019</option>
+      <option value="2">2018</option>
+      <option value="3">2017</option>
     </select>
             </label>
     </div>
             <div>
-                <label> Select AGB
-                    <select>
-                        <option>AGB1</option>
-                    </select>
+                <br/>
+                <label> <b>Select AGB Dataset:</b>
+                </label><br>
+                <label>Saatchi
+                    <input type="checkbox" checked><br>
+                </label>
+                <label>Gedi
+                    <input type="checkbox" checked><br>
                 </label>
             </div>
             <div>
-                <label> Select LandCover
-                    <select>
-                        <option>LC1</option>
-                    </select>
+                <br/>
+                <label> <b>Select LandCover Dataset:</b>
+
+                </label><br>
+                <label>Mapbiomas
+                    <input type="checkbox" checked>
+                </label><br>    
+                <label>RLCMS
+                    <input type="checkbox" checked>
                 </label>
             </div>
         </div>
