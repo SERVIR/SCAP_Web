@@ -1,829 +1,1042 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
+
 {% load socialaccount %}
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>SERVIR S-CAP</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+{% load static %}
 
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static "css/styles.css" %}" rel="stylesheet" />
-    </head>
-    <body id="page-top">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png"%}" alt="..." /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="#callstoaction">Actions</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#pilotcountry">Pilot Countries</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#services">Datasets</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#login">Login</a></li>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SERVIR S-CAP</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container">
-                <div class="masthead-subheading">Quickly and Easily Estimate Carbon Emissions</div>
-                <div class="masthead-heading text-uppercase">SERVIR Carbon Pilot</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="#services">Show me the data!</a>
-            </div>
-        </header>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <li class="nav-item"><a class="nav-link" href="#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#pilotcountry">Pilot Countries</a></li>
+                <li class="nav-item"><a class="nav-link" href="#services">Datasets</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                {% if user.is_authenticated %}
 
-        <!-- Calls to Action -->
-        <section class="page-section" id="callstoaction">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Start Here</h2>
-                    <h3 class="section-subheading text-muted">With S-CAP you can:</h3>
-                </div>
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta1">
-                        <div class="pilotcountry-hover">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-transparent">
+                            <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+
+                        Login
+                    </a></li>
+
+                {% endif %}
+
+
+                {#</div>#}
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container">
+        <div class="masthead-subheading">Quickly and Easily Estimate Carbon Emissions</div>
+        <div class="masthead-heading text-uppercase">SERVIR Carbon Pilot</div>
+        <a class="btn btn-primary btn-xl text-uppercase" href="#services">Show me the data!</a>
+    </div>
+</header>
+
+<!-- Calls to Action -->
+<section class="page-section" id="callstoaction">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Start Here</h2>
+            <h3 class="section-subheading text-muted">With S-CAP you can:</h3>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta1">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-images fa-stack-1x fa-inverse"></i>
                         </span>
-                        </div>
-                        </a>
-                        <h4 class="my-3">Monitor progress toward deforestation targets</h4>
-                        <p class="text-muted">Placeholder text in this area.</p>
                     </div>
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta2">
-                        <div class="pilotcountry-hover">
+                </a>
+                <h4 class="my-3">Monitor progress toward deforestation targets</h4>
+                <p class="text-muted">Placeholder text in this area.</p>
+            </div>
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta2">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-chart-line fa-stack-1x fa-inverse"></i>
                         </span>
-                        </div>
-                        </a>
-                        <h4 class="my-3">Monitor progress towards Net Zero deforestation</h4>
-                        <p class="text-muted">Placeholder text in this area.</p>
                     </div>
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
-                        <div class="pilotcountry-hover">
+                </a>
+                <h4 class="my-3">Monitor progress towards Net Zero deforestation</h4>
+                <p class="text-muted">Placeholder text in this area.</p>
+            </div>
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-fire-flame-curved fa-stack-1x fa-inverse"></i>
                         </span>
-                        </div>
-                        </a>
-                        <h4 class="my-3">See emission estimations</h4>
-                        <p class="text-muted">Placeholder text in this area.</p>
                     </div>
-                </div>
+                </a>
+                <h4 class="my-3">See emission estimations</h4>
+                <p class="text-muted">Placeholder text in this area.</p>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
 
-        <!-- pilotcountry Grid-->
-        <section class="page-section bg-light" id="pilotcountry">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Pilot Countries</h2>
-                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- pilotcountry item 1-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" target="_blank" href="{% url "pilot1" %}">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg"%}" alt="Peru" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Peru</div>
-                                <div class="pilotcountry-caption-subheading text-muted">South America</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- pilotcountry item 2-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal2">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/thailand_pexels-photo-208444.jpg"%}" alt="Thailand" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Thailand</div>
-                                <div class="pilotcountry-caption-subheading text-muted">Southeast Asia</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- pilotcountry item 3-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal3">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/costa-rica_pexels-photo-10832933.jpg"%}" alt="Costa Rica" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Costa Rica</div>
-                                <div class="pilotcountry-caption-subheading text-muted">Central America</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
-                        <!-- pilotcountry item 4-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal4">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg"%}" alt="Zambia" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Zambia</div>
-                                <div class="pilotcountry-caption-subheading text-muted">Southeast Africa</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 mb-4 mb-sm-0">
-                        <!-- pilotcountry item 5-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal5">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/bhutan-pexels-photo-9195752.jpg"%}" alt="Bhutan" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Bhutan</div>
-                                <div class="pilotcountry-caption-subheading text-muted">Hindu Kush Himalaya</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <!-- pilotcountry item 6-->
-                        <div class="pilotcountry-item">
-                            <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal6">
-                                <div class="pilotcountry-hover">
-                                    <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="{% static "assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg"%}"  alt="Ghana" />
-                            </a>
-                            <div class="pilotcountry-caption">
-                                <div class="pilotcountry-caption-heading">Ghana</div>
-                                <div class="pilotcountry-caption-subheading text-muted">West Africa</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Services-->
-        <section class="page-section" id="services">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Primary Data</h2>
-                    <h3 class="section-subheading text-muted">Carbon emissions are calculated according to these components</h3>
-                </div>
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal">
+<!-- pilotcountry Grid-->
+<section class="page-section bg-light" id="pilotcountry">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Pilot Countries</h2>
+            <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <!-- pilotcountry item 1-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" target="_blank" href="{% url "peru" %}">
                         <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}" alt="Peru"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Peru</div>
+                        <div class="pilotcountry-caption-subheading text-muted">South America</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <!-- pilotcountry item 2-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal2">
+                        <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/thailand_pexels-photo-208444.jpg" %}"
+                             alt="Thailand"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Thailand</div>
+                        <div class="pilotcountry-caption-subheading text-muted">Southeast Asia</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <!-- pilotcountry item 3-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal3">
+                        <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/costa-rica_pexels-photo-10832933.jpg" %}"
+                             alt="Costa Rica"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Costa Rica</div>
+                        <div class="pilotcountry-caption-subheading text-muted">Central America</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
+                <!-- pilotcountry item 4-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal4">
+                        <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg" %}"
+                             alt="Zambia"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Zambia</div>
+                        <div class="pilotcountry-caption-subheading text-muted">Southeast Africa</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 mb-4 mb-sm-0">
+                <!-- pilotcountry item 5-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal5">
+                        <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/bhutan-pexels-photo-9195752.jpg" %}" alt="Bhutan"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Bhutan</div>
+                        <div class="pilotcountry-caption-subheading text-muted">Hindu Kush Himalaya</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <!-- pilotcountry item 6-->
+                <div class="pilotcountry-item">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#pilotcountryModal6">
+                        <div class="pilotcountry-hover">
+                            <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid"
+                             src="{% static "assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg" %}"
+                             alt="Ghana"/>
+                    </a>
+                    <div class="pilotcountry-caption">
+                        <div class="pilotcountry-caption-heading">Ghana</div>
+                        <div class="pilotcountry-caption-subheading text-muted">West Africa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services-->
+<section class="page-section" id="services">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Primary Data</h2>
+            <h3 class="section-subheading text-muted">Carbon emissions are calculated according to these components</h3>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-layer-group fa-stack-1x fa-inverse"></i>
                         </span>
-                        </div>
-                        </a>
-                        <h4 class="my-3">Forest Loss & Degradation</h4>
-                        <p class="text-muted">Forest degradation refers to the decline in the quality and health of forest ecosystems, often resulting from human activities. It encompasses a range of negative impacts on forests, such as deforestation, logging, unsustainable agriculture, mining, and infrastructure development. Forest degradation also impacts local communities that rely on forests for their livelihoods and cultural practices. Addressing forest degradation requires concerted efforts in sustainable land management, reforestation, and responsible resource extraction practices to ensure the long-term conservation and regeneration of our precious forest ecosystems.</p>
                     </div>
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal">
-                        <div class="pilotcountry-hover">
+                </a>
+                <h4 class="my-3">Forest Loss & Degradation</h4>
+                <p class="text-muted">Forest degradation refers to the decline in the quality and health of forest
+                    ecosystems, often resulting from human activities. It encompasses a range of negative impacts on
+                    forests, such as deforestation, logging, unsustainable agriculture, mining, and infrastructure
+                    development. Forest degradation also impacts local communities that rely on forests for their
+                    livelihoods and cultural practices. Addressing forest degradation requires concerted efforts in
+                    sustainable land management, reforestation, and responsible resource extraction practices to ensure
+                    the long-term conservation and regeneration of our precious forest ecosystems.</p>
+            </div>
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-tree fa-stack-1x fa-inverse"></i>
                         </span>
-                        </div>
-                        </a>
-                        <h4 class="my-3">Above Ground Biomass</h4>
-                        <p class="text-muted">Above-ground biomass refers to the total mass of living vegetation and organic matter present above the soil surface in a given area, such as trees, shrubs, and herbaceous plants. Above-ground biomass is an important measure of the carbon stored in terrestrial ecosystems, as plants absorb carbon dioxide from the atmosphere through photosynthesis and store it in their biomass. It serves as a crucial component of the global carbon cycle and plays a significant role in mitigating climate change by acting as a carbon sink.</p>
                     </div>
-                    <div class="col-md-4">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal">
-                        <div class="pilotcountry-hover">
+                </a>
+                <h4 class="my-3">Above Ground Biomass</h4>
+                <p class="text-muted">Above-ground biomass refers to the total mass of living vegetation and organic
+                    matter present above the soil surface in a given area, such as trees, shrubs, and herbaceous plants.
+                    Above-ground biomass is an important measure of the carbon stored in terrestrial ecosystems, as
+                    plants absorb carbon dioxide from the atmosphere through photosynthesis and store it in their
+                    biomass. It serves as a crucial component of the global carbon cycle and plays a significant role in
+                    mitigating climate change by acting as a carbon sink.</p>
+            </div>
+            <div class="col-md-4">
+                <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal">
+                    <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-map fa-stack-1x fa-inverse"></i>
                         </span>
+                    </div>
+                </a>
+                <h4 class="my-3">Area of Interest</h4>
+                <p class="text-muted">A user-defined Area of Interest (AOI) provides the boundaries of the region to use
+                    for estimations. The selection of an area of interest depends on the objectives and requirements of
+                    the project or analysis being conducted. It could be defined by factors such as environmental
+                    features, political boundaries, economic considerations, social demographics, or any other criteria
+                    relevant to the specific application. The area of interest provides the spatial context for
+                    decision-making within that defined region.</p>
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+        <div class="text-center">
+            <a href="{% url 'addData' %}" target="_blank">
+                <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
+            </a>
+
+
+        </div>
+    {% endif %}
+</section>
+<!-- About-->
+<section class="page-section" id="about">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">About S-CAP Implementation</h2>
+            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+        </div>
+        <ul class="timeline">
+            <li>
+                <div class="timeline-image"><img class="rounded-circle img-fluid"
+                                                 src="{% static "assets/img/about/1.jpg" %}" alt="..."/></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4>2022-2023</h4>
+                        <h4 class="subheading">Service Design</h4>
+                    </div>
+                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
+                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                </div>
+            </li>
+            <li class="timeline-inverted">
+                <div class="timeline-image"><img class="rounded-circle img-fluid"
+                                                 src="{% static "assets/img/about/2.jpg" %}" alt="..."/></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4>September 2023</h4>
+                        <h4 class="subheading">S-CAP available to users</h4>
+                    </div>
+                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
+                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                </div>
+            </li>
+            <li>
+                <div class="timeline-image"><img class="rounded-circle img-fluid"
+                                                 src="{% static "assets/img/about/3.jpg" %}" alt="..."/></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4>January 2024</h4>
+                        <h4 class="subheading">Enabling user uploads</h4>
+                    </div>
+                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
+                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                </div>
+            </li>
+            <li class="timeline-inverted">
+                <div class="timeline-image"><img class="rounded-circle img-fluid"
+                                                 src="{% static "assets/img/about/4.jpg" %}" alt="..."/></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h4>July 2024</h4>
+                        <h4 class="subheading">Impact Assessment</h4>
+                    </div>
+                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
+                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
+                </div>
+            </li>
+            <li class="timeline-inverted">
+                <div class="timeline-image">
+                    <h4>
+                        Start
+                        <br/>
+                        Using
+                        <br/>
+                        S-CAP!
+                    </h4>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+<!-- Team-->
+<section class="page-section bg-light" id="team">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Meet The Team</h2>
+            <h3 class="section-subheading text-muted">S-CAP is an effort that involves over a dozen scientists and
+                software developers, these are the leading team members in this effort.</h3>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="team-member">
+                    <img class="mx-auto rounded-circle" src="{% static "assets/img/team/CHERRINGTON_Emil.png" %}"
+                         alt="..."/>
+                    <h4>Emil Cherrington</h4>
+                    <p class="text-muted">Lead Scientist</p>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington Twitter Profile"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington Facebook Profile"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington LinkedIn Profile"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="team-member">
+                    <img class="mx-auto rounded-circle" src="{% static "assets/img/team/EVANS_Christine.jpg" %}"
+                         alt="..."/>
+                    <h4>Christine Evans</h4>
+                    <p class="text-muted">Scientist</p>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans Twitter Profile"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans Facebook Profile"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans LinkedIn Profile"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="team-member">
+                    <img class="mx-auto rounded-circle" src="{% static "assets/img/team/TONDAPU_Githika.jpg" %}"
+                         alt="..."/>
+                    <h4>Githika Tondapu</h4>
+                    <p class="text-muted">Lead Developer</p>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu Twitter Profile"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu Facebook Profile"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu LinkedIn Profile"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet,
+                consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam
+                corporis ea, alias ut unde.</p></div>
+        </div>
+    </div>
+</section>
+<!-- Clients-->
+<div class="py-5">
+    <div class="logo-container">
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
+                              aria-label="USAID Logo"/></a>
+        </div>
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
+                              aria-label="NASA Logo"/></a>
+        </div>
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
+                              aria-label="SERVIR Logo"/></a>
+        </div>
+        <!--
+        <div class="col-md-3 col-sm-6 my-3">
+            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/ibm.svg" alt="..." aria-label="IBM Logo" /></a>
+        </div>
+        -->
+    </div>
+</div>
+<!-- Contact-->
+<section class="page-section" id="contact">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Contact Us</h2>
+            <h3 class="section-subheading text-muted">Let us know what you think.</h3>
+        </div>
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- * * SB Forms Contact Form * *-->
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- This form is pre-integrated with SB Forms.-->
+        <!-- To make this form functional, sign up at-->
+        <!-- https://startbootstrap.com/solution/contact-forms-->
+        <!-- to get an API token!-->
+        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+            <div class="row align-items-stretch mb-5">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <!-- Name input-->
+                        <input class="form-control" id="name" type="text" placeholder="Your Name *"
+                               data-sb-validations="required"/>
+                        <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Email address input-->
+                        <input class="form-control" id="email" type="email" placeholder="Your Email *"
+                               data-sb-validations="required,email"/>
+                        <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
+                        <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Organizational affiliation input-->
+                        <input class="form-control" id="organization" type="text" placeholder="Your Organization *"
+                               data-sb-validations="required"/>
+                        <div class="invalid-feedback" data-sb-feedback="organization:required">Your organization is
+                            required.
                         </div>
-                        </a>
-                        <h4 class="my-3">Area of Interest</h4>
-                        <p class="text-muted">A user-defined Area of Interest (AOI) provides the boundaries of the region to use for estimations. The selection of an area of interest depends on the objectives and requirements of the project or analysis being conducted. It could be defined by factors such as environmental features, political boundaries, economic considerations, social demographics, or any other criteria relevant to the specific application. The area of interest provides the spatial context for decision-making within that defined region.</p>
+                    </div>
+                    <div class="form-group">
+                        <!-- Phone number input-->
+                        <input class="form-control" id="role" type="text" placeholder="Your Role *"
+                               data-sb-validations="required"/>
+                        <div class="invalid-feedback" data-sb-feedback="role:required">Your role is required.</div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-group-textarea mb-md-0">
+                        <!-- Message input-->
+                        <textarea class="form-control" id="message" placeholder="Your Message *"
+                                  data-sb-validations="required"></textarea>
+                        <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- About-->
-        <section class="page-section" id="about">
+            <!-- Submit success message-->
+            <!---->
+            <!-- This is what your users will see when the form-->
+            <!-- has successfully submitted-->
+            <div class="d-none" id="submitSuccessMessage">
+                <div class="text-center text-white mb-3">
+                    <div class="fw-bolder">Form submission successful!</div>
+                    To activate this form, sign up at
+                    <br/>
+                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                </div>
+            </div>
+            <!-- Submit error message-->
+            <!---->
+            <!-- This is what your users will see when there is-->
+            <!-- an error submitting the form-->
+            <div class="d-none" id="submitErrorMessage">
+                <div class="text-center text-danger mb-3">Error sending message!</div>
+            </div>
+            <!-- Submit Button-->
+            <div class="text-center">
+                <button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send
+                    Message
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+<!-- Footer-->
+<footer class="footer py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
+            <div class="col-lg-4 my-3 my-lg-0">
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
+                        class="fab fa-twitter"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
+                        class="fab fa-facebook-f"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
+                        class="fab fa-linkedin-in"></i></a>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- PilotCountry Modals-->
+<!-- PilotCountry item 1 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">About S-CAP Implementation</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Peru</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}" alt="Peru"/>
+                            {#                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>#}
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Region:</strong>
+                                    South America
+                                </li>
+                                <li>
+                                    <strong>Ecological Zones:</strong>
+                                    Tropical/Subtropical Mountain System, Tropical/Subtropical Drylands,
+                                    Tropical/Subtropical Moist Broadleaf Forest
+                                </li>
+                            </ul>
+                            {#                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">#}
+                            {#                                        <i class="fas fa-xmark me-1"></i>#}
+                            {#                                        Close#}
+                            {#                                    </button>#}
+                        </div>
+                    </div>
+
                 </div>
-                <ul class="timeline">
-                    <li>
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static "assets/img/about/1.jpg"%}" alt="..." /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>2022-2023</h4>
-                                <h4 class="subheading">Service Design</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                        </div>
-                    </li>
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static "assets/img/about/2.jpg"%}" alt="..." /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>September 2023</h4>
-                                <h4 class="subheading">S-CAP available to users</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static "assets/img/about/3.jpg"%}" alt="..." /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>January 2024</h4>
-                                <h4 class="subheading">Enabling user uploads</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                        </div>
-                    </li>
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static "assets/img/about/4.jpg"%}" alt="..." /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>July 2024</h4>
-                                <h4 class="subheading">Impact Assessment</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                        </div>
-                    </li>
-                    <li class="timeline-inverted">
-                        <div class="timeline-image">
-                            <h4>
-                                Start
-                                <br />
-                                Using
-                                <br />
-                                S-CAP!
-                            </h4>
-                        </div>
-                    </li>
-                </ul>
             </div>
-        </section>
-        <!-- Team-->
-        <section class="page-section bg-light" id="team">
+        </div>
+    </div>
+</div>
+<!-- PilotCountry item 2 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Meet The Team</h2>
-                    <h3 class="section-subheading text-muted">S-CAP is an effort that involves over a dozen scientists and software developers, these are the leading team members in this effort.</h3>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="{% static "assets/img/team/CHERRINGTON_Emil.png"%}" alt="..." />
-                            <h4>Emil Cherrington</h4>
-                            <p class="text-muted">Lead Scientist</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington Twitter Profile"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington Facebook Profile"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Emil Cherrington LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Thailand</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="assets/img/pilotcountry/thailand_pexels-photo-208444.jpg" alt="..."/>
+                            <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur
+                                adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt
+                                repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae,
+                                nostrum, reiciendis facere nemo!</p>
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Region:</strong>
+                                    Southeast Asia
+                                </li>
+                                <li>
+                                    <strong>Ecological Zones:</strong>
+                                    Tropical/Subtropical Drylands, Tropical/Subtropical Moist Broadleaf Forest
+                                </li>
+                                <li>
+                                    <strong>Protected Areas:</strong>
+                                    9999 areas, 999.99 km2
+                                </li>
+                                <li>
+                                    <strong>Population:</strong>
+                                    9,999,99 inhabitants (2023), 999.99 inhabitants/km2
+                                </li>
+
+                            </ul>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close Project
+                            </button>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="{% static "assets/img/team/EVANS_Christine.jpg"%}" alt="..." />
-                            <h4>Christine Evans</h4>
-                            <p class="text-muted">Scientist</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans Twitter Profile"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans Facebook Profile"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Christine Evans LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="{% static "assets/img/team/TONDAPU_Githika.jpg"%}" alt="..." />
-                            <h4>Githika Tondapu</h4>
-                            <p class="text-muted">Lead Developer</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu Twitter Profile"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu Facebook Profile"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Githika Tondapu LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p></div>
-                </div>
-            </div>
-        </section>
-        <!-- Clients-->
-        <div class="py-5">
-            <div class="logo-container">
-                    <div>
-                        <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID" aria-label="USAID Logo" /></a>
-                    </div>
-                    <div>
-                        <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA" aria-label="NASA Logo" /></a>
-                    </div>
-                    <div>
-                        <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..." aria-label="SERVIR Logo" /></a>
-                    </div>
-                    <!-- 
-                    <div class="col-md-3 col-sm-6 my-3">
-                        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/ibm.svg" alt="..." aria-label="IBM Logo" /></a>
-                    </div>
-                    -->
             </div>
         </div>
-        <!-- Contact-->
-        <section class="page-section" id="contact">
+    </div>
+</div>
+<!-- PilotCountry item 3 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal3" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Contact Us</h2>
-                    <h3 class="section-subheading text-muted">Let us know what you think.</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Costa Rica</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/pilotcountry/costa-rica_pexels-photo-10832933.jpg" %}"
+                                 alt="..."/>
+                            <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur
+                                adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt
+                                repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae,
+                                nostrum, reiciendis facere nemo!</p>
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Client:</strong>
+                                    Finish
+                                </li>
+                                <li>
+                                    <strong>Category:</strong>
+                                    Identity
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close Project
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <!-- * * * * * * * * * * * * * * *-->
-                <!-- * * SB Forms Contact Form * *-->
-                <!-- * * * * * * * * * * * * * * *-->
-                <!-- This form is pre-integrated with SB Forms.-->
-                <!-- To make this form functional, sign up at-->
-                <!-- https://startbootstrap.com/solution/contact-forms-->
-                <!-- to get an API token!-->
-                <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                    <div class="row align-items-stretch mb-5">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <!-- Name input-->
-                                <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
-                            </div>
-                            <div class="form-group">
-                                <!-- Email address input-->
-                                <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
-                                <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                                <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
-                            </div>
-                            <div class="form-group">
-                                <!-- Organizational affiliation input-->
-                                <input class="form-control" id="organization" type="text" placeholder="Your Organization *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="organization:required">Your organization is required.</div>
-                            </div>
-                            <div class="form-group">
-                                <!-- Phone number input-->
-                                <input class="form-control" id="role" type="text" placeholder="Your Role *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="role:required">Your role is required.</div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-group-textarea mb-md-0">
-                                <!-- Message input-->
-                                <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
-                                <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Submit success message-->
-                    <!---->
-                    <!-- This is what your users will see when the form-->
-                    <!-- has successfully submitted-->
-                    <div class="d-none" id="submitSuccessMessage">
-                        <div class="text-center text-white mb-3">
-                            <div class="fw-bolder">Form submission successful!</div>
-                            To activate this form, sign up at
-                            <br />
-                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                        </div>
-                    </div>
-                    <!-- Submit error message-->
-                    <!---->
-                    <!-- This is what your users will see when there is-->
-                    <!-- an error submitting the form-->
-                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                    <!-- Submit Button-->
-                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send Message</button></div>
-                </form>
             </div>
-        </section>
-        <!-- Footer-->
-        <footer class="footer py-4">
+        </div>
+    </div>
+</div>
+<!-- PilotCountry item 4 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal4" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
-                    <div class="col-lg-4 my-3 my-lg-0">
-                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <div class="col-lg-4 text-lg-end">
-                        <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
-                        <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- PilotCountry Modals-->
-        <!-- PilotCountry item 1 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal1" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-6">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Peru</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}" alt="Peru" />
-{#                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>#}
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Region:</strong>
-                                            South America
-                                        </li>
-                                        <li>
-                                            <strong>Ecological Zones:</strong>
-                                            Tropical/Subtropical Mountain System, Tropical/Subtropical Drylands, Tropical/Subtropical Moist Broadleaf Forest
-                                        </li>
-                                    </ul>
-{#                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">#}
-{#                                        <i class="fas fa-xmark me-1"></i>#}
-{#                                        Close#}
-{#                                    </button>#}
-                                </div>
-                            </div>
-
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Zambia</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg" %}"
+                                 alt="..."/>
+                            <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur
+                                adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt
+                                repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae,
+                                nostrum, reiciendis facere nemo!</p>
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Client:</strong>
+                                    Lines
+                                </li>
+                                <li>
+                                    <strong>Category:</strong>
+                                    Branding
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close Project
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- PilotCountry item 2 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal2" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Thailand</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/pilotcountry/thailand_pexels-photo-208444.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Region:</strong>
-                                            Southeast Asia
-                                        </li>
-                                        <li>
-                                            <strong>Ecological Zones:</strong>
-                                            Tropical/Subtropical Drylands, Tropical/Subtropical Moist Broadleaf Forest
-                                        </li>
-                                        <li>
-                                            <strong>Protected Areas:</strong>
-                                            9999 areas, 999.99 km2
-                                        </li>
-                                        <li>
-                                            <strong>Population:</strong>
-                                            9,999,99 inhabitants (2023), 999.99 inhabitants/km2
-                                        </li>
-
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
+    </div>
+</div>
+<!-- PilotCountry item 5 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal"/>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Bhutan</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/pilotcountry/bhutan-pexels-photo-9195752.jpg" %}"
+                                 alt="..."/>
+                            <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur
+                                adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt
+                                repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae,
+                                nostrum, reiciendis facere nemo!</p>
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Client:</strong>
+                                    Southwest
+                                </li>
+                                <li>
+                                    <strong>Category:</strong>
+                                    Website Design
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close Project
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- PilotCountry item 3 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal3" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Costa Rica</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/costa-rica_pexels-photo-10832933.jpg"%}" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Finish
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Identity
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
+    </div>
+</div>
+<!-- PilotCountry item 6 modal popup-->
+<div class="pilotcountry-modal modal fade" id="pilotcountryModal6" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Ghana</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg" %}"
+                                 alt="..."/>
+                            <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur
+                                adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt
+                                repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae,
+                                nostrum, reiciendis facere nemo!</p>
+                            <ul class="list-inline">
+                                <li>
+                                    <strong>Client:</strong>
+                                    Window
+                                </li>
+                                <li>
+                                    <strong>Category:</strong>
+                                    Photography
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close Project
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- PilotCountry item 4 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal4" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Zambia</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg"%}" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Lines
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Branding
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
+    </div>
+</div>
+
+
+<!-- LandCover modal popup-->
+<div class="pilotcountry-modal modal fade" id="LandCoverModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Land Use/Land Cover</h2>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/about/forestloss-pexels-photo-2874751.jpg" %}"
+                                 alt="Forest Loss"/>
+
+                            <div>
+                                <p class="h4">Global</p>
+                                <ul class="list-inline">
+                                    <li><strong>MODIS MCD12Q1</strong>: 500m spatial resolution, Date range: 2001-2016
+                                    </li>
+                                    <li><strong>JAXA Forest/NonForest</strong>: 30m spatial resolution, Date range:
+                                        2007-2017<br>
+                                        Masanobu Shimada, Takuya Itoh, Takeshi Motooka, Manabu Watanabe, Shiraishi
+                                        Tomohiro, Rajesh Thapa, and Richard Lucas, "New Global Forest/Non-forest Maps
+                                        from ALOS PALSAR Data (2007-2010)", Remote Sensing of Environment, 155, pp.
+                                        13-31, December 2014. doi:10.1016/j.rse.2014.04.014.
+                                    </li>
+                                    <li><strong>Global Forest Watch</strong>: 25m spatial resolution, Date range:
+                                        2000-2020<br>
+                                        Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A.
+                                        Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy,
+                                        A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. “High-Resolution
+                                        Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November):
+                                        850–53. Data available at:
+                                        https://glad.earthengine.app/view/global-forest-change.
+                                    </li>
+                                </ul>
+                                <p class="h4">Regional</p>
+                                <ul class="list-inline">
+                                    <li><strong>RLCMS</strong>: 30m spatial resolution, Date range: 2000 to present&nbsp;&nbsp;
+                                    </li>
+                                    <li><strong>RCMRD CCDC</strong>: 30m spatial resolution, Date range: (Kenya:
+                                        2000/2016), Zambia (2000/2017)
+                                    </li>
+                                    <li><strong>MapBiomas</strong>: 30m spatial resolution, Date range: 2000-2019<br>
+                                        "MapBiomas Amazon Project - Collection 3 of annual land cover and land use maps
+                                        via Google Earth Engine. The MapBiomas Amazon project - is a multi-institutional
+                                        initiative to generate annual land use maps based on automatic classification
+                                        processes applied to satellite imagery. The full description of the project can
+                                        be found at http://amazonia.mapbiomas.org ".
+                                    </li>
+                                    <li><strong>MAGA</strong>: 30m spatial resolution, Date range: 2020</li>
+                                    <li><strong>USGS</strong>: 2km spatial resolution, Date range: 2000/2013<br>
+                                        Tappan, G. G., Cushing, W.M., Cotillon, S.E., Mathis, M.L., Hutchinson, J.A.,
+                                        and Dalsted, K.J. 2016 West Africa Land Use Land Cover Time Series: U.S.
+                                        Geological Survey data release, http://dx.doi.org/10.5066/F73N21JF
+                                    </li>
+                                </ul>
+                                <p class="h4">Algorithm</p>
+                                <ul class="list-inline">
+                                    <li><strong>CCDC-SMA</strong>: 30m spatial resolution, Date range: 2000-2020<br>
+                                        Citation:Chen, S., Woodcock, CE., Bullock E., Arevalo, P., Torchinava, P., Peng,
+                                        S. and Olofsson P. (2021). Monitoring Temperate Forest Degradation on Google
+                                        Earth Engine Using Landsat Time Series Analysis. Remote Sensing of Environment.&nbsp;
+                                    </li>
+                                    <li><strong>Landtrendr</strong>: 100m spatial resolution, Date range: 1986-2020<br>
+                                        Citation: Kennedy, R.E., Yang, Z., Gorelick, N., Braaten, J., Cavalcante, L.,
+                                        Cohen, W.B., Healey, S. (2018). Implementation of the LandTrendr Algorithm on
+                                        Google Earth Engine. Remote Sensing. 10, 691.
+                                    </li>
+                                </ul>
                             </div>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- PilotCountry item 5 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal5" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Bhutan</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/bhutan-pexels-photo-9195752.jpg"%}" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Southwest
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Website Design
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
+    </div>
+</div>
+
+<!-- AGB modal popup-->
+<div class="pilotcountry-modal modal fade" id="AGBModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Above Ground Biomass</h2>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/about/logs-free-photo-of-portret-van-omgehakte-bomen.jpg" %}"
+                                 alt="Logging"/>
+                            <div>
+                                <p class="h4">Global</p>
+                                <ul class="list-inline">
+                                    <li><strong>Avitable</strong>: 1km spatial resolution, Date 2016: harmonization of
+                                        the pan-tropical datasets published by Saatchi et al. (2011) and Baccini et al.
+                                        (2012)<br>
+                                        Citation: Avitabile, V, Herold, M, Heuvelink, GBM et al. (30 more authors)
+                                        (2016) An integrated pan-tropical biomass map using multiple reference datasets.
+                                        Global Change Biology, 22 (4). pp. 1406-1420. ISSN 1354-1013
+                                        https://doi.org/10.1111/gcb.13139&nbsp;
+                                    </li>
+                                    <li><strong>Saatchi</strong>: 1km spatial resolution, Date 2011: Generated using
+                                        ground measurements and GLAS (Geoscience Laser Altimeter System) lidar
+                                        observations<br>
+                                        Citation: Saatchi, S. S., Harris, N. L., Brown, S., Lefsky, M., Mitchard, E. T.,
+                                        Salas, W., ... &amp; Morel, A. (2011). Benchmark map of forest carbon stocks in
+                                        tropical regions across three continents. Proceedings of the national academy of
+                                        sciences, 108(24), 9899-9904.
+                                    </li>
+                                    <li><strong>GeoCarbon 2020</strong>: 1km spatial resolution, Date: 2020: Global map
+                                        of aboveground biomass in forest, generated by combining and harmonizing the
+                                        Avitabile pan-tropical biomass map with the boreal forest biomass map by Santoro
+                                        et al. (2015).<br>
+                                        Citation: Santoro, M., Beaudoin, A., Beer, C., Cartus, O., Fransson, J.E.S.,
+                                        Hall, R.J., Pathe, C., Schmullius, C., Schepaschenko, D., Shvidenko, A.,
+                                        Thurner, M. and Wegmüller, U., 2015. Forest growing stock volume of the northern
+                                        hemisphere: Spatially explicit estimates for 2010 derived from Envisat ASAR.
+                                        Remote Sensing of Environment, 168, pp. 316-334.
+                                    </li>
+                                    <li><strong>GEDI</strong>: 1km spatial resolution, Date: 2019-04-18-2021-08-04:&nbsp;<br>
+                                        Citation: Dubayah, R.O., J. Armston, S.P. Healey, Z. Yang, P.L. Patterson, S.
+                                        Saarela, G. Stahl, L. Duncanson, and J.R. Kellner. 2022. GEDI L4B Gridded
+                                        Aboveground Biomass Density, Version 2. ORNL DAAC, Oak Ridge, Tennessee, USA.
+                                        https://doi.org/10.3334/ORNLDAAC/2017
+                                    </li>
+                                </ul>
+                                <p class="h4">Regional</p>
+                                <ul class="list-inline">
+                                    <li><strong>ICIMOD 2015</strong>:&nbsp; 5km spatial resolution, Date 2015: From the
+                                        field well distributed circular (750m2 and 500m2), 1124 field plots (0.001%
+                                        representation of forest cover) measured which were used for estimation AGB
+                                        (ton/ha) using Sharma et al. (1990) proposed equations for all tree species of
+                                        Nepal. A satisfactory linear relationship (AGB = 8.7018*Hmax-101.24, R2=0.67,
+                                        RMSE=7.2 ton/ha) achieved between maximum canopy height (Hmax) and AGB (ton/ha).<br>
+                                        Citation: ICIMOD. (2015). Above ground biomass (AGB) data in Nepal [Data set].
+                                        ICIMOD. https://doi.org/10.26066/rds.23172
+                                    </li>
+                                </ul>
                             </div>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- PilotCountry item 6 modal popup-->
-        <div class="pilotcountry-modal modal fade" id="pilotcountryModal6" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Ghana</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg"%}" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Window
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Photography
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
+    </div>
+</div>
+
+<!-- AOI modal popup-->
+<div class="pilotcountry-modal modal fade" id="AOIModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg" %}"
+                                                                  alt="Close modal"/></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body">
+                            <!-- Project details-->
+                            <h2 class="text-uppercase">Area of Interest</h2>
+                            <img class="img-fluid d-block mx-auto"
+                                 src="{% static "assets/img/about/aoi-marjan-blan-6bXvYyAYVrE-unsplash.jpg" %}"
+                                 alt="..."/>
+
+                            <div>
+                                <p class="h4">Select predefined AOI</p>
+                                <ul class="list-inline">
+                                    <li><strong>Administrative Level</strong>: Select your Area of Interest by Country,
+                                        or by Level 1/Level 2 administrative units (Boundaries are not authoritative,
+                                        source: __________)
+                                    </li>
+                                    <li><strong>Protected Area</strong>: Select protected areas from the ____ collection
+                                    </li>
+                                </ul>
+                                <p class="h4">Upload your AOI</p>
+                                <ul class="list-inline">
+                                    <li><strong>Requisites</strong>: Upload a GeoJSON file in latitude/longitude
+                                        coordinates or a zipped shape file including a projection system file (.prj)
+                                    </li>
+                                </ul>
                             </div>
+                            <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                <i class="fas fa-xmark me-1"></i>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
 
-        <!-- LandCover modal popup-->
-        <div class="pilotcountry-modal modal fade" id="LandCoverModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Land Use/Land Cover</h2>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/about/forestloss-pexels-photo-2874751.jpg"%}" alt="Forest Loss" />
-
-                                    <div>
-                                        <p class="h4">Global</p>
-                                          <ul class="list-inline">
-                                              <li><strong>MODIS MCD12Q1</strong>: 500m spatial resolution, Date range: 2001-2016</li>
-                                              <li><strong>JAXA Forest/NonForest</strong>: 30m spatial resolution, Date range: 2007-2017<br>
-                                              Masanobu Shimada, Takuya Itoh, Takeshi Motooka, Manabu Watanabe, Shiraishi Tomohiro, Rajesh Thapa, and Richard Lucas, "New Global Forest/Non-forest Maps from ALOS PALSAR Data (2007-2010)", Remote Sensing of Environment, 155, pp. 13-31, December 2014. doi:10.1016/j.rse.2014.04.014.</li>
-                                              <li><strong>Global Forest Watch</strong>: 25m spatial resolution, Date range: 2000-2020<br>
-                                              Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available at: https://glad.earthengine.app/view/global-forest-change.</li>
-                                          </ul>
-                                          <p class="h4">Regional</p>
-                                          <ul class="list-inline">
-                                              <li><strong>RLCMS</strong>: 30m spatial resolution, Date range: 2000 to present&nbsp;&nbsp;</li>
-                                              <li><strong>RCMRD CCDC</strong>: 30m spatial resolution, Date range: (Kenya: 2000/2016), Zambia (2000/2017)</li>
-                                              <li><strong>MapBiomas</strong>: 30m spatial resolution, Date range: 2000-2019<br>
-                                              "MapBiomas Amazon Project - Collection 3 of annual land cover and land use maps via Google Earth Engine. The MapBiomas Amazon project - is a multi-institutional initiative to generate annual land use maps based on automatic classification processes applied to satellite imagery. The full description of the project can be found at http://amazonia.mapbiomas.org ".</li>
-                                              <li><strong>MAGA</strong>: 30m spatial resolution, Date range: 2020</li>
-                                              <li><strong>USGS</strong>: 2km spatial resolution, Date range: 2000/2013<br>
-                                              Tappan, G. G., Cushing, W.M., Cotillon, S.E., Mathis, M.L., Hutchinson, J.A., and Dalsted, K.J. 2016 West Africa Land Use Land Cover Time Series: U.S. Geological Survey data release, http://dx.doi.org/10.5066/F73N21JF</li>
-                                          </ul>
-                                          <p class="h4">Algorithm</p>
-                                          <ul class="list-inline">
-                                              <li><strong>CCDC-SMA</strong>: 30m spatial resolution, Date range: 2000-2020<br>
-                                              Citation:Chen, S., Woodcock, CE., Bullock E., Arevalo, P., Torchinava, P., Peng, S. and Olofsson P. (2021). Monitoring Temperate Forest Degradation on Google Earth Engine Using Landsat Time Series Analysis. Remote Sensing of Environment.&nbsp;</li>
-                                              <li><strong>Landtrendr</strong>: 100m spatial resolution, Date range: 1986-2020<br>
-                                              Citation: Kennedy, R.E., Yang, Z., Gorelick, N., Braaten, J., Cavalcante, L., Cohen, W.B., Healey, S. (2018). Implementation of the LandTrendr Algorithm on Google Earth Engine. Remote Sensing. 10, 691.</li>
-                                          </ul>
-                                    </div>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AGB modal popup-->
-        <div class="pilotcountry-modal modal fade" id="AGBModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Above Ground Biomass</h2>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/about/logs-free-photo-of-portret-van-omgehakte-bomen.jpg"%}" alt="Logging" />
-                                    <div>
-                                          <p class="h4">Global</p>
-                                          <ul class="list-inline">
-                                              <li><strong>Avitable</strong>: 1km spatial resolution, Date 2016: harmonization of the pan-tropical datasets published by Saatchi et al. (2011) and Baccini et al. (2012)<br>
-                                              Citation: Avitabile, V, Herold, M, Heuvelink, GBM et al. (30 more authors) (2016) An integrated pan-tropical biomass map using multiple reference datasets. Global Change Biology, 22 (4). pp. 1406-1420. ISSN 1354-1013 https://doi.org/10.1111/gcb.13139&nbsp;</li>
-                                              <li><strong>Saatchi</strong>: 1km spatial resolution, Date 2011: Generated using ground measurements and GLAS (Geoscience Laser Altimeter System) lidar observations<br>
-                                              Citation: Saatchi, S. S., Harris, N. L., Brown, S., Lefsky, M., Mitchard, E. T., Salas, W., ... &amp; Morel, A. (2011). Benchmark map of forest carbon stocks in tropical regions across three continents. Proceedings of the national academy of sciences, 108(24), 9899-9904.</li>
-                                              <li><strong>GeoCarbon 2020</strong>: 1km spatial resolution, Date: 2020: Global map of aboveground biomass in forest, generated by combining and harmonizing the Avitabile pan-tropical biomass map with the boreal forest biomass map by Santoro et al. (2015).<br>
-                                              Citation: Santoro, M., Beaudoin, A., Beer, C., Cartus, O., Fransson, J.E.S., Hall, R.J., Pathe, C., Schmullius, C., Schepaschenko, D., Shvidenko, A., Thurner, M. and Wegmüller, U., 2015. Forest growing stock volume of the northern hemisphere: Spatially explicit estimates for 2010 derived from Envisat ASAR. Remote Sensing of Environment, 168, pp. 316-334.</li>
-                                              <li><strong>GEDI</strong>: 1km spatial resolution, Date: 2019-04-18-2021-08-04:&nbsp;<br>
-                                              Citation: Dubayah, R.O., J. Armston, S.P. Healey, Z. Yang, P.L. Patterson, S. Saarela, G. Stahl, L. Duncanson, and J.R. Kellner. 2022. GEDI L4B Gridded Aboveground Biomass Density, Version 2. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/2017</li>
-                                          </ul>
-                                          <p class="h4">Regional</p>
-                                          <ul class="list-inline">
-                                              <li><strong>ICIMOD 2015</strong>:&nbsp; 5km spatial resolution, Date 2015: From the field well distributed circular (750m2 and 500m2), 1124 field plots (0.001% representation of forest cover) measured which were used for estimation AGB (ton/ha) using Sharma et al. (1990) proposed equations for all tree species of Nepal. A satisfactory linear relationship (AGB = 8.7018*Hmax-101.24, R2=0.67, RMSE=7.2 ton/ha) achieved between maximum canopy height (Hmax) and AGB (ton/ha).<br>
-                                              Citation: ICIMOD. (2015). Above ground biomass (AGB) data in Nepal [Data set]. ICIMOD. https://doi.org/10.26066/rds.23172</li>
-                                          </ul>
-                                    </div>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AOI modal popup-->
-        <div class="pilotcountry-modal modal fade" id="AOIModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="{% static "assets/img/close-icon.svg"%}" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Area of Interest</h2>
-                                    <img class="img-fluid d-block mx-auto" src="{% static "assets/img/about/aoi-marjan-blan-6bXvYyAYVrE-unsplash.jpg"%}" alt="..." />
-
-                                    <div>
-                                          <p class="h4">Select predefined AOI</p>
-                                          <ul class="list-inline">
-                                              <li><strong>Administrative Level</strong>: Select your Area of Interest by Country, or by Level 1/Level 2 administrative units (Boundaries are not authoritative, source: __________) </li>
-                                              <li><strong>Protected Area</strong>: Select protected areas from the ____ collection</li>
-                                          </ul>
-                                          <p class="h4">Upload your AOI</p>
-                                          <ul class="list-inline">
-                                              <li><strong>Requisites</strong>: Upload a GeoJSON file in latitude/longitude coordinates or a zipped shape file including a projection system file (.prj)</li>
-                                          </ul>
-                                    </div>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="{% static "js/scripts.js"%}"></script>
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <!-- * *                               SB Forms JS                               * *-->
-        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-    </body>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{% static "js/scripts.js" %}"></script>
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
 </html>

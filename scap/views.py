@@ -35,9 +35,14 @@ def test(req):
 def home(request):
     return render(request, 'scap/index.html')
 
-def pilot1(request):
-    return render(request,'scap/pilotcountry1.html')
+
+def peru(request):
+    return render(request, 'scap/pilotcountry1.html')
 
 
 def aoi(request):
     return render(request, 'scap/aoi.html')
+
+
+def addData(request):
+    return render(request, 'scap/addData.html')
