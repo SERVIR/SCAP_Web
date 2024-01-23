@@ -27,6 +27,7 @@
     <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
 </head>
 <body id="page-top">
+
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
     <div class="container">
@@ -40,17 +41,18 @@
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                 <li class="nav-item"><a class="nav-link" href="#add_coll">ADD</a></li>
                 <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>
-                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
                 <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
+
                 {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
-                         {% if user.is_authenticated %}
+ {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
                                 class="caret"></span></a>
-                        <ul class="dropdown-menu bg-transparent">
+                           <ul class="dropdown-menu bg-transparent">
                             <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
                             </li>
 
@@ -74,7 +76,7 @@
 <br/>
 <br/>
 <br/>
-
+ {% if user.is_authenticated %}
 <section class="page-section bg-light" id="add_coll">
     <div class="container">
         <div class="text-center">
@@ -82,16 +84,16 @@
             {#                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>#}
         </div>
         <div class="row">
-            <div class="col-lg-4 col-sm-6 mb-4">
+            <div class="col-lg-8 col-sm-8 mb-4">
                 <form id="upload-file" enctype="multipart/form-data" method="post">
 
                     <div id="new_collection_info">
                         <div class="mb-3 common"><label>Collection Identification Name </label>
-                            <p><input id="coll_name" type="text"/></p>
+                            <p><input id="coll_name" class="form-control" type="text"/></p>
                             <p style="color: darkred" id="col_exists"></p></div>
                         <div class="mb-3 common"><label style="display: block">Source and Supplemental
                             information</label>
-                            <textarea id="coll_desc" cols="60" rows="6"></textarea></div>
+                            <textarea  class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>
                         <div class="mb-3 common">
                             <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
                                 files in the
@@ -110,12 +112,7 @@
                         </ul>
 
                         <div class="mb-3 common">
-
-
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Access Level
-                            </label>
-                            <select id="access">
+                            <label for="access">Access Level</label><select class="form-control" id="access">
                                 <option>Public</option>
                                 <option>Private</option>
                             </select>
@@ -166,7 +163,7 @@
             <div class="col-lg-4 col-sm-6 mb-4">
                 <div id="existing_coll">
                     <div class="mb-3 common"><label id="coll">Select the existing collection</label>
-                        <select aria-label="coll" id="existing_list">
+                        <select aria-label="coll" id="existing_list" class="form-control">
                             <option>--Select--</option>
 
                         </select>
@@ -227,7 +224,7 @@
             <h2 class="section-heading text-uppercase">AOI</h2>
         </div>
         <div class="row text-center">
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <form id="upload-aoi">
                     <div id="aoiModal" class="modal">
 
@@ -249,7 +246,7 @@
 
                     <div id="new_aoi_info">
                         <div class="mb-3 common">
-                            <label for="formFileMultiple" class="form-label">Upload AOI Shp files </label>
+                            <label for="formFileMultiple" class="form-label">Upload AOI Shape files with .zip extension </label>
                             <input class="form-control aoifileupload" type="file" id="aoifiles" multiple
                                    accept="application/zip">
                         </div>
@@ -285,6 +282,7 @@
         </div>
     </div>
 </section>
+
 <!-- Footer-->
 <footer class="footer py-4">
     <div class="container">
@@ -305,7 +303,12 @@
         </div>
     </div>
 </footer>
-
+ {% else %}
+     <br/>
+     <br/>
+     <br/>
+     <p class="text-center">Please login to add your collections, files and AOIs</p>
+   {% endif %}
 
 <!-- AOI modal popup-->
 

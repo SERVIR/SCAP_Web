@@ -1,3 +1,4 @@
+ populateCollections();
 $("#savetoDB").click(function (e) {
                     e.preventDefault();
 
@@ -138,21 +139,21 @@ document.getElementById("new_tifffiles").onchange = () => {
     }
 }
 
-function checkboxSelected(checkbox) {
-    if (checkbox.checked && checkbox.id === "new_c") {
-        document.getElementById("new_collection_info").style.display = "block";
-    } else {
-        document.getElementById("new_collection_info").style.display = "none";
-
-    }
-    if (checkbox.checked && checkbox.id === "existing_c") {
-        populateCollections();
-        document.getElementById("existing_coll").style.display = "block";
-    } else {
-        document.getElementById("existing_coll").style.display = "none";
-
-    }
-}
+// function checkboxSelected(checkbox) {
+//     if (checkbox.checked && checkbox.id === "new_c") {
+//         document.getElementById("new_collection_info").style.display = "block";
+//     } else {
+//         document.getElementById("new_collection_info").style.display = "none";
+//
+//     }
+//     if (checkbox.checked && checkbox.id === "existing_c") {
+//         populateCollections();
+//         document.getElementById("existing_coll").style.display = "block";
+//     } else {
+//         document.getElementById("existing_coll").style.display = "none";
+//
+//     }
+// }
 
 // Get the modal
 var modal_new = document.getElementById("myModal");

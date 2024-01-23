@@ -39,6 +39,9 @@ def home(request):
 def peru(request):
     return render(request, 'scap/pilotcountry1.html')
 
+def thailand(request):
+    return render(request, 'scap/pilotcountry2.html')
+
 
 def aoi(request):
     return render(request, 'scap/aoi.html')
