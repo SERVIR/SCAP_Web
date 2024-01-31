@@ -26,7 +26,7 @@ class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 #
 class ForestCoverChangeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'fc_source', 'aoi')
+    list_display = ('id', 'fc_source', 'aoi', 'initial_forest_area')
     list_filter = ('fc_source',)
 
 

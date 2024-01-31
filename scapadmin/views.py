@@ -11,12 +11,13 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def test(req):
     # FCC_Calculation.generate_fc(req)
-    # FCC_Calculation.convertfctocog(req)
+    # FCC_Calculation.convert_fc_to_cog()
     # FCC_Calculation.generate_fcc(req)
     # FCC_Calculation.getArea()
-    FCC_Calculation.getConditionalForestArea(1,2001)
-
-
+    # FCC_Calculation.getConditionalForestArea(1,2001)
+    # FCC_Calculation.getAreaIntersection(req)
+    FCC_Calculation.upload_shapefiles()
+    # FCC_Calculation.getFeaturesFromFile(r"C:\Users\gtondapu\OneDrive - NASA\Desktop\ASCAP\ShapeFiles\npl\WDPA_WDOECM_Jul2023_Public_NPL_merged.geojson")
 
 # # The view that sends the data to the Emissions chart in home.html
 # def home(request):
