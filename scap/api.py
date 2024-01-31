@@ -75,7 +75,7 @@ def generate_geodjango_objects(verbose=True):
     }
 
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r'/Users/githuvenky/Desktop/peru/peru.shp'),
+        os.path.join(os.path.dirname(__file__), 'data', r'C:\Users\gtondapu\Desktop/guyana.shp'),
     )
 
     # lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
