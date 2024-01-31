@@ -123,7 +123,7 @@
     </div>
 </section>
 <script>
-    var lc_colors = {{lcs|safe}};
+    var lc_colors = {{colors|safe}};
     console.log(lc_colors);
 </script>
 <section class="page-section" id="EnsembleChart">
@@ -136,27 +136,27 @@
 
                       <div class="col-3 m-auto" id="checkbox_selection">
             <div class="LC_checkboxlist">
-                <b>Land Cover Datasets:</b><br>
+                <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
                 <ul class="lc_list" style="list-style-type: none">
                     {% for lc in lcs %}
                         <li class="lc_list-item">
                             <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                    onchange="access_lines(this,'LC')"
-                                   value="{{ lc.id }}" name="lc"/><label style="padding-left: 10px"> {{ lc.fcs_name }}<span class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
+                                   value="{{ lc.id }}" name="lc"/><label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
             <hr width="50%">
             <div class="AGB_checkboxlist">
-                <b>Above Ground Biomass Datasets:</b><br>
+                <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
                 <ul class="agb_list" style="list-style-type: none">
                 {% csrf_token %}
                     {% for agb in agbs %}
                         <li class="agb_list-item">
                             <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
                                    onchange="access_lines(this,'AGB')"
-                                   value="{{ agb.agb_id }}" name="agb"/><label style="padding-left: 10px"> {{ agb.agb_name }} <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
+                                   value="{{ agb.agb_id }}" name="agb"/><label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }} <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
                         </li>
                     {% endfor %}
                 </ul>

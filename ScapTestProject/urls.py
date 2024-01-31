@@ -46,7 +46,7 @@ urlpatterns = [
     path('emissions/', peru, name='emissions'),
     # path('deforestation/', views.deforestation, name='deforestation'),
     path('peru/get-min-max/', getData.get_agg_check, name='get-min-max'),
-    path('emissions/get-series-name/', getData.get_series_name, name='get-series-name'),
+    path('peru/get-series-name/', getData.get_series_name, name='get-series-name'),
     path('get-series-name/', getData.get_series_name, name='get-series-name'),
     #
 ]

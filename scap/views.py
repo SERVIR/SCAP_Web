@@ -12,6 +12,7 @@ from scap.utils import mask_with_tif
 import pandas as pd
 from django.contrib.auth import authenticate, login, logout
 from scap.models import ForestCoverSource,AGBSource, Emissions
+from ScapTestProject import settings
 
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")
@@ -38,6 +39,17 @@ def home(request):
 
 
 def peru(request):
+    colors = []
+
+    with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+        for line in f:
+            row = line.strip()
+            temp = {}
+            temp['LC'] = int(row.split(',')[0][2:])
+            temp['AGB'] = int(row.split(',')[1][3:])
+            temp['color'] = row.split(',')[2]
+            colors.append(temp)
+
     df_lc = pd.DataFrame(list(ForestCoverSource.objects.all().values('id','fcs_name', 'fcs_color').order_by(
         'id')))  # Get the LC dataset data sorted by lc_id
     lcs = df_lc.to_dict('records')  # Convert the LC list to a dictionary
@@ -56,7 +68,7 @@ def peru(request):
     # Serialize the data to json
     chart = serialize(pivot_table, render_to='container', output_type='json', type='spline', title='Emissions')
     # Return the home.html template with the chart data and the LC and AGB data
-    return render(request, 'scap/pilotcountry1.html', context={'chart': chart, 'lcs': lcs, 'agbs': agbs})
+    return render(request, 'scap/pilotcountry1.html', context={'chart': chart, 'lcs': lcs, 'agbs': agbs,'colors':colors})
 
 def thailand(request):
     return render(request, 'scap/pilotcountry2.html')

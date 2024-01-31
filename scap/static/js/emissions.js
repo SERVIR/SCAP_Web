@@ -8,11 +8,12 @@ var result1="";
 var gname = "";
 
 function get_name(elem) {
-    // var result1="";
+     var result1="";
     const xhr = ajax_call("get-series-name", {'ds_lc': elem[0],'ds_agb':elem[1]});
     xhr.done(function (result) {
         result1=result.name;
     });
+    return result1;
 }
 
 // This function is to set the brightness of the lines on the chart
@@ -43,76 +44,69 @@ var lcss = get_checked_lcs();
 
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
-         min_arr = {
-            "name": "min",
+        min_arr = {
+            "name": "Min",
             "data": result2.min,
             "color": 'green',
             "visible": true,
+            legendIndex:-1,
             lineWidth: 5,
             dashStyle: 'shortdash'
         };
-         max_arr = {
-            "name": "max",
+        max_arr = {
+            "name": "Max",
             "data": result2.max,
             "color": 'red',
             "visible": true,
             lineWidth: 5,
+                        legendIndex:-2,
+
             dashStyle: 'shortdash'
         };
-         avg_arr = {
-            "name": "avg",
+        avg_arr = {
+            "name": "Avg",
             "data": result2.avg,
             "color": 'orange',
             "visible": true,
             lineWidth: 5,
+                        legendIndex:-3,
             dashStyle: 'shortdash'
         };
-chart.update({series:ns});
-
-$.each(chart.series, function (i, s) {
-    var color = "#000000";
-    var data = s.data;
-    var name = s.name;
-    // Making the percentage 100 will makes the lines black
-    if (percent > 50) {
-        percent = percent - 5;
-    } else {
-        percent = percent + 5;
-    }
-    for (var j = 0; j < lc_colors.length; j++) {
-        if ('LC' + lc_colors[j]['id'] == (s.name[0])) {
-            color = increase_brightness(lc_colors[j]['fcs_color'], percent);
-        }
-    }
-    ns.push({name: name, data: data, color: color});
+        $.each(chart.series, function (i, s) {
+                for (var j = 0; j < lc_colors.length; j++) {
+                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                        s.color = lc_colors[j]['color'];
+                    }
 
 
+            }
+                ns.push({name:s.name,data:s.data,color:s.color});
+        });
 
-});
+        chart.update({series:ns})
+        chart.update({series: [ns, min_arr, max_arr, avg_arr]});
+        chart.update({
 
-chart.update({series:[ns, min_arr, max_arr, avg_arr]});
- chart.update({
-
-    tooltip: {
-        useHTML: true,
-        enabled: true,
-        backgroundColor: null,
-        borderWidth: 0,
-        shadow: false,
-        formatter: function () {
-            const ss = this.series.name;
-            const lc=ss[0];
-            const agb=ss[1];
-            const color=this.series.color;
-            const s_name = get_name(ss);
-             var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                        '<b>Emissions '+ this.x +': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> ' +
-                        result1.split(',')[1]   +' ('+ agb+')</span><div>';
-                return value;
-        }
-    }
-  });
+            tooltip: {
+                useHTML: true,
+                enabled: true,
+                backgroundColor: null,
+                borderWidth: 0,
+                shadow: false,
+                formatter: function () {
+                    const ss = this.series.name;
+                    const lc = ss[0];
+                    const agb = ss[1];
+                    const color = this.series.color;
+                    const s_name = get_name(ss);
+                    var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                        '<span style=\'padding-left:50px\'></span><br/> ' + s_name.split(',')[0] + ' (' + lc + ')<br/> ' +
+                        s_name.split(',')[1] + ' (' + agb + ')</span><div>';
+                    return value;
+                }
+            }
+        });
     });
 
 
