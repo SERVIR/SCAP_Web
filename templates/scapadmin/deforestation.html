@@ -20,6 +20,7 @@
 <body>
 <script>
     var lc_colors = {{lcs|safe}};
+    console.log(lc_colors);
 </script>
 
 <div class="container-fluid">
@@ -32,7 +33,7 @@
                 {% for lc in lc_data %}
                     <li class="lc_list-item">
                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
-                               value="{{ lc.lc_id }}" onchange="access_lines(this,'LC')" name="lc"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">LC{{ lc.lc_id }}</span> {{ lc.lc_name }}</label>
+                               value="{{ lc.id }}" onchange="access_lines(this,'LC')" name="lc"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">LC{{ lc.id }}</span> {{ lc.fcs_name }}</label>
                     </li>
                 {% endfor %}
             </ul>

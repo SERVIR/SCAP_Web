@@ -20,11 +20,12 @@
 <body>
 <script>
     var lc_colors = {{lcs|safe}};
+    console.log(lc_colors);
 </script>
 
 <div class="container-fluid">
     <div class="row h-100 ">
-                <div><a href="{% url "deforestation" %}">Deforestation</a></div>
+{#                <div><a href="{% url "deforestation" %}">Deforestation</a></div>#}
 
         <div class="col-3 m-auto" id="checkbox_selection">
             <div class="LC_checkboxlist">
@@ -34,7 +35,7 @@
                         <li class="lc_list-item">
                             <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                    onchange="access_lines(this,'LC')"
-                                   value="{{ lc.lc_id }}" name="lc"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">LC{{ lc.lc_id }}</span> {{ lc.lc_name }} </label>
+                                   value="{{ lc.id }}" name="lc"/><label style="padding-left: 10px"><span class="badge bg-light text-dark">LC1{{ lc.id }}</span> {{ lc.fcs_name }} </label>
                         </li>
                     {% endfor %}
                 </ul>

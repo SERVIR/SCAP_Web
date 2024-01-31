@@ -5,6 +5,7 @@ var series = chart.series;
 var newseries = series;
 var new_updated = series;
 var result1="";
+var gname = "";
 
 function get_name(elem) {
     // var result1="";
@@ -33,6 +34,41 @@ function increase_brightness(hex, percent) {
 
 var percent = 10;
 var ns = [];
+var lcss = get_checked_lcs();
+    var agbss = get_checked_agbs();
+    var min_arr=[];
+    var res_mmm=[];
+    var max_arr = [];
+    var avg_arr = [];
+
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    xhr.done(function (result2) {
+         min_arr = {
+            "name": "min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+         max_arr = {
+            "name": "max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+         avg_arr = {
+            "name": "avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+chart.update({series:ns});
+
 $.each(chart.series, function (i, s) {
     var color = "#000000";
     var data = s.data;
@@ -44,15 +80,19 @@ $.each(chart.series, function (i, s) {
         percent = percent + 5;
     }
     for (var j = 0; j < lc_colors.length; j++) {
-        if ('LC' + lc_colors[j]['lc_id'] == (s.name[0])) {
-            color = increase_brightness(lc_colors[j]['lc_color'], percent);
+        if ('LC' + lc_colors[j]['id'] == (s.name[0])) {
+            color = increase_brightness(lc_colors[j]['fcs_color'], percent);
         }
     }
     ns.push({name: name, data: data, color: color});
 
+
+
 });
-chart.update({series: ns});
+
+chart.update({series:[ns, min_arr, max_arr, avg_arr]});
  chart.update({
+
     tooltip: {
         useHTML: true,
         enabled: true,
@@ -67,12 +107,17 @@ chart.update({series: ns});
             const s_name = get_name(ss);
              var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
                         '<b>Emissions '+ this.x +': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> ' + 
+                        '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] +' ('+ lc+')<br/> ' +
                         result1.split(',')[1]   +' ('+ agb+')</span><div>';
                 return value;
         }
     }
   });
+    });
+
+
+
+
 chart.update({
         chart: {
             type: 'spline'
@@ -80,6 +125,7 @@ chart.update({
 
         plotOptions: {
             series: {
+
                 marker: {
                     enabled: false,
                     states: {
@@ -208,5 +254,25 @@ function ajax_call(ajax_url, ajax_data) {
         .fail(function (xhr, status, error) {
             console.log(xhr.responseText);
         });
+}
+
+function get_checked_lcs() {
+    var lcs = [];
+    $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
+
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
+    });
+    return lcs;
+}
+
+function get_checked_agbs() {
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
 }
 

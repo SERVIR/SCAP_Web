@@ -244,13 +244,12 @@ function cleanData(data, deletingKeys) {
 }
 
 function get_updated_chart(this_obj) {
-    if (series_arr.length > 24) {
-        series_arr.splice(-3, 3);
-    }
+    // if (series_arr.length > 24) {
+    //     series_arr.splice(-3, 3);
+    // }
 
     var sarr = series_arr;
     var temp_series_arr_uncheck = series_arr;
-    var temp_series_arr_check = series_arr;
     var lcs = get_checked_lcs();
     console.log(lcs);
     var agbs = get_checked_agbs();
