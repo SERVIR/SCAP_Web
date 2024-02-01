@@ -41,7 +41,11 @@ var lcss = get_checked_lcs();
     var res_mmm=[];
     var max_arr = [];
     var avg_arr = [];
-
+function standardize_color(str){
+    var ctx = document.createElement("canvas").getContext("2d");
+    ctx.fillStyle = str;
+    return ctx.fillStyle;
+}
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
         min_arr = {
@@ -101,12 +105,12 @@ var lcss = get_checked_lcs();
                     const s_name = get_name(ss);
                     var labellc=document.getElementById(lc).innerText;
                     var labelagb=document.getElementById(agb).innerText;
-                    // labellc = labellc.replace(/[{()}]/g, '');
-                    // labelagb = labelagb.replace(/[{()}]/g, '');
-                    var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                    labellc = labellc.replace(/ *\([^)]*\) */g, "");
+                    labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
+                    var value = '<div style="background-color:' + standardize_color(color)+"60" + ';padding:10px"><span>' +
                         '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> ' + labellc +'<br/> ' +
-                        labelagb + '</span><div>';
+                        '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc +'<sub>'+lc+'</sub><br/> AGB: ' +
+                        labelagb + '<sub>'+agb+'</sub></span><div>';
                     //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
                     //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
                     //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
