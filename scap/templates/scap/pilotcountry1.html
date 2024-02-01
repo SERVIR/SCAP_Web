@@ -142,7 +142,7 @@
                         <li class="lc_list-item">
                             <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                    onchange="access_lines(this,'LC')"
-                                   value="{{ lc.id }}" name="lc"/><label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
+                                   value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}" style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span  class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
                         </li>
                     {% endfor %}
                 </ul>
@@ -156,7 +156,7 @@
                         <li class="agb_list-item">
                             <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
                                    onchange="access_lines(this,'AGB')"
-                                   value="{{ agb.agb_id }}" name="agb"/><label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }} <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
+                                   value="{{ agb.agb_id }}" name="agb"/><label id="AGB{{ agb.agb_id }}" style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }} <span  class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
                         </li>
                     {% endfor %}
                 </ul>

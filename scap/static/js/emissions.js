@@ -99,11 +99,18 @@ var lcss = get_checked_lcs();
                     const agb = ss[1];
                     const color = this.series.color;
                     const s_name = get_name(ss);
+                    var labellc=document.getElementById(lc).innerText;
+                    var labelagb=document.getElementById(agb).innerText;
+                    // labellc = labellc.replace(/[{()}]/g, '');
+                    // labelagb = labelagb.replace(/[{()}]/g, '');
                     var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
                         '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> ' + s_name.split(',')[0] + ' (' + lc + ')<br/> ' +
-                        s_name.split(',')[1] + ' (' + agb + ')</span><div>';
-                    return value;
+                        '<span style=\'padding-left:50px\'></span><br/> ' + labellc +'<br/> ' +
+                        labelagb + '</span><div>';
+                    //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                    //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                    //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                     return value;
                 }
             }
         });
@@ -183,17 +190,75 @@ function show_line(elem) {
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
     var msg = all_unchecked();
+
     if (msg.length == 0) {
-        if (elem.checked) {
+ if (elem.checked) {
             show_line(dataset + elem.value);
 
         } else {
             hide_line(dataset + elem.value);
         }
-    } else {
+  } else {
         alert(msg);
         elem.checked = true;
     }
+        var ns = [];
+var lcss = get_checked_lcs();
+    var agbss = get_checked_agbs();
+    var min_arr=[];
+    var res_mmm=[];
+    var max_arr = [];
+    var avg_arr = [];
+
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    xhr.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex:-1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+                        legendIndex:-2,
+
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+                        legendIndex:-3,
+            dashStyle: 'shortdash'
+        };
+
+        $.each(chart.series, function (i, s) {
+                for (var j = 0; j < lc_colors.length; j++) {
+                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                        s.color = lc_colors[j]['color'];
+                    }
+
+
+            }
+                ns.push({name:s.name,data:s.data,color:s.color});
+        });
+
+        chart.update({series: [ns, min_arr, max_arr, avg_arr]});
+
+
+
+    });
+
+
 }
 
 // Show alert if all checkboxes are unchecked

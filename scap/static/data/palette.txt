@@ -50,7 +50,7 @@ LC4,AGB1,chocolate
 LC4,AGB2,red
 LC4,AGB3,brown
 LC4,AGB4,copper
-LC4,AGB5,burgundy
+LC4,AGB5,gold
 LC4,AGB6,maroon
 LC4,AGB7,cognac
 LC4,AGB8,red
