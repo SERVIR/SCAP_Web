@@ -27,140 +27,148 @@
 </h1>
 <div class="text-center" style="background: peachpuff;width:40%;margin:auto;>
 
-<div id="login_logout" class="text-center">
+<div id=" login_logout
+" class="text-center">
 {% if user.is_authenticated %}
-  <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
-      <p><a href="{% url 'logout' %}">Log Out</a></p>
+    <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
 
-      <a href="{% url 'home' %}">Add/Update Collection
+    <a href="{% url 'home' %}">Add/Update Collection
     </a>&nbsp;
     <a href="{% url 'aoi' %}">
-    Add AOI(s)
+        Add AOI(s)
     </a>
-{#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
+    {#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
 
-{#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
+    {#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
 
 
-{#  <p class="common">Please visit <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a> to access objects</p>#}
-<div  class="mb-3 common" style="">
-{#<h3 class="common">User Data Submission Form</h3>#}
-<p>Are you uploading data for a new collection?
-    <input type="radio" id="new_c" checked name="newcoll" onchange="checkboxSelected(this)"/>Yes
-    <input type="radio" id="existing_c" name="newcoll" onchange="checkboxSelected(this)"/>No
-</p>
+    {#  <p class="common">Please visit <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a> to access objects</p>#}
+    <div class="mb-3 common" style="">
+        {#<h3 class="common">User Data Submission Form</h3>#}
+        <p>Are you uploading data for a new collection?
+            <input type="radio" id="new_c" checked name="newcoll" onchange="checkboxSelected(this)"/>Yes
+            <input type="radio" id="existing_c" name="newcoll" onchange="checkboxSelected(this)"/>No
+        </p>
     </div>
 
-{#Yes#}
+    {#Yes#}
 
-            <form id="upload-file" enctype = "multipart/form-data"  method = "post">
+    <form id="upload-file" enctype="multipart/form-data" method="post">
 
-<div id="new_collection_info">
-    <div class="mb-3 common"><label >Collection Identification Name </label><p><input id="coll_name" type="text"/></p>
-    <p style="color: darkred" id="col_exists"></p></div>
-    <div class="mb-3 common"><label style="display: block">Source and Supplemental information</label>
-    <textarea id="coll_desc" cols="60" rows="6"></textarea></div>
-    <div class="mb-3 common">
-        <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all files in the
-            collection) </label>
+    <div id="new_collection_info">
+        <div class="mb-3 common"><label>Collection Identification Name </label>
+            <p><input id="coll_name" type="text"/></p>
+            <p style="color: darkred" id="col_exists"></p></div>
+        <div class="mb-3 common"><label style="display: block">Source and Supplemental information</label>
+            <textarea id="coll_desc" cols="60" rows="6"></textarea></div>
+        <div class="mb-3 common">
+            <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all files in the
+                collection) </label>
 
-        <input class="form-control fileupload" type="file" name="filename" id="boundaryFile" accept="application/zip">
-    </div>
-    <div class="mb-3 common">
-        <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff files </label>
-        <input class="form-control fileupload" type="file" id="tifffiles" multiple accept="image/tiff">
-    </div>
-    <ul id="list">
-    </ul>
+            <input class="form-control fileupload" type="file" name="filename" id="boundaryFile"
+                   accept="application/zip">
+        </div>
+        <div class="mb-3 common">
+            <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff files </label>
+            <input class="form-control fileupload" type="file" id="tifffiles" multiple accept="image/tiff">
+        </div>
+        <ul id="list">
+        </ul>
 
-    <div class="mb-3 common">
-
-
-        <label class="form-check-label" for="flexCheckDefault">
-            Access Level
-        </label>
-        <select id="access">
-            <option>Public</option>
-            <option>Private</option>
-        </select>
-    </div>
-    <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary</button> <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()" id="clear_new">Clear Form</button>
+        <div class="mb-3 common">
 
 
-
-<div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <label>Collection Identification Name: </label>
-        <p id="c_name">Some text in the Modal..</p>
-        <label>Source and Supplemental information: </label>
-        <p id="c_desc">Some text in the Modal..</p>
-        <label>Boundary Shape File: </label>
-        <p id="c_boundary_path">Some text in the Modal..</p>
-        <label>TIFF files: </label>
-        <p id="c_tiffs"></p>
+            <label class="form-check-label" for="flexCheckDefault">
+                Access Level
+            </label>
+            <select id="access">
+                <option>Public</option>
+                <option>Private</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary</button>
+        <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()" id="clear_new">Clear Form
+        </button>
 
 
-        <label>Access level: </label>
-        <p id="c_access"></p>
+        <div id="myModal" class="modal">
 
-        <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <label>Collection Identification Name: </label>
+                <p id="c_name">Some text in the Modal..</p>
+                <label>Source and Supplemental information: </label>
+                <p id="c_desc">Some text in the Modal..</p>
+                <label>Boundary Shape File: </label>
+                <p id="c_boundary_path">Some text in the Modal..</p>
+                <label>TIFF files: </label>
+                <p id="c_tiffs"></p>
 
-    </div>
 
-</div>
-</div>
+                <label>Access level: </label>
+                <p id="c_access"></p>
 
-{#  No#}
-<div id="existing_coll"  style="display: none" >
-<div class="mb-3 common"><label id="coll">Select the existing collection</label>
-    <select aria-label="coll" id="existing_list">
-        <option>--Select--</option>
+                <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>
 
-    </select>
-</div>
+            </div>
 
-<div class="mb-3 common">
-        <div id="lists">
-            <p>Existing TIFFS in this collection:</p>
-
-    </div>
-        <label for="formFileMultiple" class="form-label">Upload more files to this collection </label>
-        <input class="form-control fileupload" type="file" id="new_tifffiles" multiple accept="image/tiff"/>
+        </div>
     </div>
 
-{#    <ul id="list_existing">#}
-{#    </ul>#}
-      <ul id="list_new_added">
-    </ul>
-        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary</button><button type="button" class="mb-3 btn btn-primary common" id="clear_existing" onclick="clearForm()">Clear Form</button>
+    {#  No#}
+    <div id="existing_coll" style="display: none">
+        <div class="mb-3 common"><label id="coll">Select the existing collection</label>
+            <select aria-label="coll" id="existing_list">
+                <option>--Select--</option>
 
-    </div>
+            </select>
+        </div>
 
-<div id="mynewModal" class="modal">
+        <div class="mb-3 common">
+            <div id="lists">
+                <p>Existing TIFFS in this collection:</p>
 
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <label>Collection Identification Name: </label>
-        <p id="c_update_name">Some text in the Modal</p>
+            </div>
+            <label for="formFileMultiple" class="form-label">Upload more files to this collection </label>
+            <input class="form-control fileupload" type="file" id="new_tifffiles" multiple accept="image/tiff"/>
+        </div>
 
-        <label>Existing TIFF files: </label>
-        <p id="c_existing_tiffs"></p>
-          <label>Newly Added TIFF files: </label>
-        <p id="c_new_tiffs"></p>
-
-
-        <button type="button" class="btn btn-primary common" id="updatetoDB" onclick="savetoLocalPath(this)">Submit</button>
+        {#    <ul id="list_existing">#}
+        {#    </ul>#}
+        <ul id="list_new_added">
+        </ul>
+        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary</button>
+        <button type="button" class="mb-3 btn btn-primary common" id="clear_existing" onclick="clearForm()">Clear Form
+        </button>
 
     </div>
 
-</div>
-    {% else %}
- <button class="btn btn-outline-info">
-        <a href="{% provider_login_url 'google'%}?next=/">
+    <div id="mynewModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <label>Collection Identification Name: </label>
+            <p id="c_update_name">Some text in the Modal</p>
+
+            <label>Existing TIFF files: </label>
+            <p id="c_existing_tiffs"></p>
+            <label>Newly Added TIFF files: </label>
+            <p id="c_new_tiffs"></p>
+
+
+            <button type="button" class="btn btn-primary common" id="updatetoDB" onclick="savetoLocalPath(this)">
+                Submit
+            </button>
+
+        </div>
+
+    </div>
+{% else %}
+    <button class="btn btn-outline-info">
+        <a href="{% provider_login_url 'google' %}?next=/">
             <i class="fab fa-google"></i>
             Login with Google
         </a>
@@ -168,7 +176,7 @@
 {% endif %}
 
 
-            </form>
+</form>
 
 
 </div>

@@ -27,70 +27,74 @@
 </h1>
 <div class="text-center" style="">
 
-<div id="login_logout" class="text-center">
-{% if user.is_authenticated %}
-  <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
-      <p><a href="{% url 'logout' %}">Log Out</a></p>
+    <div id="login_logout" class="text-center">
+        {% if user.is_authenticated %}
+            <p style="font-weight: bolder">You are logged in as {{ user.username }}</p>
+            <p><a href="{% url 'logout' %}">Log Out</a></p>
 
-    <a href="{% url 'home' %}">Add/Update Collection
-    </a>&nbsp;
-    <a href="{% url 'aoi' %}">
-    Add AOI(s)
-    </a>
-{#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
+            <a href="{% url 'home' %}">Add/Update Collection
+            </a>&nbsp;
+            <a href="{% url 'aoi' %}">
+                Add AOI(s)
+            </a>
+            {#    <p><a href="{% url 'logout' %}">Log Out</a></p>#}
 
-{#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
-
-
-{#  <p class="common">Please visit <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a> to access objects</p>#}
-
-<form id="upload-aoi"  style="margin-left: 40%">
-<div id="aoiModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <label>AOI Name: </label>
-        <p id="c_aoi_names"></p>
+            {#<h5 class="login"><a href="#">Login</a>|<a href="#">Register</a></h5>#}
 
 
-        <button type="button" class="btn btn-primary common" id="storeAOI" >Submit</button>
+            {#  <p class="common">Please visit <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a> to access objects</p>#}
 
+            <form id="upload-aoi" style="margin-left: 40%">
+                <div id="aoiModal" class="modal">
+
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <label>AOI Name: </label>
+                        <p id="c_aoi_names"></p>
+
+
+                        <button type="button" class="btn btn-primary common" id="storeAOI">Submit</button>
+
+                    </div>
+
+                </div>
+
+
+                <div id="new_aoi_info" style="background:lightskyblue;width: 40%;padding: 20px">
+                    <div class="mb-3 common">
+                        <label for="formFileMultiple" class="form-label">Upload AOI Shp files </label>
+                        <input class="form-control aoifileupload" type="file" id="aoifiles" multiple
+                               accept="application/zip">
+                    </div>
+                    <ul id="aoi_list">
+                    </ul>
+                    <br>
+                    <div>
+                        <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review Summary
+                        </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_aois"
+                                               onclick="clearForm()">Clear Form
+                    </button>
+
+                    </div>
+                </div>
+
+            </form>
+            <div>
+                <h3>My AOIs</h3>
+                <table id="aoi_table" style="margin:auto;width: fit-content">
+
+                </table>
+            </div>
+        {% else %}
+            <button class="btn btn-outline-info">
+                <a href="{% provider_login_url 'google' %}?next=/">
+                    <i class="fab fa-google"></i>
+                    Login with Google
+                </a>
+            </button>
+        {% endif %}
     </div>
-
-</div>
-
-
-    <div id="new_aoi_info" style="background:lightskyblue;width: 40%;padding: 20px">
-    <div class="mb-3 common">
-        <label for="formFileMultiple" class="form-label">Upload AOI Shp files </label>
-        <input class="form-control aoifileupload" type="file" id="aoifiles" multiple accept="application/zip">
-    </div>
-    <ul id="aoi_list">
-    </ul>
-        <br>
-        <div>
-                <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review Summary</button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_aois" onclick="clearForm()">Clear Form</button>
-
-</div>
-    </div>
-
-</form>
-    <div>
-    <h3>My AOIs</h3>
-    <table id="aoi_table" style="margin:auto;width: fit-content">
-
-    </table>
-    </div>
-    {% else %}
- <button class="btn btn-outline-info">
-        <a href="{% provider_login_url 'google'%}?next=/">
-            <i class="fab fa-google"></i>
-            Login with Google
-        </a>
-    </button>
-{% endif %}
-</div>
 </div>
 <script src="{% static "js/aoi.js" %}"></script>
 

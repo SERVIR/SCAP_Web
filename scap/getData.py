@@ -5,6 +5,7 @@ from ScapTestProject import settings
 from scap.models import Emissions, ForestCoverSource, AGBSource
 from django.views.decorators.csrf import csrf_exempt
 
+
 def get_agg_check(request):
     result = Emissions.objects.all().order_by('year')
     data = list(result.values_list('year').distinct())
@@ -48,26 +49,15 @@ with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
         temp['AGB'] = int(row.split(',')[1][3:])
         temp['color'] = row.split(',')[2]
         colors.append(temp)
+
+
 #
 def getColor(lc, agb):
     for x in colors:
         if x['LC'] == lc:
             if x['AGB'] == agb:
                 return x['color']
-#
-#
-# def findkeys(node, kv):
-#     if isinstance(node, list):
-#         for i in node:
-#             for x in findkeys(i, kv):
-#                 yield x
-#     elif isinstance(node, dict):
-#         if kv in node:
-#             yield node[kv]
-#         for j in node.values():
-#             for x in findkeys(j, kv):
-#                 yield x
-#
+
 #
 def chart(request):
     result = Emissions.objects.all().order_by('year')
@@ -128,7 +118,7 @@ def chart(request):
         t['years'] = years
         # print(final[i])
         for m in list(final[i].keys()):
-            t['data'].append(final[i][m] if final[i][m]>0 else None)
+            t['data'].append(final[i][m] if final[i][m] > 0 else None)
         a1[i] = t
         t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
 
@@ -137,6 +127,8 @@ def chart(request):
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
     print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
+
+
 #
 @csrf_exempt
 def get_series_name(request):
@@ -145,10 +137,10 @@ def get_series_name(request):
         print(lc_id)
         agb_id = request.POST.get('ds_agb')
         ds = ForestCoverSource.objects.get(id=lc_id[2:])
-        lc_name= ds.fcs_name
+        lc_name = ds.fcs_name
         if agb_id != "":
-            ds= AGBSource.objects.get(agb_id=agb_id[3:])
-            agb_name= ds.agb_name
+            ds = AGBSource.objects.get(agb_id=agb_id[3:])
+            agb_name = ds.agb_name
         else:
-            agb_name= ''
-        return JsonResponse({"name": lc_name+', '+agb_name}, safe=False)
+            agb_name = ''
+        return JsonResponse({"name": lc_name + ', ' + agb_name}, safe=False)

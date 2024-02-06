@@ -4,14 +4,14 @@ var chart = Highcharts.charts[index];
 var series = chart.series;
 var newseries = series;
 var new_updated = series;
-var result1="";
+var result1 = "";
 var gname = "";
 
 function get_name(elem) {
-     var result1="";
-    const xhr = ajax_call("get-series-name", {'ds_lc': elem[0],'ds_agb':elem[1]});
+    var result1 = "";
+    const xhr = ajax_call("get-series-name", {'ds_lc': elem[0], 'ds_agb': elem[1]});
     xhr.done(function (result) {
-        result1=result.name;
+        result1 = result.name;
     });
     return result1;
 }
@@ -36,91 +36,91 @@ function increase_brightness(hex, percent) {
 var percent = 10;
 var ns = [];
 var lcss = get_checked_lcs();
-    var agbss = get_checked_agbs();
-    var min_arr=[];
-    var res_mmm=[];
-    var max_arr = [];
-    var avg_arr = [];
-function standardize_color(str){
+var agbss = get_checked_agbs();
+var min_arr = [];
+var res_mmm = [];
+var max_arr = [];
+var avg_arr = [];
+
+function standardize_color(str) {
     var ctx = document.createElement("canvas").getContext("2d");
     ctx.fillStyle = str;
     return ctx.fillStyle;
 }
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
-    xhr.done(function (result2) {
-        min_arr = {
-            "name": "Min",
-            "data": result2.min,
-            "color": 'green',
-            "visible": true,
-            legendIndex:-1,
-            lineWidth: 5,
-            dashStyle: 'shortdash'
-        };
-        max_arr = {
-            "name": "Max",
-            "data": result2.max,
-            "color": 'red',
-            "visible": true,
-            lineWidth: 5,
-                        legendIndex:-2,
 
-            dashStyle: 'shortdash'
-        };
-        avg_arr = {
-            "name": "Avg",
-            "data": result2.avg,
-            "color": 'orange',
-            "visible": true,
-            lineWidth: 5,
-                        legendIndex:-3,
-            dashStyle: 'shortdash'
-        };
-        $.each(chart.series, function (i, s) {
-                for (var j = 0; j < lc_colors.length; j++) {
-                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                        s.color = lc_colors[j]['color'];
-                    }
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+xhr.done(function (result2) {
+    min_arr = {
+        "name": "Min",
+        "data": result2.min,
+        "color": 'green',
+        "visible": true,
+        legendIndex: -1,
+        lineWidth: 5,
+        dashStyle: 'shortdash'
+    };
+    max_arr = {
+        "name": "Max",
+        "data": result2.max,
+        "color": 'red',
+        "visible": true,
+        lineWidth: 5,
+        legendIndex: -2,
 
-
+        dashStyle: 'shortdash'
+    };
+    avg_arr = {
+        "name": "Avg",
+        "data": result2.avg,
+        "color": 'orange',
+        "visible": true,
+        lineWidth: 5,
+        legendIndex: -3,
+        dashStyle: 'shortdash'
+    };
+    $.each(chart.series, function (i, s) {
+        for (var j = 0; j < lc_colors.length; j++) {
+            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                s.color = lc_colors[j]['color'];
             }
-                ns.push({name:s.name,data:s.data,color:s.color});
-        });
 
-        chart.update({series:ns})
-        chart.update({series: [ns, min_arr, max_arr, avg_arr]});
-        chart.update({
 
-            tooltip: {
-                useHTML: true,
-                enabled: true,
-                backgroundColor: null,
-                borderWidth: 0,
-                shadow: false,
-                formatter: function () {
-                    const ss = this.series.name;
-                    const lc = ss[0];
-                    const agb = ss[1];
-                    const color = this.series.color;
-                    const s_name = get_name(ss);
-                    var labellc=document.getElementById(lc).innerText;
-                    var labelagb=document.getElementById(agb).innerText;
-                    labellc = labellc.replace(/ *\([^)]*\) */g, "");
-                    labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
-                    var value = '<div style="background-color:' + standardize_color(color)+"60" + ';padding:10px"><span>' +
-                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc +'<sub>'+lc+'</sub><br/> AGB: ' +
-                        labelagb + '<sub>'+agb+'</sub></span><div>';
-                    //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                    //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                    //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
-                     return value;
-                }
-            }
-        });
+        }
+        ns.push({name: s.name, data: s.data, color: s.color});
     });
 
+    chart.update({series: ns})
+    chart.update({series: [ns, min_arr, max_arr, avg_arr]});
+    chart.update({
 
+        tooltip: {
+            useHTML: true,
+            enabled: true,
+            backgroundColor: null,
+            borderWidth: 0,
+            shadow: false,
+            formatter: function () {
+                const ss = this.series.name;
+                const lc = ss[0];
+                const agb = ss[1];
+                const color = this.series.color;
+                const s_name = get_name(ss);
+                var labellc = document.getElementById(lc).innerText;
+                var labelagb = document.getElementById(agb).innerText;
+                labellc = labellc.replace(/ *\([^)]*\) */g, "");
+                labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
+                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                    '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc + '<sub>' + lc + '</sub><br/> AGB: ' +
+                    labelagb + '<sub>' + agb + '</sub></span><div>';
+                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                return value;
+            }
+        }
+    });
+});
 
 
 chart.update({
@@ -175,17 +175,17 @@ function show_line(elem) {
     var series = chart.series;
     var newseries = series;
     var checked1 = document.querySelectorAll('input.LC_cb:checked');
-    var LC_arr=[];
+    var LC_arr = [];
     for (var i = 0; i < checked1.length; i++) {
-        LC_arr.push('LC'+checked1[i].value);
+        LC_arr.push('LC' + checked1[i].value);
     }
-        var checked2 = document.querySelectorAll('input.AGB_cb:checked');
-    var AGB_arr=[];
+    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+    var AGB_arr = [];
     for (var i = 0; i < checked2.length; i++) {
-        AGB_arr.push('AGB'+checked2[i].value);
+        AGB_arr.push('AGB' + checked2[i].value);
     }
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0])&&AGB_arr.includes(newseries[i].name[1])) {
+        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
             chart.series[i].show();
         }
     }
@@ -196,21 +196,21 @@ function access_lines(elem, dataset) {
     var msg = all_unchecked();
 
     if (msg.length == 0) {
- if (elem.checked) {
+        if (elem.checked) {
             show_line(dataset + elem.value);
 
         } else {
             hide_line(dataset + elem.value);
         }
-  } else {
+    } else {
         alert(msg);
         elem.checked = true;
     }
-        var ns = [];
-var lcss = get_checked_lcs();
+    var ns = [];
+    var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
-    var min_arr=[];
-    var res_mmm=[];
+    var min_arr = [];
+    var res_mmm = [];
     var max_arr = [];
     var avg_arr = [];
 
@@ -221,7 +221,7 @@ var lcss = get_checked_lcs();
             "data": result2.min,
             "color": 'green',
             "visible": true,
-            legendIndex:-1,
+            legendIndex: -1,
             lineWidth: 5,
             dashStyle: 'shortdash'
         };
@@ -231,7 +231,7 @@ var lcss = get_checked_lcs();
             "color": 'red',
             "visible": true,
             lineWidth: 5,
-                        legendIndex:-2,
+            legendIndex: -2,
 
             dashStyle: 'shortdash'
         };
@@ -241,23 +241,22 @@ var lcss = get_checked_lcs();
             "color": 'orange',
             "visible": true,
             lineWidth: 5,
-                        legendIndex:-3,
+            legendIndex: -3,
             dashStyle: 'shortdash'
         };
 
         $.each(chart.series, function (i, s) {
-                for (var j = 0; j < lc_colors.length; j++) {
-                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                        s.color = lc_colors[j]['color'];
-                    }
+            for (var j = 0; j < lc_colors.length; j++) {
+                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                    s.color = lc_colors[j]['color'];
+                }
 
 
             }
-                ns.push({name:s.name,data:s.data,color:s.color});
+            ns.push({name: s.name, data: s.data, color: s.color});
         });
 
         chart.update({series: [ns, min_arr, max_arr, avg_arr]});
-
 
 
     });

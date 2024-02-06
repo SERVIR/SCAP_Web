@@ -130,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(str(BASE_DIR),'scap', 'static')
+STATIC_ROOT = os.path.join(str(BASE_DIR), 'scap', 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
@@ -164,4 +164,4 @@ SITE_ID = data['SITE_ID']
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-SOCIALACCOUNT_LOGIN_ON_GET=True
+SOCIALACCOUNT_LOGIN_ON_GET = True

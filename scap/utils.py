@@ -104,27 +104,6 @@ def entire_area_pa(pa):
     print(y)
 
 
-# def getArea(js):
-#     from shapely.geometry import shape
-#
-#     try:
-#         features = []
-#         flag = False
-#
-#         for feature in js['features']:
-#             features.append(feature)
-#         print(len(features))
-#         area = 0
-#         for feature in features:
-#             polygon = shape(feature['geometry'])
-#             area = area + polygon.area
-#         print(area)
-#         return area
-#     except Exception as e:
-#         print(e)
-#         return HttpResponse(str(e))
-
-
 def percent_inside(pa, ds):
     polygon1 = fiona.open(pa.geom.json)
     polygon8 = fiona.open(ds.geom.json)
@@ -151,77 +130,6 @@ def delete_temp_dir(directory):
     shutil.rmtree(directory)
 
 
-def get_links(url):
-    import os
-    import requests
-    from urllib.parse import urljoin
-    from bs4 import BeautifulSoup
-    result = requests.get(url).content
-    soup = BeautifulSoup(result, 'html.parser')
-    data = soup.find_all('a')
-    return data
-
-
-# def test_py():
-#     import os
-#     import requests
-#     from urllib.parse import urljoin
-#     from bs4 import BeautifulSoup
-#
-#     url = "https://apps.rcmrd.org:8443/forecasts_final/Counties/"
-#
-#     # If there is no such folder, the script will create one automatically
-#     folder_location = r'C:\Users\gtondapu\Desktop\ARANGELANDS'
-#     result = requests.get(url).content
-#     soup = BeautifulSoup(result, 'html.parser')
-#     data = soup.find_all('a')
-#     ls=get_links(url)
-#     hrefs=[]
-#     for i in range(len(ls)):
-#         if i>=28:
-#             hrefs.append(ls[i])
-#
-#
-#
-#     for link in hrefs:
-#         if link:
-#             links = []
-#             names_of_mp3_files = []
-#             for l in get_links(urljoin(url, link.contents[0])):
-#                 links.append(urljoin(url, l['href']))
-#                 names_of_mp3_files.append(l.contents[0])
-#             print(links)
-#             print(names_of_mp3_files)
-#             for place in range(1,len(links)):
-#                 isExist = os.path.exists(folder_location+'\\'+link.contents[0])
-#                 # os.chmod(folder_location,0o777)
-#                 if not isExist:
-#                     # Create a new directory because it does not exist
-#                     os.makedirs(folder_location+'\\'+link.contents[0],0o777)
-#                 os.chmod(folder_location, 0o777)
-#                 with open(folder_location+'\\'+link.contents[0]+'\\'+names_of_mp3_files[place], 'wb') as f:
-#                     content = requests.get(links[place]).content
-#                     f.write(content)
-
-
-# def test_method():
-#     print("fff")
-#     RootDir1 = r"C:\Users\gtondapu\Desktop\rdst\geoserver\data\data\rangelands"
-#     TargetFolder = r"C:\Users\gtondapu\Desktop\tiffs"
-#     print("ggg")
-#     for root, dirs, files in os.walk((os.path.normpath(RootDir1)), topdown=False):
-#         for name in files:
-#             if name.endswith('.geotiff'):
-#                 SourceFolder = os.path.join(root, name)
-#                 shutil.copy2(SourceFolder, TargetFolder)  # copies csv to new folder
-
-# def tt():
-# import rioxarray as rxr
-#
-# raster = rxr.open_rasterio(
-#     'raster.tif',
-#     masked=True
-# ).squeeze()
 def mask_with_tif():
     import numpy as np
     import rasterio
@@ -229,8 +137,8 @@ def mask_with_tif():
     from rasterio.warp import Resampling
 
     # Open the rasters to be clipped and masked
-    with rasterio.open(r"C:\Users\gtondapu\Downloads\ivokrama\IwokIC.tif") as src1:
-        with rasterio.open(r"C:\Users\gtondapu\Downloads\fc\fc_mapbiomas_2001_1ha.tif") as src2:
+    with rasterio.open(r"path_to_tif") as src1:
+        with rasterio.open(r"path_to_fc") as src2:
             # Read the shapes and transform them to the same coordinate reference system (CRS)
 
             # Clip the rasters
@@ -268,13 +176,8 @@ def mask_with_tif():
     # print(gdf.area / 10**6)
 
 
-def upload_file(request):
-    isthisFile = request.get('filepath')
-
-
 def get_resolution_of_tif(tif):
     try:
-        print("in res try")
         src = gdal.Open(tif)
         xres, yres = operator.itemgetter(1, 5)(src.GetGeoTransform())
         return abs(xres * yres)
@@ -283,8 +186,6 @@ def get_resolution_of_tif(tif):
 
 
 def get_projection_of_tif(tif):
-    print("proj")
-    print(tif)
     from osgeo import gdal, osr
 
     ds = gdal.Open(tif)
@@ -301,9 +202,9 @@ def get_projection_of_tif(tif):
         print(e)
     # print(srs.GetAttrValue('geogcs'))
 
+
 def get_projection_of_boundary(shp):
     try:
-        print("in try block")
         c = gpd.read_file(shp)
         crs = c.crs
         return str(crs)

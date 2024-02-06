@@ -13,6 +13,7 @@ from django.contrib.gis.utils import LayerMapping
 import rasterio
 from rasterio.mask import mask
 import ee
+from django.views.decorators.csrf import csrf_exempt
 from scap.models import BoundaryFiles, AOI, ForestCoverChange, ForestCoverChangeFile, ForestCoverFile, NewCollection, \
     UserProvidedAOI
 
@@ -28,7 +29,7 @@ collections_global = []
 
 # This method is used to generate geodjango objects for AOI or Boundary Data Source
 # Uses LayerMapping technique to update the object from shape file
-def generate_geodjango_objects(verbose=True):
+def generate_geodjango_objects_boundary(verbose=True):
     boundaryfiles_mapping = {
         'feature_id': 'feature_id',
         'name_es': 'name_es',
@@ -38,6 +39,14 @@ def generate_geodjango_objects(verbose=True):
         'fid': 'FID',
         'geom': 'MULTIPOLYGON',
     }
+    boundary = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), 'data', r'path_to_shp_file'),
+    )
+    lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
+    lm.save(strict=True, verbose=verbose)
+
+
+def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
         'wdpaid': 'WDPAID',
         'wdpa_pid': 'WDPA_PID',
@@ -73,20 +82,16 @@ def generate_geodjango_objects(verbose=True):
         'path': 'path',
         'geom': 'MULTIPOLYGON',
     }
-
-    boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r'C:\Users\gtondapu\Desktop/guyana.shp'),
+    aoi = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), 'data', r'path_to_shp_file'),
     )
 
-    # lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
-    # lm.save(strict=True, verbose=verbose)
-    lm = LayerMapping(AOI, boundary, aoi_mapping, transform=False)
+    lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
 
 
-def getInitialForestArea_new(year, dir, dataset, pa, val):
-    sa = "airqualityservice@airquality-255511.iam.gserviceaccount.com"
-    credentials = ee.ServiceAccountCredentials(sa, r'C:\Users\gtondapu\Downloads\airquality-255511-eb61b92cb290.json')
+def getInitialForestArea_gee(year, dir, dataset, pa, val):
+    credentials = ee.ServiceAccountCredentials(params['SERVICE_ACCOUNT'], params['SERVICE_ACCOUNT_JSON'])
     ee.Initialize(credentials)
     dataset = dataset.lower()
     file = dir + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
@@ -120,7 +125,7 @@ def getInitialForestArea_new(year, dir, dataset, pa, val):
 def getInitialForestArea(year, dir, dataset, pa, val):
     # print("year", year)
     dataset = dataset.lower()
-    file = dir + "/"+"fc_" + dataset + "_" + str(year) + "_1ha.tif"
+    file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
     print(pa.name)
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
@@ -188,10 +193,12 @@ def generate_fcc_fields(dataset, year):
                 fcchange.year = year
                 fcchange.aoi = aoi
                 fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
-                                                                        fc.file_directory, fc.fc_source.name_es, aoi,
-                                                                        val)
-                fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, 1, fcc.year, val)
-                fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory,fcc.fc_source.name_es, -1, fcc.year, val)
+                                                                    fc.file_directory, fc.fc_source.name_es, aoi,
+                                                                    val)
+                fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, 1,
+                                                                fcc.year, val)
+                fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, -1,
+                                                                fcc.year, val)
                 end = time.time()
                 fcchange.processing_time = end - start
                 fcchange.save()
@@ -209,9 +216,6 @@ def generate_from_lambda():
         FunctionName='arn:aws:lambda:us-east-2:267380267443:function:final-python-forestcal-dev-image_upload',
         InvocationType='Event',
     )
-
-
-from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
@@ -270,11 +274,8 @@ def savetomodel(request):
         return JsonResponse({"result": "error", "error_message": str(e)})
 
 
-
 @csrf_exempt
 def updatetomodel(request):
-
-
     try:
 
         coll_name = request.POST['coll_name']
@@ -310,6 +311,8 @@ def updatetomodel(request):
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
+
+
 @csrf_exempt
 def check_if_coll_exists(request):
     collections = list(NewCollection.objects.values('collection_name').distinct())
@@ -324,11 +327,11 @@ def check_if_coll_exists(request):
         return JsonResponse({"result": "error", "error_message": "Please choose a different name for collection"})
 
 
-
 @csrf_exempt
 def getcollections(request):
     arr = []
-    collections = list(NewCollection.objects.filter(username=request.user.username).values('collection_name').distinct())
+    collections = list(
+        NewCollection.objects.filter(username=request.user.username).values('collection_name').distinct())
 
     # print(collections)
     for c in collections:
@@ -388,11 +391,13 @@ def get_aoi_list(request):
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "message": str(e)})
+
+
 @csrf_exempt
 def delete_AOI(request):
     try:
-        aoi_name=request.POST['aoi_name']
-        x = UserProvidedAOI.objects.filter(username=request.user.username,aoi_name=aoi_name)
+        aoi_name = request.POST['aoi_name']
+        x = UserProvidedAOI.objects.filter(username=request.user.username, aoi_name=aoi_name)
         x.delete()
         aoi_path = os.path.join(params['PATH_TO_DATA'], "Private", request.user.username,
                                 "AOIs")

@@ -21,8 +21,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="{% static "css/modal.css" %}"/>
-<!-- Optional JavaScript; choose one of the two! -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
 </head>
@@ -42,17 +42,17 @@
                 <li class="nav-item"><a class="nav-link" href="#add_coll">ADD</a></li>
                 <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>
                 <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
+                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
 
                 {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
- {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
                                 class="caret"></span></a>
-                           <ul class="dropdown-menu bg-transparent">
+                        <ul class="dropdown-menu bg-transparent">
                             <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
                             </li>
 
@@ -76,239 +76,245 @@
 <br/>
 <br/>
 <br/>
- {% if user.is_authenticated %}
-<section class="page-section bg-light" id="add_coll">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">Add new collection</h2>
-            {#                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>#}
-        </div>
-        <div class="row">
-            <div class="col-lg-8 col-sm-8 mb-4">
-                <form id="upload-file" enctype="multipart/form-data" method="post">
+{% if user.is_authenticated %}
+    <section class="page-section bg-light" id="add_coll">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Add new collection</h2>
+                {#                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>#}
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-sm-8 mb-4">
+                    <form id="upload-file" enctype="multipart/form-data" method="post">
 
-                    <div id="new_collection_info">
-                        <div class="mb-3 common"><label>Collection Identification Name </label>
-                            <p><input id="coll_name" class="form-control" type="text"/></p>
-                            <p style="color: darkred" id="col_exists"></p></div>
-                        <div class="mb-3 common"><label style="display: block">Source and Supplemental
-                            information</label>
-                            <textarea  class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>
-                        <div class="mb-3 common">
-                            <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
-                                files in the
-                                collection) </label>
+                        <div id="new_collection_info">
+                            <div class="mb-3 common"><label>Collection Identification Name </label>
+                                <p><input id="coll_name" class="form-control" type="text"/></p>
+                                <p style="color: darkred" id="col_exists"></p></div>
+                            <div class="mb-3 common"><label style="display: block">Source and Supplemental
+                                information</label>
+                                <textarea class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>
+                            <div class="mb-3 common">
+                                <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
+                                    files in the
+                                    collection) </label>
 
-                            <input class="form-control fileupload" type="file" name="filename" id="boundaryFile"
-                                   accept="application/zip">
-                        </div>
-                        <div class="mb-3 common">
-                            <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff
-                                files </label>
-                            <input class="form-control fileupload" type="file" id="tifffiles" multiple
-                                   accept="image/tiff">
-                        </div>
-                        <ul id="list">
-                        </ul>
+                                <input class="form-control fileupload" type="file" name="filename" id="boundaryFile"
+                                       accept="application/zip">
+                            </div>
+                            <div class="mb-3 common">
+                                <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff
+                                    files </label>
+                                <input class="form-control fileupload" type="file" id="tifffiles" multiple
+                                       accept="image/tiff">
+                            </div>
+                            <ul id="list">
+                            </ul>
 
-                        <div class="mb-3 common">
-                            <label for="access">Access Level</label><select class="form-control" id="access">
+                            <div class="mb-3 common">
+                                <label for="access">Access Level</label><select class="form-control" id="access">
                                 <option>Public</option>
                                 <option>Private</option>
                             </select>
-                        </div>
-                        <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary
-                        </button>
-                        <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()" id="clear_new">
-                            Clear Form
-                        </button>
+                            </div>
+                            <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary
+                            </button>
+                            <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()"
+                                    id="clear_new">
+                                Clear Form
+                            </button>
 
 
-                        <div id="myModal" class="modal">
+                            <div id="myModal" class="modal">
 
-                            <!-- Modal content -->
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <label>Collection Identification Name: </label>
-                                <p id="c_name">Some text in the Modal..</p>
-                                <label>Source and Supplemental information: </label>
-                                <p id="c_desc">Some text in the Modal..</p>
-                                <label>Boundary Shape File: </label>
-                                <p id="c_boundary_path">Some text in the Modal..</p>
-                                <label>TIFF files: </label>
-                                <p id="c_tiffs"></p>
+                                <!-- Modal content -->
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <label>Collection Identification Name: </label>
+                                    <p id="c_name">Some text in the Modal..</p>
+                                    <label>Source and Supplemental information: </label>
+                                    <p id="c_desc">Some text in the Modal..</p>
+                                    <label>Boundary Shape File: </label>
+                                    <p id="c_boundary_path">Some text in the Modal..</p>
+                                    <label>TIFF files: </label>
+                                    <p id="c_tiffs"></p>
 
 
-                                <label>Access level: </label>
-                                <p id="c_access"></p>
+                                    <label>Access level: </label>
+                                    <p id="c_access"></p>
 
-                                <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>
+                                    <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>
+
+                                </div>
 
                             </div>
-
                         </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="page-section bg-light" id="update_coll">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">UPDATE collection</h2>
-            {#                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>#}
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-sm-6 mb-4">
-                <div id="existing_coll">
-                    <div class="mb-3 common"><label id="coll">Select the existing collection</label>
-                        <select aria-label="coll" id="existing_list" class="form-control">
-                            <option>--Select--</option>
-
-                        </select>
-                    </div>
-
-                    <div class="mb-3 common">
-                        <div id="lists">
-                            <p>Existing TIFFS in this collection:</p>
-
-                        </div>
-                        <label for="formFileMultiple" class="form-label">Upload more files to this collection </label>
-                        <input class="form-control fileupload" type="file" id="new_tifffiles" multiple
-                               accept="image/tiff"/>
-                    </div>
-
-                    {#    <ul id="list_existing">#}
-                    {#    </ul>#}
-                    <ul id="list_new_added">
-                    </ul>
-                    <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary
-                    </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_existing">Clear
-                    Form
-                </button>
-
-                </div>
-
-                <div id="mynewModal" class="modal">
-
-                    <!-- Modal content -->
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <label>Collection Identification Name: </label>
-                        <p id="c_update_name">Some text in the Modal</p>
-
-                        <label>Existing TIFF files: </label>
-                        <p id="c_existing_tiffs"></p>
-                        <label>Newly Added TIFF files: </label>
-                        <p id="c_new_tiffs"></p>
-
-
-                        <button type="button" class="btn btn-primary common" id="updatetoDB"
-                                onclick="savetoLocalPath(this)">Submit
-                        </button>
-
-                    </div>
-
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+    <section class="page-section bg-light" id="update_coll">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">UPDATE collection</h2>
+                {#                    <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>#}
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <div id="existing_coll">
+                        <div class="mb-3 common"><label id="coll">Select the existing collection</label>
+                            <select aria-label="coll" id="existing_list" class="form-control">
+                                <option>--Select--</option>
 
+                            </select>
+                        </div>
 
-<!-- Services-->
-<section class="page-section" id="aoi">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">AOI</h2>
-        </div>
-        <div class="row text-center">
-            <div class="col-md-8">
-                <form id="upload-aoi">
-                    <div id="aoiModal" class="modal">
+                        <div class="mb-3 common">
+                            <div id="lists">
+                                <p>Existing TIFFS in this collection:</p>
+
+                            </div>
+                            <label for="formFileMultiple" class="form-label">Upload more files to this
+                                collection </label>
+                            <input class="form-control fileupload" type="file" id="new_tifffiles" multiple
+                                   accept="image/tiff"/>
+                        </div>
+
+                        {#    <ul id="list_existing">#}
+                        {#    </ul>#}
+                        <ul id="list_new_added">
+                        </ul>
+                        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary
+                        </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_existing">
+                        Clear
+                        Form
+                    </button>
+
+                    </div>
+
+                    <div id="mynewModal" class="modal">
 
                         <!-- Modal content -->
                         <div class="modal-content">
                             <span class="close">&times;</span>
-                            <label>AOI Name: </label>
-                            <p id="c_aoi_names"></p>
+                            <label>Collection Identification Name: </label>
+                            <p id="c_update_name">Some text in the Modal</p>
+
+                            <label>Existing TIFF files: </label>
+                            <p id="c_existing_tiffs"></p>
+                            <label>Newly Added TIFF files: </label>
+                            <p id="c_new_tiffs"></p>
 
 
-                            <button type="button" class="btn btn-primary common" id="storeAOI"
+                            <button type="button" class="btn btn-primary common" id="updatetoDB"
                                     onclick="savetoLocalPath(this)">Submit
                             </button>
 
                         </div>
 
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
-                    <div id="new_aoi_info">
-                        <div class="mb-3 common">
-                            <label for="formFileMultiple" class="form-label">Upload AOI Shape files with .zip extension </label>
-                            <input class="form-control aoifileupload" type="file" id="aoifiles" multiple
-                                   accept="application/zip">
+    <!-- Services-->
+    <section class="page-section" id="aoi">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">AOI</h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-8">
+                    <form id="upload-aoi">
+                        <div id="aoiModal" class="modal">
+
+                            <!-- Modal content -->
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <label>AOI Name: </label>
+                                <p id="c_aoi_names"></p>
+
+
+                                <button type="button" class="btn btn-primary common" id="storeAOI"
+                                        onclick="savetoLocalPath(this)">Submit
+                                </button>
+
+                            </div>
+
                         </div>
-                        <ul id="aoi_list">
-                        </ul>
-                        <br>
-                        <div>
-                            <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review Summary
-                            </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_aois">
-                            Clear Form
-                        </button>
 
+
+                        <div id="new_aoi_info">
+                            <div class="mb-3 common">
+                                <label for="formFileMultiple" class="form-label">Upload AOI Shape files with .zip
+                                    extension </label>
+                                <input class="form-control aoifileupload" type="file" id="aoifiles" multiple
+                                       accept="application/zip">
+                            </div>
+                            <ul id="aoi_list">
+                            </ul>
+                            <br>
+                            <div>
+                                <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review
+                                    Summary
+                                </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common"
+                                                       id="clear_aois">
+                                Clear Form
+                            </button>
+
+                            </div>
                         </div>
-                    </div>
 
-                </form>
+                    </form>
 
+                </div>
             </div>
         </div>
-    </div>
 
 
-</section>
+    </section>
 
-<section class="page-section" id="delete">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">DELETE COLLECTION/AOI</h2>
-        </div>
-        <div class="row text-center">
-            <div class="col-md-4">
+    <section class="page-section" id="delete">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">DELETE COLLECTION/AOI</h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Footer-->
-<footer class="footer py-4">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
-            <div class="col-lg-4 my-3 my-lg-0">
-                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
-                        class="fab fa-twitter"></i></a>
-                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
-                        class="fab fa-facebook-f"></i></a>
-                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
-                        class="fab fa-linkedin-in"></i></a>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
-                <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+    <!-- Footer-->
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
- {% else %}
-     <br/>
-     <br/>
-     <br/>
-     <p class="text-center">Please login to add your collections, files and AOIs</p>
-   {% endif %}
+    </footer>
+{% else %}
+    <br/>
+    <br/>
+    <br/>
+    <p class="text-center">Please login to add your collections, files and AOIs</p>
+{% endif %}
 
 <!-- AOI modal popup-->
 

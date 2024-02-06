@@ -60,59 +60,58 @@ $("#storeAOI").click(function (e) {
     e.preventDefault();
     var upload_form = $('#upload-aoi')[0];
     var form_data = new FormData(upload_form);
-        let files = $('input[type=file]')[0].files;
-        for (let i = 0; i < files.length; i++) {
-            form_data.append('aois[]', files[i]);
-            form_data.append('aoi_names[]',  document.getElementsByClassName("aoi_names")[i].value);
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/saveAOItomodel/',
-            data: form_data,
-            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-            processData: false,
-            success: function (data) {
-                console.log(data);
-                if (data.result == "success") {
-                    console.log('Success!');
-                            modal_aoi.style.display = "none";
-        update_aois();
+    let files = $('input[type=file]')[0].files;
+    for (let i = 0; i < files.length; i++) {
+        form_data.append('aois[]', files[i]);
+        form_data.append('aoi_names[]', document.getElementsByClassName("aoi_names")[i].value);
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/saveAOItomodel/',
+        data: form_data,
+        contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+        processData: false,
+        success: function (data) {
+            console.log(data);
+            if (data.result == "success") {
+                console.log('Success!');
+                modal_aoi.style.display = "none";
+                update_aois();
 
-                }
-                else
-                    alert(data.error_message)
-            },
-        });
-        let yrs = document.getElementsByClassName("aoi_names");
-        for (var i = 0; i < yrs.length; i++) {
-            yrs[i].value = '';
-        }
-                          document.getElementById("aoi_list").innerHTML="";
+            } else
+                alert(data.error_message)
+        },
+    });
+    let yrs = document.getElementsByClassName("aoi_names");
+    for (var i = 0; i < yrs.length; i++) {
+        yrs[i].value = '';
+    }
+    document.getElementById("aoi_list").innerHTML = "";
 
 
 });
 
-function clearForm(){
-                        document.getElementById("aoi_list").innerHTML="";
+function clearForm() {
+    document.getElementById("aoi_list").innerHTML = "";
 
     document.getElementById("upload-aoi").reset();
 }
 
-function update_aois(){
-    document.getElementById("aoi_table").innerHTML="";
-      var newRow = document.createElement("tr");
-                var td = document.createElement("th");
-                td.innerHTML = "AOI Name";
-                newRow.appendChild(td);
-                 td = document.createElement("th");
-                td.innerHTML = "Last Accessed On";
-                                newRow.appendChild(td);
+function update_aois() {
+    document.getElementById("aoi_table").innerHTML = "";
+    var newRow = document.createElement("tr");
+    var td = document.createElement("th");
+    td.innerHTML = "AOI Name";
+    newRow.appendChild(td);
+    td = document.createElement("th");
+    td.innerHTML = "Last Accessed On";
+    newRow.appendChild(td);
 
-                td = document.createElement("th");
-                td.innerHTML = "Delete AOI"
-                ;
-                newRow.appendChild(td);
-                document.getElementById('aoi_table').appendChild(newRow);
+    td = document.createElement("th");
+    td.innerHTML = "Delete AOI"
+    ;
+    newRow.appendChild(td);
+    document.getElementById('aoi_table').appendChild(newRow);
 
 
     $.ajax({
@@ -120,19 +119,18 @@ function update_aois(){
         url: '/get_aoi_list/', data: {},
         success: function (data) {
             console.log(data);
-            var aois=data.names;
+            var aois = data.names;
 
-            var dates=data.last_accessed_on;
+            var dates = data.last_accessed_on;
 
             for (var i = 0; i < aois.length; i++) {
-                            var btn = document.createElement('input');
+                var btn = document.createElement('input');
 
                 btn.type = "button";
                 btn.className = "btn_del";
                 btn.value = "Delete";
-                btn.id=aois[i];
+                btn.id = aois[i];
                 btn.addEventListener("click", deleteAOI);
-
 
 
                 var td = document.createElement("td");
@@ -154,13 +152,14 @@ function update_aois(){
 
     });
 }
+
 const deleteAOI = e => {
-        $.ajax({
-            type: 'POST',
-            url: '/delete_AOI/', data: {'aoi_name':e.target.id},
-            success: function (data) {
-                console.log("msg")
-                update_aois();
-            }
-        });
+    $.ajax({
+        type: 'POST',
+        url: '/delete_AOI/', data: {'aoi_name': e.target.id},
+        success: function (data) {
+            console.log("msg")
+            update_aois();
+        }
+    });
 }

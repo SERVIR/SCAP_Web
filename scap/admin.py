@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource,ForestCoverSource,Emissions,
+from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource, ForestCoverSource, Emissions,
                          ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection)
 
 
@@ -36,10 +36,16 @@ class ForestCoverChangeFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class ForestCoverFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'fc_source', 'file_name', 'file_directory', 'created')
     list_filter = ('fc_source', 'created')
+
+
 class UserProvidedAOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('aoi_name','path_to_aoi_file','last_accessed_on')
+    list_display = ('aoi_name', 'path_to_aoi_file', 'last_accessed_on')
+
+
 class NewCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('collection_name','boundary_file','tiff_file','projection','resolution','last_accessed_on')
+    list_display = ('collection_name', 'boundary_file', 'tiff_file', 'projection', 'resolution', 'last_accessed_on')
+
+
 # admin.site.register(PredefinedAOI, PredefinedAOIAdmin)
 class AGBSourceAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('agb_id', 'agb_label', 'agb_name')
@@ -47,9 +53,7 @@ class AGBSourceAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class ForestCoverSourceAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('fcs_name', 'fcs_color', 'fcs_description','fcs_metadata','private')
-
-
+    list_display = ('fcs_name', 'fcs_color', 'fcs_description', 'fcs_metadata', 'private')
 
 
 class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):

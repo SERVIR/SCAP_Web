@@ -1,6 +1,6 @@
- populateCollections();
+populateCollections();
 $("#savetoDB").click(function (e) {
-                    e.preventDefault();
+    e.preventDefault();
 
 
     var upload_form = $('#upload-file')[0];
@@ -30,7 +30,7 @@ $("#savetoDB").click(function (e) {
                 if (data.result == "success")
                     console.log('Success!');
                 else {
-                    document.getElementById("list").innerHTML="";
+                    document.getElementById("list").innerHTML = "";
                     alert(data.error_message)
 
                 }
@@ -47,18 +47,18 @@ $("#savetoDB").click(function (e) {
     }
 
 
-
 });
+
 function savetoLocalPath(btn) {
     if (btn.id === 'updatetoDB') {
-         var upload_form = $('#upload-file')[0];
-    var form_data = new FormData(upload_form);
-         form_data.append('coll_name', $('#existing_list').find(":selected").val());
+        var upload_form = $('#upload-file')[0];
+        var form_data = new FormData(upload_form);
+        form_data.append('coll_name', $('#existing_list').find(":selected").val());
         let files = $('input[type=file]')[2].files;
         for (let i = 0; i < files.length; i++) {
             form_data.append('FC_tiffs_New[]', files[i]);
             form_data.append('FC_tiffs_New_OriginalNames[]', files[i].name);
-            form_data.append('FC_tiffs_New_Name[]', "fc_" + $('#existing_list').find(":selected").val()+ "_" + document.getElementsByClassName("years")[i].value + "_1ha.tif");
+            form_data.append('FC_tiffs_New_Name[]', "fc_" + $('#existing_list').find(":selected").val() + "_" + document.getElementsByClassName("years")[i].value + "_1ha.tif");
         }
         $.ajax({
             type: 'POST',
@@ -71,7 +71,7 @@ function savetoLocalPath(btn) {
                 if (data.result === "success")
                     console.log('Success!');
                 else {
-                    document.getElementById("existing_list").innerHTML="";
+                    document.getElementById("existing_list").innerHTML = "";
                     alert(data.error_message)
 
                 }
@@ -86,6 +86,7 @@ function savetoLocalPath(btn) {
         modal.style.display = "none";
     }
 }
+
 $("#coll_name").on("keyup", function () {
     var coll = $(this).val().trim();
     $.ajax({
@@ -166,7 +167,7 @@ var span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
 btn_new.onclick = function () {
-         var coll = $('#coll_name').val().trim();
+    var coll = $('#coll_name').val().trim();
     $.ajax({
         type: 'POST',
         url: '/check_if_coll_exists/',
@@ -175,7 +176,7 @@ btn_new.onclick = function () {
         },
         success: function (data) {
             if (data.result === "success") {
-                                document.getElementById("col_exists").innerHTML = "";
+                document.getElementById("col_exists").innerHTML = "";
 
                 document.getElementById("c_tiffs").innerHTML = "";
                 modal_new.style.display = "block";
@@ -196,15 +197,14 @@ btn_new.onclick = function () {
                 var e = document.getElementById("access");
                 var text = e.options[e.selectedIndex].text;
                 document.getElementById("c_access").innerHTML = text;
-            }
-            else{
-                                modal_new.style.display = "none";
+            } else {
+                modal_new.style.display = "none";
 
-                                document.getElementById("col_exists").innerHTML = "Collection Exists, please choose a different name.";
+                document.getElementById("col_exists").innerHTML = "Collection Exists, please choose a different name.";
 
             }
         }
-        });
+    });
 
 
 }
@@ -260,8 +260,6 @@ window.onclick = function (event) {
     }
 
 }
-
-
 
 
 function populateCollections() {
@@ -354,8 +352,8 @@ $('#existing_list').on('change', function () {
 //   })
 // }
 
-function clearForm(){
-                        document.getElementById("list").innerHTML="";
+function clearForm() {
+    document.getElementById("list").innerHTML = "";
 
     document.getElementById("upload-file").reset();
 }
