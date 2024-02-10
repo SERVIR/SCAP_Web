@@ -168,7 +168,7 @@ def mask_with_tif():
             with rasterio.open(r"fc_clipped_6.tif", "w", **profile) as dst:
                 dst.write(clipped)
 
-    # rds = rioxarray.open_rasterio(r"C:\Users\gtondapu\Desktop\fc_clipped_new1.tif")
+    # rds = rioxarray.open_rasterio(r"path_to_clipped_tif")
     # rds.name = "data"
     # df = rds.squeeze().to_dataframe().reset_index()
     # geometry = gpd.points_from_xy(df.x, df.y)

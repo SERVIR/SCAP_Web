@@ -40,7 +40,7 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r'path_to_shp_file'),
+        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -83,7 +83,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r'path_to_shp_file'),
+        os.path.join(os.path.dirname(__file__), 'data',  r"path_to_shapefile"),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
@@ -151,7 +151,7 @@ def getInitialForestArea(year, dir, dataset, pa, val):
 # get the forest gain or forest loss of a FCC TIFF file
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # print(year)
-    file = dir + "fcc_" + dataset + "_" + str(year) + "_1ha.tif"
+    file = dir + "/fcc_" + dataset + "_" + str(year) + "_1ha.tif"
     data = fiona.open(pa.geom.json)  # get the json of a protected area
     geometry = [shape(feat["geometry"]) for feat in data]
     # load the raster, mask it by the FCC TIFF and crop it
@@ -177,35 +177,47 @@ def generate_fcc_fields(dataset, year):
     try:
         create_temp_dir(params["PATH_TO_TEMP_FILES"])
         l_dataset = dataset.lower()
-        data_source = (BoundaryFiles.objects.get(name_es=dataset))
+        if l_dataset != "mapbiomas":
+            data_source = (BoundaryFiles.objects.get(name_es="Global"))
+        else:
+            data_source = (BoundaryFiles.objects.get(name_es=dataset))
+        print(data_source)
         needed_aois = AOI.objects.filter(geom__intersects=GEOSGeometry(data_source.geom))
+        print(needed_aois)
         val = 0
         for aoi in needed_aois:
             val = val + 1
             start = time.time()
-            if percent_inside(aoi, data_source) > params["PERCENTAGE_INSIDE_DATASET"]:
-                fcchange = ForestCoverChange()
-                fcchange.fc_source = data_source
+            # print(percent_inside(aoi, data_source))
+            # if percent_inside(aoi, data_source) > params["PERCENTAGE_INSIDE_DATASET"]:
+            #     print("inside")
+            fcchange = ForestCoverChange()
+            fcchange.fc_source = data_source
+            if l_dataset != "mapbiomas":
+                fcc = ForestCoverChangeFile.objects.get(file_name='fcc_' + l_dataset + '_peru_' + str(year) + '_1ha.tif')
+                fc = ForestCoverFile.objects.get(
+                    file_name='fc_' + l_dataset + '_peru_' + str(fcc.baseline_year) + '_1ha.tif')
+            else:
                 fcc = ForestCoverChangeFile.objects.get(file_name='fcc_' + l_dataset + '_' + str(year) + '_1ha.tif')
                 fc = ForestCoverFile.objects.get(
                     file_name='fc_' + l_dataset + '_' + str(fcc.baseline_year) + '_1ha.tif')
-                fcchange.baseline_year = fcc.baseline_year
-                fcchange.year = year
-                fcchange.aoi = aoi
-                fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
-                                                                    fc.file_directory, fc.fc_source.name_es, aoi,
-                                                                    val)
-                fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, 1,
-                                                                fcc.year, val)
-                fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, -1,
-                                                                fcc.year, val)
-                end = time.time()
-                fcchange.processing_time = end - start
-                fcchange.save()
+            fcchange.baseline_year = fcc.baseline_year
+            fcchange.year = year
+            fcchange.aoi = aoi
+            fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
+                                                                fc.file_directory, fc.fc_source.name_es, aoi,
+                                                                val)
+            fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, 1,
+                                                            fcc.year, val)
+            fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, -1,
+                                                            fcc.year, val)
+            end = time.time()
+            fcchange.processing_time = end - start
+            fcchange.save()
     except Exception as e:
         print(e)
-    # finally:
-    #     delete_temp_dir(params["PATH_TO_TEMP_FILES"])
+    finally:
+        delete_temp_dir(params["PATH_TO_TEMP_FILES"])
 
 
 def generate_from_lambda():

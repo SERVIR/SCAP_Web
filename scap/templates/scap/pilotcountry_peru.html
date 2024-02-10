@@ -39,10 +39,11 @@
     <script src="https://code.highcharts.com/modules/annotations.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 </head>
 <body id="page-top">
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
     <div class="container">
         <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
@@ -79,6 +80,18 @@
 
                 {% endif %}                    </ul>
         </div>
+    </div>
+</nav>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top justify-content-center" id="subNav"
+     style="margin-top: 80px;height: 40px;opacity: 0.7;font-weight: bold">
+    <div class="collapse navbar-collapse justify-content-center" id="subnavbarResponsive">
+        <ul class="navbar-nav text-uppercase py-4 py-lg-0">
+            <li class="nav-item"><a class="nav-link text-warning" href="{% url "peru" %}#InitialMap">Map</a></li>
+            <li class="nav-item"><a class="nav-link text-warning" href="{% url "peru" %}#EmissionsChart">Emissions</a>
+            </li>
+            <li class="nav-item"><a class="nav-link text-warning" href="{% url "peru" %}#NetForestChangeChart">Net
+                Forest Change</a></li>
+        </ul>
     </div>
 </nav>
 <!-- Masthead-->
@@ -126,64 +139,112 @@
     var lc_colors = {{colors|safe}};
     console.log(lc_colors);
 </script>
-<section class="page-section" id="EnsembleChart">
+<section class="page-section" id="EmissionsChart">
     <div class="container">
-        <div>
-            <div class="card" style="width: 100%;height: 700px">
-                {#                <img class="card-img-top" src="{% static "assets/img/EmissionsChart1.png" %}" alt="EmissionsChart">#}
-                <div class="card-body">
-                    <div class="row h-100 ">
+        <div class="card" style="width: 100%">
+            {#                <img class="card-img-top" src="{% static "assets/img/EmissionsChart1.png" %}" alt="EmissionsChart">#}
 
-                        <div class="col-3 m-auto" id="checkbox_selection">
-                            <div class="LC_checkboxlist">
-                                <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
-                                <ul class="lc_list" style="list-style-type: none">
-                                    {% for lc in lcs %}
-                                        <li class="lc_list-item">
-                                            <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
-                                                   onchange="access_lines(this,'LC')"
-                                                   value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
-                                                                                         style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span
-                                                class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <hr width="50%">
-                            <div class="AGB_checkboxlist">
-                                <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
-                                <ul class="agb_list" style="list-style-type: none">
-                                    {% csrf_token %}
-                                    {% for agb in agbs %}
-                                        <li class="agb_list-item">
-                                            <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
-                                                   onchange="access_lines(this,'AGB')"
-                                                   value="{{ agb.agb_id }}" name="agb"/><label id="AGB{{ agb.agb_id }}"
-                                                                                               style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }}
-                                            <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
+                emissions</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the data from different sources compare to each other. These
+                combinations represent the range of
+                estimations for the entire country. The chart can be used to explore the differences between the
+                data sources and to understand
+                the uncertainty in the estimations.
+            </p>
+            <a href="#" class="btn btn-primary w-25" style="margin-left: 10px">Combine with your own data</a>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+
+                    <div class="col-3 m-auto" id="checkbox_selection">
+                        <div class="LC_checkboxlist">
+                            <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
+                            <ul class="lc_list" style="list-style-type: none">
+                                {% for lc in lcs %}
+                                    <li class="lc_list-item">
+                                        <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
+                                               onchange="access_lines(this,'LC')"
+                                               value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span
+                                            class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
-                        <div class="col-9" id="container" style="height: 90%">
-                            <script type="text/javascript">
-                                new Highcharts.Chart({{chart|safe}});
-                            </script>
+                        <hr width="50%">
+                        <div class="AGB_checkboxlist">
+                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                            <ul class="agb_list" style="list-style-type: none">
+                                {% csrf_token %}
+                                {% for agb in agbs %}
+                                    <li class="agb_list-item">
+                                        <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb"
+                                               onchange="access_lines(this,'AGB')"
+                                               value="{{ agb.agb_id }}" name="agb"/><label id="AGB{{ agb.agb_id }}"
+                                                                                           style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }}
+                                        <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_emissions()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_emissions()">Clear
+                        </button>
                     </div>
-                    {#                    <h5 class="card-title">Explore how different sources estimate emissions</h5>#}
-                    {#                    <p class="card-text">#}
-                    {#                        The chart above shows how the data from different sources compare to each other. These#}
-                    {#                        combinations represent the range of#}
-                    {#                        estimations for the entire country. The chart can be used to explore the differences between the#}
-                    {#                        data sources and to understand#}
-                    {#                        the uncertainty in the estimations.#}
-                    {#                    </p>#}
-                    {#                    <a href="#" class="btn btn-primary">Combine with your own data</a>#}
+                    <div class="col-9" id="container" style="height: 500px">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart|safe}});
+                        </script>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+</section>
+<section id="NetForestChangeChart">
+    <div class="container">
+        <div class="card" style="width: 100%">
+            {#                <img class="card-img-top" src="{% static "assets/img/EmissionsChart1.png" %}" alt="EmissionsChart">#}
+
+
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the forest cover change data from different sources compare to each other.
+                These chart
+                lines represent the forest gain and forest loss for the entire country.
+            </p>
+            <a href="{% url "protected_aois" %}" target="_blank" class="btn btn-primary w-25" style="margin-left: 10px">Explore
+                the protected areas inside the country</a>
+
             <div class="card-body">
+                <div class="row h-100 ">
+                    <div class="col-3 m-auto">
+                        <b>Land Cover Datasets:</b><br>
+                        <ul class="lcf_list_cf" style="list-style-type: none">
+                            {% csrf_token %}
+                            {% for lc in lc_data %}
+                                <li class="lc_list-item">
+                                    <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf"
+                                           value="{{ lc.id }}" onchange="access_lines_fc(this,'LC')" name="lc"/><label
+                                        style="padding-left: 10px"><span
+                                        class="badge bg-light text-dark">LC{{ lc.id }}</span> {{ lc.name_es }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-9" id="container1" style="height: 90%">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_fc|safe}});
+                        </script>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -883,7 +944,7 @@
         </div>
     </div>
 </div>
-
+<script src="{% static '/js/forestchange.js' %}"></script>
 <script src="{% static '/js/emissions.js' %}"></script>
 
 <!-- Bootstrap core JS-->

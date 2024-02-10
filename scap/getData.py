@@ -58,6 +58,7 @@ def getColor(lc, agb):
             if x['AGB'] == agb:
                 return x['color']
 
+
 #
 def chart(request):
     result = Emissions.objects.all().order_by('year')

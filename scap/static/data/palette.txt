@@ -62,3 +62,6 @@ LC4,AGB13,blue
 LC4,AGB14,dodgerblue
 LC4,AGB15,deepskyblue
 LC4,AGB16,cyan
+LC5,AGB1,blue
+LC6,AGB1,red
+LC7,AGB1,pink

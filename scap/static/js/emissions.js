@@ -151,7 +151,17 @@ chart.update({
                     }
                 }
             }
-        }
+        },
+        lang: {
+            noData: "No data found. Please select LC/AGB from the list."
+        },
+        noData: {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '15px'
+            }
+        },
+
     }
 );
 
@@ -195,17 +205,18 @@ function show_line(elem) {
 function access_lines(elem, dataset) {
     var msg = all_unchecked();
 
-    if (msg.length == 0) {
-        if (elem.checked) {
-            show_line(dataset + elem.value);
+    // if (msg.length == 0) {
+    if (elem.checked) {
+        show_line(dataset + elem.value);
 
-        } else {
-            hide_line(dataset + elem.value);
-        }
     } else {
-        alert(msg);
-        elem.checked = true;
+        hide_line(dataset + elem.value);
     }
+    // }
+    // } else {
+    //     alert(msg);
+    //     elem.checked = true;
+    // }
     var ns = [];
     var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
@@ -338,3 +349,50 @@ function get_checked_agbs() {
     return agbs;
 }
 
+function reset_emissions() {
+    var uncheck = document.getElementsByClassName('AGB_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'AGB');
+    }
+    var uncheck = document.getElementsByClassName('LC_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].show();
+    }
+
+}
+
+function clear_emissions() {
+
+    var uncheck = document.getElementsByClassName('AGB_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'AGB');
+
+    }
+    var uncheck = document.getElementsByClassName('LC_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].hide();
+    }
+
+}
