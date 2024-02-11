@@ -83,7 +83,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',  r"your_path"),
+        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
@@ -95,7 +95,6 @@ def getInitialForestArea_gee(year, dir, dataset, pa, val):
     ee.Initialize(credentials)
     dataset = dataset.lower()
     file = dir + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
-    print(pa.name)
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
     ee_geom = ee.Geometry.MultiPolygon(
@@ -130,16 +129,14 @@ def getInitialForestArea(year, dir, dataset, pa, val):
         file = dir + "/" + "fc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
     else:
         file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
-    print(pa.name+str(val))
+    print(pa.name + str(val))
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
-    print("aftr geom")
     # load the raster, mask it by the FC TIFF and crop it
     with rasterio.open(file) as src:
 
         print(src.profile)
         out_image, out_transform = mask(src, geometry, crop=True)
-    print("after raster")
     out_meta = src.meta.copy()
 
     # save the resulting raster
@@ -148,29 +145,25 @@ def getInitialForestArea(year, dir, dataset, pa, val):
                      "height": out_image.shape[1],
                      "width": out_image.shape[2],
                      "transform": out_transform})
-    print("before mask")
     file_out = r"masked_fc" + str(val) + ".tif"
     os.chdir(dir)
     print(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
-    print("writing")
     return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
 
 
 # get the forest gain or forest loss of a FCC TIFF file
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # print(year)
-    dataset=dataset.lower()
+    dataset = dataset.lower()
     file = dir + "/fcc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
     data = fiona.open(pa.geom.json)  # get the json of a protected area
     geometry = [shape(feat["geometry"]) for feat in data]
-    print("after geom cond")
     # load the raster, mask it by the FCC TIFF and crop it
     with rasterio.open(file) as src:
         out_image, out_transform = mask(src, geometry, crop=True)
     out_meta = src.meta.copy()
-    print("after raster cond")
 
     # save the resulting raster
     out_meta.update({"driver": "GTiff",
@@ -178,7 +171,6 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
                      "width": out_image.shape[2],
                      "transform": out_transform})
     file_out = r"masked_fcc" + str(val) + ".tif"
-    print("afte file")
     os.chdir(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
@@ -205,7 +197,8 @@ def generate_fcc_fields(dataset, year):
             fcchange = ForestCoverChange()
             fcchange.fc_source = data_source
             if l_dataset != "mapbiomas":
-                fcc = ForestCoverChangeFile.objects.get(file_name='fcc_' + l_dataset + '_peru_' + str(year) + '_1ha.tif')
+                fcc = ForestCoverChangeFile.objects.get(
+                    file_name='fcc_' + l_dataset + '_peru_' + str(year) + '_1ha.tif')
                 fc = ForestCoverFile.objects.get(
                     file_name='fc_' + l_dataset + '_peru_' + str(fcc.baseline_year) + '_1ha.tif')
             else:

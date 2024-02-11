@@ -39,7 +39,7 @@
     <script src="https://code.highcharts.com/modules/annotations.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
-        <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+    <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
 </head>
 <body id="page-top">
@@ -98,7 +98,7 @@
         <div class="card" style="width: 100%">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Please select a protected area in Peru</h5>
             <p class="card-text" style="margin-left: 10px">
-               Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
+                Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
             </p>
             <div class="card-body">
                 <div class="row">
@@ -110,8 +110,12 @@
         </div>
     </div>
 </section>
+<script>
+    var lc_colors = {{colors|safe}};
+    console.log(lc_colors);
+</script>
 <section id="Emissions_PA">
- <div class="container">
+    <div class="container">
         <div class="card" style="width: 100%">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
                 emissions</h5>
@@ -164,7 +168,7 @@
                                 onclick="clear_emissions()">Clear
                         </button>
                     </div>
-                    <div class="col-9" id="emissions_pa" style="height: 500px">
+                    <div class="col-9" id="emissions_chart_pa" style="height: 500px">
                         <script type="text/javascript">
                             new Highcharts.Chart({{chart_epa|safe}});
                         </script>

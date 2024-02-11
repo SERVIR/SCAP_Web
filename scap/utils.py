@@ -27,28 +27,21 @@ params = json.load(f)
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):
     os.chdir(dir)
-    print("in gdal")
-    out_path = dir +"\\"+ in_path + ".shp"
+    out_path = dir + "\\" + in_path + ".shp"
     #  get raster datasource
     src_ds = gdal.Open(in_path + ".tif")
-    print("after src_Ds")
     srcband = src_ds.GetRasterBand(1)
-    print("jhgfh")
     dst_layername = 'DN'  # This is the column that has values (0 or 1 or -1)
     drv = ogr.GetDriverByName("ESRI Shapefile")
     dst_ds = drv.CreateDataSource(out_path)
-    print("test")
 
     sp_ref = osr.SpatialReference()
     sp_ref.SetFromUserInput('EPSG:4326')
-    print("ghsgfa")
     dst_layer = dst_ds.CreateLayer(dst_layername, srs=sp_ref)
 
     fld = ogr.FieldDefn("DN", ogr.OFTInteger)
-    print("fhjdhfk")
     dst_layer.CreateField(fld)
     dst_field = dst_layer.GetLayerDefn().GetFieldIndex("DN")
-    print("jfkjd")
 
     gdal.Polygonize(srcband, None, dst_layer, dst_field, [], callback=None)
     print(out_path)
@@ -78,7 +71,6 @@ def convert_tif_to_shp(filename):
 
 # Get the area of the masked file in Mollweide Projection
 def getArea(file, value=99):
-    print("in getarea")
     file_out = file
     polygons = gpd.read_file(file_out)
     # polygons.set_crs(epsg="4326", inplace=True)

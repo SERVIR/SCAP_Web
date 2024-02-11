@@ -2,7 +2,7 @@ from django.db.models import Avg, Min, Max
 from django.http import JsonResponse
 #
 from ScapTestProject import settings
-from scap.models import Emissions, ForestCoverSource, AGBSource
+from scap.models import Emissions, ForestCoverSource, AGBSource, BoundaryFiles
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -45,7 +45,10 @@ with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
     for line in f:
         row = line.strip()
         temp = {}
+        print(row.split(',')[0])
+
         temp['LC'] = int(row.split(',')[0][2:])
+        print(temp['LC'])
         temp['AGB'] = int(row.split(',')[1][3:])
         temp['color'] = row.split(',')[2]
         colors.append(temp)
@@ -135,13 +138,23 @@ def chart(request):
 def get_series_name(request):
     if request.method == 'POST':
         lc_id = request.POST.get('ds_lc')
-        print(lc_id)
         agb_id = request.POST.get('ds_agb')
-        ds = ForestCoverSource.objects.get(id=lc_id[2:])
-        lc_name = ds.fcs_name
-        if agb_id != "":
-            ds = AGBSource.objects.get(agb_id=agb_id[3:])
-            agb_name = ds.agb_name
-        else:
-            agb_name = ''
+        try:
+            ds = ForestCoverSource.objects.get(id=lc_id[2:])
+            lc_name = ds.fcs_name
+            if agb_id != "":
+                ds = AGBSource.objects.get(agb_id=agb_id[3:])
+                agb_name = ds.agb_name
+            else:
+                agb_name = ''
+        except:
+            ds = BoundaryFiles.objects.get(id=lc_id[2:])
+            lc_name = ds.name_es
+            print(lc_name)
+            if agb_id != "":
+                ds = AGBSource.objects.get(agb_id=agb_id[3:])
+                agb_name = ds.agb_name
+            else:
+                agb_name = ''
+
         return JsonResponse({"name": lc_name + ', ' + agb_name}, safe=False)

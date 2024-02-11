@@ -1,5 +1,5 @@
 // Retrieve the chart from the DOM, and instantiate it
-var index_em = $("#emissions_pa").data('highchartsChart');
+var index_em = $("#emissions_chart_pa").data('highchartsChart');
 var chart = Highcharts.charts[index_em];
 var series = chart.series;
 var newseries = series;
@@ -167,7 +167,7 @@ chart.update({
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
-    var index = $("#emissions_pa").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -180,7 +180,7 @@ function hide_line(elem) {
 
 // Show lines on the chart based on checkbox selection
 function show_line(elem) {
-    var index = $("#emissions_pa").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -364,7 +364,7 @@ function reset_emissions() {
         // show_line(uncheck[i]);
 // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
@@ -388,7 +388,7 @@ function clear_emissions() {
         uncheck[i].checked = false;
         // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {

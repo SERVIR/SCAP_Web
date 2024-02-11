@@ -60,12 +60,14 @@ def peru(request):
         df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
         df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
-        pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'], index='year',
+        pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
+                                     index='year',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to='container', output_type='json', type='spline', title='Emissions')
 
         # generating highcharts chart object from python using pandas(forest cover change chart)
-        df_defor = pd.DataFrame(list(ForestCoverChange.objects.all().values()))  # Get the ForestCoverChange dataset data
+        df_defor = pd.DataFrame(
+            list(ForestCoverChange.objects.all().values()))  # Get the ForestCoverChange dataset data
         df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
@@ -80,7 +82,7 @@ def peru(request):
                       context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
     except Exception as e:
-        return render(request, 'scap/pilotcountry_peru.html',{})
+        return render(request, 'scap/pilotcountry_peru.html', {})
 
 
 def thailand(request):
@@ -93,7 +95,7 @@ def aoi(request):
 
 def protected_aois(request):
     try:
-        pa_name="Historic Sanctuary of Machu Picchu"
+        pa_name = "Historic Sanctuary of Machu Picchu"
         colors = []
         # generating list of colors from  the text file
         with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
@@ -115,10 +117,11 @@ def protected_aois(request):
         df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
         df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
-        pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'], index='year',
+        pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
+                                     index='year',
                                      fill_value=None)
-        chart = serialize(pivot_table, render_to='emissions_pa', output_type='json', type='spline', title='Emissions')
-        print('after chart')
+        chart = serialize(pivot_table, render_to='emissions_chart_pa', output_type='json', type='spline',
+                          title='Emissions: ' + pa_name)
 
         # generating highcharts chart object from python using pandas(forest cover change chart)
         df_defor = pd.DataFrame(list(ForestCoverChange.objects.filter(aoi__name=pa_name).values()))
@@ -127,12 +130,17 @@ def protected_aois(request):
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
         df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
+        print(df_defor)
+
+        df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
+        print(df_defor)
         years_defor = list(df_defor['year'].unique())
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
                                            index='year', fill_value=0)
         chart_fc = serialize(pivot_table_defor, render_to='container_fcpa', output_type='json', type='spline',
                              xticks=years_defor,
-                             title='Change in Forest Cover', )
+                             title="Protected Area: " + pa_name, )
+
         return render(request, 'scap/protected_aois.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
@@ -142,6 +150,7 @@ def protected_aois(request):
 
 def addData(request):
     return render(request, 'scap/addData.html')
+
 
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")

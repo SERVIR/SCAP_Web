@@ -18,11 +18,7 @@ params = json.load(f)
 # Generate FC file by passing the required year and dataset and save the Django object with data
 def generate_fc_file(request):
     try:
-        years =[2017, 2018, 2019, 2020,2021]
-
-
-
-
+        years = [2017, 2018, 2019, 2020, 2021]
 
         for x in years:
             dataset = 'ESRI'

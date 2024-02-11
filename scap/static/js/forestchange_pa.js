@@ -52,11 +52,14 @@ for (var i = 0; i < newseries.length; i++) {
     //     }
     // }
     var color = "#000000";
+
     for (var j = 0; j < lc_colors.length; j++) {
+
         if ('LC' + lc_colors[j]['LC'] == (newseries[i].name)) {
             color = lc_colors[j]['fcs_color'];
         }
     }
+    console.log(color)
     chart1.series[i].update({color: color});
 }
 chart1.update({
