@@ -18,14 +18,19 @@ params = json.load(f)
 # Generate FC file by passing the required year and dataset and save the Django object with data
 def generate_fc_file(request):
     try:
-        years =[2020,2021]
+        years =[2017, 2018, 2019, 2020,2021]
+
+
+
+
+
         for x in years:
-            dataset = 'WorldCover'
+            dataset = 'ESRI'
             l_dataset = dataset.lower()
             fcs = BoundaryFiles.objects.get(name_es=dataset)
             fc = ForestCoverFile()
             fc.file_name = "fc_" + l_dataset + "_peru_" + str(x) + "_1ha.tif"
-            fc.file_directory = r"path_to_tif"
+            fc.file_directory = r"C:\Users\gtondapu\Desktop\SCAP\fc\esri"
             fc.fc_source = fcs
             fc.save()
     except:
@@ -38,15 +43,15 @@ def generate_fcc_file(request):
     try:
         year = request.GET.get('year')
         print(year)
-        dataset = 'Mapbiomas'
+        dataset = 'CCI'
         l_dataset = dataset.lower()
         start = time.time()
         fcs = BoundaryFiles.objects.get(name_es=dataset)
         fcc = ForestCoverChangeFile()  # Create a new FCC file object
-        A_TIF = r"your_path\fc_mapbiomas_" + str(int(year) - 1) + "_1ha.tif"
+        A_TIF = r"C:\Users\gtondapu\Desktop\SCAP\fc\cci\fc_cci_peru_" + str(int(year) - 1) + "_1ha.tif"
         i = 1
         while (i < 10):
-            B_TIF = r"your_path\fc_mapbiomas_" + str(year) + "_1ha.tif"
+            B_TIF = r"C:\Users\gtondapu\Desktop\SCAP\fc\cci\fc_cci_peru_" + str(year) + "_1ha.tif"
             if os.path.isfile(B_TIF):
                 fcc.year = year
                 fcc.baseline_year = int(year) - i
@@ -79,15 +84,15 @@ def generate_fcc_file(request):
         output.GetRasterBand(1).WriteArray(result)
         output = None
         gdalinput = OUT_TIF
-        gdaloutput = r"your_path\fcc_" + l_dataset + "_" + str(
+        gdaloutput = r"C:\Users\gtondapu\Desktop\SCAP\fcc\cci\fcc_" + l_dataset + "_peru_" + str(
             year) + "_1ha.tif"
         translateoptions = gdal.TranslateOptions(gdal.ParseCommandLine("-of Gtiff -ot Int16 -co COMPRESS=LZW"))
         c = gdal.Translate(gdaloutput, gdalinput, options=translateoptions)  # compresses the output file
         c = None
         end = time.time()
         totaltime = end - start
-        fcc.file_name = "fcc_" + l_dataset + "_" + str(year) + "_1ha.tif"
-        fcc.file_directory = r"your_path"
+        fcc.file_name = "fcc_" + l_dataset + "_peru_" + str(year) + "_1ha.tif"
+        fcc.file_directory = r"C:\Users\gtondapu\Desktop\SCAP\fcc\cci"
         fcc.fc_source = fcs
         fcc.processing_time = totaltime
         fcc.save()

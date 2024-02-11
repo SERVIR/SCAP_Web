@@ -39,6 +39,8 @@
     <script src="https://code.highcharts.com/modules/annotations.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+
 </head>
 <body id="page-top">
 <!-- Navigation-->
@@ -94,35 +96,124 @@
 <section>
     <div class="container">
         <div class="card" style="width: 100%">
-            {#                <img class="card-img-top" src="{% static "assets/img/EmissionsChart1.png" %}" alt="EmissionsChart">#}
-
-
-            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover for
-                regions in Peru</h5>
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Please select a protected area in Peru</h5>
             <p class="card-text" style="margin-left: 10px">
-                The chart below shows how the forest cover change data from different sources compare to each other.
-                These chart
-                lines represent the forest gain and forest loss for the selected region.
+               Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
             </p>
-            {#                                        <a href="{% url "protected_aois" %}" target="_blank" class="btn btn-primary w-25" style="margin-left: 10px">Explore the protected areas inside the country</a>#}
-
             <div class="card-body">
                 <div class="row">
-                    <div class="col-3">
-                        <label style="display: inline-flex">Select a region </label>
-                        <select class="form-control w-25" style="display:inline-flex;">
-                            <option>AOI1</option>
-                            <option>AOI2</option>
-                            <option> AOI3</option>
-                            <option>AOI4</option>
-                        </select></div>
-                    <div class="col-9">
-                        <img width="900px" src="{% static 'assets/img/Capture.PNG' %}"/>
+                    Placeholder for Peru protected areas map
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="Emissions_PA">
+ <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
+                emissions</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the data from different sources compare to each other. These
+                combinations represent the range of
+                estimations for the entire country. The chart can be used to explore the differences between the
+                data sources and to understand
+                the uncertainty in the estimations.
+            </p>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+
+                    <div class="col-3 m-auto" id="checkbox_selection">
+                        <div class="LC_checkboxlist">
+                            <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
+                            <ul class="lc_list" style="list-style-type: none">
+                                {% for lc in lcs %}
+                                    <li class="lc_list-item">
+                                        <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_pa"
+                                               onchange="access_lines(this,'LC')"
+                                               value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span
+                                            class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <hr width="50%">
+                        <div class="AGB_checkboxlist">
+                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                            <ul class="agb_list" style="list-style-type: none">
+                                {% csrf_token %}
+                                {% for agb in agbs %}
+                                    <li class="agb_list-item">
+                                        <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb_pa"
+                                               onchange="access_lines(this,'AGB')"
+                                               value="{{ agb.agb_id }}" name="agb"/><label id="AGB{{ agb.agb_id }}"
+                                                                                           style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }}
+                                        <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_emissions()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_emissions()">Clear
+                        </button>
+                    </div>
+                    <div class="col-9" id="emissions_pa" style="height: 500px">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_epa|safe}});
+                        </script>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<section id="NetForestChange_PA">
+    <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the forest cover change data from different sources compare to each other.
+                These chart
+                lines represent the forest gain and forest loss for the entire country.
+            </p>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+                    <div class="col-3 m-auto">
+                        <b>Land Cover Datasets:</b><br>
+                        <ul class="lcf_list_cf_pa" style="list-style-type: none">
+                            {% csrf_token %}
+                            {% for lc in lc_data %}
+                                <li class="lc_list-item">
+                                    <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf_pa"
+                                           value="{{ lc.id }}" onchange="access_lines_fc(this,'LC')" name="lc"/><label
+                                        style="padding-left: 10px"><span
+                                        class="badge bg-light text-dark">LC{{ lc.id }}</span> {{ lc.name_es }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-9" id="container_fcpa" style="height: 90%">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_fcpa|safe}});
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="{% static '/js/forestchange_pa.js' %}"></script>
+<script src="{% static '/js/emissions_pa.js' %}"></script>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

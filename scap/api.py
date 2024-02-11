@@ -40,7 +40,7 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
+        os.path.join(os.path.dirname(__file__), 'data', r"C:\Users\gtondapu\Desktop\SCAP\Country\peru\peru_4326.shp"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -83,7 +83,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',  r"path_to_shapefile"),
+        os.path.join(os.path.dirname(__file__), 'data',  r"C:\Users\gtondapu\Desktop\SCAP\Country\peru\peru_4326.shp"),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
@@ -124,15 +124,22 @@ def getInitialForestArea_gee(year, dir, dataset, pa, val):
 # Calculating the forest area of baseline year's FC TIFF file
 def getInitialForestArea(year, dir, dataset, pa, val):
     # print("year", year)
+
     dataset = dataset.lower()
-    file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
-    print(pa.name)
+    if dataset != "mapbiomas":
+        file = dir + "/" + "fc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
+    else:
+        file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
+    print(pa.name+str(val))
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
+    print("aftr geom")
     # load the raster, mask it by the FC TIFF and crop it
     with rasterio.open(file) as src:
-        # print(src.profile)
+
+        print(src.profile)
         out_image, out_transform = mask(src, geometry, crop=True)
+    print("after raster")
     out_meta = src.meta.copy()
 
     # save the resulting raster
@@ -141,23 +148,29 @@ def getInitialForestArea(year, dir, dataset, pa, val):
                      "height": out_image.shape[1],
                      "width": out_image.shape[2],
                      "transform": out_transform})
+    print("before mask")
     file_out = r"masked_fc" + str(val) + ".tif"
     os.chdir(dir)
+    print(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
+    print("writing")
     return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
 
 
 # get the forest gain or forest loss of a FCC TIFF file
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # print(year)
-    file = dir + "/fcc_" + dataset + "_" + str(year) + "_1ha.tif"
+    dataset=dataset.lower()
+    file = dir + "/fcc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
     data = fiona.open(pa.geom.json)  # get the json of a protected area
     geometry = [shape(feat["geometry"]) for feat in data]
+    print("after geom cond")
     # load the raster, mask it by the FCC TIFF and crop it
     with rasterio.open(file) as src:
         out_image, out_transform = mask(src, geometry, crop=True)
     out_meta = src.meta.copy()
+    print("after raster cond")
 
     # save the resulting raster
     out_meta.update({"driver": "GTiff",
@@ -165,6 +178,7 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
                      "width": out_image.shape[2],
                      "transform": out_transform})
     file_out = r"masked_fcc" + str(val) + ".tif"
+    print("afte file")
     os.chdir(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
@@ -177,10 +191,7 @@ def generate_fcc_fields(dataset, year):
     try:
         create_temp_dir(params["PATH_TO_TEMP_FILES"])
         l_dataset = dataset.lower()
-        if l_dataset != "mapbiomas":
-            data_source = (BoundaryFiles.objects.get(name_es="Global"))
-        else:
-            data_source = (BoundaryFiles.objects.get(name_es=dataset))
+        data_source = (BoundaryFiles.objects.get(name_es=dataset))
         print(data_source)
         needed_aois = AOI.objects.filter(geom__intersects=GEOSGeometry(data_source.geom))
         print(needed_aois)
