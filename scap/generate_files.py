@@ -30,7 +30,7 @@ def generate_fc_file(request):
             fcs = BoundaryFiles.objects.get(name_es=dataset)
             fc = ForestCoverFile()
             fc.file_name = "fc_" + l_dataset + "_peru_" + str(x) + "_1ha.tif"
-            fc.file_directory = r"C:\Users\gtondapu\Desktop\SCAP\fc\esri"
+            fc.file_directory = r"your_path"
             fc.fc_source = fcs
             fc.save()
     except:
@@ -48,10 +48,10 @@ def generate_fcc_file(request):
         start = time.time()
         fcs = BoundaryFiles.objects.get(name_es=dataset)
         fcc = ForestCoverChangeFile()  # Create a new FCC file object
-        A_TIF = r"C:\Users\gtondapu\Desktop\SCAP\fc\cci\fc_cci_peru_" + str(int(year) - 1) + "_1ha.tif"
+        A_TIF = r"your_path\fc_cci_peru_" + str(int(year) - 1) + "_1ha.tif"
         i = 1
         while (i < 10):
-            B_TIF = r"C:\Users\gtondapu\Desktop\SCAP\fc\cci\fc_cci_peru_" + str(year) + "_1ha.tif"
+            B_TIF = r"your_path\fc_cci_peru_" + str(year) + "_1ha.tif"
             if os.path.isfile(B_TIF):
                 fcc.year = year
                 fcc.baseline_year = int(year) - i
@@ -84,7 +84,7 @@ def generate_fcc_file(request):
         output.GetRasterBand(1).WriteArray(result)
         output = None
         gdalinput = OUT_TIF
-        gdaloutput = r"C:\Users\gtondapu\Desktop\SCAP\fcc\cci\fcc_" + l_dataset + "_peru_" + str(
+        gdaloutput = r"your_path\fcc_" + l_dataset + "_peru_" + str(
             year) + "_1ha.tif"
         translateoptions = gdal.TranslateOptions(gdal.ParseCommandLine("-of Gtiff -ot Int16 -co COMPRESS=LZW"))
         c = gdal.Translate(gdaloutput, gdalinput, options=translateoptions)  # compresses the output file
@@ -92,7 +92,7 @@ def generate_fcc_file(request):
         end = time.time()
         totaltime = end - start
         fcc.file_name = "fcc_" + l_dataset + "_peru_" + str(year) + "_1ha.tif"
-        fcc.file_directory = r"C:\Users\gtondapu\Desktop\SCAP\fcc\cci"
+        fcc.file_directory = r"your_path"
         fcc.fc_source = fcs
         fcc.processing_time = totaltime
         fcc.save()

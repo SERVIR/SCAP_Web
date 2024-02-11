@@ -40,7 +40,7 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r"C:\Users\gtondapu\Desktop\SCAP\Country\peru\peru_4326.shp"),
+        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -83,7 +83,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',  r"C:\Users\gtondapu\Desktop\SCAP\Country\peru\peru_4326.shp"),
+        os.path.join(os.path.dirname(__file__), 'data',  r"your_path"),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
