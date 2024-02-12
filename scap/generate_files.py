@@ -18,10 +18,10 @@ params = json.load(f)
 # Generate FC file by passing the required year and dataset and save the Django object with data
 def generate_fc_file(request):
     try:
-        years = [2017, 2018, 2019, 2020, 2021]
+        years = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
 
         for x in years:
-            dataset = 'ESRI'
+            dataset = 'JAXA'
             l_dataset = dataset.lower()
             fcs = BoundaryFiles.objects.get(name_es=dataset)
             fc = ForestCoverFile()
@@ -39,15 +39,15 @@ def generate_fcc_file(request):
     try:
         year = request.GET.get('year')
         print(year)
-        dataset = 'CCI'
+        dataset = 'JAXA'
         l_dataset = dataset.lower()
         start = time.time()
         fcs = BoundaryFiles.objects.get(name_es=dataset)
         fcc = ForestCoverChangeFile()  # Create a new FCC file object
-        A_TIF = r"your_path\fc_cci_peru_" + str(int(year) - 1) + "_1ha.tif"
+        A_TIF = r"your_path\fc\jaxa\fc_jaxa_peru_" + str(int(year) - 1) + "_1ha.tif"
         i = 1
         while (i < 10):
-            B_TIF = r"your_path\fc_cci_peru_" + str(year) + "_1ha.tif"
+            B_TIF = r"your_path\fc\jaxa\fc_jaxa_peru_" + str(year) + "_1ha.tif"
             if os.path.isfile(B_TIF):
                 fcc.year = year
                 fcc.baseline_year = int(year) - i
@@ -80,7 +80,7 @@ def generate_fcc_file(request):
         output.GetRasterBand(1).WriteArray(result)
         output = None
         gdalinput = OUT_TIF
-        gdaloutput = r"your_path\fcc_" + l_dataset + "_peru_" + str(
+        gdaloutput = r"your_path\fcc\jaxa\fcc_" + l_dataset + "_peru_" + str(
             year) + "_1ha.tif"
         translateoptions = gdal.TranslateOptions(gdal.ParseCommandLine("-of Gtiff -ot Int16 -co COMPRESS=LZW"))
         c = gdal.Translate(gdaloutput, gdalinput, options=translateoptions)  # compresses the output file
@@ -88,7 +88,7 @@ def generate_fcc_file(request):
         end = time.time()
         totaltime = end - start
         fcc.file_name = "fcc_" + l_dataset + "_peru_" + str(year) + "_1ha.tif"
-        fcc.file_directory = r"your_path"
+        fcc.file_directory = r"your_path\fcc\jaxa"
         fcc.fc_source = fcs
         fcc.processing_time = totaltime
         fcc.save()

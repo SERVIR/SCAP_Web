@@ -70,28 +70,40 @@ def convert_tif_to_shp(filename):
 
 
 # Get the area of the masked file in Mollweide Projection
+# def getArea(file, value=99):
+#     file_out = file
+#     polygons = gpd.read_file(file_out)
+#     # polygons.set_crs(epsg="4326", inplace=True)
+#     area = 0
+#     new_polygons = polygons
+#     new_polygons.to_crs(CRS("ESRI:54009"), inplace=True)
+#     # print(new_polygons)
+#     for i in range(len(new_polygons)):
+#         # new_polygons.loc[i, 'area_m2'] = shape(new_polygons.loc[i, 'geometry']).area
+#         # new_polygons.loc[i, 'area_km2'] = (shape(new_polygons.loc[i, 'geometry']).area) / 1000000
+#         new_polygons.loc[i, 'area_hec'] = (shape(new_polygons.loc[i, 'geometry']).area) / 10000
+#         if value != 99:
+#             # forest gain(value=1) or forest loss(value=-1) calculation
+#             if new_polygons.loc[i, 'DN'] == value:
+#                 area = area + new_polygons.loc[i, 'area_hec']
+#         else:
+#             # initial forest area calculation
+#             if new_polygons.loc[i, 'DN'] == 1:
+#                 area = area + new_polygons.loc[i, 'area_hec']
+#     return area
 def getArea(file, value=99):
-    file_out = file
-    polygons = gpd.read_file(file_out)
-    # polygons.set_crs(epsg="4326", inplace=True)
-    area = 0
-    new_polygons = polygons
-    new_polygons.to_crs(CRS("ESRI:54009"), inplace=True)
-    # print(new_polygons)
-    for i in range(len(new_polygons)):
-        # new_polygons.loc[i, 'area_m2'] = shape(new_polygons.loc[i, 'geometry']).area
-        # new_polygons.loc[i, 'area_km2'] = (shape(new_polygons.loc[i, 'geometry']).area) / 1000000
-        new_polygons.loc[i, 'area_hec'] = (shape(new_polygons.loc[i, 'geometry']).area) / 10000
-        if value != 99:
-            # forest gain(value=1) or forest loss(value=-1) calculation
-            if new_polygons.loc[i, 'DN'] == value:
-                area = area + new_polygons.loc[i, 'area_hec']
-        else:
-            # initial forest area calculation
-            if new_polygons.loc[i, 'DN'] == 1:
-                area = area + new_polygons.loc[i, 'area_hec']
-    return area
+    polygons = gpd.read_file(file)
+    polygons = polygons.to_crs(CRS("ESRI:54009"))
 
+    if value != 99:
+        filtered_polygons = polygons[polygons['DN'] == value]
+    else:
+        filtered_polygons = polygons[polygons['DN'] == 1]
+
+    filtered_polygons['area_hec'] = filtered_polygons['geometry'].area / 10000
+    area = filtered_polygons['area_hec'].sum()
+
+    return area
 
 # This method calculates the area of a protected area
 def entire_area_pa(pa):

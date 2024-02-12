@@ -8,6 +8,7 @@ import requests
 from django.contrib.gis.geos import GEOSGeometry
 import fiona
 from django.http import JsonResponse
+from rasterio import CRS
 from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
 import rasterio
@@ -40,7 +41,7 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
+        os.path.join(os.path.dirname(__file__), 'data',  r"your_path"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -121,7 +122,7 @@ def getInitialForestArea_gee(year, dir, dataset, pa, val):
 
 
 # Calculating the forest area of baseline year's FC TIFF file
-def getInitialForestArea(year, dir, dataset, pa, val):
+def getInitialForestArea_old(year, dir, dataset, pa, val):
     # print("year", year)
 
     dataset = dataset.lower()
@@ -129,7 +130,7 @@ def getInitialForestArea(year, dir, dataset, pa, val):
         file = dir + "/" + "fc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
     else:
         file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
-    # print(pa.name + str(val))
+    print(pa.name + str(val))
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
     # load the raster, mask it by the FC TIFF and crop it
@@ -151,10 +152,87 @@ def getInitialForestArea(year, dir, dataset, pa, val):
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
     return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
+def getInitialForestArea(year, dir, dataset, pa, val):
+    dataset = dataset.lower()
+    if dataset != "mapbiomas":
+        file = os.path.join(dir, f"fc_{dataset}_peru_{year}_1ha.tif")
+    else:
+        file = os.path.join(dir, f"fc_{dataset}_{year}_1ha.tif")
 
+    with rasterio.open(file) as src:
+        data = fiona.open(pa.geom.json)  # list of shapely geometries
 
-# get the forest gain or forest loss of a FCC TIFF file
+        # Filter out invalid geometries
+        valid_geometries = [shape(feat["geometry"]) for feat in data if feat["geometry"]]
+
+        if not valid_geometries:
+            raise ValueError("No valid geometries found.")
+
+        out_image, out_transform = mask(src, valid_geometries, crop=True)
+
+        # Calculate the area from the masked image directly, without writing to disk
+        area = calculate_area(out_image, out_transform, src.crs,1)
+
+    return area
+
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
+    dataset = dataset.lower()
+    if dataset != "mapbiomas":
+        file = os.path.join(dir, f"fcc_{dataset}_peru_{year}_1ha.tif")
+    else:
+        file = os.path.join(dir, f"fcc_{dataset}_{year}_1ha.tif")
+
+    with rasterio.open(file) as src:
+        data = fiona.open(pa.geom.json)  # list of shapely geometries
+
+        # Filter out invalid geometries
+        valid_geometries = [shape(feat["geometry"]) for feat in data if feat["geometry"]]
+
+        if not valid_geometries:
+            raise ValueError("No valid geometries found.")
+
+        out_image, out_transform = mask(src, valid_geometries, crop=True)
+
+        # Calculate the area from the masked image directly, without writing to disk
+        area = calculate_area(out_image, out_transform, src.crs,value)
+
+    return area
+def calculate_area(raster, transform, crs,value):
+    crs_params = {
+        'proj': 'cea',
+        'lon_0': 0,
+        'lat_ts': 0,
+        'x_0': 0,
+        'y_0': 0,
+        'datum': 'WGS84',
+        'units': 'm',
+        'no_defs': True
+    }
+    esri_54009_crs = CRS.from_proj4('+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs')
+    # Reproject the transform to match the CRS of the source raster
+    print('here')
+    minx, miny, maxx, maxy = rasterio.transform.array_bounds(raster.shape[1], raster.shape[2], transform)
+
+    print('here 1')
+    # Reproject the bounding box to match the desired CRS
+    crs_transform = rasterio.warp.transform_bounds(crs, esri_54009_crs, minx, miny, maxx, maxy)
+    print('here 2')
+    print("Transformed bounding box:", str(crs_transform))
+    # Assuming the raster contains only 1s and 0s representing forest and non-forest pixels
+    # Calculate the area by summing the forest pixel count and multiplying by pixel area
+    # Calculate the width and height of the bounding box
+    width = crs_transform[2] - crs_transform[0]
+    height = crs_transform[3] - crs_transform[1]
+
+    # Calculate the area based on the reprojected bounding box
+    pixel_area = abs(width * height)
+    print('here 3')
+    forest_pixel_count = (raster == value).sum()
+    print('here 4')
+    area = forest_pixel_count * pixel_area
+    return area
+# get the forest gain or forest loss of a FCC TIFF file
+def getConditionalForestArea_old(pa, dir, dataset, value, year, val):
     # print(year)
     dataset = dataset.lower()
     if dataset != "mapbiomas":

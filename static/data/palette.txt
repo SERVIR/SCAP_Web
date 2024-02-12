@@ -76,3 +76,4 @@ LC15,AGB1,deepskyblue
 LC16,AGB1,lightskyblue
 LC17,AGB1,cognac
 LC18,AGB1,brown
+LC19,AGB1,maroon
