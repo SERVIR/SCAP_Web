@@ -38,10 +38,14 @@ def test(req):
 def home(request):
     return render(request, 'scap/index.html')
 
+
+def map(request):
+    return render(request, 'scap/map.html')
+
 def peru(request):
     colors = []
 
-    with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+    with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
         for line in f:
             row = line.strip()
             temp = {}
@@ -82,3 +86,5 @@ def aoi(request):
 
 def addData(request):
     return render(request, 'scap/addData.html')
+
+

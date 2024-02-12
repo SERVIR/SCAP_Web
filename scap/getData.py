@@ -41,7 +41,7 @@ def get_agg_check(request):
 
 colors = []
 
-with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
     for line in f:
         row = line.strip()
         temp = {}
