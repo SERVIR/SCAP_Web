@@ -29,7 +29,7 @@ def get_agg_check(request):
                 else:
                     pass
         data1.sort(key=lambda x: x['year'])
-        print(data1)
+        # print(data1)
 
         for x in range(len(data1)):
             min_arr.append(data1[x]['min'])
@@ -135,13 +135,17 @@ def get_series_name(request):
         agb_id = request.POST.get('ds_agb')
         try:
             # print(lc_id)
-            ds = ForestCoverSource.objects.get(id=lc_id[2:])
-            lc_name = ds.fcs_name
-            if agb_id != "":
-                ds = AGBSource.objects.get(agb_id=agb_id[3:])
-                agb_name = ds.agb_name
+            if lc_id[2:]!='':
+                ds = ForestCoverSource.objects.get(id=lc_id[2:])
+                lc_name = ds.fcs_name
+                if agb_id != "":
+                    ds = AGBSource.objects.get(agb_id=agb_id[3:])
+                    agb_name = ds.agb_name
+                else:
+                    agb_name = ''
             else:
-                agb_name = ''
+                lc_name=''
+                agb_name=''
         except:
             ds = BoundaryFiles.objects.get(id=lc_id[2:])
             lc_name = ds.name_es
