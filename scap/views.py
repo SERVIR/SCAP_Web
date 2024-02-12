@@ -35,13 +35,15 @@ def test(req):
 def home(request):
     return render(request, 'scap/index.html')
 
+def map(request):
+    return render(request, 'scap/map.html')
 
 # This page shows when someone clicks on 'Peru' tile in home page
 def peru(request):
     try:
         colors = []
         # generating list of colors from  the text file
-        with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+        with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
             for line in f:
                 row = line.strip()
                 temp = {}
@@ -153,6 +155,9 @@ def addData(request):
     return render(request, 'scap/addData.html')
 
 
+<<<<<<< HEAD
+=======
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")
     return redirect("homepage")
+>>>>>>> 8e172461becbad58939627952febb8e0b6452b45

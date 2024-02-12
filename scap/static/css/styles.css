@@ -13003,3 +13003,23 @@ section#contact form#contactForm :-ms-input-placeholder {
     font-size: 0.9rem;
     font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+#map_chart {
+    width: 100vw;
+    height: calc(100vh - 2rem - 48px);
+    margin-top: calc(2rem + 48px);
+    z-index: 10;
+}
+
+#selector_table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 20;
+    width: 20vw;
+    height: calc(100vh - 2rem - 48px);
+    left: 20px;
+    top: calc(2rem + 48px);
+}

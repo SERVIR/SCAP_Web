@@ -1,2 +1,6 @@
 /data.json
 data.json
+/static/
+/scap/static/
+/scap/__pycache__/
+/SCAPTestProject/__pycache__/
