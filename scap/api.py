@@ -157,7 +157,10 @@ def getInitialForestArea(year, dir, dataset, pa, val):
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # print(year)
     dataset = dataset.lower()
-    file = dir + "/fcc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
+    if dataset != "mapbiomas":
+        file = dir + "/" + "fcc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
+    else:
+        file = dir + "/" + "fcc_" + dataset + "_" + str(year) + "_1ha.tif"
     data = fiona.open(pa.geom.json)  # get the json of a protected area
     geometry = [shape(feat["geometry"]) for feat in data]
     # load the raster, mask it by the FCC TIFF and crop it
