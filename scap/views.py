@@ -23,7 +23,7 @@ def test(req):
         # generate_from_lambda()
         # mask_with_tif()
         # generate_fcc_file(req)
-        generate_fcc_fields("Mapbiomas", 2021)
+        # generate_fcc_fields("Mapbiomas", 2021)
         # generate_geodjango_objects_aoi()
         # generate_geodjango_objects_boundary()
         # generate_fc_file(req)
@@ -71,6 +71,7 @@ def peru(request):
         df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
+        df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
         years_defor = list(df_defor['year'].unique())
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
