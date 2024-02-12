@@ -94,9 +94,9 @@ DATABASES = {
         'NAME': data["USERNAME"],
         'PASSWORD': data["PASSWORD"],
         'USER': data["DBUSER"],
-	'HOST': data["HOST"], 
-	'PORT': '5432'
-    }
+        'HOST': data["HOST"],
+        'PORT': '5432'
+        }
 }
 
 # Password validation

@@ -1,5 +1,4 @@
 var index_fc = $("#container_fcpa").data('highchartsChart');
-console.log(index_fc)
 var chart1 = Highcharts.charts[index_fc];
 
 var series = chart1.series;
@@ -53,13 +52,13 @@ for (var i = 0; i < newseries.length; i++) {
     // }
     var color = "#000000";
 
+
     for (var j = 0; j < lc_colors.length; j++) {
 
         if ('LC' + lc_colors[j]['LC'] == (newseries[i].name)) {
             color = lc_colors[j]['fcs_color'];
         }
     }
-    console.log(color)
     chart1.series[i].update({color: color});
 }
 chart1.update({

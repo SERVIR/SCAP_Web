@@ -45,10 +45,10 @@ with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
     for line in f:
         row = line.strip()
         temp = {}
-        print(row.split(',')[0])
+        # print(row.split(',')[0])
 
         temp['LC'] = int(row.split(',')[0][2:])
-        print(temp['LC'])
+        # print(temp['LC'])
         temp['AGB'] = int(row.split(',')[1][3:])
         temp['color'] = row.split(',')[2]
         colors.append(temp)
@@ -75,7 +75,6 @@ def chart(request):
     agbnames = []
     for x in range(len(data)):
         years.append(data[x][0])
-    print(years)
     data = list(Emissions.objects.order_by().values_list('lc_id', 'lc_id__fcs_name').distinct())
     lc = len(data)
     for x in range(len(data)):
@@ -103,7 +102,6 @@ def chart(request):
                                 temp[str(years[i]) + "_" + str(lc) + '_' + str(agb)] = new_arr[x][0]
                 final.append(temp)
                 temp = {}
-            print("LC" + str(lc) + " done")
         break
     a1 = [None] * len(final)
     ss = []
@@ -114,9 +112,7 @@ def chart(request):
                     ss.append(str(years[x]) + "_" + str(lc) + '_' + str(agb))
     t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
     for i in range(len(final)):
-        print(list(final[i].keys()))
         t['name'] = 'LC' + list(final[i].keys())[0].split('_')[1] + "/AGB" + list(final[i].keys())[0].split('_')[2]
-        print(t['name'])
         t['color'] = getColor(int(list(final[i].keys())[0].split('_')[1]),
                               int(list(final[i].keys())[0].split('_')[2]))
         t['years'] = years
@@ -126,10 +122,8 @@ def chart(request):
         a1[i] = t
         t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
 
-    print(a1)
 
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
-    print(len(new_l))
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
 
 
@@ -140,6 +134,7 @@ def get_series_name(request):
         lc_id = request.POST.get('ds_lc')
         agb_id = request.POST.get('ds_agb')
         try:
+            # print(lc_id)
             ds = ForestCoverSource.objects.get(id=lc_id[2:])
             lc_name = ds.fcs_name
             if agb_id != "":
@@ -150,7 +145,6 @@ def get_series_name(request):
         except:
             ds = BoundaryFiles.objects.get(id=lc_id[2:])
             lc_name = ds.name_es
-            print(lc_name)
             if agb_id != "":
                 ds = AGBSource.objects.get(agb_id=agb_id[3:])
                 agb_name = ds.agb_name

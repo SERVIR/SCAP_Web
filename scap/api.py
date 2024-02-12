@@ -129,13 +129,13 @@ def getInitialForestArea(year, dir, dataset, pa, val):
         file = dir + "/" + "fc_" + dataset + "_peru_" + str(year) + "_1ha.tif"
     else:
         file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
-    print(pa.name + str(val))
+    # print(pa.name + str(val))
     data = fiona.open(pa.geom.json)  # list of shapely geometries
     geometry = [shape(feat["geometry"]) for feat in data]
     # load the raster, mask it by the FC TIFF and crop it
     with rasterio.open(file) as src:
 
-        print(src.profile)
+        # print(src.profile)
         out_image, out_transform = mask(src, geometry, crop=True)
     out_meta = src.meta.copy()
 
@@ -147,7 +147,7 @@ def getInitialForestArea(year, dir, dataset, pa, val):
                      "transform": out_transform})
     file_out = r"masked_fc" + str(val) + ".tif"
     os.chdir(dir)
-    print(dir)
+    # print(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
     return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
@@ -187,9 +187,9 @@ def generate_fcc_fields(dataset, year):
         create_temp_dir(params["PATH_TO_TEMP_FILES"])
         l_dataset = dataset.lower()
         data_source = (BoundaryFiles.objects.get(name_es=dataset))
-        print(data_source)
+        # print(data_source)
         needed_aois = AOI.objects.filter(geom__intersects=GEOSGeometry(data_source.geom))
-        print(needed_aois)
+        # print(needed_aois)
         val = 0
         for aoi in needed_aois:
             val = val + 1
@@ -261,7 +261,7 @@ def savetomodel(request):
         file1.write(request.FILES['boundaryFile'].read())
 
     try:
-        print(original_names)
+        # print(original_names)
         tiffs = uploaded_tiffs_names
         # boundary_proj=get_projection_of_boundary(os.path.join(path_to_boundary, request.POST['boundaryFileName']))
         # if 'Mollweide' in boundary_proj:

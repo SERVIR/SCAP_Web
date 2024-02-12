@@ -128,15 +128,12 @@ def protected_aois(request):
 
         # generating highcharts chart object from python using pandas(forest cover change chart)
         df_defor = pd.DataFrame(list(ForestCoverChange.objects.filter(aoi__name=pa_name).values()))
-        print(len(df_defor))
         df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
         df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
-        print(df_defor)
 
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-        print(df_defor)
         years_defor = list(df_defor['year'].unique())
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
                                            index='year', fill_value=0)
@@ -154,10 +151,6 @@ def protected_aois(request):
 def addData(request):
     return render(request, 'scap/addData.html')
 
-
-<<<<<<< HEAD
-=======
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")
     return redirect("homepage")
->>>>>>> 8e172461becbad58939627952febb8e0b6452b45
