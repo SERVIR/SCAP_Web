@@ -1,6 +1,6 @@
 // Retrieve the chart from the DOM, and instantiate it
-var index = $("#container").data('highchartsChart');
-var chart = Highcharts.charts[index];
+var index_em = $("#emissions_chart_pa").data('highchartsChart');
+var chart = Highcharts.charts[index_em];
 var series = chart.series;
 var newseries = series;
 var new_updated = series;
@@ -167,7 +167,7 @@ chart.update({
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -180,7 +180,7 @@ function hide_line(elem) {
 
 // Show lines on the chart based on checkbox selection
 function show_line(elem) {
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -350,21 +350,21 @@ function get_checked_agbs() {
 }
 
 function reset_emissions() {
-    var uncheck = document.getElementsByClassName('AGB_cb');
+    var uncheck = document.getElementsByClassName('AGB_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = true;
         // show_line(uncheck[i]);
 // access_lines(uncheck[i],'AGB');
     }
-    var uncheck = document.getElementsByClassName('LC_cb');
+    var uncheck = document.getElementsByClassName('LC_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = true;
         // show_line(uncheck[i]);
 // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
@@ -375,20 +375,20 @@ function reset_emissions() {
 
 function clear_emissions() {
 
-    var uncheck = document.getElementsByClassName('AGB_cb');
+    var uncheck = document.getElementsByClassName('AGB_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = false;
         // access_lines(uncheck[i],'AGB');
 
     }
-    var uncheck = document.getElementsByClassName('LC_cb');
+    var uncheck = document.getElementsByClassName('LC_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = false;
         // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {

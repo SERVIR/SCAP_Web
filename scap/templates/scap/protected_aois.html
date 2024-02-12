@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+{% load static %}
+{% load socialaccount %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SCAP-Peru</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+    <style>
+        header.masthead {
+            padding-top: 10.5rem;
+            padding-bottom: 6rem;
+            text-align: center;
+            color: #fff;
+            background-image: url("{% static "assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" %}");
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+            background-position: center center;
+            background-size: cover;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/streamgraph.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/annotations.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+    <div class="container">
+        <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#pilotcountry">Pilot Countries</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#services">Datasets</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#team">Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#contact">Contact</a></li>
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-transparent">
+                            <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+
+                        Login
+                    </a></li>
+
+                {% endif %}                    </ul>
+        </div>
+    </div>
+</nav>
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container">
+        <div class="masthead-heading text-uppercase">Peru</div>
+        <div class="section-subheading">Home to a section of Amazon rainforest and Machu Picchu, an ancient Incan city
+            high in the Andes mountains
+        </div>
+        <!-- <a class="btn btn-primary btn-xl text-uppercase" href="#services">Tables and Maps</a> -->
+    </div>
+</header>
+<section>
+    <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Please select a protected area in Peru</h5>
+            <p class="card-text" style="margin-left: 10px">
+                Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
+            </p>
+            <div class="card-body">
+                <div class="row">
+                    Placeholder for Peru protected areas map
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var lc_colors = {{colors|safe}};
+    console.log(lc_colors);
+</script>
+<section id="Emissions_PA">
+    <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
+                emissions</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the data from different sources compare to each other. These
+                combinations represent the range of
+                estimations for the entire country. The chart can be used to explore the differences between the
+                data sources and to understand
+                the uncertainty in the estimations.
+            </p>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+
+                    <div class="col-3 m-auto" id="checkbox_selection">
+                        <div class="LC_checkboxlist">
+                            <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
+                            <ul class="lc_list" style="list-style-type: none">
+                                {% for lc in lcs %}
+                                    <li class="lc_list-item">
+                                        <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_pa"
+                                               onchange="access_lines(this,'LC')"
+                                               value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {{ lc.fcs_name }}<span
+                                            class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <hr width="50%">
+                        <div class="AGB_checkboxlist">
+                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                            <ul class="agb_list" style="list-style-type: none">
+                                {% csrf_token %}
+                                {% for agb in agbs %}
+                                    <li class="agb_list-item">
+                                        <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb_pa"
+                                               onchange="access_lines(this,'AGB')"
+                                               value="{{ agb.agb_id }}" name="agb"/><label id="AGB{{ agb.agb_id }}"
+                                                                                           style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.agb_name }}
+                                        <span class="badge bg-light text-dark">(AGB{{ agb.agb_id }})</span></label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_emissions()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_emissions()">Clear
+                        </button>
+                    </div>
+                    <div class="col-9" id="emissions_chart_pa" style="height: 500px">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_epa|safe}});
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="NetForestChange_PA">
+    <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover</h5>
+            <p class="card-text" style="margin-left: 10px">
+                The chart below shows how the forest cover change data from different sources compare to each other.
+                These chart
+                lines represent the forest gain and forest loss for the entire country.
+            </p>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+                    <div class="col-3 m-auto">
+                        <b>Land Cover Datasets:</b><br>
+                        <ul class="lcf_list_cf_pa" style="list-style-type: none">
+                            {% csrf_token %}
+                            {% for lc in lc_data %}
+                                <li class="lc_list-item">
+                                    <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf_pa"
+                                           value="{{ lc.id }}" onchange="access_lines_fc(this,'LC')" name="lc"/><label
+                                        style="padding-left: 10px"><span
+                                        class="badge bg-light text-dark">LC{{ lc.id }}</span> {{ lc.name_es }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-9" id="container_fcpa" style="height: 90%">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_fcpa|safe}});
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="{% static '/js/forestchange_pa.js' %}"></script>
+<script src="{% static '/js/emissions_pa.js' %}"></script>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

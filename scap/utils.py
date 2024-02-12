@@ -27,7 +27,7 @@ params = json.load(f)
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):
     os.chdir(dir)
-    out_path = dir + in_path + ".shp"
+    out_path = dir + "\\" + in_path + ".shp"
     #  get raster datasource
     src_ds = gdal.Open(in_path + ".tif")
     srcband = src_ds.GetRasterBand(1)
@@ -44,6 +44,7 @@ def gdal_polygonize(dir, in_path):
     dst_field = dst_layer.GetLayerDefn().GetFieldIndex("DN")
 
     gdal.Polygonize(srcband, None, dst_layer, dst_field, [], callback=None)
+    print(out_path)
     return out_path
 
 
@@ -168,7 +169,7 @@ def mask_with_tif():
             with rasterio.open(r"fc_clipped_6.tif", "w", **profile) as dst:
                 dst.write(clipped)
 
-    # rds = rioxarray.open_rasterio(r"C:\Users\gtondapu\Desktop\fc_clipped_new1.tif")
+    # rds = rioxarray.open_rasterio(r"path_to_clipped_tif")
     # rds.name = "data"
     # df = rds.squeeze().to_dataframe().reset_index()
     # geometry = gpd.points_from_xy(df.x, df.y)

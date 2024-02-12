@@ -30,7 +30,7 @@ class BoundaryFiles(models.Model):
         return self.name_es
 
     class Meta:
-        verbose_name_plural = "Data Sources"
+        verbose_name_plural = "BoundaryFiles"
 
 
 class AOI(models.Model):
@@ -180,4 +180,5 @@ class Emissions(models.Model):
     aoi_id = models.ForeignKey(AOI, default=1, verbose_name="AOI", on_delete=models.SET_DEFAULT)
     year = models.IntegerField(help_text="Year")
     baseline_year = models.IntegerField(help_text="Baseline Year for emissions calculations", blank=True, null=True)
-    lc_agb_value = models.FloatField(help_text="Value")
+    lc_agb_value = models.FloatField(help_text="Emissions")
+    total_agb = models.FloatField(help_text='Total AGB', default=0.0)

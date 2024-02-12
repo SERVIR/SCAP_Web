@@ -24,7 +24,7 @@ class ForestCoverChangeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = (
         'id', 'fc_source', 'year', 'baseline_year', 'aoi', 'initial_forest_area', 'forest_gain', 'forest_loss',
         'processing_time')
-    list_filter = ('fc_source',)
+    list_filter = ('fc_source', 'year')
 
 
 class ForestCoverChangeFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
