@@ -1,0 +1,9 @@
+name: ScapTestProject
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - django
+  - psycopg2
+  - earthengine-api
+prefix: C:\ProgramData\anaconda3\envs\ScapTestProject
