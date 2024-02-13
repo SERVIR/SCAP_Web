@@ -27,7 +27,8 @@ params = json.load(f)
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):
     os.chdir(dir)
-    out_path = dir + "\\" + in_path + ".shp"
+    # out_path = dir + "\\" + in_path + ".shp"
+    out_path =  in_path + ".shp"
     #  get raster datasource
     src_ds = gdal.Open(in_path + ".tif")
     srcband = src_ds.GetRasterBand(1)
@@ -70,41 +71,42 @@ def convert_tif_to_shp(filename):
 
 
 # Get the area of the masked file in Mollweide Projection
-# def getArea(file, value=99):
-#     file_out = file
-#     polygons = gpd.read_file(file_out)
-#     # polygons.set_crs(epsg="4326", inplace=True)
-#     area = 0
-#     new_polygons = polygons
-#     new_polygons.to_crs(CRS("ESRI:54009"), inplace=True)
-#     # print(new_polygons)
-#     for i in range(len(new_polygons)):
-#         # new_polygons.loc[i, 'area_m2'] = shape(new_polygons.loc[i, 'geometry']).area
-#         # new_polygons.loc[i, 'area_km2'] = (shape(new_polygons.loc[i, 'geometry']).area) / 1000000
-#         new_polygons.loc[i, 'area_hec'] = (shape(new_polygons.loc[i, 'geometry']).area) / 10000
-#         if value != 99:
-#             # forest gain(value=1) or forest loss(value=-1) calculation
-#             if new_polygons.loc[i, 'DN'] == value:
-#                 area = area + new_polygons.loc[i, 'area_hec']
-#         else:
-#             # initial forest area calculation
-#             if new_polygons.loc[i, 'DN'] == 1:
-#                 area = area + new_polygons.loc[i, 'area_hec']
-#     return area
 def getArea(file, value=99):
-    polygons = gpd.read_file(file)
-    polygons = polygons.to_crs(CRS("ESRI:54009"))
-
-    if value != 99:
-        filtered_polygons = polygons[polygons['DN'] == value]
-    else:
-        filtered_polygons = polygons[polygons['DN'] == 1]
-
-    filtered_polygons['area_hec'] = filtered_polygons['geometry'].area / 10000
-    area = filtered_polygons['area_hec'].sum()
-
+    file_out = file
+    polygons = gpd.read_file(file_out)
+    # polygons.set_crs(epsg="4326", inplace=True)
+    area = 0
+    new_polygons = polygons
+    new_polygons.to_crs(CRS("ESRI:54009"), inplace=True)
+    # print(new_polygons)
+    for i in range(len(new_polygons)):
+        # new_polygons.loc[i, 'area_m2'] = shape(new_polygons.loc[i, 'geometry']).area
+        # new_polygons.loc[i, 'area_km2'] = (shape(new_polygons.loc[i, 'geometry']).area) / 1000000
+        new_polygons.loc[i, 'area_hec'] = (shape(new_polygons.loc[i, 'geometry']).area) / 10000
+        if value != 99:
+            # forest gain(value=1) or forest loss(value=-1) calculation
+            if new_polygons.loc[i, 'DN'] == value:
+                area = area + new_polygons.loc[i, 'area_hec']
+        else:
+            # initial forest area calculation
+            if new_polygons.loc[i, 'DN'] == 1:
+                area = area + new_polygons.loc[i, 'area_hec']
     return area
-
+# def process_chunk(chunk, value=99):
+#     if value != 99:
+#         filtered_chunk = chunk[chunk['DN'] == value]
+#     else:
+#         filtered_chunk = chunk[chunk['DN'] == 1]
+#
+#     filtered_chunk['area_hec'] = filtered_chunk['geometry'].area / 10000
+#     return filtered_chunk['area_hec'].sum()
+#
+# def getArea(file, value=99, chunksize=10000):
+#     area = 0
+#     for chunk in gpd.read_file(file, chunksize=chunksize):
+#         chunk = chunk.to_crs(CRS("ESRI:54009"))
+#         area += process_chunk(chunk, value)
+#     return area
 # This method calculates the area of a protected area
 def entire_area_pa(pa):
     x = pa.geom

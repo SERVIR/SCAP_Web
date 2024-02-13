@@ -4,8 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4c450c6-bce2-4db6-bffa-e78074cfc2e4" name="Changes" comment="updates to initial, conditional forest area">
+    <list default="true" id="b4c450c6-bce2-4db6-bffa-e78074cfc2e4" name="Changes" comment="updated env 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/bhutan-pexels-photo-9195752.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/costa-rica_pexels-photo-10832933.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/ghana-tobias-nii-kwatei-quartey-xQ7rXZqRLww-unsplash.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/peru_pexels-photo-2929906.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/thailand_pexels-photo-208444.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/assets/img/pilotcountry/zambia-paul-milley-fS_UGUadwbA-unsplash.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/pilotcountry2.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/pilotcountry2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/pilotcountry_peru.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/pilotcountry_peru.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +82,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "interface",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject",
+    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject/scap/static/assets/img/pilotcountry",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -88,13 +100,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\assets\img\pilotcountry" />
+      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\assets\img" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\assets\img" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\assets\img\pilotcountry" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\css" />
     </key>
   </component>
@@ -237,7 +250,7 @@
       <workItem from="1702050353780" duration="17327000" />
       <workItem from="1702478220836" duration="1300000" />
       <workItem from="1706638568548" duration="135700000" />
-      <workItem from="1707748821025" duration="13254000" />
+      <workItem from="1707748821025" duration="25111000" />
     </task>
     <task id="LOCAL-00001" summary="scap tests using geodjango project">
       <option name="closed" value="true" />
@@ -415,7 +428,23 @@
       <option name="project" value="LOCAL" />
       <updated>1707762213215</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="updated env 2">
+      <option name="closed" value="true" />
+      <created>1707763555823</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1707763555823</updated>
+    </task>
+    <task id="LOCAL-00024" summary="updated env 2">
+      <option name="closed" value="true" />
+      <created>1707763654299</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1707763654299</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,7 +484,8 @@
     <MESSAGE value="updated latest static directory" />
     <MESSAGE value="removed print statements" />
     <MESSAGE value="updates to initial, conditional forest area" />
-    <option name="LAST_COMMIT_MESSAGE" value="updates to initial, conditional forest area" />
+    <MESSAGE value="updated env 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated env 2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$manage.coverage" NAME="manage Coverage Results" MODIFIED="1702263761818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
