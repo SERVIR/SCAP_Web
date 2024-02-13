@@ -77,7 +77,7 @@ def peru(request):
         df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
         years_defor = list(df_defor['year'].unique())
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
-                                           index='year', fill_value=0)
+                                           index='year', fill_value=None)
         chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
                              xticks=years_defor,
                              title='Change in Forest Cover: Peru', )
@@ -136,7 +136,7 @@ def protected_aois(request):
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         years_defor = list(df_defor['year'].unique())
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
-                                           index='year', fill_value=0)
+                                           index='year', fill_value=None)
         chart_fc = serialize(pivot_table_defor, render_to='container_fcpa', output_type='json', type='spline',
                              xticks=years_defor,
                              title="Protected Area: " + pa_name, )
