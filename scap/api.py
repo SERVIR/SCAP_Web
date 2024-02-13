@@ -151,7 +151,7 @@ def getInitialForestArea(year, dir, dataset, pa, val):
     # # print(dir)
     # with rasterio.open(file_out, "w", **out_meta) as dest:
     #     dest.write(out_image)
-    return getArea(gdal_polygonize(dir, dir + "/" + "fc_" + dataset + "_peru_" + str(year) ))
+    return getArea(gdal_polygonize(dir, dir + "/" + "fc_" + dataset + "_peru_" + str(year) +"_1ha"))
 def getInitialForestArea_new(year, dir, dataset, pa, val):
     dataset = dataset.lower()
     if dataset != "mapbiomas":
@@ -255,7 +255,7 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # os.chdir(dir)
     # with rasterio.open(file_out, "w", **out_meta) as dest:
     #     dest.write(out_image)
-    return getArea(gdal_polygonize(dir,  dir + "/" + "fcc_" + dataset + "_peru_" + str(year)), value)
+    return getArea(gdal_polygonize(dir,  dir + "/" + "fcc_" + dataset + "_peru_" + str(year)+"_1ha"), value)
 
 
 # Find all the files that are atleast 90% inside the datasource

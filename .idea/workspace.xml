@@ -4,242 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="updated label">
-      <change afterPath="$PROJECT_DIR$/static/assets/img/Capture.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/assets/img/image.png" afterDir="false" />
+    <list default="true" id="4c305451-d1ee-4c91-9122-33ce92c301d1" name="Changes" comment="updated code to run for country">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/templates/scap/pilotcountry_peru.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/pilotcountry_peru.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": -1
-}]]></component>
-  <component name="ProjectId" id="2cIRW0b6YaetAOzpp2FvGEnIyKE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "interface",
-    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject/static/assets/img",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\assets\img" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\assets\img" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\js" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\data" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="Unnamed" type="Python.DjangoServer" factoryName="Django server" nameIsGenerated="true">
-      <module name="ScapTestProject" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="DJANGO_SETTINGS_MODULE" value="ScapTestProject.settings" />
-      </envs>
-      <option name="SDK_HOME" value="C:\ProgramData\anaconda3\envs\ScapTestProject\python.exe" />
-      <option name="SDK_NAME" value="Python 3.11 (ScapTestProject)" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="software.aws.toolkits.jetbrains.core.execution.PythonAwsConnectionExtension">
-        <option name="credential" />
-        <option name="region" />
-        <option name="useCurrentConnection" value="false" />
-      </EXTENSION>
-      <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="8000" />
-      <option name="host" value="127.0.0.1" />
-      <option name="additionalOptions" value="" />
-      <option name="browserUrl" value="" />
-      <option name="runTestServer" value="false" />
-      <option name="runNoReload" value="false" />
-      <option name="useCustomRunCommand" value="false" />
-      <option name="customRunCommand" value="" />
-      <method v="2" />
-    </configuration>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="images updated">
+    <task id="LOCAL-00001" summary="updated code to run for country">
       <option name="closed" value="true" />
-      <created>1707796163354</created>
+      <created>1707865093535</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1707796163354</updated>
+      <updated>1707865093535</updated>
     </task>
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="images updated" />
-      <created>1707797141626</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1707797141626</updated>
-      <workItem from="1707797144594" duration="27985000" />
-    </task>
-    <task id="LOCAL-00002" summary="updated landing page">
-      <option name="closed" value="true" />
-      <created>1707797475838</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1707797475838</updated>
-    </task>
-    <task id="LOCAL-00003" summary="api update">
-      <option name="closed" value="true" />
-      <created>1707797807842</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1707797807842</updated>
-    </task>
-    <task id="LOCAL-00004" summary="logger">
-      <option name="closed" value="true" />
-      <created>1707799000602</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1707799000602</updated>
-    </task>
-    <task id="LOCAL-00005" summary="proj_lib">
-      <option name="closed" value="true" />
-      <created>1707824804933</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1707824804933</updated>
-    </task>
-    <task id="LOCAL-00006" summary="proj_lib">
-      <option name="closed" value="true" />
-      <created>1707824873654</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1707824873654</updated>
-    </task>
-    <task id="LOCAL-00007" summary="comment emissions">
-      <option name="closed" value="true" />
-      <created>1707831763143</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1707831763143</updated>
-    </task>
-    <task id="LOCAL-00008" summary="comment emissions">
-      <option name="closed" value="true" />
-      <created>1707833277766</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1707833277766</updated>
-    </task>
-    <task id="LOCAL-00009" summary="updated fill value in forest change">
-      <option name="closed" value="true" />
-      <created>1707836931205</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1707836931205</updated>
-    </task>
-    <task id="LOCAL-00010" summary="update protected areas chart">
-      <option name="closed" value="true" />
-      <created>1707858952147</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1707858952147</updated>
-    </task>
-    <task id="LOCAL-00011" summary="update protected areas chart">
-      <option name="closed" value="true" />
-      <created>1707859041429</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1707859041429</updated>
-    </task>
-    <task id="LOCAL-00012" summary="updated code to run pas">
-      <option name="closed" value="true" />
-      <created>1707859442472</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1707859442472</updated>
-    </task>
-    <task id="LOCAL-00013" summary="updated label">
-      <option name="closed" value="true" />
-      <created>1707862262418</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1707862262418</updated>
-    </task>
-    <task id="LOCAL-00014" summary="updated label">
-      <option name="closed" value="true" />
-      <created>1707862589890</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1707862589890</updated>
-    </task>
-    <option name="localTasksCounter" value="15" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="images updated" />
-    <MESSAGE value="updated landing page" />
-    <MESSAGE value="api update" />
-    <MESSAGE value="logger" />
-    <MESSAGE value="proj_lib" />
-    <MESSAGE value="comment emissions" />
-    <MESSAGE value="updated fill value in forest change" />
-    <MESSAGE value="update protected areas chart" />
-    <MESSAGE value="updated code to run pas" />
-    <MESSAGE value="updated label" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated label" />
+    <MESSAGE value="updated pa page" />
+    <MESSAGE value="updated code to run for country" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated code to run for country" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
     <SUITE FILE_PATH="coverage/ScapTestProject$api.coverage" NAME="api Coverage Results" MODIFIED="1707797095455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
     <SUITE FILE_PATH="coverage/ScapTestProject$manage.coverage" NAME="manage Coverage Results" MODIFIED="1702263761818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ScapTestProject$views.coverage" NAME="views Coverage Results" MODIFIED="1702263429039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
