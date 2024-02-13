@@ -35,8 +35,11 @@ LOGGING = {
         },
     },
 }
-
-#PROJ_LIB='/home/Socrates/agoberna/.conda/envs/test_env/share/proj'
+import os
+try:
+    os.environ["PROJ_LIB"] = "/home/Socrates/agoberna/.conda/envs/test_env/share/proj"
+except:
+    pass
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
