@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="images updated">
+    <list default="true" id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="api update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScapTestProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScapTestProject/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +36,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "interface",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
@@ -87,9 +91,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1707797141626</updated>
-      <workItem from="1707797144594" duration="53000" />
+      <workItem from="1707797144594" duration="1847000" />
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="updated landing page">
+      <option name="closed" value="true" />
+      <created>1707797475838</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1707797475838</updated>
+    </task>
+    <task id="LOCAL-00003" summary="api update">
+      <option name="closed" value="true" />
+      <created>1707797807842</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1707797807842</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -97,7 +117,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="images updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="images updated" />
+    <MESSAGE value="updated landing page" />
+    <MESSAGE value="api update" />
+    <option name="LAST_COMMIT_MESSAGE" value="api update" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$api.coverage" NAME="api Coverage Results" MODIFIED="1707797095455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
