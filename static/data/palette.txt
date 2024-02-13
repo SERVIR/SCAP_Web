@@ -74,6 +74,5 @@ LC13,AGB1,yellow
 LC14,AGB1,dodgerblue
 LC15,AGB1,deepskyblue
 LC16,AGB1,lightskyblue
-LC17,AGB1,blue
+LC17,AGB1,pink
 LC18,AGB1,brown
-LC19,AGB1,maroon
