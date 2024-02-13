@@ -72,7 +72,7 @@ chart1.update({
         shadow: false,
         formatter: function () {
             const ss = this.series.name;
-            const lc = ss[0];
+            const lc = ss;
             const color = this.series.color;
             const s_name = get_name(ss);
             // if (this.y > 0) {
@@ -80,10 +80,10 @@ chart1.update({
             // } else {
             //     label = "Forest Loss";
             // }
-            label = ss;
-            var value = '<div style="background-color:' + color + ';padding:10px">' +
-                '<span><b>' + label + ' ' + this.x + ':  ' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
-                '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] + '<br/> </span><div>';
+           var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
+            var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
+                '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
+                '<span style=\'padding-left:50px\'></span> ' + result1.split(',')[0] + '<br/>'+labellc+' </span><div>';
             return value;
         }
     }
