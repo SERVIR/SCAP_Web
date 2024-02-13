@@ -59,6 +59,11 @@ for (var i = 0; i < newseries.length; i++) {
     chart1.series[i].update({color: color});
 }
 chart1.update({
+       yAxis: {
+           title: {
+               text: 'Values (Ha)'
+           }
+       },
     tooltip: {
         useHTML: true,
         enabled: true,

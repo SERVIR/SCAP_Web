@@ -34,35 +34,37 @@ function increase_brightness(hex, percent) {
         ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
 }
 
+var color = "#000000";
+var ta = [], nfc = [];
 var percent = 10;
+var series_obj1 = [];
+var series_obj2 = [];
+var m = 0;
+var n=0;
 // Loop through each series and set the color
 for (var i = 0; i < newseries.length; i++) {
-
-    // Making the percentage 100 will makes the lines black
-    // if (percent > 50) {
-    //     percent = percent - 5;
-    // } else {
-    //     percent = percent + 5;
-    // }
-    // var color = "#000000";
-    // for (var j = 0; j < lc_colors.length; j++) {
-    //     if ('LC' + lc_colors[j]['id'] == (newseries[i].name[1])) {
-    //         color = increase_brightness(lc_colors[j]['fcs_color'], percent);
-    //     }
-    // }
-    var color = "#000000";
-
-
     for (var j = 0; j < lc_colors.length; j++) {
+        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name[1])) {
 
-        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name)) {
-            color = lc_colors[j]['fcs_color'];
+            color = lc_colors[j]['color'];
+
         }
     }
-    chart1.series[i].update({color: color});
+
 }
+
+
 chart1.update({
-    tooltip: {
+    yAxis: [{
+        title: {
+            text: 'Values (Ha)'
+        }
+    }, {
+        title: {
+            text: 'Values (Ha)'
+        },
+        opposite: true
+    }], tooltip: {
         useHTML: true,
         enabled: true,
         backgroundColor: null,
@@ -78,7 +80,7 @@ chart1.update({
             // } else {
             //     label = "Forest Loss";
             // }
-            label = 'Net Forest Change'
+            label = ss;
             var value = '<div style="background-color:' + color + ';padding:10px">' +
                 '<span><b>' + label + ' ' + this.x + ':  ' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
                 '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] + '<br/> </span><div>';

@@ -1,3 +1,4 @@
+import numpy as np
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
@@ -131,19 +132,25 @@ def protected_aois(request):
         df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
-        df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
-
+        df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
+        df_defor["TotalArea"]=df_defor["initial_forest_area"] + df_defor["NFC"]
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         years_defor = list(df_defor['year'].unique())
-        pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
+
+        pivot_table_defor1 = pd.pivot_table(df_defor, values=['NFC','TotalArea'], columns=['fc_source_id'],
                                            index='year', fill_value=None)
-        chart_fc = serialize(pivot_table_defor, render_to='container_fcpa', output_type='json', type='spline',
+        pivot_table_defor2 = pd.pivot_table(df_defor, values=['TotalArea'], columns=['fc_source_id'],
+                                           index='year', fill_value=None)
+        chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
                              xticks=years_defor,
-                             title="Protected Area: " + pa_name, )
+                             title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
+        chart_fc2 = serialize(pivot_table_defor2, render_to='container_fcpa_hide', output_type='json', type='spline',
+                             xticks=years_defor,
+                             title="Protected Area: " + pa_name )
 
         return render(request, 'scap/protected_aois.html',
-                      context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+                      context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
+                               'chart_fcpa_hide': chart_fc2,'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
     except Exception as e:
         return render(request, 'scap/protected_aois.html')
 

@@ -92,7 +92,11 @@ xhr.done(function (result2) {
     chart.update({series: ns})
     chart.update({series: [ns, min_arr, max_arr, avg_arr]});
     chart.update({
-
+       yAxis: {
+           title: {
+               text: 'Values (Tons)'
+           }
+       },
         tooltip: {
             useHTML: true,
             enabled: true,
