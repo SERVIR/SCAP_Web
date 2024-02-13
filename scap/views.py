@@ -66,7 +66,6 @@ def peru(request):
                                      index='year',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to='container', output_type='json', type='spline', title='Emissions')
-        chart=None
 
         # generating highcharts chart object from python using pandas(forest cover change chart)
         df_defor = pd.DataFrame(
