@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="api update">
+    <list default="true" id="761661b6-eecf-46bc-84ae-57dbd5d6bde0" name="Changes" comment="logger">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScapTestProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScapTestProject/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +89,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1707797141626</updated>
-      <workItem from="1707797144594" duration="1847000" />
+      <workItem from="1707797144594" duration="2475000" />
     </task>
     <task id="LOCAL-00002" summary="updated landing page">
       <option name="closed" value="true" />
@@ -109,7 +107,15 @@
       <option name="project" value="LOCAL" />
       <updated>1707797807842</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="logger">
+      <option name="closed" value="true" />
+      <created>1707799000602</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1707799000602</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -119,7 +125,8 @@
     <MESSAGE value="images updated" />
     <MESSAGE value="updated landing page" />
     <MESSAGE value="api update" />
-    <option name="LAST_COMMIT_MESSAGE" value="api update" />
+    <MESSAGE value="logger" />
+    <option name="LAST_COMMIT_MESSAGE" value="logger" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$api.coverage" NAME="api Coverage Results" MODIFIED="1707797095455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />

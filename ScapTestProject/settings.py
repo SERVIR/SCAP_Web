@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import json
 import os
 from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+f = open(str(BASE_DIR) + '/data.json', )
+data = json.load(f)
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -19,7 +24,7 @@ LOGGING = {
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
-            "filename": "/path/to/django/debug.log",
+            "filename":data["PATH_TO_LOG"] ,
         },
     },
     "loggers": {
@@ -30,11 +35,8 @@ LOGGING = {
         },
     },
 }
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-f = open(str(BASE_DIR) + '/data.json', )
-data = json.load(f)
 
+#PROJ_LIB='/home/Socrates/agoberna/.conda/envs/test_env/share/proj'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
