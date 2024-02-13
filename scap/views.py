@@ -24,7 +24,7 @@ def test(req):
         # generate_from_lambda()
         # mask_with_tif()
         # generate_fcc_file(req)
-        generate_fcc_fields("CCI", 2002)
+        generate_fcc_fields("CCI", 2001)
         # generate_geodjango_objects_aoi()
         # generate_geodjango_objects_boundary()
         # generate_fc_file(req)
