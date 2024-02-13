@@ -102,7 +102,7 @@ def protected_aois(request):
         pa_name = "Historic Sanctuary of Machu Picchu"
         colors = []
         # generating list of colors from  the text file
-        with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+        with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
             for line in f:
                 row = line.strip()
                 temp = {}
