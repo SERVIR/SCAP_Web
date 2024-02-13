@@ -72,7 +72,7 @@ chart1.update({
         shadow: false,
         formatter: function () {
             const ss = this.series.name;
-            const lc = ss;
+            const lc = ss[0];
             const color = this.series.color;
             const s_name = get_name(ss);
             // if (this.y > 0) {

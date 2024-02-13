@@ -131,27 +131,27 @@ def getInitialForestArea(year, dir, dataset, pa, val):
     else:
         file = dir + "/" + "fc_" + dataset + "_" + str(year) + "_1ha.tif"
     print(pa.name + str(val))
-    data = fiona.open(pa.geom.json)  # list of shapely geometries
-    geometry = [shape(feat["geometry"]) for feat in data]
-    # load the raster, mask it by the FC TIFF and crop it
-    with rasterio.open(file) as src:
-
-        # print(src.profile)
-        out_image, out_transform = mask(src, geometry, crop=True)
-    out_meta = src.meta.copy()
-
-    # save the resulting raster
-    out_meta.update({"driver": "GTiff",
-
-                     "height": out_image.shape[1],
-                     "width": out_image.shape[2],
-                     "transform": out_transform})
-    file_out = r"masked_fc" + str(val) + ".tif"
-    os.chdir(dir)
-    # print(dir)
-    with rasterio.open(file_out, "w", **out_meta) as dest:
-        dest.write(out_image)
-    return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
+    # data = fiona.open(pa.geom.json)  # list of shapely geometries
+    # geometry = [shape(feat["geometry"]) for feat in data]
+    # # load the raster, mask it by the FC TIFF and crop it
+    # with rasterio.open(file) as src:
+    #
+    #     # print(src.profile)
+    #     out_image, out_transform = mask(src, geometry, crop=True)
+    # out_meta = src.meta.copy()
+    #
+    # # save the resulting raster
+    # out_meta.update({"driver": "GTiff",
+    #
+    #                  "height": out_image.shape[1],
+    #                  "width": out_image.shape[2],
+    #                  "transform": out_transform})
+    # file_out = r"masked_fc" + str(val) + ".tif"
+    # os.chdir(dir)
+    # # print(dir)
+    # with rasterio.open(file_out, "w", **out_meta) as dest:
+    #     dest.write(out_image)
+    return getArea(gdal_polygonize(dir, dir + "/" + "fc_" + dataset + "_peru_" + str(year) ))
 def getInitialForestArea_new(year, dir, dataset, pa, val):
     dataset = dataset.lower()
     if dataset != "mapbiomas":
@@ -240,22 +240,22 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
     else:
         file = dir + "/" + "fcc_" + dataset + "_" + str(year) + "_1ha.tif"
     data = fiona.open(pa.geom.json)  # get the json of a protected area
-    geometry = [shape(feat["geometry"]) for feat in data]
-    # load the raster, mask it by the FCC TIFF and crop it
-    with rasterio.open(file) as src:
-        out_image, out_transform = mask(src, geometry, crop=True)
-    out_meta = src.meta.copy()
-
-    # save the resulting raster
-    out_meta.update({"driver": "GTiff",
-                     "height": out_image.shape[1],
-                     "width": out_image.shape[2],
-                     "transform": out_transform})
-    file_out = r"masked_fcc" + str(val) + ".tif"
-    os.chdir(dir)
-    with rasterio.open(file_out, "w", **out_meta) as dest:
-        dest.write(out_image)
-    return getArea(gdal_polygonize(dir,  r"masked_fcc" + str(val)), value)
+    # geometry = [shape(feat["geometry"]) for feat in data]
+    # # load the raster, mask it by the FCC TIFF and crop it
+    # with rasterio.open(file) as src:
+    #     out_image, out_transform = mask(src, geometry, crop=True)
+    # out_meta = src.meta.copy()
+    #
+    # # save the resulting raster
+    # out_meta.update({"driver": "GTiff",
+    #                  "height": out_image.shape[1],
+    #                  "width": out_image.shape[2],
+    #                  "transform": out_transform})
+    # file_out = r"masked_fcc" + str(val) + ".tif"
+    # os.chdir(dir)
+    # with rasterio.open(file_out, "w", **out_meta) as dest:
+    #     dest.write(out_image)
+    return getArea(gdal_polygonize(dir,  dir + "/" + "fcc_" + dataset + "_peru_" + str(year)), value)
 
 
 # Find all the files that are atleast 90% inside the datasource
@@ -270,7 +270,7 @@ def generate_fcc_fields(dataset, year):
         # print(needed_aois)
         val = 0
         for aoi in needed_aois:
-            if aoi.name!='peru':
+            if aoi.name=='peru':
                 val = val + 1
                 start = time.time()
                 # print(percent_inside(aoi, data_source))
