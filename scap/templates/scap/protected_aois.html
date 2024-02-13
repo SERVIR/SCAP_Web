@@ -201,7 +201,7 @@
                                         style="padding-left: 10px"><span
                                         class="badge bg-light text-dark">LC{{ lc.id }}</span> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>{% endif %}&nbsp;{{ lc.name_es }}</label>
                                 </li>
-                                <p style="display: none" id="{{'LC'+ lc.id }}">{{ lc.name_es }}</p>
+                                                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</p>
                             {% endfor %}
                         </ul>
                     </div>
