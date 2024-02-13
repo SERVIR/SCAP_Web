@@ -270,36 +270,36 @@ def generate_fcc_fields(dataset, year):
         # print(needed_aois)
         val = 0
         for aoi in needed_aois:
-            # if aoi.name=='peru':
-            val = val + 1
-            start = time.time()
-            # print(percent_inside(aoi, data_source))
-            # if percent_inside(aoi, data_source) > params["PERCENTAGE_INSIDE_DATASET"]:
-            #     print("inside")
-            fcchange = ForestCoverChange()
-            fcchange.fc_source = data_source
-            if l_dataset != "mapbiomas":
-                fcc = ForestCoverChangeFile.objects.get(
-                    file_name='fcc_' + l_dataset + '_peru_' + str(year) + '_1ha.tif')
-                fc = ForestCoverFile.objects.get(
-                    file_name='fc_' + l_dataset + '_peru_' + str(fcc.baseline_year) + '_1ha.tif')
-            else:
-                fcc = ForestCoverChangeFile.objects.get(file_name='fcc_' + l_dataset + '_' + str(year) + '_1ha.tif')
-                fc = ForestCoverFile.objects.get(
-                    file_name='fc_' + l_dataset + '_' + str(fcc.baseline_year) + '_1ha.tif')
-            fcchange.baseline_year = fcc.baseline_year
-            fcchange.year = year
-            fcchange.aoi = aoi
-            fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
-                                                                fc.file_directory, fc.fc_source.name_es, aoi,
-                                                                val)
-            fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, 1,
-                                                            fcc.year, val)
-            fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, -1,
-                                                            fcc.year, val)
-            end = time.time()
-            fcchange.processing_time = end - start
-            fcchange.save()
+            if aoi.name=='peru':
+                val = val + 1
+                start = time.time()
+                # print(percent_inside(aoi, data_source))
+                # if percent_inside(aoi, data_source) > params["PERCENTAGE_INSIDE_DATASET"]:
+                #     print("inside")
+                fcchange = ForestCoverChange()
+                fcchange.fc_source = data_source
+                if l_dataset != "mapbiomas":
+                    fcc = ForestCoverChangeFile.objects.get(
+                        file_name='fcc_' + l_dataset + '_peru_' + str(year) + '_1ha.tif')
+                    fc = ForestCoverFile.objects.get(
+                        file_name='fc_' + l_dataset + '_peru_' + str(fcc.baseline_year) + '_1ha.tif')
+                else:
+                    fcc = ForestCoverChangeFile.objects.get(file_name='fcc_' + l_dataset + '_' + str(year) + '_1ha.tif')
+                    fc = ForestCoverFile.objects.get(
+                        file_name='fc_' + l_dataset + '_' + str(fcc.baseline_year) + '_1ha.tif')
+                fcchange.baseline_year = fcc.baseline_year
+                fcchange.year = year
+                fcchange.aoi = aoi
+                fcchange.initial_forest_area = getInitialForestArea(fcc.baseline_year,
+                                                                    fc.file_directory, fc.fc_source.name_es, aoi,
+                                                                    val)
+                fcchange.forest_gain = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, 1,
+                                                                fcc.year, val)
+                fcchange.forest_loss = getConditionalForestArea(aoi, fcc.file_directory, fcc.fc_source.name_es, -1,
+                                                                fcc.year, val)
+                end = time.time()
+                fcchange.processing_time = end - start
+                fcchange.save()
     except Exception as e:
         print(e)
     finally:
