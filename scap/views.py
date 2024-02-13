@@ -69,7 +69,7 @@ def peru(request):
 
         # generating highcharts chart object from python using pandas(forest cover change chart)
         df_defor = pd.DataFrame(
-            list(ForestCoverChange.objects.all().values()))  # Get the ForestCoverChange dataset data
+            list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
         df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
             'id')))
         lcs_defor = df_lc_defor.to_dict('records')
@@ -80,7 +80,7 @@ def peru(request):
                                            index='year', fill_value=0)
         chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
                              xticks=years_defor,
-                             title='Change in Forest Cover', )
+                             title='Change in Forest Cover: Peru', )
         return render(request, 'scap/pilotcountry_peru.html',
                       context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
