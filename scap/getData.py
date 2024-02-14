@@ -136,7 +136,7 @@ def get_series_name(request):
         try:
             # print(lc_id)
             if lc_id[2:]!='':
-                ds = ForestCoverSource.objects.get(id=lc_id[2:])
+                ds = BoundaryFiles.objects.get(id=lc_id[2:])
                 lc_name = ds.fcs_name
                 if agb_id != "":
                     ds = AGBSource.objects.get(agb_id=agb_id[3:])

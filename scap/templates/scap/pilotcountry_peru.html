@@ -261,7 +261,7 @@
                                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                                onchange="access_lines(this,'LC')"
                                                value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
-                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {% if lc.fcs_name != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.fcs_name }}<span
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.name_es }}<span
                                             class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
                                     </li>
                                 {% endfor %}

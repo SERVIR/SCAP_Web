@@ -54,7 +54,7 @@ def peru(request):
                 colors.append(temp)
 
         # generating highcharts chart object from python using pandas(emissions chart)
-        df_lc = pd.DataFrame(list(ForestCoverSource.objects.all().values('id', 'fcs_name', 'fcs_color').order_by(
+        df_lc = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es', 'pais').order_by(
             'id')))
         lcs = df_lc.to_dict('records')
         df_agb = pd.DataFrame(list(AGBSource.objects.all().values('agb_id', 'agb_name')))  # Get the AGB dataset data
@@ -112,7 +112,7 @@ def protected_aois(request):
                 colors.append(temp)
 
         # generating highcharts chart object from python using pandas(emissions chart)
-        df_lc = pd.DataFrame(list(ForestCoverSource.objects.all().values('id', 'fcs_name', 'fcs_color').order_by(
+        df_lc = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es', 'pais').order_by(
             'id')))
         lcs = df_lc.to_dict('records')
         df_agb = pd.DataFrame(list(AGBSource.objects.all().values('agb_id', 'agb_name')))  # Get the AGB dataset data
