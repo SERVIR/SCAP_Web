@@ -31,6 +31,18 @@
             background-size: cover;
         }
     </style>
+
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+          integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+    <link rel="stylesheet" href="{% static '/css/geosearch.css' %}"/>
+    <link rel="stylesheet" href="{% static '/css/range.css' %}"/>
+    <link rel="stylesheet" href="{% static '/css/map.css' %}"/>
+    <link href="{% static '/css/L.Control.Opacity.css' %}" rel="stylesheet"/>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -40,6 +52,29 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+
+
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+            integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js"
+            integrity="sha512-E0DKVahIg0p1UHR2Kf9NX7x7TUewJb30mxkxEm2qOYTVJObgsAGpEol9F6iK6oefCbkJiA4/i6fnTHzM6H1kEA=="
+            crossorigin=""></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.5/leaflet-search.src.js"
+            integrity="sha512-PDM7dpetuBcPp2fV/ZyCj9BGV8ybPchsrSzQqVZ3WoM8YcxEa2lAj0n1+4MCRzgsEROmVTwQXGw0IrXCCgH+/Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+    <script src="{% static '/js/L.Control.Opacity.js' %}"></script>
+    <script src="{% static '/js/leaflet-side-by-side.js' %}"></script>
+    <script src="{% static '/js/leaflet-providers.js' %}"></script>
+    <script src="{% static '/js/utils.js' %}"></script>
+    <script src="{% static '/js/basemaps.js' %}"></script>
+    <script src="{% static '/js/geosearch.umd.js' %}"></script>
+    <script src="{% static '/js/map.js' %}"></script>
 </head>
 <body id="page-top">
 <!-- Navigation-->
@@ -108,9 +143,68 @@
 <!-- Calls to Action -->
 <section class="page-section" id="InitialMap">
     <div class="container">
+        <div id="peru-map">
+            <div id="map_chart"></div>
+                <div id="selector_table" style="top:530px !important;left:25%;">
+        <div class="d-flex">
+            <div class="form-group">
+                <label>Primary Year</label>
+                <select name="selected_year" id="selected_year"
+                        class="form-control"
+                        onchange="redraw_map_layers()">
+                    <option value="0" selected="selected">Loading...</option>
+                </select>
+            </div>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Primary Year"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines the year for which data will be loaded. If comparison mode is enabled, this data will appear on the left pane of the map.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+        </div>
+        <div class="d-flex">
+            <div class="form-group">
+                <label>Dataset</label>
+                <select name="selected_region" id="selected_region" class="form-control"
+                        onchange="redraw_map_layers()">
+                    <option value="esri" selected="selected">ESRI</option>
+                    <option value="modis">MODIS</option>
+                    <option value="jaxa">JAXA</option>
+                    <option value="worldcover">WorldCover</option>
+                    <option value="mapbiomas">Mapbiomas</option>
+                    <option value="cci">CCI</option>
+                </select>
+            </div>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Region"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines the region for which data will be loaded.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+        </div>
+    </div>
+
+    <div id="comparison_table" style="top:530px !important;right:23%">
+        <div class="d-flex" id="comparison-selector">
+            <div class="d-flex">
+                <div class="form-group">
+                    <label>Comparison Year</label>
+                    <select name="comparison_year" id="comparison_year"
+                            class="form-control"
+                            onchange="redraw_map_layers()">
+                    </select>
+                </div>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Comparison Year"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines whether to enable a slider, and if so, which year of data should be displayed on the right pane of the map.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+            </div>
+        </div>
+        </div>
+        </div>
         <div>
             <div class="card" style="width: 100%;">
-                <img class="card-img-top" src="{% static "assets/img/fcc_sample_1.jpg" %}" alt="Peru protected Areas">
+
+                <img class="card-img-top" src="{% static "assets/img/image.png" %}" alt="Peru protected Areas">
                 <div class="card-body">
                     <h5 class="card-title">Visualize forest cover changes around protected areas</h5>
                     <p class="card-text">Peru is home to a diverse range of ecosystems, including a significant portion
@@ -168,7 +262,7 @@
                                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                                onchange="access_lines(this,'LC')"
                                                value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
-                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.fcs_name }}<span
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {% if lc.fcs_name != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.fcs_name }}<span
                                             class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
                                     </li>
                                 {% endfor %}
@@ -233,6 +327,8 @@
                                         style="padding-left: 10px"><span
                                         class="badge bg-light text-dark">LC{{ lc.id }}</span> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.name_es }}</label>
                                 </li>
+                                                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</p>
+
                             {% endfor %}
                         </ul>
                     </div>

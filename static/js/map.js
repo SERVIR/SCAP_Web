@@ -2,6 +2,8 @@ let map;
 let primary_layer;
 let secondary_layer;
 let comparison_control;
+let aoi_layer_left;
+let aoi_layer_right;
 
 function add_option_by_id(selector, value, label) {
     let opt = document.createElement('option');
@@ -52,68 +54,88 @@ function clear_map_layers(){
 function redraw_map_layers(){
     clear_map_layers();
 
-    let primary_label = document.getElementById('primary_year_indicator');
-    let comparison_label = document.getElementById('comparison_year_indicator');
     let selected_year = document.getElementById('selected_year').value
     let comparison_year = document.getElementById('comparison_year').value
     let selected_dataset = document.getElementById('selected_region').value
-    primary_label.innerHTML = `<h4>${selected_year}</h4>`;
-    comparison_label.innerHTML = `<h4>${comparison_year}</h4>`;
 
-    primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            transparent: true,
-            styles: 'boxfill/crimsonbluegreen',
+    let xhr = ajax_call("get-aoi", {});
+    xhr.done(function (result) {
+        aoi_layer_left = L.geoJSON(result['data'], {
+            style: {
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            },
             pane: 'left'
         })
-    
-    primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            transparent: true,
-            styles: 'boxfill/cwg',
-            pane: 'left'
-        })
-
-    secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            styles: 'boxfill/cwg',
-            transparent: true,
+        aoi_layer_right = L.geoJSON(result['data'], {
+            style: {
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            },
             pane: 'right'
         })
-    secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            styles: 'boxfill/crimsonbluegreen',
-            transparent: true,
-            pane: 'right'
-        })
-    primary_underlay_layer.addTo(map)
-    primary_overlay_layer.addTo(map)
-    secondary_underlay_layer.addTo(map)
-    secondary_overlay_layer.addTo(map)
 
-    comparison_control = L.control.sideBySide([primary_overlay_layer, primary_underlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/crimsonbluegreen',
+                pane: 'left'
+            })
+
+        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/cwg',
+                pane: 'left'
+            })
+
+        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: 'boxfill/cwg',
+                transparent: true,
+                pane: 'right'
+            })
+        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: 'boxfill/redblue',
+                transparent: true,
+                pane: 'right'
+            })
+        primary_underlay_layer.addTo(map)
+        primary_overlay_layer.addTo(map)
+        secondary_underlay_layer.addTo(map)
+        secondary_overlay_layer.addTo(map)
+        aoi_layer_left.addTo(map)
+        aoi_layer_right.addTo(map)
+
+        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
+        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+    });
 }
 
 function get_available_years(){
@@ -123,6 +145,8 @@ function get_available_years(){
     //console.log(result['data']);
     fill_years_selector(years);
     fill_comparison_years_selector(years);
+    document.getElementById('selected_year').value=2017;
+    document.getElementById('comparison_year').value=2020;
     redraw_map_layers();
     //})
 }
@@ -130,7 +154,7 @@ function get_available_years(){
 function init_map(){
     // Initialize with map control with basemap and time slider
     map = L.map('map_chart', {
-        fullscreenControl: true, center: [-10, -62.2159], zoom: 4
+        fullscreenControl: true, center: [-8.60436, -74.73243], zoom: 10
     });
 
     map.createPane('left');

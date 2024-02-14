@@ -17,6 +17,7 @@ import ee
 from django.views.decorators.csrf import csrf_exempt
 from scap.models import BoundaryFiles, AOI, ForestCoverChange, ForestCoverChangeFile, ForestCoverFile, NewCollection, \
     UserProvidedAOI
+import geopandas as gpd
 
 from scap.utils import percent_inside, gdal_polygonize, getArea, create_temp_dir, delete_temp_dir, \
     get_projection_of_tif, get_resolution_of_tif, get_projection_of_boundary
@@ -84,7 +85,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data', r"your_path"),
+        os.path.join('/home/alex/shared/SCAP/aois/peru/peru_pa.shp'),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)
@@ -505,3 +506,13 @@ def delete_AOI(request):
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "message": str(e)})
+
+
+@csrf_exempt
+def get_AOI(request):
+    json_obj = {}
+    vec = gpd.read_file('/home/alex/shared/SCAP/aois/peru/peru_pa.shp')
+
+    json_obj["data"] = json.loads(vec.to_json())
+
+    return JsonResponse(json_obj)

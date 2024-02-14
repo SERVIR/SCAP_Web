@@ -52,7 +52,7 @@
     <script src="{% static '/js/leaflet-providers.js' %}"></script>
     <script src="{% static '/js/utils.js' %}"></script>
     <script src="{% static '/js/basemaps.js' %}"></script>
-    <script src="{% static '/js/geosearch.umd.js' %}"></script>>
+    <script src="{% static '/js/geosearch.umd.js' %}"></script>
     <script src="{% static '/js/map.js' %}"></script>
 </head>
 <body id="page-top" style="background:darkgreen">
@@ -67,12 +67,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#callstoaction">Actions</a></li>
-                <li class="nav-item"><a class="nav-link" href="#pilotcountry">Pilot Countries</a></li>
-                <li class="nav-item"><a class="nav-link" href="#services">Datasets</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#pilotcountry">Pilot Countries</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#services">Datasets</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#team">Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="../#contact">Contact</a></li>
                 {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">
@@ -101,66 +101,67 @@
     </div>
 </nav>
 
-<div id="map_chart">
+<div id="content-container">
+    <div id="map_chart">
 
-</div>
+    </div>
 
-<div id="selector_table">
-    <div class="d-flex">
-        <div class="form-group">
-            <label>Primary Year</label>
-            <select name="selected_year" id="selected_year"
-                    class="form-control"
-                    onchange="redraw_map_layers()">
-                <option value="0" selected="selected">Loading...</option>
-            </select>
-        </div>
-        <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
-       title="Primary Year"
-       data-bs-trigger="focus"
-       data-bs-content="This dropdown determines the year for which data will be loaded. If comparison mode is enabled, this data will appear on the left pane of the map.">
-        <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
-    </div>
-    <div class="d-flex">
-        <div class="form-group">
-            <label>Dataset</label>
-            <select name="selected_region" id="selected_region" class="form-control"
-                    onchange="redraw_map_layers()">
-                <option value="esri" selected="selected">ESRI</option>
-                <option value="modis">MODIS</option>
-                <option value="jaxa">JAXA</option>
-                <option value="worldcover">WorldCover</option>
-                <option value="mapbiomas">Mapbiomas</option>
-                <option value="cci">CCI</option>
-            </select>
-        </div>
-        <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
-       title="Region"
-       data-bs-trigger="focus"
-       data-bs-content="This dropdown determines the region for which data will be loaded.">
-        <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
-    </div>
-    <div class="d-flex" id="comparison-selector">
+    <div id="selector_table">
         <div class="d-flex">
             <div class="form-group">
-                <label>Comparison Year</label>
-                <select name="comparison_year" id="comparison_year"
+                <label>Primary Year</label>
+                <select name="selected_year" id="selected_year"
                         class="form-control"
                         onchange="redraw_map_layers()">
+                    <option value="0" selected="selected">Loading...</option>
                 </select>
             </div>
-        <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
-       title="Comparison Year"
-       data-bs-trigger="focus"
-       data-bs-content="This dropdown determines whether to enable a slider, and if so, which year of data should be displayed on the right pane of the map.">
-        <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Primary Year"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines the year for which data will be loaded. If comparison mode is enabled, this data will appear on the left pane of the map.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+        </div>
+        <div class="d-flex">
+            <div class="form-group">
+                <label>Dataset</label>
+                <select name="selected_region" id="selected_region" class="form-control"
+                        onchange="redraw_map_layers()">
+                    <option value="esri" selected="selected">ESRI</option>
+                    <option value="modis">MODIS</option>
+                    <option value="jaxa">JAXA</option>
+                    <option value="worldcover">WorldCover</option>
+                    <option value="mapbiomas">Mapbiomas</option>
+                    <option value="cci">CCI</option>
+                </select>
+            </div>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Region"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines the region for which data will be loaded.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
         </div>
     </div>
+    <div id="comparison_table">
+        <div class="d-flex" id="comparison-selector">
+            <div class="d-flex">
+                <div class="form-group">
+                    <label>Comparison Year</label>
+                    <select name="comparison_year" id="comparison_year"
+                            class="form-control"
+                            onchange="redraw_map_layers()">
+                    </select>
+                </div>
+            <a role="button" class="float-left pt-2" href="#" data-bs-toggle="popover"
+           title="Comparison Year"
+           data-bs-trigger="focus"
+           data-bs-content="This dropdown determines whether to enable a slider, and if so, which year of data should be displayed on the right pane of the map.">
+            <i class="fa-solid fa-circle-info ml-2 info_btn"></i></a>
+            </div>
+        </div>
+    </div>
+
 </div>
-
-
-<div id="primary_year_indicator"></div>
-<div id="comparison_year_indicator"></div>
 
 
 <!-- Bootstrap core JS-->

@@ -13005,9 +13005,9 @@ section#contact form#contactForm :-ms-input-placeholder {
 }
 
 #map_chart {
-    width: 100vw;
-    height: calc(100vh - 2rem - 48px);
-    margin-top: calc(2rem + 48px);
+    position: relative;
+    width: 100%;
+    height: 100%;
     z-index: 10;
 }
 
@@ -13018,8 +13018,27 @@ section#contact form#contactForm :-ms-input-placeholder {
     justify-content: center;
     position: absolute;
     z-index: 20;
-    width: 20vw;
+    left: 45px;
+    top: 10px;
+}
+
+#comparison_table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 20;
+    right: 10px;
+    top: 10px;
+}
+
+#content-container {
+    display: block;
+    position: relative;
+    width: 100%;
     height: calc(100vh - 2rem - 48px);
-    left: 20px;
     top: calc(2rem + 48px);
+    background: black;
+    z-index: 100;
 }
