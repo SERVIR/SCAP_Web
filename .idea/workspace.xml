@@ -4,24 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20e5a5bb-63e1-4085-ac0b-e7d20c363d32" name="Changes" comment="" />
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="peru landing page">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange_pa.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "/home/alex/Downloads/fire_events_2024_02_13(1).json",
+    "git-widget-placeholder": "interface",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scap" />
-    </key>
-  </component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="peru landing page">
+      <option name="closed" value="true" />
+      <created>1707925932532</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1707925932532</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="images" />
+    <MESSAGE value="peru landing page" />
+    <option name="LAST_COMMIT_MESSAGE" value="peru landing page" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
+    <SUITE FILE_PATH="coverage/ScapTestProject$api.coverage" NAME="api Coverage Results" MODIFIED="1707869687884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
+    <SUITE FILE_PATH="coverage/ScapTestProject$manage.coverage" NAME="manage Coverage Results" MODIFIED="1702263761818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ScapTestProject$views.coverage" NAME="views Coverage Results" MODIFIED="1702263429039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
   </component>
 </project>

@@ -175,3 +175,10 @@ function all_unchecked_fc() {
     return msg;
 }
 
+var mapOptions = {
+   center: [-10.4,-75.3],
+   zoom: 8
+}
+var map = new L.map('pa_map', mapOptions);
+var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+map.addLayer(layer);
