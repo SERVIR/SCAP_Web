@@ -27,8 +27,8 @@ params = json.load(f)
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):
     os.chdir(dir)
-    # out_path = dir + "\\" + in_path + ".shp"
-    out_path =  in_path + ".shp"
+    out_path = dir + "\\" + in_path + ".shp"
+    #out_path =  in_path + ".shp"
     #  get raster datasource
     src_ds = gdal.Open(in_path + ".tif")
     srcband = src_ds.GetRasterBand(1)
