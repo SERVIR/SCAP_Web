@@ -304,12 +304,14 @@ def generate_fcc_fields(dataset, year):
                 for file in os.listdir(fc.file_directory):
                     if os.path.isfile(file) and file.startswith("masked_fc"):
                         try:
+                            os.chmod(file,0o777)
                             os.remove(file)
                         except Exception as e:
                             print(e)
                 for file in os.listdir(fcc.file_directory):
                     if os.path.isfile(file) and file.startswith("masked_fcc"):
                         try:
+                            os.chmod(file,0o777)
                             os.remove(file)
                         except Exception as e:
                             print(e)

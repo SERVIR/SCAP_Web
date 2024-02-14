@@ -47,6 +47,7 @@ for (var i = 0; i < newseries.length; i++) {
         if ('LC' + lc_colors[j]['LC'] == (newseries[i].name[1])) {
 
             color = lc_colors[j]['color'];
+            chart1.series[i].update({color: color});
 
         }
     }
@@ -126,7 +127,7 @@ function hide_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        if (newseries[i].name[1] === elem) {
             chart.series[i].hide();
         }
     }
@@ -139,7 +140,7 @@ function show_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        if (newseries[i].name[1] === elem) {
             chart.series[i].show();
         }
     }
@@ -148,7 +149,7 @@ function show_line_fc(elem) {
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines_fc(elem, dataset) {
     console.log(elem.checked);
-    var msg = all_unchecked_fc();
+    // var msg = all_unchecked_fc();
     // if (msg.length == 0) {
     if (elem.checked) {
         show_line_fc(dataset + elem.value);
