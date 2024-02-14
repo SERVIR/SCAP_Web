@@ -137,12 +137,14 @@ def protected_aois(request):
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         years_defor = list(df_defor['year'].unique())
 
-        pivot_table_defor1 = pd.pivot_table(df_defor, values=['NFC','TotalArea'], columns=['fc_source_id'],
+        pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
                                            index='year', fill_value=None)
+        # chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
+        #                      xticks=years_defor,
+        #                      title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
         chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
                              xticks=years_defor,
-                             title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
-
+                             title="Protected Area: " + pa_name)
         return render(request, 'scap/protected_aois.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
