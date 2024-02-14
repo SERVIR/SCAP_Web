@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
-    saveAOItomodel, get_aoi_list, delete_AOI
+    saveAOItomodel, get_aoi_list, delete_AOI, get_AOI
 from scap.views import test, home, aoi, peru, addData, thailand, protected_aois, map
 from django.contrib.auth import views as auth_views
 from scap import getData
@@ -52,6 +52,8 @@ urlpatterns = [
     path('protected_aois/get-min-max/', getData.get_agg_check, name='get-min-max'),
     path('protected_aois/get-series-name/', getData.get_series_name, name='get-series-name'),
     path('get-series-name/', getData.get_series_name, name='get-series-name'),
-    path('map/', map, name='map')
+    path('map/', map, name='map'),
+    path('map/get-aoi/', get_AOI, name='get-aoi'),
+    path('peru/get-aoi/', get_AOI, name='get-aoi')
     #
 ]
