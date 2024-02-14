@@ -104,7 +104,15 @@ xhr.done(function (result2) {
             borderWidth: 0,
             shadow: false,
             formatter: function () {
-                const ss = this.series.name;
+                var ss = this.series.name;
+                if(ss==="Min" || ss==="Max" || ss==="Avg"){
+                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
+                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                return value;
+                }
                 const lc = ss[0];
                 const agb = ss[1];
                 const color = this.series.color;
