@@ -24,7 +24,7 @@ def test(req):
         # generate_from_lambda()
         # mask_with_tif()
         # generate_fcc_file(req)
-        generate_fcc_fields("CCI", 2001)
+        generate_fcc_fields("CCI", 2007)
         # generate_geodjango_objects_aoi()
         # generate_geodjango_objects_boundary()
         # generate_fc_file(req)
@@ -99,10 +99,10 @@ def aoi(request):
 
 def protected_aois(request):
     try:
-        pa_name = "Historic Sanctuary of Machu Picchu"
+        pa_name = "Mantanay"
         colors = []
         # generating list of colors from  the text file
-        with open(settings.STATIC_ROOT + '\\data\\palette.txt') as f:
+        with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
             for line in f:
                 row = line.strip()
                 temp = {}
@@ -137,20 +137,17 @@ def protected_aois(request):
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         years_defor = list(df_defor['year'].unique())
 
-        pivot_table_defor1 = pd.pivot_table(df_defor, values=['NFC','TotalArea'], columns=['fc_source_id'],
+        pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
                                            index='year', fill_value=None)
-        pivot_table_defor2 = pd.pivot_table(df_defor, values=['TotalArea'], columns=['fc_source_id'],
-                                           index='year', fill_value=None)
+        # chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
+        #                      xticks=years_defor,
+        #                      title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
         chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
                              xticks=years_defor,
-                             title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
-        chart_fc2 = serialize(pivot_table_defor2, render_to='container_fcpa_hide', output_type='json', type='spline',
-                             xticks=years_defor,
-                             title="Protected Area: " + pa_name )
-
+                             title="Protected Area: " + pa_name)
         return render(request, 'scap/protected_aois.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'chart_fcpa_hide': chart_fc2,'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
     except Exception as e:
         return render(request, 'scap/protected_aois.html')
 

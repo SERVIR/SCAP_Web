@@ -13042,3 +13042,10 @@ section#contact form#contactForm :-ms-input-placeholder {
     background: black;
     z-index: 100;
 }
+
+#peru-map {
+    display: block;
+    width: 80%;
+    height: 500px;
+    margin: auto;
+}

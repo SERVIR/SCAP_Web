@@ -44,9 +44,10 @@ var n=0;
 // Loop through each series and set the color
 for (var i = 0; i < newseries.length; i++) {
     for (var j = 0; j < lc_colors.length; j++) {
-        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name[1])) {
+        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name)) {
 
             color = lc_colors[j]['color'];
+            chart1.series[i].update({color: color});
 
         }
     }
@@ -55,16 +56,11 @@ for (var i = 0; i < newseries.length; i++) {
 
 
 chart1.update({
-    yAxis: [{
+    yAxis: {
         title: {
-            text: 'Values (Ha)'
+            text: 'Values (Ha)',
         }
-    }, {
-        title: {
-            text: 'Values (Ha)'
-        },
-        opposite: true
-    }], tooltip: {
+    }, tooltip: {
         useHTML: true,
         enabled: true,
         backgroundColor: null,
@@ -72,18 +68,19 @@ chart1.update({
         shadow: false,
         formatter: function () {
             const ss = this.series.name;
-            const lc = ss[0];
+            const lc = ss;
             const color = this.series.color;
-            const s_name = get_name(ss);
-            // if (this.y > 0) {
-            //     label = "Forest Gain";
+            //    if (ss[0]==='NFC') {
+            //     var label = "Net Forest Change";
             // } else {
-            //     label = "Forest Loss";
+            //     var label = "Total Forest Area";
             // }
-            label = ss;
-            var value = '<div style="background-color:' + color + ';padding:10px">' +
-                '<span><b>' + label + ' ' + this.x + ':  ' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
-                '<span style=\'padding-left:50px\'></span><br/> ' + result1.split(',')[0] + '<br/> </span><div>';
+                           var label = "Net Forest Change";
+
+           var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
+            var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
+                '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
+                '<span style=\'padding-left:50px\'></span> <br/>'+labellc+' </span><div>';
             return value;
         }
     }
@@ -149,7 +146,7 @@ function show_line_fc(elem) {
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines_fc(elem, dataset) {
     console.log(elem.checked);
-    var msg = all_unchecked_fc();
+    // var msg = all_unchecked_fc();
     // if (msg.length == 0) {
     if (elem.checked) {
         show_line_fc(dataset + elem.value);

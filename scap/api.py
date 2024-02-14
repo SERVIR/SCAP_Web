@@ -152,7 +152,7 @@ def getInitialForestArea(year, dir, dataset, pa, val):
     # print(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
-    return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
+    return getArea(gdal_polygonize(dir,  r"masked_fc" + str(val)))
 def getInitialForestArea_new(year, dir, dataset, pa, val):
     dataset = dataset.lower()
     if dataset != "mapbiomas":
@@ -256,13 +256,14 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
     os.chdir(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
-    return getArea(gdal_polygonize(dir,  r"masked_fcc" + str(val)), value)
+    return getArea(gdal_polygonize(dir, r"masked_fcc" + str(val)), value)
 
 
 # Find all the files that are atleast 90% inside the datasource
 # For each Protected Area that is inside the datasource, calculate the FCC object fields
 def generate_fcc_fields(dataset, year):
     try:
+
         create_temp_dir(params["PATH_TO_TEMP_FILES"])
         l_dataset = dataset.lower()
         data_source = (BoundaryFiles.objects.get(name_es=dataset))
@@ -301,6 +302,20 @@ def generate_fcc_fields(dataset, year):
                 end = time.time()
                 fcchange.processing_time = end - start
                 fcchange.save()
+                for file in os.listdir(fc.file_directory):
+                    if os.path.isfile(file) and file.startswith("masked_fc"):
+                        try:
+                            os.chmod(file,0o777)
+                            os.remove(file)
+                        except Exception as e:
+                            print(e)
+                for file in os.listdir(fcc.file_directory):
+                    if os.path.isfile(file) and file.startswith("masked_fcc"):
+                        try:
+                            os.chmod(file,0o777)
+                            os.remove(file)
+                        except Exception as e:
+                            print(e)
     except Exception as e:
         print(e)
     finally:
