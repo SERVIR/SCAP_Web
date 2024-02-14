@@ -262,6 +262,7 @@ def getConditionalForestArea(pa, dir, dataset, value, year, val):
 # For each Protected Area that is inside the datasource, calculate the FCC object fields
 def generate_fcc_fields(dataset, year):
     try:
+
         create_temp_dir(params["PATH_TO_TEMP_FILES"])
         l_dataset = dataset.lower()
         data_source = (BoundaryFiles.objects.get(name_es=dataset))
@@ -300,6 +301,18 @@ def generate_fcc_fields(dataset, year):
                 end = time.time()
                 fcchange.processing_time = end - start
                 fcchange.save()
+                for file in os.listdir(fc.file_directory):
+                    if os.path.isfile(file) and file.startswith("masked_fc"):
+                        try:
+                            os.remove(file)
+                        except Exception as e:
+                            print(e)
+                for file in os.listdir(fcc.file_directory):
+                    if os.path.isfile(file) and file.startswith("masked_fcc"):
+                        try:
+                            os.remove(file)
+                        except Exception as e:
+                            print(e)
     except Exception as e:
         print(e)
     finally:

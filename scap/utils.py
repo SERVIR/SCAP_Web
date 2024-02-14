@@ -91,6 +91,7 @@ def getArea(file, value=99):
             # initial forest area calculation
             if new_polygons.loc[i, 'DN'] == 1:
                 area = area + new_polygons.loc[i, 'area_hec']
+
     return area
 # def process_chunk(chunk, value=99):
 #     if value != 99:
