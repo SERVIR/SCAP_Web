@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated map">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/static/js/emissions.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/emissions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/static/js/forestchange.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/forestchange.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/emissions.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/emissions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/forestchange.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange.js" afterDir="false" />
-    </list>
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated map" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,7 +118,15 @@
       <option name="project" value="LOCAL" />
       <updated>1707930030695</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="updated map">
+      <option name="closed" value="true" />
+      <created>1707941571897</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1707941571897</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

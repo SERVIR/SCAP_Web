@@ -257,6 +257,8 @@
                             <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
                             <ul class="lc_list" style="list-style-type: none">
                                 {% for lc in lcs %}
+                                                                <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</span>
+
                                     <li class="lc_list-item">
                                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb"
                                                onchange="access_lines(this,'LC')"
