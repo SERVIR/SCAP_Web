@@ -270,7 +270,7 @@ def generate_fcc_fields(dataset, year):
         # print(needed_aois)
         val = 0
         for aoi in needed_aois:
-            if aoi.name=='peru':
+            if aoi.name!='peru':
                 val = val + 1
                 start = time.time()
                 # print(percent_inside(aoi, data_source))

@@ -74,7 +74,7 @@ chart1.update({
             const ss = this.series.name;
             const lc = ss[1];
             const color = this.series.color;
-            const s_name = get_name(ss);
+            // const s_name = get_name(ss);
             // if (this.y > 0) {
             //     label = "Forest Gain";
             // } else {
@@ -82,7 +82,7 @@ chart1.update({
             // }
            var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
             var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
-                '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
+                '<span>' + labellc + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
                 '<span style=\'padding-left:50px\'></span> ' + result1.split(',')[0] + '<br/>'+labellc+' </span><div>';
             return value;
         }
