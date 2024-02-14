@@ -106,6 +106,8 @@ xhr.done(function (result2) {
             formatter: function () {
                 var ss = this.series.name;
                 if(ss==="Min" || ss==="Max" || ss==="Avg"){
+                                    const color = this.series.color;
+
                 var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
                     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
                 //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
