@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated map">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange_pa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/js/emissions.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/emissions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/js/forestchange.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/forestchange.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/emissions.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/emissions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/forestchange.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +34,38 @@
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\css" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="Python.DjangoServer" factoryName="Django server" nameIsGenerated="true">
+      <module name="ScapTestProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="ScapTestProject.settings" />
+      </envs>
+      <option name="SDK_HOME" value="C:\ProgramData\anaconda3\envs\ScapTestProject\python.exe" />
+      <option name="SDK_NAME" value="Python 3.11 (ScapTestProject)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="software.aws.toolkits.jetbrains.core.execution.PythonAwsConnectionExtension">
+        <option name="credential" />
+        <option name="region" />
+        <option name="useCurrentConnection" value="false" />
+      </EXTENSION>
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="127.0.0.1" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="peru landing page">
@@ -81,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1707929747655</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="updated map">
+      <option name="closed" value="true" />
+      <created>1707930030695</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1707930030695</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
