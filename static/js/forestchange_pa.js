@@ -74,15 +74,14 @@ chart1.update({
             const ss = this.series.name;
             const lc = ss[1];
             const color = this.series.color;
-            // const s_name = get_name(ss);
-            // if (this.y > 0) {
-            //     label = "Forest Gain";
-            // } else {
-            //     label = "Forest Loss";
-            // }
+               if (ss[0]==='NFC') {
+                var label = "Net Forest Change";
+            } else {
+                var label = "Total Forest Area";
+            }
            var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
             var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
-                '<span>' + + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
+                '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
                 '<span style=\'padding-left:50px\'></span> ' + result1.split(',')[0] + '<br/>'+labellc+' </span><div>';
             return value;
         }
