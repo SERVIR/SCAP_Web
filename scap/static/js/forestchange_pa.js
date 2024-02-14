@@ -44,7 +44,7 @@ var n=0;
 // Loop through each series and set the color
 for (var i = 0; i < newseries.length; i++) {
     for (var j = 0; j < lc_colors.length; j++) {
-        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name[1])) {
+        if ('LC' + lc_colors[j]['LC'] == (newseries[i].name)) {
 
             color = lc_colors[j]['color'];
             chart1.series[i].update({color: color});
@@ -56,16 +56,11 @@ for (var i = 0; i < newseries.length; i++) {
 
 
 chart1.update({
-    yAxis: [{
+    yAxis: {
         title: {
-            text: 'Values (Ha)'
+            text: 'Values (Ha)',
         }
-    }, {
-        title: {
-            text: 'Values (Ha)'
-        },
-        opposite: true
-    }], tooltip: {
+    }, tooltip: {
         useHTML: true,
         enabled: true,
         backgroundColor: null,
@@ -129,7 +124,7 @@ function hide_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name[1] === elem) {
+        if (newseries[i].name === elem) {
             chart.series[i].hide();
         }
     }
@@ -142,7 +137,7 @@ function show_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name[1] === elem) {
+        if (newseries[i].name === elem) {
             chart.series[i].show();
         }
     }
