@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="model">
-      <change beforePath="$PROJECT_DIR$/scap/getData.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/getData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated emissions">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/protected_aois.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +20,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "git-widget-placeholder": "interface",
+    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject/static/css",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
@@ -56,7 +57,15 @@
       <option name="project" value="LOCAL" />
       <updated>1707927857257</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="updated emissions">
+      <option name="closed" value="true" />
+      <created>1707928675623</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1707928675623</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -64,7 +73,8 @@
     <MESSAGE value="peru landing page" />
     <MESSAGE value="peru pa  page" />
     <MESSAGE value="model" />
-    <option name="LAST_COMMIT_MESSAGE" value="model" />
+    <MESSAGE value="updated emissions" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated emissions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
