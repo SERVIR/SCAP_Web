@@ -76,3 +76,5 @@ LC15,AGB1,deepskyblue
 LC16,AGB1,lightskyblue
 LC17,AGB1,pink
 LC18,AGB1,brown
+LC20,AGB9,red
+LC20,AGB10,green

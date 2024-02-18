@@ -42,7 +42,7 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',  r"your_path"),
+        os.path.join(os.path.dirname(__file__), 'data',  r"C:\Users\gtondapu\Desktop\SCAP\Boundary\mapbiomas\mapbiomas_merged.shp"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -526,8 +526,10 @@ def delete_AOI(request):
 @csrf_exempt
 def get_AOI(request):
     json_obj = {}
-    vec = gpd.read_file('/home/alex/shared/SCAP/aois/peru/peru_pa.shp')
+    try:
+        vec = gpd.read_file('/home/alex/shared/SCAP/aois/peru/peru_pa.shp')
 
-    json_obj["data"] = json.loads(vec.to_json())
-
+        json_obj["data"] = json.loads(vec.to_json())
+    except:
+        return JsonResponse({})
     return JsonResponse(json_obj)

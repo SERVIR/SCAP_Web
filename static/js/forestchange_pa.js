@@ -180,5 +180,6 @@ var mapOptions = {
    zoom: 8
 }
 var map = new L.map('pa_map', mapOptions);
-var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-map.addLayer(layer);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+    attribution: 'Sample <b>worldwide locked demo</b> by <a href="https://theroamingworkshop.cloud">The Roaming Workshop</a>. Uses ESRI tiles.',
+}).addTo(map);

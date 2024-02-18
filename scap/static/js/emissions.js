@@ -1,7 +1,9 @@
 // Retrieve the chart from the DOM, and instantiate it
 var index = $("#container").data('highchartsChart');
 var chart = Highcharts.charts[index];
-var series = chart.series;
+
+    var series=chart.series;
+
 var newseries = series;
 var new_updated = series;
 var result1 = "";
@@ -50,6 +52,7 @@ function standardize_color(str) {
 
 const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 xhr.done(function (result2) {
+    console.log((result2.min))
     min_arr = {
         "name": "Min",
         "data": result2.min,
@@ -80,17 +83,30 @@ xhr.done(function (result2) {
     };
     $.each(chart.series, function (i, s) {
         for (var j = 0; j < lc_colors.length; j++) {
+
             if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                 s.color = lc_colors[j]['color'];
+                ns.push({
+                    name: s.name,
+                    data: s.data,
+                    color: s.color,
+                    visible: true,
+                    lineWidth: 2,
+                    legendIndex: null,
+                    dashStyle: ''
+                });
+
             }
 
 
         }
-        ns.push({name: s.name, data: s.data, color: s.color});
     });
 
-    chart.update({series: ns})
-    chart.update({series: [ns, min_arr, max_arr, avg_arr]});
+    chart.update({series: ns});
+chart.addSeries(min_arr);
+chart.addSeries(max_arr);
+chart.addSeries(avg_arr);
+
     chart.update({
        yAxis: {
            title: {
@@ -104,9 +120,10 @@ xhr.done(function (result2) {
             borderWidth: 0,
             shadow: false,
             formatter: function () {
+                const color = this.series.color;
                 const ss = this.series.name;
                                 if(ss==="Min" || ss==="Max" || ss==="Avg"){
-                                                    const color = this.series.color;
+
 
                 var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
                     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
@@ -117,7 +134,7 @@ xhr.done(function (result2) {
                 }
                 const lc = ss[0];
                 const agb = ss[1];
-                const s_name = get_name(ss);
+                // const s_name = get_name(ss);
                 var labellc = document.getElementById(lc).innerText;
                 var labelagb = document.getElementById(agb).innerText;
                 labellc = labellc.replace(/ *\([^)]*\) */g, "");
@@ -135,48 +152,48 @@ xhr.done(function (result2) {
     });
 });
 
+    chart.update({
+            chart: {
+                type: 'spline'
+            },
 
-chart.update({
-        chart: {
-            type: 'spline'
-        },
+            plotOptions: {
+                series: {
 
-        plotOptions: {
-            series: {
-
-                marker: {
-                    enabled: false,
-                    states: {
-                        hover: {
-                            enabled: false
+                    marker: {
+                        enabled: false,
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
                         }
-                    }
-                }, showCheckbox: false,
-                selected: true,
+                    }, showCheckbox: false,
+                    selected: true,
 
-                events: {
-                    checkboxClick: function (event) {
-                        if (this.visible) {
-                            this.hide();
-                        } else {
-                            this.show();
+                    events: {
+                        checkboxClick: function (event) {
+                            if (this.visible) {
+                                this.hide();
+                            } else {
+                                this.show();
+                            }
                         }
                     }
                 }
-            }
-        },
-        lang: {
-            noData: "No data found. Please select LC/AGB from the list."
-        },
-        noData: {
-            style: {
-                fontWeight: 'bold',
-                fontSize: '15px'
-            }
-        },
+            },
+            lang: {
+                noData: "No data found. Please select LC/AGB from the list."
+            },
+            noData: {
+                style: {
+                    fontWeight: 'bold',
+                    fontSize: '15px'
+                }
+            },
 
-    }
-);
+
+        }
+    );
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
@@ -216,7 +233,7 @@ function show_line(elem) {
 
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
-    var msg = all_unchecked();
+    // var msg = all_unchecked();
 
     // if (msg.length == 0) {
     if (elem.checked) {
@@ -234,10 +251,8 @@ function access_lines(elem, dataset) {
     var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
     var min_arr = [];
-    var res_mmm = [];
     var max_arr = [];
     var avg_arr = [];
-
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
         min_arr = {
@@ -273,14 +288,41 @@ function access_lines(elem, dataset) {
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];
+                           ns.push({
+                    name: s.name,
+                    data: s.data,
+                    color: s.color,
+                    visible: true,
+                    lineWidth: 2,
+                    legendIndex: null,
+                    dashStyle: ''
+                });
+
                 }
 
 
             }
-            ns.push({name: s.name, data: s.data, color: s.color});
+            console.log(s.name==='Min')
+            if(s.name==='Min'){
+                s.update({
+    data: min_arr.data
+}, true);
+            }
+             if(s.name==='Max'){
+                 s.update({
+    data: max_arr.data
+}, true);
+            }
+             if(s.name==='Avg'){
+                s.update({
+    data: avg_arr.data
+}, true);
+            }
         });
 
-        chart.update({series: [ns, min_arr, max_arr, avg_arr]});
+
+    // chart.update({series: ns});
+
 
 
     });
@@ -347,7 +389,7 @@ function get_checked_lcs() {
     $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
 
         var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        console.log(temp.replace('L', '').replace('C', ''));
+        // console.log(temp.replace('L', '').replace('C', ''));
         lcs.push(temp.replace('L', '').replace('C', ''));
     });
     return lcs;

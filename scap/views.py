@@ -24,9 +24,9 @@ def test(req):
         # generate_from_lambda()
         # mask_with_tif()
         # generate_fcc_file(req)
-        generate_fcc_fields("CCI", 2007)
+        # generate_fcc_fields("CCI", 2007)
         # generate_geodjango_objects_aoi()
-        # generate_geodjango_objects_boundary()
+        generate_geodjango_objects_boundary()
         # generate_fc_file(req)
         return HttpResponse("The script ran successfully")
     except Exception as e:
@@ -36,11 +36,14 @@ def test(req):
 def home(request):
     return render(request, 'scap/index.html')
 
+
 def map(request):
     return render(request, 'scap/map.html')
 
+
 # This page shows when someone clicks on 'Peru' tile in home page
 def peru(request):
+    error_msg = ""
     try:
         colors = []
         # generating list of colors from  the text file
@@ -52,7 +55,11 @@ def peru(request):
                 temp['AGB'] = int(row.split(',')[1][3:])
                 temp['color'] = row.split(',')[2]
                 colors.append(temp)
-
+    except Exception as e:
+        error_msg = "cannot generate colors"
+        print(str(e))
+    try:
+        print("from emis")
         # generating highcharts chart object from python using pandas(emissions chart)
         df_lc = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es', 'pais').order_by(
             'id')))
@@ -63,11 +70,16 @@ def peru(request):
         df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
         df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
+        print(grouped_data)
         pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
                                      index='year',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to='container', output_type='json', type='spline', title='Emissions')
-
+    except Exception as e:
+        error_msg = "cannot generate chart data for emissions"
+        print(str(e))
+    try:
+        print('from fc')
         # generating highcharts chart object from python using pandas(forest cover change chart)
         df_defor = pd.DataFrame(
             list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
@@ -77,16 +89,20 @@ def peru(request):
         df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
         df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
         years_defor = list(df_defor['year'].unique())
+        print(df_defor)
         pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
                                            index='year', fill_value=None)
         chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
                              xticks=years_defor,
                              title='Change in Forest Cover: Peru', )
-        return render(request, 'scap/pilotcountry_peru.html',
-                      context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+        print('end of fc')
     except Exception as e:
-        return render(request, 'scap/pilotcountry_peru.html', {})
+        error_msg = "canot generate data for forest chanfge"
+        print(str(e))
+    print(chart)
+    return render(request, 'scap/pilotcountry_peru.html',
+                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
 
 
 def thailand(request):
@@ -99,52 +115,67 @@ def aoi(request):
 
 def protected_aois(request):
     try:
+        error_message = ""
         pa_name = "Mantanay"
         colors = []
-        # generating list of colors from  the text file
-        with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
-            for line in f:
-                row = line.strip()
-                temp = {}
-                temp['LC'] = int(row.split(',')[0][2:])
-                temp['AGB'] = int(row.split(',')[1][3:])
-                temp['color'] = row.split(',')[2]
-                colors.append(temp)
+        try:
+            # generating list of colors from  the text file
+            with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
+                for line in f:
+                    row = line.strip()
+                    temp = {}
+                    temp['LC'] = int(row.split(',')[0][2:])
+                    temp['AGB'] = int(row.split(',')[1][3:])
+                    temp['color'] = row.split(',')[2]
+                    colors.append(temp)
+        except:
+            error_message = "colors could not be read"
+            print(error_message)
 
-        # generating highcharts chart object from python using pandas(emissions chart)
-        df_lc = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es', 'pais').order_by(
-            'id')))
-        lcs = df_lc.to_dict('records')
-        df_agb = pd.DataFrame(list(AGBSource.objects.all().values('agb_id', 'agb_name')))  # Get the AGB dataset data
-        agbs = df_agb.to_dict('records')
-        df = pd.DataFrame(list(Emissions.objects.all().values()))
-        df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
-        df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
-        grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
-        pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
-                                     index='year',
-                                     fill_value=None)
-        chart = serialize(pivot_table, render_to='emissions_chart_pa', output_type='json', type='spline',
-                          title='Emissions: ' + pa_name)
+        try:
 
-        # generating highcharts chart object from python using pandas(forest cover change chart)
-        df_defor = pd.DataFrame(list(ForestCoverChange.objects.filter(aoi__name=pa_name).values()))
-        df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
-            'id')))
-        lcs_defor = df_lc_defor.to_dict('records')
-        df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
-        df_defor["TotalArea"]=df_defor["initial_forest_area"] + df_defor["NFC"]
-        df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-        years_defor = list(df_defor['year'].unique())
+            # generating highcharts chart object from python using pandas(emissions chart)
+            df_lc = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es', 'pais').order_by(
+                'id')))
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(
+                list(AGBSource.objects.all().values('agb_id', 'agb_name')))  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+            df = pd.DataFrame(list(Emissions.objects.all().values()))
+            df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
+            df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
+            grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
+            pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
+                                         index='year',
+                                         fill_value=None)
+            chart = serialize(pivot_table, render_to='emissions_chart_pa', output_type='json', type='spline',
+                              title='Emissions: ' + pa_name)
+        except:
+            error_message = "problem generating emissions data"
+            print(error_message)
+        try:
+            # generating highcharts chart object from python using pandas(forest cover change chart)
+            df_defor = pd.DataFrame(list(ForestCoverChange.objects.filter(aoi__name=pa_name).values()))
+            df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
+                'id')))
+            lcs_defor = df_lc_defor.to_dict('records')
+            df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
+            df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
+            df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
+            years_defor = list(df_defor['year'].unique())
 
-        pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
-                                           index='year', fill_value=None)
-        # chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
-        #                      xticks=years_defor,
-        #                      title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
-        chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
-                             xticks=years_defor,
-                             title="Protected Area: " + pa_name)
+            pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
+                                                index='year', fill_value=None)
+            # chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
+            #                      xticks=years_defor,
+            #                      title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
+            chart_fc1 = serialize(pivot_table_defor1, render_to='container_fcpa', output_type='json', type='spline',
+                                  xticks=years_defor,
+                                  title="Protected Area: " + pa_name)
+        except:
+            error_message = "problem generating forest change data"
+            print(error_message)
+
         return render(request, 'scap/protected_aois.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
@@ -154,6 +185,7 @@ def protected_aois(request):
 
 def addData(request):
     return render(request, 'scap/addData.html')
+
 
 def signup_redirect(request):
     messages.error(request, "Something wrong here, it may be that you already have account!")

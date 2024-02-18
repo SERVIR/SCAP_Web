@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Avg, Min, Max
 from django.http import JsonResponse
 #
@@ -29,12 +31,12 @@ def get_agg_check(request):
                 else:
                     pass
         data1.sort(key=lambda x: x['year'])
-        # print(data1)
+        print(data1)
 
         for x in range(len(data1)):
-            min_arr.append(data1[x]['min'])
-            max_arr.append(data1[x]['max'])
-            avg_arr.append(data1[x]['avg'])
+            min_arr.append([data1[x]['year'],data1[x]['min']])
+            max_arr.append([data1[x]['year'],data1[x]['max']])
+            avg_arr.append([data1[x]['year'],data1[x]['avg']])
 
         return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 

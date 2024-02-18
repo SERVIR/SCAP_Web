@@ -98,7 +98,7 @@ class ForestCoverChangeFile(models.Model):
     year = models.IntegerField(help_text="Year the change was calculated for")
     baseline_year = models.IntegerField(help_text="Baseline year for forest cover change calculation", blank=True,
                                         null=True)
-    created = models.DateTimeField(help_text='Date and time the file was created', default=datetime.now)
+    created = models.DateTimeField(help_text='Date and time the file was created', auto_now_add=True)
     processing_time = models.FloatField(help_text="Time to generate the file (seconds)", blank=True, null=True)
     file_name = models.CharField(max_length=200, default="", help_text="Forest Cover Change file name")
     file_directory = models.CharField(max_length=200, default="", help_text="Forest Cover Change file directory")
@@ -112,7 +112,7 @@ class ForestCoverFile(models.Model):
     fc_source = models.ForeignKey(BoundaryFiles, help_text="Forest Cover Source", on_delete=models.CASCADE)
     file_name = models.CharField(max_length=100, default="", help_text="Forest Cover Source file name")
     file_directory = models.CharField(max_length=100, default="", help_text="Forest Cover Source file directory")
-    created = models.DateTimeField(help_text='Date and time the file was created', default=datetime.now)
+    created = models.DateTimeField(help_text='Date and time the file was created', auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Forest Cover Files"
