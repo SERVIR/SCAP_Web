@@ -78,18 +78,15 @@ def peru(request):
     except Exception as e:
         error_msg = "cannot generate chart data for emissions"
         print(str(e))
-    print('from fc')
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(
-        list(ForestCoverChange.objects.filter(aoi__name='peru').values('fc_source_id','forest_gain','forest_loss')))  # Get the ForestCoverChange dataset data
+        list(ForestCoverChange.objects.filter(aoi__name='Peru').values()))  # Get the ForestCoverChange dataset data
     df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
         'id')))
     lcs_defor = df_lc_defor.to_dict('records')
-    print(df_defor)
     df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year'].unique())
-    print(df_defor)
     pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
                                        index='year', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
