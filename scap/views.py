@@ -78,28 +78,22 @@ def peru(request):
     except Exception as e:
         error_msg = "cannot generate chart data for emissions"
         print(str(e))
-    try:
-        print('from fc')
-        # generating highcharts chart object from python using pandas(forest cover change chart)
-        df_defor = pd.DataFrame(
-            list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
-        df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
-            'id')))
-        lcs_defor = df_lc_defor.to_dict('records')
-        df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-        df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
-        years_defor = list(df_defor['year'].unique())
-        print(df_defor)
-        pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
-                                           index='year', fill_value=None)
-        chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
-                             xticks=years_defor,
-                             title='Change in Forest Cover: Peru', )
-        print('end of fc')
-    except Exception as e:
-        error_msg = "canot generate data for forest chanfge"
-        print(str(e))
-    print(chart)
+    print('from fc')
+    # generating highcharts chart object from python using pandas(forest cover change chart)
+    df_defor = pd.DataFrame(
+        list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
+    df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
+        'id')))
+    lcs_defor = df_lc_defor.to_dict('records')
+    df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
+    df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
+    years_defor = list(df_defor['year'].unique())
+    print(df_defor)
+    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
+                                       index='year', fill_value=None)
+    chart_fc = serialize(pivot_table_defor, render_to='container1', output_type='json', type='spline',
+                         xticks=years_defor,
+                         title='Change in Forest Cover: Peru', )
     return render(request, 'scap/pilotcountry_peru.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})

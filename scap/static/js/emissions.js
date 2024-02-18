@@ -52,7 +52,7 @@ function standardize_color(str) {
 
 const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 xhr.done(function (result2) {
-    console.log((result2.min))
+    // console.log((result2.min))
     min_arr = {
         "name": "Min",
         "data": result2.min,
@@ -302,7 +302,7 @@ function access_lines(elem, dataset) {
 
 
             }
-            console.log(s.name==='Min')
+            // console.log(s.name==='Min')
             if(s.name==='Min'){
                 s.update({
     data: min_arr.data
