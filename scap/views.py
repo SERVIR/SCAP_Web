@@ -81,7 +81,7 @@ def peru(request):
     print('from fc')
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(
-        list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
+        list(ForestCoverChange.objects.filter(aoi__name='peru').values('fc_source_id','forest_gain','forest_loss')))  # Get the ForestCoverChange dataset data
     df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
         'id')))
     lcs_defor = df_lc_defor.to_dict('records')
