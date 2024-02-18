@@ -85,6 +85,7 @@ def peru(request):
     df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
         'id')))
     lcs_defor = df_lc_defor.to_dict('records')
+    print(df_defor)
     df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year'].unique())
