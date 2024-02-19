@@ -50,7 +50,7 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":"Mantanay"});
 xhr.done(function (result2) {
     console.log((result2.min))
     min_arr = {
@@ -197,7 +197,7 @@ chart.addSeries(avg_arr);
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -210,7 +210,7 @@ function hide_line(elem) {
 
 // Show lines on the chart based on checkbox selection
 function show_line(elem) {
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -253,7 +253,8 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":"Mantanay"});
+
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
@@ -419,7 +420,7 @@ function reset_emissions() {
         // show_line(uncheck[i]);
 // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
@@ -443,7 +444,7 @@ function clear_emissions() {
         uncheck[i].checked = false;
         // access_lines(uncheck[i],'LC');
     }
-    var index = $("#container").data('highchartsChart');
+    var index = $("#emissions_chart_pa").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {

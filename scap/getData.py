@@ -17,12 +17,21 @@ def get_agg_check(request):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
+        pa_name=request.POST.get('pa_name')
         min_arr = []
         max_arr = []
         avg_arr = []
-        data1 = list(
-            Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs).values('year').annotate(
-                min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
+        if len(pa_name)>0:
+            print(pa_name)
+
+            data1 = list(
+                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs,aoi_id__name=pa_name).values('year').annotate(
+                    min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
+            print(data1)
+        else:
+            data1 = list(
+                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs).values('year').annotate(
+                    min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
 
         if len(data1) < 25:
             for y in years:
@@ -38,7 +47,7 @@ def get_agg_check(request):
             max_arr.append([data1[x]['year'],data1[x]['max']])
             avg_arr.append([data1[x]['year'],data1[x]['avg']])
 
-        return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
+    return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 
 
 colors = []

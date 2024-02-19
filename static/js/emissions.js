@@ -50,7 +50,7 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":""});
 xhr.done(function (result2) {
     console.log((result2.min))
     min_arr = {
