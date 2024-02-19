@@ -253,7 +253,7 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":""});
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
