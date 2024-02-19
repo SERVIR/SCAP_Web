@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="for fc">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange_pa.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708295153216</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="for fc">
+      <option name="closed" value="true" />
+      <created>1708295443815</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1708295443815</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

@@ -183,3 +183,18 @@ var map = new L.map('pa_map', mapOptions);
 L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
     attribution: 'Sample <b>worldwide locked demo</b> by <a href="https://theroamingworkshop.cloud">The Roaming Workshop</a>. Uses ESRI tiles.',
 }).addTo(map);
+
+var selected_year=2000;
+var selected_dataset='mapbiomas';
+       var primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/crimsonbluegreen',
+                pane: 'left'
+            })
+  primary_overlay_layer.addTo(map)
