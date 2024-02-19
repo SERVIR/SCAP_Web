@@ -198,3 +198,17 @@ var selected_dataset='mapbiomas';
                 pane: 'left'
             })
   primary_overlay_layer.addTo(map)
+var selected_year=2021;
+var selected_dataset='mapbiomas';
+       var second_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/cwg',
+                pane: 'left'
+            })
+  second_overlay_layer.addTo(map)
