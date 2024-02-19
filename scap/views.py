@@ -66,7 +66,7 @@ def peru(request):
         lcs = df_lc.to_dict('records')
         df_agb = pd.DataFrame(list(AGBSource.objects.all().values('agb_id', 'agb_name')))  # Get the AGB dataset data
         agbs = df_agb.to_dict('records')
-        df = pd.DataFrame(list(Emissions.objects.filter(aoi_id__name="peru").values()))
+        df = pd.DataFrame(list(Emissions.objects.filter(aoi_id__name="Peru").values()))
         df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
         df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
@@ -80,7 +80,7 @@ def peru(request):
         print(str(e))
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(
-        list(ForestCoverChange.objects.filter(aoi__name='peru').values()))  # Get the ForestCoverChange dataset data
+        list(ForestCoverChange.objects.filter(aoi__name='Peru').values()))  # Get the ForestCoverChange dataset data
     df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
         'id')))
     lcs_defor = df_lc_defor.to_dict('records')

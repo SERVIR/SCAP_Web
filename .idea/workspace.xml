@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="for fc">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/forestchange_pa.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/forestchange_pa.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/forestchange_pa.js" afterDir="false" />
-    </list>
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="landing page peru" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,7 +17,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "git-widget-placeholder": "interface",
-    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject/static/js",
+    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/ScapTestProject/scap/static/js",
     "node.js.selected.package.tslint": "(autodetect)"
   },
   "keyToStringList": {
@@ -33,9 +28,9 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\css" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\css" />
     </key>
   </component>
@@ -208,7 +203,23 @@
       <option name="project" value="LOCAL" />
       <updated>1708295443815</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="for pa page">
+      <option name="closed" value="true" />
+      <created>1708373296492</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1708373296492</updated>
+    </task>
+    <task id="LOCAL-00019" summary="for pa page">
+      <option name="closed" value="true" />
+      <created>1708373353910</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1708373353910</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -222,7 +233,8 @@
     <MESSAGE value="updated chart" />
     <MESSAGE value="fixed emissions chart, removed Belize from pilot countries" />
     <MESSAGE value="for fc" />
-    <option name="LAST_COMMIT_MESSAGE" value="for fc" />
+    <MESSAGE value="for pa page" />
+    <option name="LAST_COMMIT_MESSAGE" value="for pa page" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
