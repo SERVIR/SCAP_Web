@@ -194,7 +194,7 @@ var selected_dataset='mapbiomas';
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
-                styles: 'boxfill/',
+                styles: 'boxfill/crimsonbluegreen',
                 pane: 'left'
             })
 var selected_year=2021;
@@ -207,7 +207,7 @@ var selected_dataset='mapbiomas';
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
-                styles: 'boxfill/cwg',
+                styles: 'boxfill/ferret',
                 pane: 'left'
             })
   second_overlay_layer.addTo(map);
