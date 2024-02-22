@@ -197,6 +197,7 @@ class ForestCoverChangeNew(models.Model):
     processing_time = models.FloatField(
         help_text="Time to calculate forest change data for this time period, AOI and Forest Cover Change source (seconds)",
         blank=True, null=True)
+    speedup = models.FloatField(help_text='New calculation speedup factor', blank=True, null=True)
 
     def net_forest_change(self):
         return self.forest_gain - self.forest_loss
