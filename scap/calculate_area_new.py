@@ -67,6 +67,17 @@ def rasterize_aoi(aoi, match_path):
     # Calculate top left pixel offset comparing top left pixels of each raster's extent
     row_offset = int((transform[3] - new_origin_y) // 100)
     col_offset = int((new_origin_x - transform[0]) // 100)
+
+    if new_origin_x < transform[0]:
+        print('Clipping AOI origin X to FC file')
+        new_origin_x = transform[0]
+        col_offset = 0
+
+    if new_origin_y < transform[3]:
+        print('Clipping AOI origin X to FC file')
+        new_origin_y = transform[3]
+        row_offset = 0
+
     
     transform[0] = new_origin_x
     transform[3] = new_origin_y
