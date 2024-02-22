@@ -73,7 +73,7 @@ class Command(BaseCommand):
                         model_row.processing_time = (end - start)
 
                         boundary_name = l_dataset.upper() if l_dataset != 'mapbiomas' else l_dataset.capitalize()
-                        boundary_file = BoundaryFiles.objects.get(name_es=l_dataset)
+                        boundary_file = BoundaryFiles.objects.get(name_es=boundary_name)
                         prev_calc = ForestCoverChange.objects.filter(fc_source=boundary_file, year=change_year,
                                                                      baseline_year=baseline_year, aoi=aoi).first()
                         if prev_calc:
