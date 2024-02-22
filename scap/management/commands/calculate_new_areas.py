@@ -72,6 +72,7 @@ class Command(BaseCommand):
                         model_row.forest_loss = fc_loss_area
                         model_row.processing_time = (end - start)
 
+                        boundary_name = l_dataset.upper() if l_dataset != 'mapbiomas' else l_dataset.capitalize()
                         boundary_file = BoundaryFiles.objects.get(name_es=l_dataset)
                         prev_calc = ForestCoverChange.objects.filter(fc_source=boundary_file, year=change_year,
                                                                      baseline_year=baseline_year, aoi=aoi).first()
