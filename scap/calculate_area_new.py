@@ -43,6 +43,9 @@ def rasterize_aoi(aoi, match_path):
         br_moll = (br.GetX(), br.GetY())
 
     width = int((br_moll[0] - tl_moll[0]) // 100)
+    if width > match_obj.RasterXSize:
+        print('Clipping width to FC raster')
+        width = match_obj.RasterXSize
     height = int((tl_moll[1] - br_moll[1]) // 100)
 
     # Prepare destination file
