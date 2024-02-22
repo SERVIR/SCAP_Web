@@ -1,7 +1,7 @@
 import sys
 import os
 from django.core.management.base import BaseCommand
-from scap.models import AOI, ForestCoverChangeNew
+from scap.models import AOI, ForestCoverChangeNew, BoundaryFiles
 import json
 import numpy as np
 from osgeo import gdal, osr, ogr
