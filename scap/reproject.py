@@ -59,8 +59,8 @@ def reproject_gtiff(source):
     dtype (OPTIONAL): datatype to save as
     nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
     """
-    match = r"/home/alex/shared/SCAP/agb/global_agb_2000_liu_.tif"
-    dtype = gdal.GDT_Byte
+    match = os.path.join(config['DATA_DIR'], 'agb', r"global_agb_2000_liu_.tif")
+    dtype = gdal.GDT_Int16
     nbands = 1
     nodata = -9999
 
@@ -200,4 +200,4 @@ def process_directory(base_dir):
         print("Done with {}".format(dir))
         print()
 
-process_directory(os.path.join(config['DATA_DIR'], 'fcc'))
+# process_directory(os.path.join(config['DATA_DIR'], 'fcc'))

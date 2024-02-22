@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource, ForestCoverSource, Emissions,
-                         ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection)
+                         ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection, ForestCoverChangeNew)
 
 
 # # Register your models here.
@@ -25,6 +25,13 @@ class ForestCoverChangeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         'id', 'fc_source', 'year', 'baseline_year', 'aoi', 'initial_forest_area', 'forest_gain', 'forest_loss',
         'processing_time')
     list_filter = ('fc_source', 'year')
+
+
+class ForestCoverChangeNewAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = (
+        'id', 'fc_filename', 'year', 'baseline_year', 'aoi', 'initial_forest_area', 'forest_gain', 'forest_loss',
+        'processing_time')
+    list_filter = ('fc_filename', 'year')
 
 
 class ForestCoverChangeFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -65,6 +72,7 @@ admin.site.register(AOI, AOIAdmin)
 admin.site.register(UserProvidedAOI, UserProvidedAOIAdmin)
 admin.site.register(NewCollection, NewCollectionAdmin)
 admin.site.register(ForestCoverChange, ForestCoverChangeAdmin)
+admin.site.register(ForestCoverChangeNew, ForestCoverChangeNewAdmin)
 admin.site.register(ForestCoverChangeFile, ForestCoverChangeFileAdmin)
 admin.site.register(BoundaryFiles, BoundaryFilesAdmin)
 admin.site.register(ForestCoverFile, ForestCoverFileAdmin)

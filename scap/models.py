@@ -183,3 +183,20 @@ class Emissions(models.Model):
     baseline_year = models.IntegerField(help_text="Baseline Year for emissions calculations", blank=True, null=True)
     lc_agb_value = models.FloatField(help_text="Emissions")
     total_agb = models.FloatField(help_text='Total AGB', default=0.0)
+    
+
+class ForestCoverChangeNew(models.Model):
+    fc_filename = models.CharField(max_length=100, default="", help_text="FC File")
+    aoi = models.ForeignKey(AOI, default=1, help_text="AOI the calculation was made for", on_delete=models.CASCADE)
+    year = models.IntegerField(help_text="Year the change was calculated for")
+    baseline_year = models.IntegerField(help_text="Baseline Year for forest cover change calculation", blank=True,
+                                        null=True)
+    initial_forest_area = models.FloatField(help_text="Initial forest area for baseline year")
+    forest_gain = models.FloatField(help_text="Forest Gain", null=True)
+    forest_loss = models.FloatField(help_text="Forest Loss")
+    processing_time = models.FloatField(
+        help_text="Time to calculate forest change data for this time period, AOI and Forest Cover Change source (seconds)",
+        blank=True, null=True)
+
+    def net_forest_change(self):
+        return self.forest_gain - self.forest_loss
