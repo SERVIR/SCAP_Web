@@ -73,8 +73,8 @@ def rasterize_aoi(aoi, match_path):
         new_origin_x = transform[0]
         col_offset = 0
 
-    if new_origin_y < transform[3]:
-        print('Clipping AOI origin X to FC file')
+    if new_origin_y > transform[3]:
+        print('Clipping AOI origin Y to FC file')
         new_origin_y = transform[3]
         row_offset = 0
 
