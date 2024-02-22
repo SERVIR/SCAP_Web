@@ -1,6 +1,8 @@
 let map;
-let primary_layer;
-let secondary_layer;
+let primary_overlay_layer;
+let secondary_overlay_layer;
+let primary_underlay_layer;
+let secondary_underlay_layer;
 let comparison_control;
 let aoi_layer_left;
 let aoi_layer_right;
@@ -33,11 +35,24 @@ function fill_comparison_years_selector(years) {
 
 
 function clear_map_layers(){
-    if(primary_layer != undefined){
-        map.removeLayer(primary_layer);
+    if(primary_overlay_layer != undefined){
+        map.removeLayer(primary_overlay_layer);
     }
-    if(secondary_layer != undefined){
-        map.removeLayer(secondary_layer);
+    if(secondary_overlay_layer != undefined){
+        map.removeLayer(secondary_overlay_layer);
+    }
+
+    if(primary_overlay_layer != undefined){
+        map.removeLayer(primary_underlay_layer);
+    }
+    if(secondary_overlay_layer != undefined){
+        map.removeLayer(secondary_underlay_layer);
+    }
+    if(aoi_layer_left != undefined){
+        map.removeLayer(aoi_layer_left)
+    }
+    if(aoi_layer_right != undefined){
+        map.removeLayer(aoi_layer_right)
     }
     if(comparison_control != undefined){
         document.getElementsByClassName('leaflet-sbs-range')[0].value = 1;
