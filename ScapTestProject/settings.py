@@ -167,13 +167,23 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
 
+SITE_ID = data['SITE_ID']
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Additional configuration settings
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = data["http_https"]
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+APPEND_SLASH = False
+
+# Add google as a provider:
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        "APP": {
-            "client_id": data["GOOGLE_CLIENT_ID"],
-            "secret": data["GOOGLE_SECRET_KEY"],
-            "key": ""
-        },
         'SCOPE': [
             'profile',
             'email',
@@ -183,9 +193,3 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
-SITE_ID = data['SITE_ID']
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-SOCIALACCOUNT_LOGIN_ON_GET = True
