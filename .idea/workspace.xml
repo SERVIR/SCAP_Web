@@ -36,7 +36,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/alex/PycharmProjects/AmazonFireDashboardWebApp",
+    "last_opened_file_path": "/home/alex/PycharmProjects/SCAP_Web/scap/static/assets/img/team",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -51,6 +51,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scap/static/assets/img/team" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\css" />
