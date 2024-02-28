@@ -527,7 +527,7 @@ def delete_AOI(request):
 def get_AOI(request):
     json_obj = {}
     try:
-        vec = gpd.read_file('/home/alex/shared/SCAP/aois/peru/peru_pa.shp')
+        vec = gpd.read_file(os.path.join(params['DATA_DIR'], 'aois/peru/peru_pa.shp'))
 
         json_obj["data"] = json.loads(vec.to_json())
     except:

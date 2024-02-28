@@ -13048,4 +13048,9 @@ section#contact form#contactForm :-ms-input-placeholder {
     width: 80%;
     height: 500px;
     margin: auto;
+    position: relative;
+}
+
+#peru-map > div {
+    position: absolute !important;
 }
