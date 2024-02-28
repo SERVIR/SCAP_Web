@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
     saveAOItomodel, get_aoi_list, delete_AOI, get_AOI
@@ -23,6 +24,7 @@ from django.contrib.auth import views as auth_views
 from scap import getData
 
 urlpatterns = [
+    path('admin', RedirectView.as_view(url='admin/')),
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('home/', home, name='home2'),
@@ -55,5 +57,4 @@ urlpatterns = [
     path('map/', map, name='map'),
     path('map/get-aoi/', get_AOI, name='get-aoi'),
     path('peru/get-aoi/', get_AOI, name='get-aoi')
-    #
 ]
