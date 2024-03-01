@@ -29,8 +29,9 @@ def get_agg_check(request):
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
             print(data1)
         else:
+            pa_name='Peru'
             data1 = list(
-                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs).values('year').annotate(
+                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs,aoi_id__name=pa_name).values('year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
 
         if len(data1) < 25:
