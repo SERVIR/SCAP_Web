@@ -19,7 +19,8 @@ from django.views.generic.base import RedirectView
 
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
     saveAOItomodel, get_aoi_list, delete_AOI, get_AOI
-from scap.views import test, home, aoi, peru, addData, thailand, protected_aois, map
+from scap.getData import get_updated_series
+from scap.views import test, home, aoi, peru, addData, thailand, protected_aois, map, generate_emissions, generate_fc
 from django.contrib.auth import views as auth_views
 from scap import getData
 
@@ -56,5 +57,7 @@ urlpatterns = [
     path('get-series-name/', getData.get_series_name, name='get-series-name'),
     path('map/', map, name='map'),
     path('map/get-aoi/', get_AOI, name='get-aoi'),
-    path('peru/get-aoi/', get_AOI, name='get-aoi')
+    path('peru/get-aoi/', get_AOI, name='get-aoi'),
+    path('protected_aois/get-aoi/', get_AOI, name='get-aoi'),
+    path('protected_aois/get-updated-series/',get_updated_series,name='get-updated-series')
 ]

@@ -40,7 +40,7 @@ var percent = 10;
 var series_obj1 = [];
 var series_obj2 = [];
 var m = 0;
-var n=0;
+var n = 0;
 // Loop through each series and set the color
 for (var i = 0; i < newseries.length; i++) {
     for (var j = 0; j < lc_colors.length; j++) {
@@ -75,12 +75,12 @@ chart1.update({
             // } else {
             //     var label = "Total Forest Area";
             // }
-                           var label = "Net Forest Change";
+            var label = "Net Forest Change";
 
-           var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
+            var labellc = document.getElementById(lc).innerText !== 'Mapbiomas' ? '<i class="fa-solid fa-globe fa-xs" style="height: 10px;"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
             var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
                 '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
-                '<span style=\'padding-left:50px\'></span> <br/>'+labellc+' </span><div>';
+                '<span style=\'padding-left:50px\'></span> <br/>' + labellc + ' </span><div>';
             return value;
         }
     }
@@ -174,41 +174,3 @@ function all_unchecked_fc() {
     }
     return msg;
 }
-
-var mapOptions = {
-   center: [-10.4,-75.3],
-   zoom: 8
-}
-var map = new L.map('pa_map', mapOptions);
-L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: 'Sample <b>worldwide locked demo</b> by <a href="https://theroamingworkshop.cloud">The Roaming Workshop</a>. Uses ESRI tiles.',
-}).addTo(map);
-
-var selected_year=2000;
-var selected_dataset='mapbiomas';
-       var primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/crimsonbluegreen',
-                pane: 'left'
-            })
-var selected_year=2021;
-var selected_dataset='mapbiomas';
-       var second_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/ferret',
-                pane: 'left'
-            })
-  second_overlay_layer.addTo(map);
-         primary_overlay_layer.addTo(map)

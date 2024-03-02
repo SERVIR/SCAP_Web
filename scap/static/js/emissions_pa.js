@@ -1,13 +1,7 @@
 // Retrieve the chart from the DOM, and instantiate it
 var index = $("#emissions_chart_pa").data('highchartsChart');
 var chart = Highcharts.charts[index];
-
-    var series=chart.series;
-
-var newseries = series;
-var new_updated = series;
-var result1 = "";
-var gname = "";
+var series = chart.series;
 
 function get_name(elem) {
     var result1 = "";
@@ -35,12 +29,12 @@ function increase_brightness(hex, percent) {
         ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
 }
 
-var percent = 10;
-var ns = [];
 var lcss = get_checked_lcs();
 var agbss = get_checked_agbs();
+
+var percent = 10;
+var ns = [];
 var min_arr = [];
-var res_mmm = [];
 var max_arr = [];
 var avg_arr = [];
 
@@ -50,150 +44,187 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":"Mantanay"});
-xhr.done(function (result2) {
-    console.log((result2.min))
-    min_arr = {
-        "name": "Min",
-        "data": result2.min,
-        "color": 'green',
-        "visible": true,
-        legendIndex: -1,
-        lineWidth: 5,
-        dashStyle: 'shortdash'
-    };
-    max_arr = {
-        "name": "Max",
-        "data": result2.max,
-        "color": 'red',
-        "visible": true,
-        lineWidth: 5,
-        legendIndex: -2,
+function getMMA(pa, data_obj) {
 
-        dashStyle: 'shortdash'
-    };
-    avg_arr = {
-        "name": "Avg",
-        "data": result2.avg,
-        "color": 'orange',
-        "visible": true,
-        lineWidth: 5,
-        legendIndex: -3,
-        dashStyle: 'shortdash'
-    };
-    $.each(chart.series, function (i, s) {
-        for (var j = 0; j < lc_colors.length; j++) {
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": pa});
+    xhr.done(function (result2) {
+        console.log((result2.min))
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
 
-            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                s.color = lc_colors[j]['color'];
-                ns.push({
-                    name: s.name,
-                    data: s.data,
-                    color: s.color,
-                    visible: true,
-                    lineWidth: 2,
-                    legendIndex: null,
-                    dashStyle: ''
-                });
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+        $.each(chart.series, function (i, s) {
 
-            }
+            for (var j = 0; j < lc_colors.length; j++) {
 
+                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                    s.color = lc_colors[j]['color'];
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
 
-        }
-    });
-
-    chart.update({series: ns});
-chart.addSeries(min_arr);
-chart.addSeries(max_arr);
-chart.addSeries(avg_arr);
-
-    chart.update({
-       yAxis: {
-           title: {
-               text: 'Values (Tons)'
-           }
-       },
-        tooltip: {
-            useHTML: true,
-            enabled: true,
-            backgroundColor: null,
-            borderWidth: 0,
-            shadow: false,
-            formatter: function () {
-                const color = this.series.color;
-                const ss = this.series.name;
-                                if(ss==="Min" || ss==="Max" || ss==="Avg"){
-
-
-                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
-                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
-                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
-                return value;
                 }
-                const lc = ss[0];
-                const agb = ss[1];
-                // const s_name = get_name(ss);
-                var labellc = document.getElementById(lc).innerText;
-                var labelagb = document.getElementById(agb).innerText;
-                labellc = labellc.replace(/ *\([^)]*\) */g, "");
-                labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
-                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
-                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                    '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc + '<sub>' + lc + '</sub><br/> AGB: ' +
-                    labelagb + '<sub>' + agb + '</sub></span><div>';
-                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
-                return value;
+
+
             }
+
+        });
+        if (data_obj !== "") {
+            chart.update({series: data_obj.series});
+            for (var g = 0; g < chart.series.length; g++) {
+                if (chart.series[g].name == 'Max') {
+                    chart.series[g].remove();
+                    break;
+                }
+
+
+            }
+            for (var g = 0; g < chart.series.length; g++) {
+                if (chart.series[g].name == 'Min') {
+                    chart.series[g].remove();
+                    break;
+                }
+
+
+            }
+            for (var g = 0; g < chart.series.length; g++) {
+                if (chart.series[g].name == 'Avg') {
+                    chart.series[g].remove();
+                    break;
+                }
+
+
+            }
+            chart.setTitle(data_obj.title);
+            chart.addSeries(min_arr);
+            chart.addSeries(max_arr);
+            chart.addSeries(avg_arr);
+
+        } else {
+            chart.update({series: ns});
+            chart.addSeries(min_arr);
+            chart.addSeries(max_arr);
+            chart.addSeries(avg_arr);
+
         }
-    });
-});
-
-    chart.update({
-            chart: {
-                type: 'spline'
+        chart.update({
+            yAxis: {
+                title: {
+                    text: 'Values (Tons)'
+                }
             },
+            tooltip: {
+                useHTML: true,
+                enabled: true,
+                backgroundColor: null,
+                borderWidth: 0,
+                shadow: false,
+                formatter: function () {
+                    const color = this.series.color;
+                    const ss = this.series.name;
+                    if (ss === "Min" || ss === "Max" || ss === "Avg") {
 
-            plotOptions: {
-                series: {
 
-                    marker: {
-                        enabled: false,
-                        states: {
-                            hover: {
-                                enabled: false
-                            }
+                        var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                            '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
+                        //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                        //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                        //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                        return value;
+                    }
+                    const lc = ss[0];
+                    const agb = ss[1];
+                    // const s_name = get_name(ss);
+                    var labellc = document.getElementById(lc).innerText;
+                    var labelagb = document.getElementById(agb).innerText;
+                    labellc = labellc.replace(/ *\([^)]*\) */g, "");
+                    labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
+                    var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                        '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc + '<sub>' + lc + '</sub><br/> AGB: ' +
+                        labelagb + '<sub>' + agb + '</sub></span><div>';
+                    //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                    //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                    //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                    return value;
+                }
+            }
+        });
+    });
+}
+
+chart.update({
+        chart: {
+            type: 'spline'
+        },
+
+        plotOptions: {
+            series: {
+
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: false
                         }
-                    }, showCheckbox: false,
-                    selected: true,
+                    }
+                }, showCheckbox: false,
+                selected: true,
 
-                    events: {
-                        checkboxClick: function (event) {
-                            if (this.visible) {
-                                this.hide();
-                            } else {
-                                this.show();
-                            }
+                events: {
+                    checkboxClick: function (event) {
+                        if (this.visible) {
+                            this.hide();
+                        } else {
+                            this.show();
                         }
                     }
                 }
-            },
-            lang: {
-                noData: "No data found. Please select LC/AGB from the list."
-            },
-            noData: {
-                style: {
-                    fontWeight: 'bold',
-                    fontSize: '15px'
-                }
-            },
+            }
+        },
+        lang: {
+            noData: "No data found. Please select LC/AGB from the list."
+        },
+        noData: {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '15px'
+            }
+        },
 
 
-        }
-    );
+    }
+);
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
@@ -253,7 +284,8 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":"Mantanay"});
+    console.log(pa_selected_name)
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": pa_selected_name});
 
     xhr.done(function (result2) {
         min_arr = {
@@ -289,41 +321,40 @@ function access_lines(elem, dataset) {
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];
-                           ns.push({
-                    name: s.name,
-                    data: s.data,
-                    color: s.color,
-                    visible: true,
-                    lineWidth: 2,
-                    legendIndex: null,
-                    dashStyle: ''
-                });
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
 
                 }
 
 
             }
-            console.log(s.name==='Min')
-            if(s.name==='Min'){
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
                 s.update({
-    data: min_arr.data
-}, true);
+                    data: min_arr.data
+                }, true);
             }
-             if(s.name==='Max'){
-                 s.update({
-    data: max_arr.data
-}, true);
-            }
-             if(s.name==='Avg'){
+            if (s.name === 'Max') {
                 s.update({
-    data: avg_arr.data
-}, true);
+                    data: max_arr.data
+                }, true);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
             }
         });
 
 
-    // chart.update({series: ns});
-
+        // chart.update({series: ns});
 
 
     });
