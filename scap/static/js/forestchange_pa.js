@@ -37,8 +37,6 @@ function increase_brightness(hex, percent) {
 var color = "#000000";
 var ta = [], nfc = [];
 var percent = 10;
-var series_obj1 = [];
-var series_obj2 = [];
 var m = 0;
 var n = 0;
 // Loop through each series and set the color
@@ -86,6 +84,9 @@ chart1.update({
     }
 });
 
+function getFC(pa_selected_name,data_obj){
+    chart1.update({series:data_obj.series, title: data_obj.title});
+}
 // Update chart options
 chart1.update({
         chart: {
@@ -93,6 +94,7 @@ chart1.update({
         },
         plotOptions: {
             series: {
+                 connectNulls: true,
                 marker: {
                     enabled: false,
                     states: {

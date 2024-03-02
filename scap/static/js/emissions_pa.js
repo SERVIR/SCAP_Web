@@ -190,7 +190,7 @@ chart.update({
 
         plotOptions: {
             series: {
-
+ connectNulls: true,
                 marker: {
                     enabled: false,
                     states: {
