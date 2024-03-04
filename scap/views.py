@@ -91,7 +91,7 @@ def generate_fc(pa_name,container):
                                        index='year', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
                          xticks=years_defor,
-                         title='Protected Area: '+pa_name, )
+                         title='Change in Forest Cover: '+pa_name, )
     return chart_fc,lcs_defor
 
 def generate_fc_with_area(pa_name,container):
@@ -112,7 +112,7 @@ def generate_fc_with_area(pa_name,container):
     #                      title="Protected Area: " + pa_name,secondary_y=['TotalArea'])
     chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
                           xticks=years_defor,
-                          title="Protected Area: " + pa_name)
+                          title="Change in Forest Cover: " + pa_name)
     return chart_fc1,lcs_defor
 # This page shows when someone clicks on 'Peru' tile in home page
 def peru(request):
