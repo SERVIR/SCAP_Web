@@ -245,21 +245,26 @@ function show_line(elem) {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
-    var checked1 = document.querySelectorAll('input.LC_cb:checked');
-    var LC_arr = [];
-    for (var i = 0; i < checked1.length; i++) {
-        LC_arr.push('LC' + checked1[i].value);
-    }
-    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
-    var AGB_arr = [];
-    for (var i = 0; i < checked2.length; i++) {
-        AGB_arr.push('AGB' + checked2[i].value);
-    }
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+        if (newseries[i].name.includes(elem)) {
             chart.series[i].show();
         }
     }
+    // var checked1 = document.querySelectorAll('input.LC_cb_pa:checked');
+    // var LC_arr = [];
+    // for (var i = 0; i < checked1.length; i++) {
+    //     LC_arr.push('LC' + checked1[i].value);
+    // }
+    // var checked2 = document.querySelectorAll('input.AGB_cb_pa:checked');
+    // var AGB_arr = [];
+    // for (var i = 0; i < checked2.length; i++) {
+    //     AGB_arr.push('AGB' + checked2[i].value);
+    // }
+    // for (var i = 0; i < newseries.length; i++) {
+    //     if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+    //         chart.series[i].show();
+    //     }
+    // }
 }
 
 // Show/Hide lines on the chart based on checkbox selection
