@@ -82,15 +82,30 @@ function onEachFeature(feature, layer) {
     layer.on({
         click: whenClicked
     });
-     layer.on('mouseover', function (event) {
+
+     layer.on('mouseover', function (e) {
+         var name = e.target.feature.properties.NAME;
+         var popupText =name
+    var tooltipText = "blabla";
+    layer.bindPopup(popupText,{
+  closeButton: false
+});
+    layer.bindTooltip(tooltipText);
+     layer.openPopup();
+       this.getTooltip().setOpacity(0);
     layer.setStyle({
                 weight: 2,
                 opacity: 1,
                 color: 'yellow',  //Outline color
                 fillOpacity: 0.4,
             })
+
+          layer.on('mouseover', function () {
+       this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
     });
-      layer.on('mouseout', function (event) {
+    });
+      layer.on('mouseout', function (e) {
+ layer.closePopup();
     layer.setStyle({
                 weight: 2,
                 opacity: 1,
