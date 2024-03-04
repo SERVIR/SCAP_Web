@@ -159,7 +159,7 @@ chart.addSeries(avg_arr);
 
             plotOptions: {
                 series: {
-
+ connectNulls: true,
                     marker: {
                         enabled: false,
                         states: {
