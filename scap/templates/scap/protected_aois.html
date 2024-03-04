@@ -144,6 +144,19 @@
             <p class="card-text" style="margin-left: 10px">
                 Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
             </p>
+            <label for="datasource_select" style="margin-left: 10px">Select a datasource
+                
+            </label>
+            <select id="datasource_select" class="form-control w-50" style="margin-left: 10px">
+                    <option>CCI</option>
+                    <option>ESRI</option>
+                <option>JAXA</option>
+                                    <option selected>Mapbiomas</option>
+
+                                <option>MODIS</option>
+
+                <option>WorldCover</option>
+                </select>
             <div class="card-body">
                 <div class="row">
                    <div id="pa_map" style="width:100%;height:500px"></div>
