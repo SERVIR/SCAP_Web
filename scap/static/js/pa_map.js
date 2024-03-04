@@ -108,9 +108,13 @@ function onEachFeature(feature, layer) {
                 opacity: 1,
                 color: 'magenta',  //Outline color
                 fillOpacity: 0.4,
+
             },
            onEachFeature: onEachFeature,
         });
+aoi_layer.on('add',(e)=>{
+document.getElementById("loading_spinner").style.display="none";
+});
 
 
                  aoi_layer.addTo(map);
