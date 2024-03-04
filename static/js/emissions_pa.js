@@ -442,14 +442,14 @@ function get_checked_agbs() {
 }
 
 function reset_emissions() {
-    var uncheck = document.getElementsByClassName('AGB_cb');
+    var uncheck = document.getElementsByClassName('AGB_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = true;
         // show_line(uncheck[i]);
 // access_lines(uncheck[i],'AGB');
     }
-    var uncheck = document.getElementsByClassName('LC_cb');
+    var uncheck = document.getElementsByClassName('LC_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = true;
