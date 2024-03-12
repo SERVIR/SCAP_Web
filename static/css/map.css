@@ -551,3 +551,13 @@ font-size: 0.75rem;
 #primary_year_indicator > h4, #comparison_year_indicator > h4 {
     margin: unset;
 }
+
+#selected_year, #comparison_year {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+    font-weight: 700;
+    line-height: 1.2;
+    font-size: 1.5rem;
+}
+path.leaflet-interactive:focus {
+    outline: none;
+}

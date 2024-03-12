@@ -130,7 +130,7 @@
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
-        <div class="masthead-heading text-uppercase">Peru</div>
+        <div class="masthead-heading text-uppercase">{{region_country }}</div>
         <div class="section-subheading">Home to a section of Amazon rainforest and Machu Picchu, an ancient Incan city
             high in the Andes mountains
         </div>
@@ -139,7 +139,7 @@
 </header>
 <section id="InitialMap_PA">
     <div class="container">
-        <div class="card" style="width: 100%">
+        <div class="card" style="width: 100%;display:none">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Please select a protected area in Peru</h5>
             <p class="card-text" style="margin-left: 10px">
                 Clicking on one of the protected areas will generate the Emissions and Forest change charts below.
@@ -160,12 +160,12 @@
             <div class="card-body">
                 <div class="row">
                     <button class="btn btn-primary" type="button" id="loading_spinner" style="left: 50%;
-    margin-left: -4em;
+    margin-left: -3em;
 
     width: 9em;
     height: 3em;
     position: absolute;
-    top: 55%;
+    top: 50%;
     z-index: 999;">
   <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
   Loading...

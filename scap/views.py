@@ -126,13 +126,17 @@ def peru(request):
 # This page shows when someone clicks on any protected area in protected areas page
 def protected_aois(request):
     try:
-        pa_name = 'Mantanay'
+        pa_name = request.GET.get('protected_area_region')
+        if pa_name is None:
+            pa_name = request.GET.get('protected_area_country')
+            if pa_name is None:
+                pa_name='Mantanay'
         colors =generate_colors()
         chart,lcs,agbs=generate_emissions(pa_name,'emissions_chart_pa')
         chart_fc1,lcs_defor=generate_fc_with_area(pa_name,'container_fcpa')
         return render(request, 'scap/protected_aois.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'region_country':pa_name})
     except Exception as e:
         return render(request, 'scap/protected_aois.html')
 

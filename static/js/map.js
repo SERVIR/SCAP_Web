@@ -66,6 +66,80 @@ function clear_map_layers(){
     }
 }
 
+function whenClicked(e) {
+    var layer = e.target;
+     layer.setStyle({
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            })
+
+  var name = e.target.feature.properties.NAME;
+  pa_selected_name=name;
+  if (name !== undefined) {
+       let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
+    req_to_update.done(function (result) {
+        var updated_emissions_chart=JSON.parse(result.chart_epa);
+        var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
+        // getMMA(pa_selected_name,updated_emissions_chart);
+        // getFC(pa_selected_name,updated_forestchange_chart);
+    });
+
+ var zoomlevel = map.getZoom();
+
+    if (zoomlevel >= 7) {
+   var a = document.createElement('a');
+   a.href =  window.location.origin + '/protected_aois/?protected_area_region=' + pa_selected_name;
+      a.setAttribute('target', '_blank');
+   a.click();
+
+        // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
+    }
+    else{
+         window.location = window.location.origin + '/protected_aois/?protected_area_country=' + 'peru';
+    }
+      // window.location.hash = "Emissions_PA";
+  }
+}
+function onEachFeature(feature, layer) {
+    //bind click
+    layer.on({
+        click: whenClicked
+    });
+
+     layer.on('mouseover', function (e) {
+
+         var name = e.target.feature.properties.NAME;
+         var popupText =name
+    var tooltipText = "blabla";
+    layer.bindPopup(popupText,{
+  closeButton: false
+});
+    layer.bindTooltip(tooltipText);
+     layer.openPopup();
+       this.getTooltip().setOpacity(0);
+    layer.setStyle({
+                weight: 2,
+                opacity: 1,
+                color: 'yellow',  //Outline color
+                fillOpacity: 0.4,
+            })
+
+          layer.on('mouseover', function () {
+       this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+    });
+    });
+      layer.on('mouseout', function (e) {
+ layer.closePopup();
+    layer.setStyle({
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            })
+    });
+}
 function redraw_map_layers(){
     clear_map_layers();
 
@@ -82,6 +156,7 @@ function redraw_map_layers(){
                 color: 'cyan',  //Outline color
                 fillOpacity: 0.4,
             },
+            onEachFeature: onEachFeature,
             pane: 'left'
         })
         aoi_layer_right = L.geoJSON(result['data'], {
@@ -91,9 +166,15 @@ function redraw_map_layers(){
                 color: 'cyan',  //Outline color
                 fillOpacity: 0.4,
             },
+            onEachFeature: onEachFeature,
             pane: 'right'
-        })
-
+        });
+        aoi_layer_left.on('add',(e)=>{
+document.getElementById("loading_spinner_map").style.display="none";
+});
+ aoi_layer_right.on('add',(e)=>{
+document.getElementById("loading_spinner_map").style.display="none";
+});
         primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
@@ -150,6 +231,23 @@ function redraw_map_layers(){
         comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+        map.on("zoomend", function() {
+    var zoomlevel = map.getZoom();
+
+    if (zoomlevel < 7) {
+        if (map.hasLayer(aoi_layer_left)) {
+           map.removeLayer(aoi_layer_left);
+        }
+         if (map.hasLayer(aoi_layer_right)) {
+           map.removeLayer(aoi_layer_right);
+        }
+    }
+    else{
+map.addLayer(aoi_layer_left);
+map.addLayer(aoi_layer_right);
+            }
+    console.log("Current Zoom Level = " + zoomlevel);
+});
     });
 }
 
