@@ -90,10 +90,11 @@ function whenClicked(e) {
  var zoomlevel = map.getZoom();
 
     if (zoomlevel >= 7) {
-   var a = document.createElement('a');
-   a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
-      a.setAttribute('target', '_blank');
-   a.click();
+   // var a = document.createElement('a');
+   // a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
+   //    a.setAttribute('target', '_blank');
+   // a.click();
+         window.location = window.location.origin + '/protected_areas/?protected_area_country=' + pa_selected_name;
 
         // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
     }
