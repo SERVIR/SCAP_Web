@@ -111,10 +111,11 @@ document.getElementById("tifffiles").onchange = () => {
     let files = document.getElementById("tifffiles").files;
     for (let i = 0; i < files.length; i++) {
         let li = document.createElement("li");
-        li.appendChild(document.createTextNode("Enter the year for the file " + files[i].name + ':'));
+        li.appendChild(document.createTextNode("Year for " + files[i].name));
+        li.appendChild(document.createElement("br"));
         ul.appendChild(li);
         var input = document.createElement('input');
-        input.className = "years";
+        input.className = "years form-control";
         input.type = "number";
 
 
