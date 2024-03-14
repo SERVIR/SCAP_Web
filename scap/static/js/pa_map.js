@@ -3,10 +3,7 @@ var mapOptions = {
    center: [-10.4,-75.3],
    zoom: 8
 }
-var map = new L.map('pa_map', mapOptions);
-L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: 'Uses ESRI tiles.',
-}).addTo(map);
+// init_map();
 var first_layer;
 var second_layer;
 function get_years(ds){
@@ -109,7 +106,7 @@ function onEachFeature(feature, layer) {
     layer.setStyle({
                 weight: 2,
                 opacity: 1,
-                color: 'magenta',  //Outline color
+                color: 'cyan',  //Outline color
                 fillOpacity: 0.4,
             })
     });
@@ -121,14 +118,14 @@ function onEachFeature(feature, layer) {
             style: {
                 weight: 2,
                 opacity: 1,
-                color: 'magenta',  //Outline color
+                color: 'cyan',  //Outline color
                 fillOpacity: 0.4,
 
             },
            onEachFeature: onEachFeature,
         });
 aoi_layer.on('add',(e)=>{
-document.getElementById("loading_spinner").style.display="none";
+// document.getElementById("loading_spinner").style.display="none";
 });
 
 

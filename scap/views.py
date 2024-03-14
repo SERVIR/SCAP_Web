@@ -115,12 +115,16 @@ def generate_fc_with_area(pa_name,container):
                           title="Change in Forest Cover: " + pa_name)
     return chart_fc1,lcs_defor
 # This page shows when someone clicks on 'Peru' tile in home page
-def peru(request):
-    pa_name='Peru'
+def pilot_country(request,country):
+    print(country)
+    pa_name=country
+
+    if country=='None':
+        pa_name="Peru"
     colors=generate_colors()
     chart,lcs,agbs=generate_emissions(pa_name,'container')
     chart_fc,lcs_defor=generate_fc(pa_name,'container1')
-    return render(request, 'scap/pilotcountry_peru.html',
+    return render(request, 'scap/pilotcountry.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
 # This page shows when someone clicks on any protected area in protected areas page
@@ -134,11 +138,11 @@ def protected_aois(request):
         colors =generate_colors()
         chart,lcs,agbs=generate_emissions(pa_name,'emissions_chart_pa')
         chart_fc1,lcs_defor=generate_fc_with_area(pa_name,'container_fcpa')
-        return render(request, 'scap/protected_aois.html',
+        return render(request, 'scap/protected_areas.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'region_country':pa_name})
     except Exception as e:
-        return render(request, 'scap/protected_aois.html')
+        return render(request, 'scap/protected_areas.html')
 
 
 def addData(request):

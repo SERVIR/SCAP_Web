@@ -27,6 +27,7 @@ function fill_years_selector(years) {
 
 function fill_comparison_years_selector(years) {
     let select = document.getElementById('comparison_year');
+    select.innerHTML = "";
     for (let i = 0; i < years.length; i++) {
         let year = years[i];
         add_option_by_id(select, year, year);
@@ -90,14 +91,14 @@ function whenClicked(e) {
 
     if (zoomlevel >= 7) {
    var a = document.createElement('a');
-   a.href =  window.location.origin + '/protected_aois/?protected_area_region=' + pa_selected_name;
+   a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
       a.setAttribute('target', '_blank');
    a.click();
 
         // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
     }
     else{
-         window.location = window.location.origin + '/protected_aois/?protected_area_country=' + 'peru';
+         window.location = window.location.origin + '/protected_areas/?protected_area_country=' + 'peru';
     }
       // window.location.hash = "Emissions_PA";
   }
@@ -141,11 +142,17 @@ function onEachFeature(feature, layer) {
     });
 }
 function redraw_map_layers(){
+    document.getElementById("loading_spinner_map").style.display="block";
     clear_map_layers();
-
-    let selected_year = document.getElementById('selected_year').value
-    let comparison_year = document.getElementById('comparison_year').value
-    let selected_dataset = document.getElementById('selected_region').value
+       let years=get_years(document.getElementById('selected_region').value);
+       console.log(years)
+    console.log(document.getElementById('selected_region').value)
+    //console.log(result['data']);
+    fill_years_selector(get_years_range(years[0],years[1]));
+    fill_comparison_years_selector(get_years_range(years[0],years[1]));
+    document.getElementById('selected_year').value=years[0];
+    document.getElementById('comparison_year').value=years[1];
+    let selected_dataset = document.getElementById('selected_region').value;
 
     let xhr = ajax_call("get-aoi", {});
     xhr.done(function (result) {
@@ -175,6 +182,9 @@ document.getElementById("loading_spinner_map").style.display="none";
  aoi_layer_right.on('add',(e)=>{
 document.getElementById("loading_spinner_map").style.display="none";
 });
+ let selected_year = document.getElementById('selected_year').value
+    let comparison_year = document.getElementById('comparison_year').value
+    let selected_dataset = document.getElementById('selected_region').value
         primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
@@ -249,17 +259,42 @@ map.addLayer(aoi_layer_right);
     console.log("Current Zoom Level = " + zoomlevel);
 });
     });
+        document.getElementById("loading_spinner_map").style.display="block";
+
+}
+function get_years(ds){
+       var json_obj=[{'ds':'mapbiomas','start':2000,'end':2021},
+    {'ds':'cci','start':2000,'end':2020},
+    {'ds':'esri','start':2017,'end':2021},
+    {'ds':'jaxa','start':2007,'end':2016},
+    {'ds':'modis','start':2001,'end':2022},
+            {'ds':'worldcover','start':2020,'end':2021},
+    ]
+    for(var i=0;i<json_obj.length;i++) {
+        if (json_obj[i].ds === ds) {
+            return [json_obj[i].start, json_obj[i].end];
+        }
+    }
+}
+function get_years_range(start,end) {
+    var list = [];
+    for (var i = start; i <= end; i++) {
+        list.push(i);
+    }
+    return list
 }
 
 function get_available_years(){
     //let xhr = ajax_call("get-available-years", {});
     //xhr.done(function (result) {
-    let years = Object.values([2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021,2022]);
+    // let years = Object.values([2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021,2022]);
+    let years=get_years(document.getElementById('selected_region').value);
+    console.log(document.getElementById('selected_region').value)
     //console.log(result['data']);
-    fill_years_selector(years);
-    fill_comparison_years_selector(years);
-    document.getElementById('selected_year').value=2017;
-    document.getElementById('comparison_year').value=2020;
+    fill_years_selector(get_years_range(years[0],years[1]));
+    fill_comparison_years_selector(get_years_range(years[0],years[1]));
+    document.getElementById('selected_year').value=years[0];
+    document.getElementById('comparison_year').value=years[1];
     redraw_map_layers();
     //})
 }
@@ -332,4 +367,5 @@ function add_basemap(map_name){
 
 $(function () {
     init_map();
+
 });

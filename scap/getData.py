@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from scap.views import generate_emissions, generate_fc_with_area
 
 
-def get_agg_check(request):
+def get_agg_check(request,country='None'):
     result = Emissions.objects.all().order_by('year')
     data = list(result.values_list('year').distinct())
     years = []
@@ -31,7 +31,7 @@ def get_agg_check(request):
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
             print(data1)
         else:
-            pa_name='Peru'
+            pa_name=country
             data1 = list(
                 Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs,aoi_id__name=pa_name).values('year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))

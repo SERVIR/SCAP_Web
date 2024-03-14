@@ -13050,6 +13050,13 @@ section#contact form#contactForm :-ms-input-placeholder {
     margin: auto;
     position: relative;
 }
+#pa-map {
+    display: block;
+    width: 80%;
+    height: 500px;
+    margin: auto;
+    position: relative;
+}
 
 #peru-map > div {
     position: absolute !important;

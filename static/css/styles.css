@@ -12428,7 +12428,7 @@ p {
 }
 
 .page-section {
-    padding: 6rem 0;
+    padding: 1rem 0;
 }
 
 .page-section h2.section-heading, .page-section .section-heading.h2 {
@@ -12447,7 +12447,7 @@ p {
 
 @media (min-width: 768px) {
     section {
-        padding: 9rem 0;
+        padding: 1rem 0;
     }
 }
 
@@ -13048,4 +13048,16 @@ section#contact form#contactForm :-ms-input-placeholder {
     width: 80%;
     height: 500px;
     margin: auto;
+    position: relative;
+}
+#pa-map {
+    display: block;
+    width: 80%;
+    height: 500px;
+    margin: auto;
+    position: relative;
+}
+
+#peru-map > div {
+    position: absolute !important;
 }
