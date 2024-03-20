@@ -4,8 +4,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import FileField, ClearableFileInput, CheckboxInput, inlineformset_factory, modelformset_factory, \
     formset_factory
-from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
-
 from scap.models import NewCollection, TiffFile
 
 
