@@ -325,6 +325,7 @@ class NewCollectionCreate(CreateView):
             data['tifffiles'] = TiffFileFormSet(self.request.POST, self.request.FILES)
         else:
             data['tifffiles'] = TiffFileFormSet()
+        data['operation']='ADD'
         return data
 
     def form_valid(self, form):
@@ -352,7 +353,7 @@ class NewCollectionUpdate(UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         expense_line_item_form = TiffFileFormSet(instance=self.object)
-        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form))
+        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form,operation='EDIT'))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -371,7 +372,7 @@ class NewCollectionUpdate(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, expense_line_item_form):
-        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form))
+        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form,operation='EDIT'))
 
 
 class NewCollectionDelete(DeleteView):

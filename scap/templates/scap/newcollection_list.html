@@ -102,12 +102,12 @@
 <br/>
 <br/>
 {% if user.is_authenticated %}
-    <section class="page-section" id="coll_list">
+      <div class="row justify-content-center w-100">
+            <div class="col-10">
 
-        <div class="row justify-content-center">
-            <div class="col-8">
-                <h2 class="section-heading text-uppercase mt-3 text-center">MANAGE FOREST COVER COLLECTION </h2>
-                <table id="myTable" style="margin:auto;margin-top:20px">
+
+                <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">MANAGE FOREST COVER COLLECTION </h3>
+                <table id="myTable">
                     <thead>
                     <tr>
                         <th>Collection Name</th>
@@ -124,12 +124,12 @@
                             <td><label>{{ coll.collection_name }}</label></td>
                             <td><label>{{ coll.collection_description }}</label></td>
                             <td><label>{{ coll.tifffile_set.all.count }}</label></td>
-                            <td style="width: 80px">
+                            <td>
                                 <button class="btn-dark btn" onclick="location.href='{% url 'edit-coll' coll.pk %}'"
                                         style="margin: 10px;width:80px;margin-top:0px">Edit
                                 </button>
                             </td>
-                            <td style="width: 80px">
+                            <td>
                                 <button class="btn-dark btn"
                                         onclick="location.href='{% url 'delete-coll' coll.pk %}'"
                                         style="margin: 10px;width:80px;margin-top:0px">Delete
@@ -141,36 +141,36 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
-        </div>
+
         <div class="text-center mt-3">
         <button class="btn-primary btn" onclick="location.href='{% url 'add-coll' %}'">+ Add a new collection</button>
     </div>
-    </section>
 
 
+</div>
+          <!-- Footer-->
+{#    <div class="py-4">#}
+{#        <div class="container">#}
+{#            <div class="row align-items-center">#}
+{#                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>#}
+{#                <div class="col-lg-4 my-3 my-lg-0">#}
+{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i#}
+{#                            class="fab fa-twitter"></i></a>#}
+{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i#}
+{#                            class="fab fa-facebook-f"></i></a>#}
+{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i#}
+{#                            class="fab fa-linkedin-in"></i></a>#}
+{#                </div>#}
+{#                <div class="col-lg-4 text-lg-end">#}
+{#                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>#}
+{#                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#        </div>#}
 
 
-    <!-- Footer-->
-    <footer class="footer py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
-                <div class="col-lg-4 my-3 my-lg-0">
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
-                            class="fab fa-twitter"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
-                            class="fab fa-linkedin-in"></i></a>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
-                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 {% else %}
     <br/>
     <br/>

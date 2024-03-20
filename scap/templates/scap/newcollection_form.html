@@ -116,16 +116,18 @@
 <br/>
 <br/>
 {% if user.is_authenticated %}
-    <section class="page-section bg-light" id="add_coll">
         <div class="container-fluid">
 
             <div class="row justify-content-center">
                 <div class="col-lg-6 col-sm-6 mb-4 justify-content-center">
                     <form id="upload-file-new" method="POST" action="" enctype="multipart/form-data">
-                        <h2 class="section-heading text-uppercase mt-3 text-center">Add a forest cover collection</h2>
+                       
                         {% csrf_token %}
 
-
+ <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">
+     {{ operation }} a forest cover collection
+                            
+                        </h3>
                         <div id="new_collection_info" class=" ">
                             <div class="mb-3 common"><label>Collection Identification Name </label>
                                 {{ form.collection_name }}
@@ -242,7 +244,6 @@
                 </div>
             </div>
         </div>
-    </section>
 
 
     <!-- Footer-->
