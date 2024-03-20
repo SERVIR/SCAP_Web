@@ -79,13 +79,13 @@ function whenClicked(e) {
   var name = e.target.feature.properties.NAME;
   pa_selected_name=name;
   if (name !== undefined) {
-       let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
-    req_to_update.done(function (result) {
-        var updated_emissions_chart=JSON.parse(result.chart_epa);
-        var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
-        // getMMA(pa_selected_name,updated_emissions_chart);
-        // getFC(pa_selected_name,updated_forestchange_chart);
-    });
+    //    let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
+    // req_to_update.done(function (result) {
+    //     var updated_emissions_chart=JSON.parse(result.chart_epa);
+    //     var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
+    //     // getMMA(pa_selected_name,updated_emissions_chart);
+    //     // getFC(pa_selected_name,updated_forestchange_chart);
+    // });
 
  var zoomlevel = map.getZoom();
 
@@ -94,12 +94,12 @@ function whenClicked(e) {
    // a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
    //    a.setAttribute('target', '_blank');
    // a.click();
-         window.location = window.location.origin + '/protected_areas/?protected_area_country=' + pa_selected_name;
+         window.location = window.location.origin + '/aoi/'+ pa_selected_name+'/';
 
         // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
     }
     else{
-         window.location = window.location.origin + '/protected_areas/?protected_area_country=' + 'peru';
+         window.location = window.location.origin + '/aoi/'+'Peru'+'/';
     }
       // window.location.hash = "Emissions_PA";
   }
@@ -142,20 +142,20 @@ function onEachFeature(feature, layer) {
             })
     });
 }
-function redraw_map_layers(){
-    document.getElementById("loading_spinner_map").style.display="block";
+function redraw_map_layers() {
+    document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
-       let years=get_years(document.getElementById('selected_region').value);
-       console.log(years)
+    let years = get_years(document.getElementById('selected_region').value);
+    console.log(years)
     console.log(document.getElementById('selected_region').value)
     //console.log(result['data']);
-    fill_years_selector(get_years_range(years[0],years[1]));
-    fill_comparison_years_selector(get_years_range(years[0],years[1]));
-    document.getElementById('selected_year').value=years[0];
-    document.getElementById('comparison_year').value=years[1];
+    fill_years_selector(get_years_range(years[0], years[1]));
+    fill_comparison_years_selector(get_years_range(years[0], years[1]));
+    document.getElementById('selected_year').value = years[0];
+    document.getElementById('comparison_year').value = years[1];
     let selected_dataset = document.getElementById('selected_region').value;
 
-    let xhr = ajax_call("get-aoi", {});
+    let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
         aoi_layer_left = L.geoJSON(result['data'], {
             style: {
@@ -177,15 +177,15 @@ function redraw_map_layers(){
             onEachFeature: onEachFeature,
             pane: 'right'
         });
-        aoi_layer_left.on('add',(e)=>{
-document.getElementById("loading_spinner_map").style.display="none";
-});
- aoi_layer_right.on('add',(e)=>{
-document.getElementById("loading_spinner_map").style.display="none";
-});
- let selected_year = document.getElementById('selected_year').value
-    let comparison_year = document.getElementById('comparison_year').value
-    let selected_dataset = document.getElementById('selected_region').value
+        aoi_layer_left.on('add', (e) => {
+            document.getElementById("loading_spinner_map").style.display = "none";
+        });
+        aoi_layer_right.on('add', (e) => {
+            document.getElementById("loading_spinner_map").style.display = "none";
+        });
+        let selected_year = document.getElementById('selected_year').value
+        let comparison_year = document.getElementById('comparison_year').value
+        let selected_dataset = document.getElementById('selected_region').value
         primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
@@ -242,25 +242,23 @@ document.getElementById("loading_spinner_map").style.display="none";
         comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
-        map.on("zoomend", function() {
-    var zoomlevel = map.getZoom();
+        map.on("zoomend", function () {
+            var zoomlevel = map.getZoom();
 
-    if (zoomlevel < 7) {
-        if (map.hasLayer(aoi_layer_left)) {
-           map.removeLayer(aoi_layer_left);
-        }
-         if (map.hasLayer(aoi_layer_right)) {
-           map.removeLayer(aoi_layer_right);
-        }
-    }
-    else{
-map.addLayer(aoi_layer_left);
-map.addLayer(aoi_layer_right);
+            if (zoomlevel < 7) {
+                if (map.hasLayer(aoi_layer_left)) {
+                    map.removeLayer(aoi_layer_left);
+                }
+                if (map.hasLayer(aoi_layer_right)) {
+                    map.removeLayer(aoi_layer_right);
+                }
+            } else {
+                map.addLayer(aoi_layer_left);
+                map.addLayer(aoi_layer_right);
             }
-    console.log("Current Zoom Level = " + zoomlevel);
-});
+            console.log("Current Zoom Level = " + zoomlevel);
+        });
     });
-        document.getElementById("loading_spinner_map").style.display="block";
 
 }
 function get_years(ds){
@@ -319,6 +317,28 @@ function init_map(){
         showPopup: false,
         autoClose: true
     }));
+    /*var url_to_geotiff_file = "http://localhost:8000/static/assets/watermask_geom_COG.tif";
+      fetch(url_to_geotiff_file)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            parseGeoraster(arrayBuffer).then(georaster => {
+                console.log("georaster:", georaster);
+                var layer = new GeoRasterLayer({
+                    georaster: georaster,
+                    opacity: 0.7,
+
+                });
+                layer.addTo(map);
+
+                map.fitBounds(layer.getBounds());
+            });
+        });*/
+    var wmsLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
+    layers: 's-cap:watermask_2',
+        format:'image/png',
+        transparent:true
+}).addTo(map);
+
 
     get_available_years();
 }

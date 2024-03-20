@@ -4,7 +4,7 @@
 {% load socialaccount %}
 
 {% load static %}
-
+{% load crispy_forms_tags %}
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -57,10 +57,32 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#add_coll">ADD</a></li>
-                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>
-                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>
-                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ADD
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/add-coll/">ForestCover</a>
+                        <a class="dropdown-item" href="#">AGB</a>
+                        <a class="dropdown-item" href="#">AOI</a>
+
+                    </div>
+                </div>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        MANAGE
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/">ForestCover</a>
+                        <a class="dropdown-item" href="#">AGB</a>
+                        <a class="dropdown-item" href="#">AOI</a>
+                    </div>
+                </div>
+                {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
 
                 {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
@@ -99,49 +121,20 @@
         <div class="container-fluid">
 
             <div class="row justify-content-center">
+                <div class="col-lg-6 col-sm-6 mb-4 justify-content-center">
+                    <form id="upload-file-new" method="POST" action="" enctype="multipart/form-data">
+                        <h2 class="section-heading text-uppercase mt-3 text-center">Add a forest cover collection</h2>
+                        {% csrf_token %}
 
-                <form id="upload-file-new" enctype="multipart/form-data" method="POST" action="/user-data/add-coll/">
-                    <h2 class="section-heading text-uppercase mt-3 text-center">Add a forest cover collection</h2>
-                    {% csrf_token %}
 
-                    <table class="table">
-                        {{ tifffiles.management_form }}
-
-                        {% for form in tifffiles.forms %}
-                            {% if forloop.first %}
-                                <thead>
-                                <tr>
-                                    {% for field in form.visible_fields %}
-                                        <th>{{ field.label|capfirst }}</th>
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                            {% endif %}
-                            <tr class="{% cycle row1 row2 %} formset_row">
-                                {% for field in form.visible_fields %}
-                                    <td>
-                                        {# Include the hidden fields in the form #}
-                                        {% if forloop.first %}
-                                            {% for hidden in form.hidden_fields %}
-                                                {{ hidden }}
-                                            {% endfor %}
-                                        {% endif %}
-                                        {{ field.errors.as_ul }}
-                                        {{ field }}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <div class="col-lg-6 col-sm-6 mb-4">
-                        <div id="new_collection_info">
+                        <div id="new_collection_info" class=" ">
                             <div class="mb-3 common"><label>Collection Identification Name </label>
-                                {#{{ invoice_form.collection_name }}#}
+                                {{ form.collection_name }}
                                 {#                                <p style="color: darkred" id="col_exists"></p></div>#}
                             </div>
                             <div class="mb-3 common"><label style="display: block">Source and Supplemental
                                 information</label>
-                                {{ invoice_form.collection_description }}
+                                {{ form.collection_description }}
                             </div>
                             {#                                <textarea class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>#}
                             <div class="mb-3 common">
@@ -149,28 +142,68 @@
                                     files in the
                                     collection) </label>
 
-                                {{ invoice_form.boundary_file }}
+                                {{ form.boundary_file }}
                             </div>
+
+
                             <div class="mb-3 common">
                                 <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff
-                                    files </label>
+                                    files: </label>
+                                {#                                <table class="table">#}
+                                {{ tifffiles.management_form }}
+
+                                {% for field in tifffiles.forms %}
+                                    <div style="padding:10px;">
+                                        <hr style="background-color: black;opacity: 100%">
+                                        {{ field.file }}
+                                        <br>
+                                        Enter the year for the file {{ field.file.filename }}
+
+                                        {{ field.year }}
+
+                                    </div>
+                                {% endfor %}
+
+                                {#                                    {% for form in tifffiles.forms %}#}
+                                {#                                        {% if forloop.first %}#}
+                                {#                                            <thead>#}
+                                {#                                            <tr>#}
+                                {#                                                {% for field in form.visible_fields %}#}
+                                {#                                                    <th>{{ field.label|capfirst }}</th>#}
+                                {#                                                {% endfor %}#}
+                                {#                                            </tr>#}
+                                {#                                            </thead>#}
+                                {#                                        {% endif %}#}
+                                {#                                        <tr class="{% cycle row1 row2 %} formset_row">#}
+                                {#                                            {% for field in form.visible_fields %}#}
+                                {#                                                <td>#}
+                                {# Include the hidden fields in the form #}
+                                {#                                                    {% if forloop.first %}#}
+                                {#                                                        {% for hidden in form.hidden_fields %}#}
+                                {#                                                            {{ hidden }}#}
+                                {#                                                        {% endfor %}#}
+                                {#                                                    {% endif %}#}
+                                {#                                                    {{ field.errors.as_ul }}#}
+                                {#                                                    {{ field }}#}
+                                {#                                                </td>#}
+                                {#                                            {% endfor %}#}
+                                {#                                        </tr>#}
+                                {#                                    {% endfor %}#}
+                                {#                                </table>#}
                             </div>
                             {#                            <ul id="list">#}
                             {#                            </ul>#}
                             {##}
                             <div class="mb-3 common">
                                 <label for="access">Access Level</label>
-                                {{ invoice_form.access_level }}
-                            </div>
-                            <div class="mb-3 common">
-                                <label for="access">Projection</label>
-                                {{ invoice_form.projection }}
-                            </div>
-                            <div class="mb-3 common">
-                                <label for="access">Resolution</label>
-                                {{ invoice_form.resolution }}
+                                {{ form.access_level }}
                             </div>
 
+                            <div class="mb-3 common">
+                                <label for="access">Resolution (meters per pixel)</label>
+                                {{ form.resolution }}
+                            </div>
+                            {{ form.username }}
                             {#                            <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary#}
                             {#                            </button>#}
                             {#                            <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()"#}
@@ -199,11 +232,15 @@
                             {##}
                             {#                                    <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>#}
                             {##}
-                            <button type="submit" class="btn-primary">Submit</button>
+                            <div class=" mt-3">
+                                <input type="submit" class="btn-primary btn" value="Save"/> <a
+                                    class="btn btn-outline-warning" href="{% url 'userData' %}">Back to the list</a>
+                            </div>
                         </div>
                         {##}
-                    </div>
-                </form>
+
+                    </form>
+                </div>
             </div>
         </div>
     </section>

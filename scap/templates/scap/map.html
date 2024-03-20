@@ -49,6 +49,8 @@
 
     <script src="{% static '/js/L.Control.Opacity.js' %}"></script>
     <script src="{% static '/js/leaflet-side-by-side.js' %}"></script>
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
     <script src="{% static '/js/leaflet-providers.js' %}"></script>
     <script src="{% static '/js/utils.js' %}"></script>
     <script src="{% static '/js/basemaps.js' %}"></script>
@@ -59,7 +61,8 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:90px">
     <div class="container">
-        <a class="navbar-brand" href="../#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <a class="navbar-brand" href="../#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}"
+                                                         alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -102,7 +105,7 @@
 </nav>
 
 <div id="content-container">
-     <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
+    <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
     margin-left: -4em;
 
     width: 9em;
@@ -110,9 +113,9 @@
     position: absolute;
     top: 45%;
     z-index: 999;">
-  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-  Loading...
-</button>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+    </button>
     <div id="map_chart">
 
     </div>

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource, ForestCoverSource, Emissions,
-                         ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection, ForestCoverChangeNew)
+                         ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection, ForestCoverChangeNew,
+                         TiffFile,
+                         )
 
 
 # # Register your models here.
@@ -49,10 +51,19 @@ class UserProvidedAOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('aoi_name', 'path_to_aoi_file', 'last_accessed_on')
 
 
+class TiffFileInline(admin.StackedInline):
+    model = TiffFile
+
+
 class NewCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('collection_name', 'boundary_file', 'tiff_file', 'projection', 'resolution', 'last_accessed_on')
+    list_display = ('collection_name', 'boundary_file', 'projection', 'resolution', 'last_accessed_on')
+    inlines = [
+        TiffFileInline,
+    ]
 
 
+# class TiffFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+#     list_display = ('tiff_file',)
 # admin.site.register(PredefinedAOI, PredefinedAOIAdmin)
 class AGBSourceAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('agb_id', 'agb_label', 'agb_name')
@@ -69,6 +80,7 @@ class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 admin.site.register(AOI, AOIAdmin)
+# admin.site.register(TiffFile, TiffFileAdmin)
 admin.site.register(UserProvidedAOI, UserProvidedAOIAdmin)
 admin.site.register(NewCollection, NewCollectionAdmin)
 admin.site.register(ForestCoverChange, ForestCoverChangeAdmin)

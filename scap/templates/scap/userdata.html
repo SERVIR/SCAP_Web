@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load socialaccount %}
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SERVIR S-CAP</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="{% static "css/modal.css" %}"/>
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+    <style>
+        label {
+            padding: 5px;
+            background: white;
+            margin: 5px;
+
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td {
+            max-width: 100px;
+
+        }
+    </style>
+</head>
+<body id="page-top">
+
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#page-top" style="padding-left: 20px"><img
+                src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ADD
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/add-coll/">ForestCover</a>
+                        <a class="dropdown-item" href="#">AGB</a>
+                        <a class="dropdown-item" href="#">AOI</a>
+
+                    </div>
+                </div>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        MANAGE
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/">ForestCover</a>
+                        <a class="dropdown-item" href="#">AGB</a>
+                        <a class="dropdown-item" href="#">AOI</a>
+                    </div>
+                </div>
+
+                {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
+
+                {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+
+                        Login
+                    </a></li>
+
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<br/>
+<br/>
+<br/>
+{% if user.is_authenticated %}
+    <section>
+        <h2 class="section-heading text-uppercase pt-3 mt-3 text-center">Manage forest cover collection</h2>
+
+        <table style="width: 60%;margin:auto;margin-top:20px">
+            <tr>
+                <th>Collection Name</th>
+                <th>Collection Description</th>
+                <th># of Elements</th>
+                <th></th>
+                <th></th>
+                {% for coll in coll_list %}
+                    <tr>
+                        <td><label>{{ coll.name }}</label></td>
+                        <td><label>{{ coll.desc }}</label></td>
+                        <td><label>5 years</label></td>
+                        <td>
+                            <button onclick="location.href='{% url 'edit-coll' coll_name=coll.name %}'">Edit</button>
+                        </td>
+                        <td>
+                            <button onclick="location.href='{% url 'delete-coll' coll_name=coll.name %}'">Delete
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+        </table>
+    </section>
+
+
+    </section>
+    {#    <section class="page-section bg-light" id="add_coll">#}
+    {#        <div class="container-fluid" >#}
+    {##}
+    {#            <div class="row justify-content-center">#}
+    {#                  <h2 class="section-heading text-uppercase mt-3 text-center">Add a forest cover collection</h2>#}
+    {#                <div class="col-lg-6 col-sm-6 mb-4">#}
+    {#                    <form id="upload-file" enctype="multipart/form-data" method="post">#}
+    {##}
+    {#                        <div id="new_collection_info">#}
+    {#                            <div class="mb-3 common"><label>Collection Identification Name </label>#}
+    {#                                <p><input id="coll_name" class="form-control" type="text"/></p>#}
+    {#                                <p style="color: darkred" id="col_exists"></p></div>#}
+    {#                            <div class="mb-3 common"><label style="display: block">Source and Supplemental#}
+    {#                                information</label>#}
+    {#                                <textarea class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>#}
+    {#                            <div class="mb-3 common">#}
+    {#                                <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all#}
+    {#                                    files in the#}
+    {#                                    collection) </label>#}
+    {##}
+    {#                                <input class="form-control fileupload" type="file" name="filename" id="boundaryFile"#}
+    {#                                       accept="application/zip">#}
+    {#                            </div>#}
+    {#                            <div class="mb-3 common">#}
+    {#                                <label for="formFileMultiple" class="form-label">Upload Yearly Land Cover Tiff#}
+    {#                                    files </label>#}
+    {#                                <input class="form-control fileupload" type="file" id="tifffiles" multiple#}
+    {#                                       accept="image/tiff">#}
+    {#                            </div>#}
+    {#                            <ul id="list">#}
+    {#                            </ul>#}
+    {##}
+    {#                            <div class="mb-3 common">#}
+    {#                                <label for="access">Access Level</label><select class="form-control" id="access">#}
+    {#                                <option>Public</option>#}
+    {#                                <option>Private</option>#}
+    {#                            </select>#}
+    {#                            </div>#}
+    {#                            <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary#}
+    {#                            </button>#}
+    {#                            <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()"#}
+    {#                                    id="clear_new">#}
+    {#                                Clear Form#}
+    {#                            </button>#}
+    {##}
+    {##}
+    {#                            <div id="myModal" class="modal">#}
+    {##}
+    {#                                <!-- Modal content -->#}
+    {#                                <div class="modal-content">#}
+    {#                                    <span class="close">&times;</span>#}
+    {#                                    <label>Collection Identification Name: </label>#}
+    {#                                    <p id="c_name">Some text in the Modal..</p>#}
+    {#                                    <label>Source and Supplemental information: </label>#}
+    {#                                    <p id="c_desc">Some text in the Modal..</p>#}
+    {#                                    <label>Boundary Shape File: </label>#}
+    {#                                    <p id="c_boundary_path">Some text in the Modal..</p>#}
+    {#                                    <label>TIFF files: </label>#}
+    {#                                    <p id="c_tiffs"></p>#}
+    {##}
+    {##}
+    {#                                    <label>Access level: </label>#}
+    {#                                    <p id="c_access"></p>#}
+    {##}
+    {#                                    <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>#}
+    {##}
+    {#                                </div>#}
+    {##}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </form>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
+    {#    <br>#}
+    {#    <section class="page-section bg-light" id="update_coll">#}
+    {#        <div class="container-fluid">#}
+    {##}
+    {#            <div class="row justify-content-center">#}
+    {#                 <h2 class="section-heading text-uppercase text-center">UPDATE forest cover collection</h2>#}
+    {#                <div class="col-lg-6 col-sm-6 mb-4">#}
+    {#                    <div id="existing_coll">#}
+    {#                        <div class="mb-3 common"><label id="coll">Select the existing collection</label>#}
+    {#                            <select aria-label="coll" id="existing_list" class="form-control">#}
+    {#                                <option>--Select--</option>#}
+    {##}
+    {#                            </select>#}
+    {#                        </div>#}
+    {##}
+    {#                        <div class="mb-3 common">#}
+    {#                            <div id="lists">#}
+    {#                                <p>Existing TIFFS in this collection:</p>#}
+    {##}
+    {#                            </div>#}
+    {#                            <label for="formFileMultiple" class="form-label">Upload more files to this#}
+    {#                                collection </label>#}
+    {#                            <input class="form-control fileupload" type="file" id="new_tifffiles" multiple#}
+    {#                                   accept="image/tiff"/>#}
+    {#                        </div>#}
+    {##}
+    {#                            <ul id="list_existing">#}
+    {#                            </ul>#}
+    {#                        <ul id="list_new_added">#}
+    {#                        </ul>#}
+    {#                        <button type="button" class="btn btn-primary common mb-3" id="review_existing">Review Summary#}
+    {#                        </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common" id="clear_existing">#}
+    {#                        Clear#}
+    {#                        Form#}
+    {#                    </button>#}
+    {##}
+    {#                    </div>#}
+    {##}
+    {#                    <div id="mynewModal" class="modal">#}
+    {##}
+    {#                        <!-- Modal content -->#}
+    {#                        <div class="modal-content">#}
+    {#                            <span class="close">&times;</span>#}
+    {#                            <label>Collection Identification Name: </label>#}
+    {#                            <p id="c_update_name">Some text in the Modal</p>#}
+    {##}
+    {#                            <label>Existing TIFF files: </label>#}
+    {#                            <p id="c_existing_tiffs"></p>#}
+    {#                            <label>Newly Added TIFF files: </label>#}
+    {#                            <p id="c_new_tiffs"></p>#}
+    {##}
+    {##}
+    {#                            <button type="button" class="btn btn-primary common" id="updatetoDB"#}
+    {#                                    onclick="savetoLocalPath(this)">Submit#}
+    {#                            </button>#}
+    {##}
+    {#                        </div>#}
+    {##}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
+    {##}
+    {##}
+    {#    <!-- Services-->#}
+    {#    <section class="page-section" id="aoi">#}
+    {#        <div class="container-fluid">#}
+    {##}
+    {#            <div class="row justify-content-center">#}
+    {#                 <h2 class="section-heading text-uppercase text-center">upload AOI</h2>#}
+    {#                <div class="col-md-6">#}
+    {#                    <form id="upload-aoi">#}
+    {#                        <div id="aoiModal" class="modal">#}
+    {##}
+    {#                            <!-- Modal content -->#}
+    {#                            <div class="modal-content">#}
+    {#                                <span class="close">&times;</span>#}
+    {#                                <label>AOI Name: </label>#}
+    {#                                <p id="c_aoi_names"></p>#}
+    {##}
+    {##}
+    {#                                <button type="button" class="btn btn-primary common" id="storeAOI"#}
+    {#                                        onclick="savetoLocalPath(this)">Submit#}
+    {#                                </button>#}
+    {##}
+    {#                            </div>#}
+    {##}
+    {#                        </div>#}
+    {##}
+    {##}
+    {#                        <div id="new_aoi_info">#}
+    {#                            <div class="mb-3 common">#}
+    {#                                <label for="formFileMultiple" class="form-label">Upload AOI Shape files with .zip#}
+    {#                                    extension </label>#}
+    {#                                <input class="form-control aoifileupload" type="file" id="aoifiles" multiple#}
+    {#                                       accept="application/zip">#}
+    {#                            </div>#}
+    {#                            <ul id="aoi_list">#}
+    {#                            </ul>#}
+    {#                            <br>#}
+    {#                            <div>#}
+    {#                                <button type="button" class="btn btn-primary common mb-3" id="review_aois">Review#}
+    {#                                    Summary#}
+    {#                                </button>&nbsp;<button type="button" class="mb-3 btn btn-primary common"#}
+    {#                                                       id="clear_aois">#}
+    {#                                Clear Form#}
+    {#                            </button>#}
+    {##}
+    {#                            </div>#}
+    {#                        </div>#}
+    {##}
+    {#                    </form>#}
+    {##}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {##}
+    {##}
+    {#    </section>#}
+    {##}
+    {#    <section class="page-section" id="delete">#}
+    {#        <div class="container-fluid">#}
+    {##}
+    {#            <div class="row justify-content-center">#}
+    {#                  <h2 class="section-heading text-uppercase text-center">DELETE forest cover COLLECTION/AOI</h2>#}
+    {#                <div class="col-md-6">#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
+
+    <!-- Footer-->
+    <footer class="footer py-4 fixed-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% else %}
+    <br/>
+    <br/>
+    <br/>
+    <p class="text-center">Please login to add your collections, files and AOIs</p>
+{% endif %}
+
+<!-- AOI modal popup-->
+
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+{#<script src="{% static "js/addData.js" %}"></script>#}
+
+<script src="{% static "js/scripts.js" %}"></script>
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+{#<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>#}
+</body>
+</html>

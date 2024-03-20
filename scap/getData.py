@@ -19,7 +19,7 @@ def get_agg_check(request,country='None'):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
-        pa_name=request.POST.get('pa_name')
+        pa_name=country
         min_arr = []
         max_arr = []
         avg_arr = []
@@ -171,9 +171,9 @@ def get_series_name(request):
 
         return JsonResponse({"name": lc_name + ', ' + agb_name}, safe=False)
 
-def get_updated_series(request):
+def get_updated_series(request,country):
     if request.method == 'POST':
-        pa_name = request.POST.get('pa_name')
+        pa_name = country
         chart, lcs, agbs = generate_emissions(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = generate_fc_with_area(pa_name, 'container_fcpa')
         return JsonResponse({'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,

@@ -13,15 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 
+from ScapTestProject import settings
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
     saveAOItomodel, get_aoi_list, delete_AOI, get_AOI
 from scap.getData import get_updated_series
-from scap.views import test, home, aoi, addData, thailand, protected_aois, map, generate_emissions, generate_fc, \
-    pilot_country
+from scap.views import test, home, aoi, userData, thailand, protected_aois, map, generate_emissions, generate_fc, \
+    pilot_country, deleteColl, editColl, updateColl, TiffFileCreate, NewCollectionList, NewCollectionCreate, \
+    NewCollectionUpdate, NewCollectionDelete
 from django.contrib.auth import views as auth_views
 from scap import getData
 
@@ -29,7 +32,7 @@ urlpatterns = [
     path('admin', RedirectView.as_view(url='admin/')),
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('/<str:country>/', pilot_country, name='pilot_country'),
+    path('pilot/<str:country>/', pilot_country, name='pilot_country'),
     path('home/', home, name='home2'),
     path("", include("allauth.account.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
@@ -45,21 +48,34 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
     path('aoi', aoi, name='aoi'),
-    path('/<str:country>/', pilot_country, name='peru'),
     path('protected_areas/', protected_aois, name='protected_aois'),
     path('thailand/', thailand, name='thailand'),
-    path('addData/', addData, name='addData'),
+    # path('user-data/', userData, name='userData'),
+    path('user-data/', NewCollectionList.as_view(), name='userData'),
+    # path('user-data/delete-coll/<str:coll_name>/', deleteColl, name='delete-coll'),
+    path('user-data/delete-coll/<int:pk>/', NewCollectionDelete.as_view(), name='delete-coll'),
+    path('user-data/edit-coll/<int:pk>/',NewCollectionUpdate.as_view(), name='edit-coll'),
+    # path('user-data/edit-coll/<str:coll_name>/',editColl, name='edit-coll'),
+    # path('update-coll/<str:coll_name>/',updateColl, name='update-coll'),
+    path('update-coll/<str:coll_name>/',updateColl, name='update-coll'),
+    # path('user-data/add-coll/', addColl, name='add-coll'),
+    path('user-data/add-coll/', NewCollectionCreate.as_view(), name='add-coll'),
+    # path('profile/<int:pk>', views.ProfileDelete.as_view(), name='profile-delete'),
     path('get-series/', getData.chart, name='get-series'),
     path('emissions/', pilot_country, name='emissions'),
     # path('deforestation/', views.deforestation, name='deforestation'),
-    path('/<str:country>/get-min-max/', getData.get_agg_check, name='get-min-max'),
-    path('/<str:country>/get-series-name/', getData.get_series_name, name='get-series-name'),
+    path('aoi/<str:country>/get-min-max/', getData.get_agg_check, name='get-min-max'),
+    path('pilot/<str:country>/get-min-max/', getData.get_agg_check, name='get-min-max'),
+    path('protected_areas/<str:country>/get-series-name/', getData.get_series_name, name='get-series-name'),
     path('protected_areas/get-min-max/', getData.get_agg_check, name='get-min-max'),
     path('protected_areas/get-series-name/', getData.get_series_name, name='get-series-name'),
     path('get-series-name/', getData.get_series_name, name='get-series-name'),
     path('map/', map, name='map'),
     path('map/get-aoi/', get_AOI, name='get-aoi'),
-    path('/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
-    path('protected_areas/get-aoi/', get_AOI, name='get-aoi'),
-    path('protected_areas/get-updated-series/',get_updated_series,name='get-updated-series')
-]
+    path('aoi/<str:aoi>/',protected_aois,name='aoi_page'),
+    path('aoi/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+    path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+    # path('protected_areas/get-aoi/', get_AOI, name='get-aoi'),
+    path('aoi/<str:country>/get-updated-series/',get_updated_series,name='get-updated-series'),
+    # path('map/get-updated-series/',get_updated_series,name='get-updated-series'),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

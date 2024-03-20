@@ -119,7 +119,8 @@
      style="margin-top: 80px;height: 40px;opacity: 0.7;font-weight: bold">
     <div class="collapse navbar-collapse justify-content-center" id="subnavbarResponsive">
         <ul class="navbar-nav text-uppercase py-4 py-lg-0">
-            <li class="nav-item"><a class="nav-link text-warning" href="{% url "protected_aois" %}#InitialMap_PA">Map</a></li>
+            <li class="nav-item"><a class="nav-link text-warning"
+                                    href="{% url "protected_aois" %}#InitialMap_PA">Map</a></li>
             <li class="nav-item"><a class="nav-link text-warning" href="{% url "protected_aois" %}#Emissions_PA">Emissions</a>
             </li>
             <li class="nav-item"><a class="nav-link text-warning" href="{% url "protected_aois" %}#NetForestChange_PA">Net
@@ -130,7 +131,7 @@
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
-        <div class="masthead-heading text-uppercase">{{region_country }}</div>
+        <div class="masthead-heading text-uppercase">{{ region_country }}</div>
         <div class="section-subheading">Home to a section of Amazon rainforest and Machu Picchu, an ancient Incan city
             high in the Andes mountains
         </div>
@@ -139,8 +140,8 @@
 </header>
 <section id="InitialMap_PA">
     <div class="container">
-      <div id="pa-map"  style="width: 100%">
-                    <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
+        <div id="pa-map" style="width: 100%">
+            <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
     margin-left: -3em;
 
     width: 9em;
@@ -148,53 +149,53 @@
     position: absolute;
     top: 50%;
     z-index: 999;">
-  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-  Loading...
-</button>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+            </button>
 
-                   <div id="map_chart"></div>
-                <div id="selector_table">
-        <div class="d-flex">
-            <div class="form-group">
-                <label>Primary Year</label>
-                <select name="selected_year" id="selected_year"
-                        class="form-control"
-                        onchange="redraw_map_layers()">
-                    <option value="0" selected="selected">Loading...</option>
-                </select>
-            </div>
-        </div>
-        <div class="d-flex">
-            <div class="form-group">
-                <label>Dataset</label>
-                <select name="selected_region" id="selected_region" class="form-control"
-                        onchange="redraw_map_layers()">
-                    <option value="esri" selected="selected">ESRI</option>
-                    <option value="modis">MODIS</option>
-                    <option value="jaxa">JAXA</option>
-                    <option value="worldcover">WorldCover</option>
-                    <option value="mapbiomas">Mapbiomas</option>
-                    <option value="cci">CCI</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <div id="comparison_table">
-        <div class="d-flex" id="comparison-selector">
-            <div class="d-flex">
-                <div class="form-group">
-                    <label>Comparison Year</label>
-                    <select name="comparison_year" id="comparison_year"
-                            class="form-control"
-                            onchange="redraw_map_layers()">
-                    </select>
+            <div id="map_chart"></div>
+            <div id="selector_table">
+                <div class="d-flex">
+                    <div class="form-group">
+                        <label>Primary Year</label>
+                        <select name="selected_year" id="selected_year"
+                                class="form-control"
+                                onchange="redraw_map_layers()">
+                            <option value="0" selected="selected">Loading...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group">
+                        <label>Dataset</label>
+                        <select name="selected_region" id="selected_region" class="form-control"
+                                onchange="redraw_map_layers()">
+                            <option value="esri" selected="selected">ESRI</option>
+                            <option value="modis">MODIS</option>
+                            <option value="jaxa">JAXA</option>
+                            <option value="worldcover">WorldCover</option>
+                            <option value="mapbiomas">Mapbiomas</option>
+                            <option value="cci">CCI</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
 
-            
+            <div id="comparison_table">
+                <div class="d-flex" id="comparison-selector">
+                    <div class="d-flex">
+                        <div class="form-group">
+                            <label>Comparison Year</label>
+                            <select name="comparison_year" id="comparison_year"
+                                    class="form-control"
+                                    onchange="redraw_map_layers()">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </section>
@@ -227,7 +228,9 @@
                                         <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_pa"
                                                onchange="access_lines(this,'LC')"
                                                value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
-                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;"> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.name_es }}<span
+                                                                                     style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
+                                        {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}
+                                        &nbsp;{{ lc.name_es }}<span
                                             class="badge bg-light text-dark">(LC{{ lc.id }})</span> </label>
                                     </li>
                                 {% endfor %}
@@ -287,9 +290,11 @@
                                     <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf_pa"
                                            value="{{ lc.id }}" onchange="access_lines_fc(this,'LC')" name="lc"/><label
                                         style="padding-left: 10px"><span
-                                        class="badge bg-light text-dark">LC{{ lc.id }}</span> {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}&nbsp;{{ lc.name_es }}</label>
+                                        class="badge bg-light text-dark">LC{{ lc.id }}</span>
+                                    {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}
+                                    &nbsp;{{ lc.name_es }}</label>
                                 </li>
-                                                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</p>
+                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</p>
                             {% endfor %}
                         </ul>
                     </div>
@@ -306,11 +311,11 @@
 </section>
 <script src="{% static '/js/forestchange_pa.js' %}"></script>
 <script src="{% static '/js/emissions_pa.js' %}"></script>
-   <script src="{% static '/js/utils.js' %}"></script>
-    <script src="{% static '/js/leaflet-side-by-side.js' %}"></script>
+<script src="{% static '/js/utils.js' %}"></script>
+<script src="{% static '/js/leaflet-side-by-side.js' %}"></script>
 
-    <script src="{% static '/js/basemaps.js' %}"></script>
-        <script src="{% static '/js/map.js' %}"></script>
+<script src="{% static '/js/basemaps.js' %}"></script>
+<script src="{% static '/js/map.js' %}"></script>
 
 <script src="{% static '/js/pa_map.js' %}"></script>
 
