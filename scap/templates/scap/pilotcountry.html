@@ -79,8 +79,8 @@
 <body id="page-top">
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
-    <div class="container">
-        <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+    <div class="container-fluid">
+        <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -117,17 +117,18 @@
         </div>
     </div>
 </nav>
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top justify-content-center" id="subNav"
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="subNav"
      style="margin-top: 80px;height: 40px;opacity: 0.7;font-weight: bold">
-    <div class="collapse navbar-collapse justify-content-center" id="subnavbarResponsive">
-        <ul class="navbar-nav text-uppercase py-4 py-lg-0">
+    <div class="collapse navbar-collapse" id="subnavbarResponsive">
+        <ul class="navbar-nav text-uppercase py-4 py-lg-0" style="margin-left: auto; 
+margin-right: 0;">
             <li class="nav-item"><a class="nav-link text-warning"
-                                    href="{% url 'pilot_country' country='None' %}#InitialMap">Map</a></li>
+                                    href="#InitialMap">Map</a></li>
             <li class="nav-item"><a class="nav-link text-warning"
-                                    href="{% url 'pilot_country' country='None' %}#EmissionsChart">Emissions</a>
+                                    href="#EmissionsChart">Emissions</a>
             </li>
             <li class="nav-item"><a class="nav-link text-warning"
-                                    href="{% url 'pilot_country' country='None' %}#NetForestChangeChart">Net
+                                    href="#NetForestChangeChart">Net
                 Forest Change</a></li>
         </ul>
     </div>

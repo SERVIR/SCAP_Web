@@ -22,8 +22,8 @@ class NewCollectionForm(forms.ModelForm):
     #     }), label = "")
     class Meta:
         model = NewCollection
-        fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level',
-                  'projection', 'resolution']
+        fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level'
+                  , 'resolution']
         ACCESS_CHOICES = (
             ('Public', 'Public'),  # First one is the value of select option and second is the displayed value in option
             ('Private', 'Private'),
@@ -33,7 +33,6 @@ class NewCollectionForm(forms.ModelForm):
             'collection_description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Enter the details about the collection'}),
             'boundary_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
-            'projection': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '4326'}),
             'resolution': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Resolution in meters'}),
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Collection Name'}),
             'last_accessed_on': forms.DateTimeInput(attrs={'class': 'form-control'})
@@ -53,12 +52,3 @@ class TiffFileForm(forms.ModelForm):
 TiffFileFormSet=inlineformset_factory(NewCollection, TiffFile,
                                             form=TiffFileForm, extra=3,can_delete = False)
 
-#
-# TiffFileFormset = modelformset_factory(
-#     NewCollection,
-#     fields=('collection_name', ),
-#     extra=1,
-#     widgets={
-#         'file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/tiff'})
-#     }
-# )

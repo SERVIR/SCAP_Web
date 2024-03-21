@@ -5,6 +5,7 @@ from django.db import transaction, IntegrityError
 from django.forms import inlineformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.context import RequestContext
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
@@ -311,59 +312,36 @@ class TiffFileCreate(CreateView):
 class NewCollectionList(ListView):
     model = NewCollection
 
+
 class NewCollectionCreate(CreateView):
-    # model = NewCollection
-    # fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level',
-    #           'projection', 'resolution','username']
     model = NewCollection
     form_class = NewCollectionForm
     template_name = "scap/newcollection_form.html"
-    success_url = "/user-data/"
+    success_url = reverse_lazy('userData')
+
     def get_context_data(self, **kwargs):
         data = super(NewCollectionCreate, self).get_context_data(**kwargs)
         if self.request.POST:
             data['tifffiles'] = TiffFileFormSet(self.request.POST, self.request.FILES)
+            data['form'] = NewCollectionForm(self.request.POST, self.request.FILES)
+            data['operation'] = 'ADD'
         else:
             data['tifffiles'] = TiffFileFormSet()
-        data['operation']='ADD'
+            data['form'] = NewCollectionForm()
+            data['operation']='ADD'
+        # print('This is context data {}'.format(data))
         return data
 
-    def form_valid(self, form):
-        context = self.get_context_data()
-        tifffiles = context['tifffiles']
-        with transaction.atomic():
-            self.object = form.save()
-
-            if tifffiles.is_valid():
-                tifffiles.instance = self.object
-                tifffiles.save()
-        return super(NewCollectionCreate, self).form_valid(form)
-
-class NewCollectionUpdate(UpdateView):
-    model = NewCollection
-    success_url = '/user-data/'
-    # fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level',
-    #           'projection', 'resolution','username']
-    form_class = NewCollectionForm
-
-    template_name = 'scap/newcollection_form.html'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        expense_line_item_form = TiffFileFormSet(instance=self.object)
-        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form,operation='EDIT'))
+    def get_success_url(self):
+        return reverse("userData")
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        expense_line_item_form = TiffFileFormSet(self.request.POST,self.request.FILES, instance=self.object)
-
-        if (form.is_valid() and expense_line_item_form.is_valid()):
-            return self.form_valid(form, expense_line_item_form)
-        return self.form_invalid(form, expense_line_item_form)
+        form = self.get_form()
+        education_formset = TiffFileFormSet(request.POST,request.FILES)
+        if form.is_valid() and education_formset.is_valid():
+            return self.form_valid(form, education_formset)
+        else:
+            return self.form_invalid(form)
 
     def form_valid(self, form, expense_line_item_form):
         self.object = form.save()
@@ -372,7 +350,53 @@ class NewCollectionUpdate(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, expense_line_item_form):
-        return self.render_to_response(self.get_context_data(form=form, tifffiles=expense_line_item_form,operation='EDIT'))
+        return self.render_to_response(
+            self.get_context_data(form=form, tifffiles=expense_line_item_form, operation='ADD'))
+
+class NewCollectionUpdate(UpdateView):
+    model = NewCollection
+    success_url = '/user-data/'
+    form_class = NewCollectionForm
+    template_name = 'scap/newcollection_form.html'
+
+    def get_context_data(self, **kwargs):
+        print('from get')
+        context = super(NewCollectionUpdate, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['form'] = NewCollectionForm(self.request.POST,self.request.FILES, instance=self.object)
+            context['tifffiles'] = TiffFileFormSet(self.request.POST,self.request.FILES,
+                                                        instance=self.object)
+            print(self.request.FILES)
+            filename = self.request.FILES['boundary_file'].name
+            context['boundary_file'] =filename
+            print(filename)
+        else:
+            context['form'] = NewCollectionForm(instance=self.object)
+            context['tifffiles'] = TiffFileFormSet(instance=self.object)
+            context['boundary_file'] = self.object.boundary_file.name
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = NewCollectionForm(self.request.POST, self.request.FILES)
+        expense_line_item_form = TiffFileFormSet(self.request.POST, self.request.FILES)
+        print('in post')
+        if (form.is_valid() and expense_line_item_form.is_valid()):
+            print('form is valid')
+            return self.form_valid(form, expense_line_item_form)
+        else:
+            print(form.errors)
+
+            return self.form_invalid(form, expense_line_item_form)
+
+    def form_valid(self, form, expense_line_item_form):
+        self.object = form.save()
+        expense_line_item_form.instance = self.object
+        expense_line_item_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, expense_line_item_form):
+        return self.render_to_response(
+            self.get_context_data(form=form, tifffiles=expense_line_item_form, operation='EDIT'))
 
 
 class NewCollectionDelete(DeleteView):

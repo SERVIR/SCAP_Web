@@ -25,8 +25,8 @@
 <body id="page-top">
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-    <div class="container">
-        <a class="navbar-brand" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+    <div class="container-fluid">
+        <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -46,7 +46,7 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
                                 class="caret"></span></a>
-                        <ul class="dropdown-menu bg-transparent">
+                        <ul class="dropdown-menu bg-dark">
                             <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
                             </li>
 
