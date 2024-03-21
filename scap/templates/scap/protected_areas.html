@@ -78,7 +78,7 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
     <div class="container-fluid">
-        <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <a class="navbar-brand" style="padding-left: 20px" href="{% url "home" %}"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -131,7 +131,7 @@
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
-        <div class="masthead-heading text-uppercase">{{ region_country }}</div>
+        <div class="masthead-heading text-uppercase" id="region_country">{{ region_country }}</div>
         <div class="section-subheading">Home to a section of Amazon rainforest and Machu Picchu, an ancient Incan city
             high in the Andes mountains
         </div>

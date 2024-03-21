@@ -171,10 +171,13 @@ def get_series_name(request):
 
         return JsonResponse({"name": lc_name + ', ' + agb_name}, safe=False)
 
-def get_updated_series(request,country):
+def get_updated_series(request,country=None):
     if request.method == 'POST':
-        pa_name = country
+        if request.POST.get('pa_name'):
+            pa_name = request.POST.get('pa_name')
+        else:
+            pa_name=country
         chart, lcs, agbs = generate_emissions(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = generate_fc_with_area(pa_name, 'container_fcpa')
         return JsonResponse({'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'region_country': pa_name})

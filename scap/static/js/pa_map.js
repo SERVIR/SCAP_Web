@@ -1,4 +1,4 @@
-var pa_selected_name="Mantanay";
+var pa_selected_name;
 var mapOptions = {
    center: [-10.4,-75.3],
    zoom: 8
@@ -62,6 +62,8 @@ function whenClicked(e) {
   if (name !== undefined) {
        let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
     req_to_update.done(function (result) {
+        document
+            .getElementById("region_country").innerHTML=result.region_country;
         var updated_emissions_chart=JSON.parse(result.chart_epa);
         var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
         getMMA(pa_selected_name,updated_emissions_chart);
