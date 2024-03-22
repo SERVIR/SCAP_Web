@@ -267,7 +267,7 @@ def aoi(request):
 class TiffFileCreate(CreateView):
     model = NewCollection
     fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level',
-              'projection', 'resolution']
+              'projection']
     success_url = reverse_lazy('userData')
 
     def get_context_data(self, **kwargs):
