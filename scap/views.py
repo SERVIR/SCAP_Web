@@ -311,8 +311,10 @@ class TiffFileCreate(CreateView):
 
 class NewCollectionList(ListView):
     model = NewCollection
-
-
+    def get_queryset(self):
+        queryset = NewCollection.objects.filter(username=self.request.user)
+        print(queryset)
+        return queryset
 class NewCollectionCreate(CreateView):
     model = NewCollection
     form_class = NewCollectionForm
