@@ -48,9 +48,9 @@
                         ADD
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="/user-data/add-coll/">ForestCover</a>
-                        <a class="dropdown-item" href="#">AGB</a>
-                        <a class="dropdown-item" href="#">AOI</a>
+                        <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
 
                     </div>
                 </div>
@@ -59,17 +59,12 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         MANAGE
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="/user-data/">ForestCover</a>
-                        <a class="dropdown-item" href="#">AGB</a>
-                        <a class="dropdown-item" href="#">AOI</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="left:-20px">
+                       <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
                     </div>
                 </div>
-                {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
-                {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
-                {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
-
-                {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
                 {% if user.is_authenticated %}
 
@@ -125,12 +120,12 @@
                             <td><label>{{ coll.collection_description }}</label></td>
                             <td><label>{{ coll.tifffile_set.all.count }}</label></td>
                             <td>
-                                <button class="btn-dark btn" onclick="location.href='{% url 'edit-coll' coll.pk %}'"
+                                <button class="btn-primary btn" onclick="location.href='{% url 'edit-coll' coll.pk %}'"
                                         style="margin: 10px;width:80px;margin-top:0px">Edit
                                 </button>
                             </td>
                             <td>
-                                <button class="btn-dark btn"
+                                <button class="btn-danger btn"
                                         onclick="location.href='{% url 'delete-coll' coll.pk %}'"
                                         style="margin: 10px;margin-top:0px">Delete
                                 </button>

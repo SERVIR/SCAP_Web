@@ -324,12 +324,11 @@ class NewCollectionCreate(CreateView):
         if self.request.POST:
             data['tifffiles'] = TiffFileFormSet(self.request.POST, self.request.FILES)
             data['form'] = NewCollectionForm(self.request.POST, self.request.FILES)
-            data['operation'] = 'ADD'
         else:
             data['tifffiles'] = TiffFileFormSet()
             data['form'] = NewCollectionForm()
-            data['operation']='ADD'
-        # print('This is context data {}'.format(data))
+        data['operation']='ADD'
+        # print('This is context data {}'.format(data['form']))
         return data
 
     def get_success_url(self):
@@ -338,10 +337,11 @@ class NewCollectionCreate(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         education_formset = TiffFileFormSet(request.POST,request.FILES)
+
         if form.is_valid() and education_formset.is_valid():
             return self.form_valid(form, education_formset)
         else:
-            return self.form_invalid(form)
+            return self.form_invalid(form,education_formset)
 
     def form_valid(self, form, expense_line_item_form):
         self.object = form.save()
@@ -366,25 +366,27 @@ class NewCollectionUpdate(UpdateView):
             context['form'] = NewCollectionForm(self.request.POST,self.request.FILES, instance=self.object)
             context['tifffiles'] = TiffFileFormSet(self.request.POST,self.request.FILES,
                                                         instance=self.object)
-            print(self.request.FILES)
             filename = self.request.FILES['boundary_file'].name
             context['boundary_file'] =filename
-            print(filename)
         else:
             context['form'] = NewCollectionForm(instance=self.object)
             context['tifffiles'] = TiffFileFormSet(instance=self.object)
             context['boundary_file'] = self.object.boundary_file.name
+        context['operation'] = 'EDIT'
         return context
 
     def post(self, request, *args, **kwargs):
-        form = NewCollectionForm(self.request.POST, self.request.FILES)
-        expense_line_item_form = TiffFileFormSet(self.request.POST, self.request.FILES)
+        self.object = self.get_object()
+        form = NewCollectionForm(self.request.POST,self.request.FILES,instance=self.object)
+        expense_line_item_form = TiffFileFormSet(self.request.POST,self.request.FILES,instance=self.object)
         print('in post')
+        print(form.is_valid())
+        print(expense_line_item_form.is_valid())
         if (form.is_valid() and expense_line_item_form.is_valid()):
             print('form is valid')
             return self.form_valid(form, expense_line_item_form)
         else:
-            print(form.errors)
+            print(expense_line_item_form.errors)
 
             return self.form_invalid(form, expense_line_item_form)
 
@@ -397,6 +399,7 @@ class NewCollectionUpdate(UpdateView):
     def form_invalid(self, form, expense_line_item_form):
         return self.render_to_response(
             self.get_context_data(form=form, tifffiles=expense_line_item_form, operation='EDIT'))
+
 
 
 class NewCollectionDelete(DeleteView):

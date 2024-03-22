@@ -22,9 +22,10 @@ class NewCollectionForm(forms.ModelForm):
     #     }), label = "")
     class Meta:
         model = NewCollection
-        fields = ['collection_name', 'collection_description', 'boundary_file', 'access_level'
+        fields = ['collection_name', 'collection_description','doi_link','metadata_link', 'boundary_file', 'access_level'
                   , 'resolution']
         ACCESS_CHOICES = (
+            ('Select','Select'),
             ('Public', 'Public'),  # First one is the value of select option and second is the displayed value in option
             ('Private', 'Private'),
         )
@@ -35,17 +36,21 @@ class NewCollectionForm(forms.ModelForm):
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
             'resolution': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Resolution in meters'}),
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Collection Name'}),
-            'last_accessed_on': forms.DateTimeInput(attrs={'class': 'form-control'})
+            'last_accessed_on': forms.DateTimeInput(attrs={'class': 'form-control'}),
+            'doi_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': ''}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
         }
 
 
 class TiffFileForm(forms.ModelForm):
     class Meta:
         model = TiffFile
-        fields = ['file','year']
+        fields = ['file','year','doi_link','metadata_link']
         widgets = {
             'file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/tiff'}),
             'year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '2000'}),
+            'doi_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': ''}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
         }
 
 

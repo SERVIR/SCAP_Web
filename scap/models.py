@@ -128,6 +128,7 @@ class ForestCoverFile(models.Model):
 
 class NewCollection(models.Model):
     ACCESS_CHOICES = (
+        ('Select','Select'),
         ('Public', 'Public'),  # First one is the value of select option and second is the displayed value in option
         ('Private', 'Private'),
     )
@@ -135,11 +136,12 @@ class NewCollection(models.Model):
     collection_name = models.CharField(max_length=100, default="", help_text="Collection name")
     collection_description = models.TextField(default="", help_text="Collection Description")
     boundary_file = models.FileField(max_length=254, upload_to='uploads/%Y/%m/%d/', help_text="Boundary File")
-    access_level = models.CharField(max_length=10, default="Public", help_text="Access Level", choices=ACCESS_CHOICES)
+    access_level = models.CharField(max_length=10, default="Select", help_text="Access Level", choices=ACCESS_CHOICES)
     projection = models.CharField(max_length=100, default="", help_text="Projection")
     resolution = models.FloatField(max_length=100, default="", help_text="Resolution")
     username = models.CharField(max_length=100, default="", help_text="Username")
-
+    doi_link = models.URLField(max_length=200,default="",blank=True)
+    metadata_link = models.URLField(max_length=200,default="",blank=True)
     last_accessed_on = models.DateTimeField(default=datetime.now)
 
     class Meta:
@@ -150,6 +152,8 @@ class TiffFile(models.Model):
     file = models.FileField(storage=upload_storage,upload_to='uploads/%Y/%m/%d/')
     year= models.IntegerField(default=0, help_text="Year")
     collection = models.ForeignKey(NewCollection, on_delete=models.CASCADE)
+    doi_link=models.URLField(max_length=100,default="",blank=True)
+    metadata_link=models.URLField(max_length=100,default="",blank=True)
 
     def filename(self):
         return os.path.basename(self.file.name)

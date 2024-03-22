@@ -62,9 +62,9 @@
                         ADD
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="/user-data/add-coll/">ForestCover</a>
-                        <a class="dropdown-item" href="#">AGB</a>
-                        <a class="dropdown-item" href="#">AOI</a>
+                   <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
 
                     </div>
                 </div>
@@ -73,10 +73,10 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         MANAGE
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="/user-data/">ForestCover</a>
-                        <a class="dropdown-item" href="#">AGB</a>
-                        <a class="dropdown-item" href="#">AOI</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="left:-20px">
+                   <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
                     </div>
                 </div>
                 {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
@@ -131,13 +131,19 @@
                         <div id="new_collection_info" class=" ">
                             <div class="mb-3 common"><label>Collection Identification Name </label>
                                 {{ form.collection_name }}
-                                {#                                <p style="color: darkred" id="col_exists"></p></div>#}
                             </div>
                             <div class="mb-3 common"><label style="display: block">Source and Supplemental
                                 information</label>
                                 {{ form.collection_description }}
                             </div>
-                            {#                                <textarea class="form-control" id="coll_desc" cols="60" rows="6"></textarea></div>#}
+                            <div class="mb-3 common"><label style="display: block">DOI
+                                </label>
+                                {{ form.doi_link }}
+                            </div>
+                            <div class="mb-3 common"><label style="display: block">Metadata
+                                </label>
+                                {{ form.metadata_link }}
+                            </div>
                             <div class="mb-3 common">
                                 <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
                                     files in the
@@ -151,51 +157,33 @@
                             <div class="mb-3 common">
                                 <label for="formFileMultiple" class="form-label"><b>Upload Yearly Land Cover Tiff
                                     files:</b> </label>
-                                {#                                <table class="table">#}
                                 {{ tifffiles.management_form }}
+                  
 
-                                {% for field in tifffiles.forms %}
+                                {% for field in tifffiles %}
+                                                {% for hid in field.hidden_fields %}
+        {{ hid }}
+      {% endfor %}
                                     <div style="padding:10px;">
                                         {{ field.file }}
                                         <br>
                                         Enter the year for the file {{ field.file.filename }}
 
                                         {{ field.year }}
+                                         <br>
+                                        DOI for the file
+
+                                        {{ field.doi_link }}
+                                         <br>
+                                        Metadata for the file
+
+                                        {{ field.metadata_link }}
                                         <hr style="background-color: black;opacity: 100%">
 
                                     </div>
                                 {% endfor %}
-
-                                {#                                    {% for form in tifffiles.forms %}#}
-                                {#                                        {% if forloop.first %}#}
-                                {#                                            <thead>#}
-                                {#                                            <tr>#}
-                                {#                                                {% for field in form.visible_fields %}#}
-                                {#                                                    <th>{{ field.label|capfirst }}</th>#}
-                                {#                                                {% endfor %}#}
-                                {#                                            </tr>#}
-                                {#                                            </thead>#}
-                                {#                                        {% endif %}#}
-                                {#                                        <tr class="{% cycle row1 row2 %} formset_row">#}
-                                {#                                            {% for field in form.visible_fields %}#}
-                                {#                                                <td>#}
-                                {# Include the hidden fields in the form #}
-                                {#                                                    {% if forloop.first %}#}
-                                {#                                                        {% for hidden in form.hidden_fields %}#}
-                                {#                                                            {{ hidden }}#}
-                                {#                                                        {% endfor %}#}
-                                {#                                                    {% endif %}#}
-                                {#                                                    {{ field.errors.as_ul }}#}
-                                {#                                                    {{ field }}#}
-                                {#                                                </td>#}
-                                {#                                            {% endfor %}#}
-                                {#                                        </tr>#}
-                                {#                                    {% endfor %}#}
-                                {#                                </table>#}
+                            <input type="button" class="btn btn-primary" value="Add a year">
                             </div>
-                            {#                            <ul id="list">#}
-                            {#                            </ul>#}
-                            {##}
                             <div class="mb-3 common">
                                 <label for="access">Access Level</label>
                                 {{ form.access_level }}
@@ -205,35 +193,6 @@
                                 <label for="access">Resolution (meters per pixel)</label>
                                 {{ form.resolution }}
                             </div>
-                            {{ form.username }}
-                            {#                            <button type="button" class="btn btn-primary common mb-3" id="review_new">Review Summary#}
-                            {#                            </button>#}
-                            {#                            <button type="button" class="mb-3 btn btn-primary common" onclick="clearForm()"#}
-                            {#                                    id="clear_new">#}
-                            {#                                Clear Form#}
-                            {#                            </button>#}
-                            {##}
-                            {##}
-                            {#                            <div id="myModal" class="modal">#}
-                            {##}
-                            {#                                <!-- Modal content -->#}
-                            {#                                <div class="modal-content">#}
-                            {#                                    <span class="close">&times;</span>#}
-                            {#                                    <label>Collection Identification Name: </label>#}
-                            {#                                    <p id="c_name">Some text in the Modal..</p>#}
-                            {#                                    <label>Source and Supplemental information: </label>#}
-                            {#                                    <p id="c_desc">Some text in the Modal..</p>#}
-                            {#                                    <label>Boundary Shape File: </label>#}
-                            {#                                    <p id="c_boundary_path">Some text in the Modal..</p>#}
-                            {#                                    <label>TIFF files: </label>#}
-                            {#                                    <p id="c_tiffs"></p>#}
-                            {##}
-                            {##}
-                            {#                                    <label>Access level: </label>#}
-                            {#                                    <p id="c_access"></p>#}
-                            {##}
-                            {#                                    <button type="button" class="btn btn-primary common" id="savetoDB">Submit</button>#}
-                            {##}
                             <div class=" mt-3">
                                 <input type="submit" class="btn-primary btn" value="Save"/> <a
                                     class="btn btn-outline-warning" href="{% url 'userData' %}">Back to the list</a>
