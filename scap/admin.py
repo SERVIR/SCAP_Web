@@ -18,10 +18,11 @@ class BoundaryFilesAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display_links = ('name_es',)
 
 
-class AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name',)
-    list_display_links = ('name',)
 
+class AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('name','orig_name','iso3','desig_eng')
+    list_filter = ('name','iso3')
+    search_fields = ['name']
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('country_name',)

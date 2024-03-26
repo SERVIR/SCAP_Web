@@ -51,42 +51,18 @@ def generate_geodjango_objects_boundary(verbose=True):
 
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
-        'wdpaid': 'WDPAID',
         'wdpa_pid': 'WDPA_PID',
-        'pa_def': 'PA_DEF',
         'name': 'NAME',
         'orig_name': 'ORIG_NAME',
-        'desig': 'DESIG',
         'desig_eng': 'DESIG_ENG',
         'desig_type': 'DESIG_TYPE',
-        'iucn_cat': 'IUCN_CAT',
-        'int_crit': 'INT_CRIT',
-        'marine': 'MARINE',
-        'rep_m_area': 'REP_M_AREA',
-        'gis_m_area': 'GIS_M_AREA',
         'rep_area': 'REP_AREA',
         'gis_area': 'GIS_AREA',
-        'no_take': 'NO_TAKE',
-        'no_tk_area': 'NO_TK_AREA',
-        'status': 'STATUS',
-        'status_yr': 'STATUS_YR',
-        'gov_type': 'GOV_TYPE',
-        'own_type': 'OWN_TYPE',
-        'mang_auth': 'MANG_AUTH',
-        'mang_plan': 'MANG_PLAN',
-        'verif': 'VERIF',
-        'metadataid': 'METADATAID',
-        'sub_loc': 'SUB_LOC',
-        'parent_iso': 'PARENT_ISO',
         'iso3': 'ISO3',
-        'supp_info': 'SUPP_INFO',
-        'cons_obj': 'CONS_OBJ',
-        'layer': 'layer',
-        'path': 'path',
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join('/home/alex/shared/SCAP/aois/peru/peru_pa.shp'),
+        os.path.join(r'C:\Users\gtondapu\Desktop\WDPA_World_Mar2024_simplified_ecl_PER\WDPA_World_Mar2024_simplified_2_excl_PER.shp'),
     )
 
     lm = LayerMapping(AOI, aoi, aoi_mapping, transform=False)

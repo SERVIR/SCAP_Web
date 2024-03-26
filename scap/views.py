@@ -45,7 +45,7 @@ def test(req):
         # generate_fcc_file(req)
         # generate_fcc_fields("CCI", 2007)
         # generate_geodjango_objects_aoi()
-        generate_geodjango_objects_boundary()
+        # generate_geodjango_objects_boundary()
         # generate_fc_file(req)
         return HttpResponse("The script ran successfully")
     except Exception as e:
