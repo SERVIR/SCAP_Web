@@ -70,7 +70,7 @@ class AGBCollectionForm(forms.ModelForm):
 
     class Meta:
         model = AGBCollection
-        fields = ['agb_name', 'agb_description', 'doi_link', 'metadata_link']
+        fields = ['agb_name', 'agb_description', 'doi_link', 'metadata_link','agb_boundary_file','agb_tiff_file']
         widgets = {
             'agb_name': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Enter a name for the AGB'}),
