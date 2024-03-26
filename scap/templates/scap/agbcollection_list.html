@@ -40,7 +40,7 @@
             Menu
             <i class="fas fa-bars ms-1"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
+               <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                 <div class="dropdown" style="margin-right: 10px">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -49,8 +49,8 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-data/add-agb/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-data/add-aoi/">AREAS OF INTEREST (AOI)</a>
+                        <a class="dropdown-item" href="/user-data/add-agb/">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="/user-data/add-aoi/">AREAS OF INTEREST (AOI)</a>
 
                     </div>
                 </div>
@@ -138,7 +138,7 @@
         </table>
 
         <div class="text-center mt-3">
-            <button class="btn-primary btn" onclick="location.href='{% url 'add-aoi' %}'">+ Add a new AGB
+            <button class="btn-primary btn" onclick="location.href='{% url 'add-agb' %}'">+ Add a new AGB
             </button>
         </div>
 
