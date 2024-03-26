@@ -35,27 +35,27 @@ function fill_comparison_years_selector(years) {
 }
 
 
-function clear_map_layers(){
-    if(primary_overlay_layer != undefined){
+function clear_map_layers() {
+    if (primary_overlay_layer != undefined) {
         map.removeLayer(primary_overlay_layer);
     }
-    if(secondary_overlay_layer != undefined){
+    if (secondary_overlay_layer != undefined) {
         map.removeLayer(secondary_overlay_layer);
     }
 
-    if(primary_overlay_layer != undefined){
+    if (primary_overlay_layer != undefined) {
         map.removeLayer(primary_underlay_layer);
     }
-    if(secondary_overlay_layer != undefined){
+    if (secondary_overlay_layer != undefined) {
         map.removeLayer(secondary_underlay_layer);
     }
-    if(aoi_layer_left != undefined){
+    if (aoi_layer_left != undefined) {
         map.removeLayer(aoi_layer_left)
     }
-    if(aoi_layer_right != undefined){
+    if (aoi_layer_right != undefined) {
         map.removeLayer(aoi_layer_right)
     }
-    if(comparison_control != undefined){
+    if (comparison_control != undefined) {
         document.getElementsByClassName('leaflet-sbs-range')[0].value = 1;
         let clipX = comparison_control._range.value;
         map.removeControl(comparison_control);
@@ -69,79 +69,80 @@ function clear_map_layers(){
 
 function whenClicked(e) {
     var layer = e.target;
-     layer.setStyle({
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            })
+    layer.setStyle({
+        weight: 2,
+        opacity: 1,
+        color: 'cyan',  //Outline color
+        fillOpacity: 0.4,
+    })
 
-  var name = e.target.feature.properties.NAME;
-  pa_selected_name=name;
-  if (name !== undefined) {
-    //    let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
-    // req_to_update.done(function (result) {
-    //     var updated_emissions_chart=JSON.parse(result.chart_epa);
-    //     var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
-    //     // getMMA(pa_selected_name,updated_emissions_chart);
-    //     // getFC(pa_selected_name,updated_forestchange_chart);
-    // });
+    var name = e.target.feature.properties.NAME;
+    pa_selected_name = name;
+    if (name !== undefined) {
+        //    let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
+        // req_to_update.done(function (result) {
+        //     var updated_emissions_chart=JSON.parse(result.chart_epa);
+        //     var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
+        //     // getMMA(pa_selected_name,updated_emissions_chart);
+        //     // getFC(pa_selected_name,updated_forestchange_chart);
+        // });
 
- var zoomlevel = map.getZoom();
+        var zoomlevel = map.getZoom();
 
-    if (zoomlevel >= 7) {
-   // var a = document.createElement('a');
-   // a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
-   //    a.setAttribute('target', '_blank');
-   // a.click();
-         window.location = window.location.origin + '/aoi/'+ pa_selected_name+'/';
+        if (zoomlevel >= 7) {
+            // var a = document.createElement('a');
+            // a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
+            //    a.setAttribute('target', '_blank');
+            // a.click();
+            window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
 
-        // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
+            // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
+        } else {
+            window.location = window.location.origin + '/aoi/' + 'Peru' + '/';
+        }
+        // window.location.hash = "Emissions_PA";
     }
-    else{
-         window.location = window.location.origin + '/aoi/'+'Peru'+'/';
-    }
-      // window.location.hash = "Emissions_PA";
-  }
 }
+
 function onEachFeature(feature, layer) {
     //bind click
     layer.on({
         click: whenClicked
     });
 
-     layer.on('mouseover', function (e) {
+    layer.on('mouseover', function (e) {
 
-         var name = e.target.feature.properties.NAME;
-         var popupText =name
-    var tooltipText = "blabla";
-    layer.bindPopup(popupText,{
-  closeButton: false
-});
-    layer.bindTooltip(tooltipText);
-     layer.openPopup();
-       this.getTooltip().setOpacity(0);
-    layer.setStyle({
-                weight: 2,
-                opacity: 1,
-                color: 'yellow',  //Outline color
-                fillOpacity: 0.4,
-            })
+        var name = e.target.feature.properties.NAME;
+        var popupText = name
+        var tooltipText = "blabla";
+        layer.bindPopup(popupText, {
+            closeButton: false
+        });
+        layer.bindTooltip(tooltipText);
+        layer.openPopup();
+        this.getTooltip().setOpacity(0);
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: 'yellow',  //Outline color
+            fillOpacity: 0.4,
+        })
 
-          layer.on('mouseover', function () {
-       this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+        layer.on('mouseover', function () {
+            this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+        });
     });
-    });
-      layer.on('mouseout', function (e) {
- layer.closePopup();
-    layer.setStyle({
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            })
+    layer.on('mouseout', function (e) {
+        layer.closePopup();
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.4,
+        })
     });
 }
+
 function redraw_map_layers() {
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
@@ -261,21 +262,23 @@ function redraw_map_layers() {
     });
 
 }
-function get_years(ds){
-       var json_obj=[{'ds':'mapbiomas','start':2000,'end':2021},
-    {'ds':'cci','start':2000,'end':2020},
-    {'ds':'esri','start':2017,'end':2021},
-    {'ds':'jaxa','start':2007,'end':2016},
-    {'ds':'modis','start':2001,'end':2022},
-            {'ds':'worldcover','start':2020,'end':2021},
+
+function get_years(ds) {
+    var json_obj = [{'ds': 'mapbiomas', 'start': 2000, 'end': 2021},
+        {'ds': 'cci', 'start': 2000, 'end': 2020},
+        {'ds': 'esri', 'start': 2017, 'end': 2021},
+        {'ds': 'jaxa', 'start': 2007, 'end': 2016},
+        {'ds': 'modis', 'start': 2001, 'end': 2022},
+        {'ds': 'worldcover', 'start': 2020, 'end': 2021},
     ]
-    for(var i=0;i<json_obj.length;i++) {
+    for (var i = 0; i < json_obj.length; i++) {
         if (json_obj[i].ds === ds) {
             return [json_obj[i].start, json_obj[i].end];
         }
     }
 }
-function get_years_range(start,end) {
+
+function get_years_range(start, end) {
     var list = [];
     for (var i = start; i <= end; i++) {
         list.push(i);
@@ -283,22 +286,22 @@ function get_years_range(start,end) {
     return list
 }
 
-function get_available_years(){
+function get_available_years() {
     //let xhr = ajax_call("get-available-years", {});
     //xhr.done(function (result) {
     // let years = Object.values([2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021,2022]);
-    let years=get_years(document.getElementById('selected_region').value);
+    let years = get_years(document.getElementById('selected_region').value);
     console.log(document.getElementById('selected_region').value)
     //console.log(result['data']);
-    fill_years_selector(get_years_range(years[0],years[1]));
-    fill_comparison_years_selector(get_years_range(years[0],years[1]));
-    document.getElementById('selected_year').value=years[0];
-    document.getElementById('comparison_year').value=years[1];
+    fill_years_selector(get_years_range(years[0], years[1]));
+    fill_comparison_years_selector(get_years_range(years[0], years[1]));
+    document.getElementById('selected_year').value = years[0];
+    document.getElementById('comparison_year').value = years[1];
     redraw_map_layers();
     //})
 }
 
-function init_map(){
+function init_map() {
     // Initialize with map control with basemap and time slider
     map = L.map('map_chart', {
         fullscreenControl: true, center: [-8.60436, -74.73243], zoom: 10
@@ -334,17 +337,17 @@ function init_map(){
             });
         });*/
     var wmsLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
-    layers: 's-cap:watermask_2',
-        format:'image/png',
-        transparent:true
-}).addTo(map);
+        layers: 's-cap:watermask_2',
+        format: 'image/png',
+        transparent: true
+    }).addTo(map);
 
 
     get_available_years();
 }
 
 
-function removeLayers(){
+function removeLayers() {
     satellite.remove();
     gSatLayer.remove();
     darkGrayLayer.remove();
@@ -356,7 +359,7 @@ function removeLayers(){
 }
 
 
-function add_basemap(map_name){
+function add_basemap(map_name) {
     removeLayers();
     switch (map_name) {
         case "osm":

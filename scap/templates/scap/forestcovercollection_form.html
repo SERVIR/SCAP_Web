@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load i18n %}
+
+{% load socialaccount %}
+
+{% load static %}
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SERVIR S-CAP</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+    <style>
+        label {
+            padding: 5px;
+            background: white;
+            margin: 5px;
+
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td {
+            max-width: 100px;
+
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "home" %}" style="padding-left: 20px"><img
+                src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ADD
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
+
+                    </div>
+                </div>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        MANAGE
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
+                        <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
+                    </div>
+                </div>
+                {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
+
+                {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+
+                        Login
+                    </a></li>
+
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<br/>
+<br/>
+<br/>
+{% if user.is_authenticated %}
+    <div class="container-fluid">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-sm-6 mb-4 justify-content-center">
+                <form id="upload-file-new" method="POST" enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">
+                        <div></div>
+                        {% if form.errors %}
+                            <div>
+                                {{ form.errors }}
+                            </div>
+                        {% else %}
+                            {{ operation }} a forest cover collection
+
+                            </h3>
+
+
+                            <div id="new_collection_info" class=" ">
+                            <div class="mb-3 common"><label>Collection Identification Name </label>
+                                {{ form.collection_name }}
+                            </div>
+                            <div class="mb-3 common"><label style="display: block">Source and Supplemental
+                                information</label>
+                                {{ form.collection_description }}
+                            </div>
+                            <div class="mb-3 common"><label style="display: block">DOI
+                            </label>
+                                {{ form.doi_link }}
+                            </div>
+                            <div class="mb-3 common"><label style="display: block">Metadata
+                            </label>
+                                {{ form.metadata_link }}
+                            </div>
+                            <div class="mb-3 common">
+                                <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
+                                    files in the
+                                    collection) </label>
+                                Current file: {{ boundary_file }}
+
+                                {{ form.boundary_file }}
+                            </div>
+
+
+                            <div class="mb-3 common">
+                                <label for="formFileMultiple" class="form-label"><b>Upload Yearly Land Cover Tiff
+                                    files:</b> </label>
+
+                                <div style="padding:10px;" class="new_tiff">
+                                    <table id="tifffTable" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>UserID</th>
+                                            <th>Year</th>
+                                            <th>File</th>
+                                            <th>DOI</th>
+                                            <th>Metadata</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tifffTableBody">
+                                        <tr id="no-records" class="text-center">
+                                            <td colspan="5">No tiff files added yet.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <label>Upload a file</label>
+                                    <input class="form-control" accept="image/tiff" type="file" id="tiff_new_file"/>
+                                    <label>Enter an year for the file</label>
+                                    <input class="form-control" type="number" id="tiff_year"/>
+                                    <label>DOI</label>
+                                    <input class="form-control" type="text" id="tiff_doi"/>
+                                    <label>Metadata</label>
+                                    <input class="form-control" type="text" id="tiff_metadata"/>
+
+
+                                </div>
+                                <input type="button" class="btn btn-primary" id="save_year" value="Add to list"
+                                       onclick="addFields('{{ user.username }}' )">
+
+                            </div>
+                            <div class="mb-3 common">
+                                <label for="access">Access Level</label>
+                                {{ form.access_level }}
+                            </div>
+                            {##}{% endif %}
+                        {#                            <div class="mb-3 common">#}
+                        {#                                <label for="access">Resolution (meters per pixel)</label>#}
+                        {#                                {{ form.resolution }}#}
+                        {#                            </div>#}
+                        <div class=" mt-3">
+                            <input type="submit" class="btn-primary btn" value="Save"/> <a
+                                class="btn btn-outline-warning" href="{% url 'userData' %}">Back to the list</a>
+                        </div>
+                        </div>
+                    {##}
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer-->
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
+                            class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% else %}
+    <br/>
+    <br/>
+    <br/>
+    <p class="text-center">Please login to add your collections, files and AOIs</p>
+{% endif %}
+
+<!-- AOI modal popup-->
+
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{% static "js/newcoll.js" %}"></script>
+
+<script src="{% static "js/scripts.js" %}"></script>
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+{#<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>#}
+</body>
+</html>

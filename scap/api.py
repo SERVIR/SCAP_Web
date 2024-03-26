@@ -15,8 +15,8 @@ import rasterio
 from rasterio.mask import mask
 import ee
 from django.views.decorators.csrf import csrf_exempt
-from scap.models import BoundaryFiles, AOI, ForestCoverChange, ForestCoverChangeFile, ForestCoverFile, NewCollection, \
-    UserProvidedAOI
+from scap.models import BoundaryFiles, AOI, ForestCoverChange, ForestCoverChangeFile, ForestCoverFile, \
+    AOICollection, ForestCoverCollection, TiffFile
 import geopandas as gpd
 
 from scap.utils import percent_inside, gdal_polygonize, getArea, create_temp_dir, delete_temp_dir, \
@@ -42,7 +42,8 @@ def generate_geodjango_objects_boundary(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',  r"C:\Users\gtondapu\Desktop\SCAP\Boundary\mapbiomas\mapbiomas_merged.shp"),
+        os.path.join(os.path.dirname(__file__), 'data',
+                     r"C:\Users\gtondapu\Desktop\SCAP\Boundary\mapbiomas\mapbiomas_merged.shp"),
     )
     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
     lm.save(strict=True, verbose=verbose)
@@ -152,7 +153,9 @@ def getInitialForestArea(year, dir, dataset, pa, val):
     # print(dir)
     with rasterio.open(file_out, "w", **out_meta) as dest:
         dest.write(out_image)
-    return getArea(gdal_polygonize(dir,  r"masked_fc" + str(val)))
+    return getArea(gdal_polygonize(dir, r"masked_fc" + str(val)))
+
+
 def getInitialForestArea_new(year, dir, dataset, pa, val):
     dataset = dataset.lower()
     if dataset != "mapbiomas":
@@ -172,9 +175,10 @@ def getInitialForestArea_new(year, dir, dataset, pa, val):
         out_image, out_transform = mask(src, valid_geometries, crop=True)
 
         # Calculate the area from the masked image directly, without writing to disk
-        area = calculate_area(out_image, out_transform, src.crs,1)
+        area = calculate_area(out_image, out_transform, src.crs, 1)
 
     return area
+
 
 def getConditionalForestArea_new(pa, dir, dataset, value, year, val):
     dataset = dataset.lower()
@@ -195,10 +199,12 @@ def getConditionalForestArea_new(pa, dir, dataset, value, year, val):
         out_image, out_transform = mask(src, valid_geometries, crop=True)
 
         # Calculate the area from the masked image directly, without writing to disk
-        area = calculate_area(out_image, out_transform, src.crs,value)
+        area = calculate_area(out_image, out_transform, src.crs, value)
 
     return area
-def calculate_area(raster, transform, crs,value):
+
+
+def calculate_area(raster, transform, crs, value):
     crs_params = {
         'proj': 'cea',
         'lon_0': 0,
@@ -232,6 +238,8 @@ def calculate_area(raster, transform, crs,value):
     print('here 4')
     area = forest_pixel_count * pixel_area
     return area
+
+
 # get the forest gain or forest loss of a FCC TIFF file
 def getConditionalForestArea(pa, dir, dataset, value, year, val):
     # print(year)
@@ -272,7 +280,7 @@ def generate_fcc_fields(dataset, year):
         # print(needed_aois)
         val = 0
         for aoi in needed_aois:
-            if aoi.name!='peru':
+            if aoi.name != 'peru':
                 val = val + 1
                 start = time.time()
                 # print(percent_inside(aoi, data_source))
@@ -305,14 +313,14 @@ def generate_fcc_fields(dataset, year):
                 for file in os.listdir(fc.file_directory):
                     if os.path.isfile(file) and file.startswith("masked_fc"):
                         try:
-                            os.chmod(file,0o777)
+                            os.chmod(file, 0o777)
                             os.remove(file)
                         except Exception as e:
                             print(e)
                 for file in os.listdir(fcc.file_directory):
                     if os.path.isfile(file) and file.startswith("masked_fcc"):
                         try:
-                            os.chmod(file,0o777)
+                            os.chmod(file, 0o777)
                             os.remove(file)
                         except Exception as e:
                             print(e)
@@ -334,55 +342,37 @@ def generate_from_lambda():
 
 @csrf_exempt
 def savetomodel(request):
-    uploaded_tiffs = request.FILES.getlist('FC_tiffs[]')
-    original_names = request.POST.getlist('FC_tiffs_OriginalNames[]')
-    uploaded_tiffs_names = request.POST.getlist('FC_tiffs_Name[]')
-    path_to_boundary = os.path.join(params['PATH_TO_DATA'], request.POST['access'], request.user.username,
-                                    "Collections", request.POST['coll_name'], "BoundaryFiles")
-    path_to_tiffs = os.path.join(params['PATH_TO_DATA'], request.POST['access'], request.user.username,
-                                 "Collections", request.POST['coll_name'], "FC_Tiffs")
+    print('in save')
+    uploaded_tiffs = request.FILES.get('FC_tiff')
+    print(uploaded_tiffs)
+    path_to_tiffs = os.path.join(params['PATH_TO_NEW_TIFFS'] + str(request.user.username) + '/Public')
 
-    if not os.path.exists(path_to_boundary):
-        os.makedirs(path_to_boundary)
     if not os.path.exists(path_to_tiffs):
         os.makedirs(path_to_tiffs)
 
-    for i in range(len(uploaded_tiffs)):
-        with open(os.path.join(path_to_tiffs, uploaded_tiffs_names[i]),
-                  "wb") as file1:
-            file1.write(uploaded_tiffs[i].read())
-
-    with open(os.path.join(path_to_boundary, request.POST['boundaryFileName']), "wb") as file1:
-        file1.write(request.FILES['boundaryFile'].read())
-
+    with open(os.path.join(path_to_tiffs,
+                           str("fc_" + str(request.user.username) + "_" + str(request.POST['coll_name']) + "_" + str(
+                               request.POST['year']) + "_1ha.tif")), "wb") as file1:
+        file1.write(uploaded_tiffs.read())
     try:
-        # print(original_names)
-        tiffs = uploaded_tiffs_names
         # boundary_proj=get_projection_of_boundary(os.path.join(path_to_boundary, request.POST['boundaryFileName']))
         # if 'Mollweide' in boundary_proj:
         #     pass
         # else:
         #     return JsonResponse({"result": "error", "error_message": "Invalid file " + original_names[i]})
 
-        for i in range(len(tiffs)):
-            new_collection = NewCollection()
-            new_collection.collection_name = request.POST['coll_name']
-            new_collection.collection_description = request.POST['coll_desc']
-            new_collection.boundary_file = request.POST['boundaryFileName']
-            new_collection.tiff_file = tiffs[i]
-            new_collection.access_level = request.POST['access']
-            new_collection.username = request.user.username
-            tiff_file_path = os.path.join(path_to_tiffs, tiffs[i])
-            new_collection.path_to_tif_file = path_to_tiffs
-            new_collection.path_to_boundary_file = path_to_boundary
-            proj = get_projection_of_tif(tiff_file_path)
-            new_collection.projection = proj
-            print(proj)
-            new_collection.resolution = get_resolution_of_tif(tiff_file_path)
-            if 'Mollweide' in proj:
-                new_collection.save()
-            else:
-                return JsonResponse({"result": "error", "error_message": "Invalid file " + original_names[i]})
+        new_tiff = TiffFile()
+        new_tiff.year = request.POST['year']
+        new_tiff.file = request.FILES['FC_tiff']
+        new_tiff.metadata_link = request.POST['metadata']
+        new_tiff.doi_link = request.POST['doi']
+        new_tiff.collection.collection_name = request.POST['coll_name']
+        new_tiff.save()
+
+        # if 'Mollweide' in proj:
+        #     new_collection.save()
+        # else:
+        return JsonResponse({"result": "error", "error_message": "Invalid file "})
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
@@ -393,7 +383,7 @@ def updatetomodel(request):
     try:
 
         coll_name = request.POST['coll_name']
-        existing_collection = NewCollection.objects.filter(collection_name=coll_name).first()
+        existing_collection = ForestCoverCollection.objects.filter(collection_name=coll_name).first()
         print(existing_collection.collection_description)
         uploaded_tiffs = request.FILES.getlist('FC_tiffs_New[]')
         original_names = request.POST.getlist('FC_tiffs_New_OriginalNames[]')
@@ -406,7 +396,7 @@ def updatetomodel(request):
         tiffs = uploaded_tiffs_names
 
         for tiff in tiffs:
-            new_collection = NewCollection()
+            new_collection = ForestCoverCollection()
             new_collection.collection_name = coll_name
             new_collection.collection_description = existing_collection.collection_description
             new_collection.boundary_file = existing_collection.boundary_file
@@ -429,7 +419,7 @@ def updatetomodel(request):
 
 @csrf_exempt
 def check_if_coll_exists(request):
-    collections = list(NewCollection.objects.values('collection_name').distinct())
+    collections = list(ForestCoverCollection.objects.values('collection_name').distinct())
     arr = []
     # print(collections)
     for c in collections:
@@ -445,7 +435,7 @@ def check_if_coll_exists(request):
 def getcollections(request):
     arr = []
     collections = list(
-        NewCollection.objects.filter(username=request.user.username).values('collection_name').distinct())
+        ForestCoverCollection.objects.filter(username=request.user.username).values('collection_name').distinct())
 
     # print(collections)
     for c in collections:
@@ -458,7 +448,7 @@ def getcollections(request):
 @csrf_exempt
 def getfilesfromcollection(request):
     coll_name = request.POST['coll_name']
-    files = list(NewCollection.objects.filter(collection_name=coll_name))
+    files = list(ForestCoverCollection.objects.filter(collection_name=coll_name))
     arr = []
     print(files)
     for c in files:
@@ -478,7 +468,7 @@ def saveAOItomodel(request):
         for i in range(len(aois)):
             with open(os.path.join(aoi_path, aoi_names[i]), "wb") as file1:
                 file1.write(aois[i].read())
-            new_aoi = UserProvidedAOI()
+            new_aoi = AOICollection()
             new_aoi.aoi_name = aoi_names[i]
             new_aoi.aoi_shape_file = os.path.join(aoi_path, aoi_names[i])
             new_aoi.path_to_aoi_file = aoi_path
@@ -493,7 +483,7 @@ def saveAOItomodel(request):
 @csrf_exempt
 def get_aoi_list(request):
     try:
-        aois = UserProvidedAOI.objects.filter(username=request.user.username).values()
+        aois = AOICollection.objects.filter(username=request.user.username).values()
         print(request.user.username)
         print(aois)
         names = []
@@ -511,7 +501,7 @@ def get_aoi_list(request):
 def delete_AOI(request):
     try:
         aoi_name = request.POST['aoi_name']
-        x = UserProvidedAOI.objects.filter(username=request.user.username, aoi_name=aoi_name)
+        x = ForestCoverCollection.objects.filter(username=request.user.username, aoi_name=aoi_name)
         x.delete()
         aoi_path = os.path.join(params['PATH_TO_DATA'], "Private", request.user.username,
                                 "AOIs")
@@ -524,7 +514,7 @@ def delete_AOI(request):
 
 
 @csrf_exempt
-def get_AOI(request,country='None'):
+def get_AOI(request, country='None'):
     json_obj = {}
     try:
         vec = gpd.read_file(os.path.join(params['DATA_DIR'], 'aois/peru/peru_pa.shp'))

@@ -84,9 +84,10 @@ chart1.update({
     }
 });
 
-function getFC(pa_selected_name,data_obj){
-    chart1.update({series:data_obj.series, title: data_obj.title});
+function getFC(pa_selected_name, data_obj) {
+    chart1.update({series: data_obj.series, title: data_obj.title});
 }
+
 // Update chart options
 chart1.update({
         chart: {
@@ -94,7 +95,7 @@ chart1.update({
         },
         plotOptions: {
             series: {
-                 connectNulls: true,
+                connectNulls: true,
                 marker: {
                     enabled: false,
                     states: {

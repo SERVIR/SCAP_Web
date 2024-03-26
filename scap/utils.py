@@ -10,6 +10,8 @@ import numpy as np
 import rasterio
 from django.contrib.gis.gdal import SpatialReference, CoordTransform
 import fiona
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rasterio import rio
 from rasterio.mask import mask
 from rasterio.warp import reproject
@@ -23,12 +25,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 params = json.load(f)
 
+import doi
+
+
+@csrf_exempt
+def doi_valid(request):
+    try:
+        url = doi.validate_doi(request.POST.get('doi'))
+        return JsonResponse({"url": url})
+    except Exception as e:
+        return JsonResponse({"url": ""})
+
 
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):
     os.chdir(dir)
     # out_path = dir + "\\" + in_path + ".shp"
-    out_path =  in_path + ".shp"
+    out_path = in_path + ".shp"
     #  get raster datasource
     src_ds = gdal.Open(in_path + ".tif")
     srcband = src_ds.GetRasterBand(1)
@@ -93,6 +106,8 @@ def getArea(file, value=99):
                 area = area + new_polygons.loc[i, 'area_hec']
 
     return area
+
+
 # def process_chunk(chunk, value=99):
 #     if value != 99:
 #         filtered_chunk = chunk[chunk['DN'] == value]

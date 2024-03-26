@@ -14,11 +14,13 @@ function get_name(elem) {
         // console.log(result1);
     });
 }
+
 function standardize_color(str) {
     var ctx = document.createElement("canvas").getContext("2d");
     ctx.fillStyle = str;
     return ctx.fillStyle;
 }
+
 // This function is to set the brightness of the lines on the chart
 function increase_brightness(hex, percent) {
     hex = hex.replace(/^\s*#|\s*$/g, '');
@@ -63,11 +65,11 @@ for (var i = 0; i < newseries.length; i++) {
     chart1.series[i].update({color: color});
 }
 chart1.update({
-       yAxis: {
-           title: {
-               text: 'Values (Ha)'
-           }
-       },
+    yAxis: {
+        title: {
+            text: 'Values (Ha)'
+        }
+    },
     tooltip: {
         useHTML: true,
         enabled: true,
@@ -85,10 +87,10 @@ chart1.update({
             //     label = "Forest Loss";
             // }
             label = 'Net Forest Change';
-            var  labellc = document.getElementById(lc).innerText!=='Mapbiomas'?'<i class="fa-solid fa-globe fa-xs"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
+            var labellc = document.getElementById(lc).innerText !== 'Mapbiomas' ? '<i class="fa-solid fa-globe fa-xs"></i>&nbsp;' + document.getElementById(lc).innerText : document.getElementById(lc).innerText;
             var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
                 '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
-                '<span style=\'padding-left:50px\'></span> ' + result1.split(',')[0] + '<br/>'+labellc+' </span><div>';
+                '<span style=\'padding-left:50px\'></span> ' + result1.split(',')[0] + '<br/>' + labellc + ' </span><div>';
             return value;
         }
     }

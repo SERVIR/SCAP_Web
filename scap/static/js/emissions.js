@@ -2,7 +2,7 @@
 var index = $("#container").data('highchartsChart');
 var chart = Highcharts.charts[index];
 
-    var series=chart.series;
+var series = chart.series;
 
 var newseries = series;
 var new_updated = series;
@@ -50,7 +50,7 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":""});
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": ""});
 xhr.done(function (result2) {
     console.log((result2.min))
     min_arr = {
@@ -103,16 +103,16 @@ xhr.done(function (result2) {
     });
 
     chart.update({series: ns});
-chart.addSeries(min_arr);
-chart.addSeries(max_arr);
-chart.addSeries(avg_arr);
+    chart.addSeries(min_arr);
+    chart.addSeries(max_arr);
+    chart.addSeries(avg_arr);
 
     chart.update({
-       yAxis: {
-           title: {
-               text: 'Values (Tons)'
-           }
-       },
+        yAxis: {
+            title: {
+                text: 'Values (Tons)'
+            }
+        },
         tooltip: {
             useHTML: true,
             enabled: true,
@@ -122,15 +122,15 @@ chart.addSeries(avg_arr);
             formatter: function () {
                 const color = this.series.color;
                 const ss = this.series.name;
-                                if(ss==="Min" || ss==="Max" || ss==="Avg"){
+                if (ss === "Min" || ss === "Max" || ss === "Avg") {
 
 
-                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
-                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
-                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
-                return value;
+                    var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
+                    //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                    //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                    //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                    return value;
                 }
                 const lc = ss[0];
                 const agb = ss[1];
@@ -152,48 +152,48 @@ chart.addSeries(avg_arr);
     });
 });
 
-    chart.update({
-            chart: {
-                type: 'spline'
-            },
+chart.update({
+        chart: {
+            type: 'spline'
+        },
 
-            plotOptions: {
-                series: {
- connectNulls: true,
-                    marker: {
-                        enabled: false,
-                        states: {
-                            hover: {
-                                enabled: false
-                            }
+        plotOptions: {
+            series: {
+                connectNulls: true,
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: false
                         }
-                    }, showCheckbox: false,
-                    selected: true,
+                    }
+                }, showCheckbox: false,
+                selected: true,
 
-                    events: {
-                        checkboxClick: function (event) {
-                            if (this.visible) {
-                                this.hide();
-                            } else {
-                                this.show();
-                            }
+                events: {
+                    checkboxClick: function (event) {
+                        if (this.visible) {
+                            this.hide();
+                        } else {
+                            this.show();
                         }
                     }
                 }
-            },
-            lang: {
-                noData: "No data found. Please select LC/AGB from the list."
-            },
-            noData: {
-                style: {
-                    fontWeight: 'bold',
-                    fontSize: '15px'
-                }
-            },
+            }
+        },
+        lang: {
+            noData: "No data found. Please select LC/AGB from the list."
+        },
+        noData: {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '15px'
+            }
+        },
 
 
-        }
-    );
+    }
+);
 
 //  Hide lines on the chart based on checkbox selection
 function hide_line(elem) {
@@ -253,7 +253,7 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":""});
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": ""});
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
@@ -288,41 +288,40 @@ const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss,"pa_name":""});
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];
-                           ns.push({
-                    name: s.name,
-                    data: s.data,
-                    color: s.color,
-                    visible: true,
-                    lineWidth: 2,
-                    legendIndex: null,
-                    dashStyle: ''
-                });
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
 
                 }
 
 
             }
-            console.log(s.name==='Min')
-            if(s.name==='Min'){
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
                 s.update({
-    data: min_arr.data
-}, true);
+                    data: min_arr.data
+                }, true);
             }
-             if(s.name==='Max'){
-                 s.update({
-    data: max_arr.data
-}, true);
-            }
-             if(s.name==='Avg'){
+            if (s.name === 'Max') {
                 s.update({
-    data: avg_arr.data
-}, true);
+                    data: max_arr.data
+                }, true);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
             }
         });
 
 
-    // chart.update({series: ns});
-
+        // chart.update({series: ns});
 
 
     });

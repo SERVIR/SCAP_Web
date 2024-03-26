@@ -1,8 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource, ForestCoverSource, Emissions,
-                         ForestCoverChangeFile, ForestCoverFile, UserProvidedAOI, NewCollection, ForestCoverChangeNew,
-                         TiffFile,
+                         ForestCoverChangeFile, ForestCoverFile, AOICollection, ForestCoverCollection,
+                         ForestCoverChangeNew,
+                         TiffFile, PilotCountry,
                          )
 
 
@@ -20,6 +21,11 @@ class BoundaryFilesAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name',)
     list_display_links = ('name',)
+
+
+class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('country_name',)
+    list_display_links = ('country_name',)
 
 
 class ForestCoverChangeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -47,15 +53,15 @@ class ForestCoverFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('fc_source', 'created')
 
 
-class UserProvidedAOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('aoi_name', 'path_to_aoi_file', 'last_accessed_on')
+class AOICollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('aoi_name', 'last_accessed_on')
 
 
 class TiffFileInline(admin.StackedInline):
     model = TiffFile
 
 
-class NewCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('collection_name', 'boundary_file', 'projection', 'resolution', 'last_accessed_on')
     inlines = [
         TiffFileInline,
@@ -80,9 +86,11 @@ class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 admin.site.register(AOI, AOIAdmin)
+
+admin.site.register(PilotCountry, PilotCountryAdmin)
 # admin.site.register(TiffFile, TiffFileAdmin)
-admin.site.register(UserProvidedAOI, UserProvidedAOIAdmin)
-admin.site.register(NewCollection, NewCollectionAdmin)
+admin.site.register(AOICollection, AOICollectionAdmin)
+admin.site.register(ForestCoverCollection, ForestCoverCollectionAdmin)
 admin.site.register(ForestCoverChange, ForestCoverChangeAdmin)
 admin.site.register(ForestCoverChangeNew, ForestCoverChangeNewAdmin)
 admin.site.register(ForestCoverChangeFile, ForestCoverChangeFileAdmin)

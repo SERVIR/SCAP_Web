@@ -1,5 +1,6 @@
 /* global ol */
 'use strict';
+
 class GeometryTypeControl extends ol.control.Control {
     // Map control to switch type when geometry type is unknown
     constructor(opt_options) {
@@ -16,7 +17,7 @@ class GeometryTypeControl extends ol.control.Control {
             target: options.target
         });
         const self = this;
-        const switchType = function(e) {
+        const switchType = function (e) {
             e.preventDefault();
             if (options.widget.currentGeometryType !== self) {
                 options.widget.map.removeInteraction(options.widget.interactions.draw);
@@ -81,9 +82,9 @@ class MapWidget {
 
         // Populate and set handlers for the feature container
         const self = this;
-        this.featureCollection.on('add', function(event) {
+        this.featureCollection.on('add', function (event) {
             const feature = event.element;
-            feature.on('change', function() {
+            feature.on('change', function () {
                 self.serializeFeatures();
             });
             if (self.ready) {
@@ -99,7 +100,7 @@ class MapWidget {
             const jsonFormat = new ol.format.GeoJSON();
             const features = jsonFormat.readFeatures('{"type": "Feature", "geometry": ' + initial_value + '}');
             const extent = ol.extent.createEmpty();
-            features.forEach(function(feature) {
+            features.forEach(function (feature) {
                 this.featureOverlay.getSource().addFeature(feature);
                 ol.extent.extend(extent, feature.getGeometry().getExtent());
             }, this);
@@ -136,7 +137,7 @@ class MapWidget {
         // Initialize the modify interaction
         this.interactions.modify = new ol.interaction.Modify({
             features: this.featureCollection,
-            deleteCondition: function(event) {
+            deleteCondition: function (event) {
                 return ol.events.condition.shiftKeyOnly(event) &&
                     ol.events.condition.singleClick(event);
             }
@@ -216,14 +217,14 @@ class MapWidget {
                 geometry = features[0].getGeometry().clone();
                 for (let j = 1; j < features.length; j++) {
                     switch (geometry.getType()) {
-                    case "MultiPoint":
-                        geometry.appendPoint(features[j].getGeometry().getPoint(0));
-                        break;
-                    case "MultiLineString":
-                        geometry.appendLineString(features[j].getGeometry().getLineString(0));
-                        break;
-                    case "MultiPolygon":
-                        geometry.appendPolygon(features[j].getGeometry().getPolygon(0));
+                        case "MultiPoint":
+                            geometry.appendPoint(features[j].getGeometry().getPoint(0));
+                            break;
+                        case "MultiLineString":
+                            geometry.appendLineString(features[j].getGeometry().getLineString(0));
+                            break;
+                        case "MultiPolygon":
+                            geometry.appendPolygon(features[j].getGeometry().getPolygon(0));
                     }
                 }
             }

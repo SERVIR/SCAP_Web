@@ -14,6 +14,7 @@ import time
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 config = json.load(open(str(BASE_DIR) + '/data.json', ))
 
+
 class Command(BaseCommand):
     help = ''
 
@@ -23,7 +24,7 @@ class Command(BaseCommand):
         for l_dataset in datasets:
             # TODO change when we go global
             needed_aois = AOI.objects.all()
-            
+
             fc_data_dir = os.path.join(config['DATA_DIR'], 'fc', l_dataset)
             fcc_data_dir = os.path.join(config['DATA_DIR'], 'fcc', l_dataset)
 
@@ -77,7 +78,7 @@ class Command(BaseCommand):
                         prev_calc = ForestCoverChange.objects.filter(fc_source=boundary_file, year=change_year,
                                                                      baseline_year=baseline_year, aoi=aoi).first()
                         if prev_calc:
-                            model_row.speedup = prev_calc.processing_time / (end - start) 
+                            model_row.speedup = prev_calc.processing_time / (end - start)
 
                         model_row.save()
                     except Exception as error:

@@ -44,11 +44,9 @@
     </style>
 </head>
 <body id="page-top">
-
-<!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#page-top" style="padding-left: 20px"><img
+        <a class="navbar-brand" href="{% url "home" %}" style="padding-left: 20px"><img
                 src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,13 +55,29 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#add_coll">ADD</a></li>
-                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>
-                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>
-                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ADD
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
 
-                {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
-
+                    </div>
+                </div>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        MANAGE
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
+                        <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
+                        <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
+                    </div>
+                </div>
                 {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">
@@ -90,127 +104,21 @@
         </div>
     </div>
 </nav>
-
-<br/>
-<br/>
-<br/>
 {% if user.is_authenticated %}
-    <section>
-        <h2 class="section-heading text-uppercase pt-3 mt-3 text-center">Edit forest cover collection</h2>
-        <form id="edit-coll-form" method="POST" action="/update-coll/{{ coll.collection_name }}/">
+    <div class="text-center" style="margin-top:150px">
+        <form action="" method="post">
             {% csrf_token %}
-            <label for="id_collection_name">Collection name:</label>
-
-            <div class="helptext" id="id_collection_name_helptext">Collection name</div>
-
-            <input type="text" name="collection_name" maxlength="100" aria-describedby="id_collection_name_helptext"
-                   id="id_collection_name" value={{ coll.collection_name }}>
-
-            </div>
-
-            <div>
-                <label for="id_collection_description">Collection description:</label>
-
-                <div class="helptext" id="id_collection_description_helptext">Collection Description</div>
-
-                <input type="text" name="collection_description" maxlength="100"
-                       aria-describedby="id_collection_description_helptext" id="id_collection_description"
-                       value={{ coll.collection_description }}>
-
-            </div>
-
-            <div>
-                <label for="id_boundary_file">Boundary file:</label>
-
-                <div class="helptext" id="id_boundary_file_helptext">Boundary File</div>
-
-                <input type="text" name="boundary_file" maxlength="100" aria-describedby="id_boundary_file_helptext"
-                       id="id_boundary_file">
-
-            </div>
-
-            <div>
-                <label for="id_tiff_file">Tiff file:</label>
-
-                <div class="helptext" id="id_tiff_file_helptext">Tiff file name</div>
-
-                <input type="text" name="tiff_file" maxlength="100" aria-describedby="id_tiff_file_helptext"
-                       id="id_tiff_file">
-
-            </div>
-
-            <div>
-                <label for="id_access_level">Access level:</label>
-
-                <div class="helptext" id="id_access_level_helptext">Access Level</div>
-
-                <input type="text" name="access_level" maxlength="10" aria-describedby="id_access_level_helptext"
-                       id="id_access_level">
-
-            </div>
-
-            <div>
-                <label for="id_projection">Projection:</label>
-
-                <div class="helptext" id="id_projection_helptext">Projection</div>
-
-                <input type="text" name="projection" maxlength="100" aria-describedby="id_projection_helptext"
-                       id="id_projection">
-
-            </div>
-
-            <div>
-                <label for="id_resolution">Resolution:</label>
-
-                <div class="helptext" id="id_resolution_helptext">Resolution</div>
-
-                <input type="number" name="resolution" step="any" aria-describedby="id_resolution_helptext"
-                       id="id_resolution">
-
-            </div>
-
-            <div>
-                <label for="id_username">Username:</label>
-
-                <div class="helptext" id="id_username_helptext">Username</div>
-
-                <input type="text" name="username" maxlength="100" aria-describedby="id_username_helptext"
-                       id="id_username">
-
-            </div>
-
-            <div>
-                <label for="id_path_to_tif_file">Path to tif file:</label>
-
-                <div class="helptext" id="id_path_to_tif_file_helptext">Path to TIF location</div>
-
-                <input type="text" name="path_to_tif_file" maxlength="150"
-                       aria-describedby="id_path_to_tif_file_helptext" id="id_path_to_tif_file">
-
-            </div>
-
-            <div>
-                <label for="id_path_to_boundary_file">Path to boundary file:</label>
-
-                <div class="helptext" id="id_path_to_boundary_file_helptext">Path to Boundary file location</div>
-
-                <input type="text" name="path_to_boundary_file" maxlength="150"
-                       aria-describedby="id_path_to_boundary_file_helptext" id="id_path_to_boundary_file">
-
-            </div>
-
-            <div>
-                {#    <label for="id_last_accessed_on">Last accessed on:</label>#}
-                {##}
-                {##}
-                {##}
-                {#<input type="text" name="last_accessed_on" id="id_last_accessed_on"><input type="hidden" name="initial-last_accessed_on" id="initial-id_last_accessed_on" >#}
-            </div>
-            <button type="submit">Update</button>
+            <h3>Are you sure you want to delete "{{ object.collection_name }}" collection data?</h3>
+            <br>
+            <input type="submit" class="btn btn-lg btn-outline-danger" value="Confirm"/>
+            <input type="button" class="btn btn-lg btn-outline-warning" value="Go Back"
+                   onclick="location.href='{% url 'userData' %}'"/>
         </form>
-    </section>
+    </div>
+
+
     <!-- Footer-->
-    <footer class="footer py-4">
+    <footer class="footer py-4 fixed-bottom">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>

@@ -26,7 +26,8 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="container-fluid">
-        <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img
+                src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -420,6 +421,14 @@
                     livelihoods and cultural practices. Addressing forest degradation requires concerted efforts in
                     sustainable land management, reforestation, and responsible resource extraction practices to ensure
                     the long-term conservation and regeneration of our precious forest ecosystems.</p>
+                {% if user.is_authenticated %}
+                    <div class="text-center">
+                        <a href="{% url 'userData' %}">
+                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
+                        </a>
+                    </div>
+                {% endif %}
+
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal">
@@ -437,6 +446,15 @@
                     plants absorb carbon dioxide from the atmosphere through photosynthesis and store it in their
                     biomass. It serves as a crucial component of the global carbon cycle and plays a significant role in
                     mitigating climate change by acting as a carbon sink.</p>
+                {% if user.is_authenticated %}
+
+                    <div class="text-center">
+                        <a href="{% url 'agbData' %}">
+                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own AGB</button>
+                        </a>
+                    </div>
+
+                {% endif %}
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal">
@@ -454,18 +472,18 @@
                     features, political boundaries, economic considerations, social demographics, or any other criteria
                     relevant to the specific application. The area of interest provides the spatial context for
                     decision-making within that defined region.</p>
+                {% if user.is_authenticated %}
+                    <div class="text-center">
+                        <a href="{% url 'aoiData' %}">
+                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own AOI</button>
+                        </a>
+                    </div>
+
+                {% endif %}
             </div>
         </div>
     </div>
-    {% if user.is_authenticated %}
-        <div class="text-center">
-            <a href="{% url 'userData' %}">
-                <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
-            </a>
 
-
-        </div>
-    {% endif %}
 </section>
 <!-- About-->
 <section class="page-section" id="about">

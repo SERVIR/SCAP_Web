@@ -162,9 +162,10 @@ a:hover {
     margin: 5px;
     max-width: calc(25% - 12px);
 }
+
 .highcharts-contextmenu {
-    top: -100px!important;
-    right: 7px!important;
+    top: -100px !important;
+    right: 7px !important;
 }
 
 .run-date-label {
@@ -219,7 +220,7 @@ button[disabled] {
     z-index: 1;
 }
 
-#fires-table{
+#fires-table {
     top: 100px;
 }
 
@@ -287,8 +288,8 @@ button[disabled] {
 #loader {
     display: flex;
     flex-direction: column;
-    justify-content:center;
-    align-items:center;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     width: 100%;
     right: 0;
@@ -304,14 +305,14 @@ button[disabled] {
     z-index: 1000;
 }
 
-#download_container{
+#download_container {
     display: flex;
     width: 100%;
     justify-content: space-around;
     align-items: center;
 }
 
-#data-explorer-tabs{
+#data-explorer-tabs {
     width: 100%;
     height: 100%;
     display: flex;
@@ -401,6 +402,7 @@ h6 {
 .year-selector, .region-selector, .change-selector {
     width: 110px;
 }
+
 .location-selector {
     width: 300px;
 }
@@ -413,7 +415,7 @@ label {
     width: 100%;
 }
 
-.remove-indicator, .add-indicator{
+.remove-indicator, .add-indicator {
     height: 20px;
     width: 20px;
     border-radius: 10px;
@@ -435,26 +437,27 @@ label {
     width: auto;
 }
 
-.form-group{
+.form-group {
     position: relative;
 }
-.form-group>label{
-  position: absolute;
-  top: 0.2ex;
-  z-index: 1;
-  left: 2em;
-  background-color: white;
-  padding: 0 5px;
-font-size: 0.75rem;
+
+.form-group > label {
+    position: absolute;
+    top: 0.2ex;
+    z-index: 1;
+    left: 2em;
+    background-color: white;
+    padding: 0 5px;
+    font-size: 0.75rem;
     border-radius: 5px;
 }
 
-.form-group>input, .form-group>select{
-  border: 1px solid rgb(209, 211, 226);;
-  border-radius: 6px;
-  position: relative;
-  width: 200px;
-  margin: 10px;
+.form-group > input, .form-group > select {
+    border: 1px solid rgb(209, 211, 226);;
+    border-radius: 6px;
+    position: relative;
+    width: 200px;
+    margin: 10px;
 }
 
 .toggle.btn {
@@ -466,7 +469,7 @@ font-size: 0.75rem;
     align-items: center;
 }
 
-.toggle-row>label, .layer-container>label {
+.toggle-row > label, .layer-container > label {
     margin-right: unset;
     margin: unset;
 }
@@ -558,6 +561,7 @@ font-size: 0.75rem;
     line-height: 1.2;
     font-size: 1.5rem;
 }
+
 path.leaflet-interactive:focus {
     outline: none;
 }

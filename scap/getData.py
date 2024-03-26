@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from scap.views import generate_emissions, generate_fc_with_area
 
 
-def get_agg_check(request,country='None'):
+def get_agg_check(request, country='None'):
     result = Emissions.objects.all().order_by('year')
     data = list(result.values_list('year').distinct())
     years = []
@@ -19,21 +19,21 @@ def get_agg_check(request,country='None'):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
-        pa_name=country
+        pa_name = country
         min_arr = []
         max_arr = []
         avg_arr = []
-        if len(pa_name)>0:
+        if len(pa_name) > 0:
             print(pa_name)
 
             data1 = list(
-                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs,aoi_id__name=pa_name).values('year').annotate(
+                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values('year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
             print(data1)
         else:
-            pa_name=country
+            pa_name = country
             data1 = list(
-                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs,aoi_id__name=pa_name).values('year').annotate(
+                Emissions.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values('year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
 
         if len(data1) < 25:
@@ -46,9 +46,9 @@ def get_agg_check(request,country='None'):
         print(data1)
 
         for x in range(len(data1)):
-            min_arr.append([data1[x]['year'],data1[x]['min']])
-            max_arr.append([data1[x]['year'],data1[x]['max']])
-            avg_arr.append([data1[x]['year'],data1[x]['avg']])
+            min_arr.append([data1[x]['year'], data1[x]['min']])
+            max_arr.append([data1[x]['year'], data1[x]['max']])
+            avg_arr.append([data1[x]['year'], data1[x]['avg']])
 
     return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 
@@ -136,7 +136,6 @@ def chart(request):
         a1[i] = t
         t = {'data': [], 'name': "", 'years': years, 'color': 'black'}
 
-
     new_l = [i for n, i in enumerate(a1) if i not in a1[n + 1:]]
     return JsonResponse({"final": new_l, "lcs": lcnames, "agbs": agbnames}, safe=False)
 
@@ -149,7 +148,7 @@ def get_series_name(request):
         agb_id = request.POST.get('ds_agb')
         try:
             # print(lc_id)
-            if lc_id[2:]!='':
+            if lc_id[2:] != '':
                 ds = BoundaryFiles.objects.get(id=lc_id[2:])
                 lc_name = ds.fcs_name
                 if agb_id != "":
@@ -158,8 +157,8 @@ def get_series_name(request):
                 else:
                     agb_name = ''
             else:
-                lc_name=''
-                agb_name=''
+                lc_name = ''
+                agb_name = ''
         except:
             ds = BoundaryFiles.objects.get(id=lc_id[2:])
             lc_name = ds.name_es
@@ -171,13 +170,14 @@ def get_series_name(request):
 
         return JsonResponse({"name": lc_name + ', ' + agb_name}, safe=False)
 
-def get_updated_series(request,country=None):
+
+def get_updated_series(request, country=None):
     if request.method == 'POST':
         if request.POST.get('pa_name'):
             pa_name = request.POST.get('pa_name')
         else:
-            pa_name=country
+            pa_name = country
         chart, lcs, agbs = generate_emissions(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = generate_fc_with_area(pa_name, 'container_fcpa')
         return JsonResponse({'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'region_country': pa_name})
+                             'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name})

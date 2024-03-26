@@ -50,7 +50,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="/user-data/add-coll/">FOREST COVER</a>
                         <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
+                        <a class="dropdown-item" href="/user-data/add-aoi/">AREAS OF INTEREST (AOI)</a>
 
                     </div>
                 </div>
@@ -59,10 +59,10 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         MANAGE
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"  style="margin-left: -50%">
-                       <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
+                        <a class="dropdown-item" href="/user-data/">FOREST COVER</a>
                         <a class="dropdown-item" href="#">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="#">AREAS OF INTEREST (AOI)</a>
+                        <a class="dropdown-item" href="/aoi-data/">AREAS OF INTEREST (AOI)</a>
                     </div>
                 </div>
 
@@ -97,73 +97,74 @@
 <br/>
 <br/>
 {% if user.is_authenticated %}
-      <div class="row justify-content-center w-100">
-            <div class="col-10">
+    <div class="row justify-content-center w-100">
+    <div class="col-10">
 
 
-                <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">MANAGE FOREST COVER COLLECTION </h3>
-                <table id="myTable">
-                    <thead>
-                    <tr>
-                        <th>Collection Name</th>
-                        <th>Collection Description</th>
-                        <th># of Tiff Files</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">MANAGE AREA OF INTEREST
+            (AOI) </h3>
+        <table id="myTable">
+            <thead>
+            <tr>
+                <th>AOI Name</th>
+                <th>AOI Description</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
 
-                    {% for coll in object_list %}
-                        <tr>
-                            <td><label>{{ coll.collection_name }}</label></td>
-                            <td><label>{{ coll.collection_description }}</label></td>
-                            <td><label>{{ coll.tifffile_set.all.count }}</label></td>
-                            <td>
-                                <button class="btn-primary btn" onclick="location.href='{% url 'edit-coll' coll.pk %}'"
-                                        style="margin: 10px;width:80px;margin-top:0px">Edit
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn-danger btn"
-                                        onclick="location.href='{% url 'delete-coll' coll.pk %}'"
-                                        style="margin: 10px;margin-top:0px">Delete
-                                </button>
-                            </td>
+            {% for aoi in object_list %}
+                <tr>
+                    <td><label>{{ aoi.aoi_name }}</label></td>
+                    <td><label>{{ aoi.aoi_description }}</label></td>
+                    <td>
+                        <button class="btn-primary btn"
+                                {#                                onclick="location.href='{% url 'edit-coll' coll.pk %}'"#}
+                                style="margin: 10px;width:80px;margin-top:0px">Edit
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn-danger btn"
+                                {#                                onclick="location.href='{% url 'delete-coll' coll.pk %}'"#}
+                                style="margin: 10px;margin-top:0px">Delete
+                        </button>
+                    </td>
 
-                        </tr>
+                </tr>
 
-                    {% endfor %}
-                    </tbody>
-                </table>
+            {% endfor %}
+            </tbody>
+        </table>
 
         <div class="text-center mt-3">
-        <button class="btn-primary btn" onclick="location.href='{% url 'add-coll' %}'">+ Add a new collection</button>
+            <button class="btn-primary btn" onclick="location.href='{% url 'add-aoi' %}'">+ Add a new AOI
+            </button>
+        </div>
+
+
     </div>
-
-
-</div>
-          <!-- Footer-->
-{#    <div class="py-4">#}
-{#        <div class="container">#}
-{#            <div class="row align-items-center">#}
-{#                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>#}
-{#                <div class="col-lg-4 my-3 my-lg-0">#}
-{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i#}
-{#                            class="fab fa-twitter"></i></a>#}
-{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i#}
-{#                            class="fab fa-facebook-f"></i></a>#}
-{#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i#}
-{#                            class="fab fa-linkedin-in"></i></a>#}
-{#                </div>#}
-{#                <div class="col-lg-4 text-lg-end">#}
-{#                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>#}
-{#                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#        </div>#}
+    <!-- Footer-->
+    {#    <div class="py-4">#}
+    {#        <div class="container">#}
+    {#            <div class="row align-items-center">#}
+    {#                <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>#}
+    {#                <div class="col-lg-4 my-3 my-lg-0">#}
+    {#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i#}
+    {#                            class="fab fa-twitter"></i></a>#}
+    {#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i#}
+    {#                            class="fab fa-facebook-f"></i></a>#}
+    {#                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i#}
+    {#                            class="fab fa-linkedin-in"></i></a>#}
+    {#                </div>#}
+    {#                <div class="col-lg-4 text-lg-end">#}
+    {#                    <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>#}
+    {#                    <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+    {#        </div>#}
 
 
 {% else %}

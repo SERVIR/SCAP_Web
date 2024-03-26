@@ -18,18 +18,18 @@ function ajax_call_with_progress(ajax_url, ajax_data) {
         url: ajax_url.replace(/\/?$/, '/'),
         type: "POST",
         headers: {'X-CSRFToken': getCookie('csrftoken')},
-        data: ajax_data,        
+        data: ajax_data,
         dataType: "json",
-        xhr: function() {
+        xhr: function () {
             // get the native XMLHttpRequest object
             var xhr = $.ajaxSettings.xhr();
 
             // set the onprogress event handler
-            xhr.onprogress = function(evt) {
+            xhr.onprogress = function (evt) {
                 // evt.loaded is the number of bytes that have been received
                 // evt.total is the total number of bytes that are expected to be received
-		let expected_len = evt.total;
-                if(expected_len == 0){
+                let expected_len = evt.total;
+                if (expected_len == 0) {
                     evt.currentTarget.getResponseHeader('Uncompressed-File-Size');
                 }
                 console.log('progress', evt.loaded / expected_len * 100);

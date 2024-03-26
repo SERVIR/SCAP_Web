@@ -10,6 +10,7 @@ import re
 BASE_DIR = Path(__file__).resolve().parent.parent
 config = json.load(open(str(BASE_DIR) + '/data.json', ))
 
+
 def invert_gtiff(source_path):
     dtype = gdal.GDT_Byte
 
@@ -49,6 +50,7 @@ def invert_gtiff(source_path):
 
     return output_path
 
+
 def reproject_gtiff(source):
     """
     Writes a geotiff.
@@ -76,7 +78,7 @@ def reproject_gtiff(source):
     match_proj = match_obj.GetProjection()
 
     gt = match_obj.GetGeoTransform()
-    
+
     # CLIP TO PERU FOR DEMO
     gt = list(gt)
     decimal_x = float('0.' + str(gt[0]).split('.')[1])
@@ -88,7 +90,6 @@ def reproject_gtiff(source):
     # CUT EXTENT TO PERU FOR DEMO
     width = 14889
     height = 22496
-
 
     # Prepare destination file
     driver = gdal.GetDriverByName("GTiff")
@@ -136,22 +137,20 @@ def generate_emissions_gtiff(source, agb):
     with rio.open(source) as src_change, rio.open(agb) as src_AGB:
         # Check if resolutions match
         # Resolutions/transforms won't match bc they dont cover same extent
-        #if src_change.transform != src_AGB.transform:
+        # if src_change.transform != src_AGB.transform:
         #    raise ValueError("Rasters must have the same resolution and transform!")
-
 
         # Create output TIF with matching profile
         profile = src_change.profile.copy()
         profile.update({'count': 1, 'dtype': rio.uint16})  # Update band count to 1 for masked output
         with rio.open(output_path, 'w', **profile) as dst:
-
             for (_, window) in src_change.block_windows(1):
                 # Read blocks of data
                 forest_change_block = src_change.read(1, window=window)
 
                 sr = window.row_off + 85323
                 sc = window.col_off + 98901
-                corresponding_window = Window.from_slices((sr, sr+window.height), (sc, sc+window.width))
+                corresponding_window = Window.from_slices((sr, sr + window.height), (sc, sc + window.width))
                 print(corresponding_window)
 
                 AGB_block = src_AGB.read(1, window=corresponding_window)
@@ -166,12 +165,14 @@ def generate_emissions_gtiff(source, agb):
                 dst.write(AGB_masked_block, window=window, indexes=1)
 
     print(f"Masked AGB values written to {output_path} in blocks")
-    
+
+
 def map_to_agbs(source):
     all_agbs = os.listdir(os.path.join(config['DATA_DIR'], 'agb'))
     for agb in all_agbs:
         print('Generating emissions for AGB {} and FCC {}'.format(agb, source))
         generate_emissions_gtiff(source, os.path.join(config['DATA_DIR'], 'agb', agb))
+
 
 def process_directory(base_dir):
     subdirs = os.listdir(base_dir)
