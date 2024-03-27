@@ -116,8 +116,8 @@
 
             {% for agb in object_list %}
                 <tr>
-                    <td><label>{{ agb.agb_name }}</label></td>
-                    <td><label>{{ agb.agb_description }}</label></td>
+                    <td><label>{{ agb.agb_name|truncatechars:150 }}</label></td>
+                    <td><label>{{ agb.agb_description|truncatechars:150}}</label></td>
                     <td>
                         <button class="btn-primary btn"
                                 {#                                onclick="location.href='{% url 'edit-coll' coll.pk %}'"#}

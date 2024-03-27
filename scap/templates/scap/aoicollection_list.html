@@ -116,8 +116,8 @@
 
             {% for aoi in object_list %}
                 <tr>
-                    <td><label>{{ aoi.aoi_name }}</label></td>
-                    <td><label>{{ aoi.aoi_description }}</label></td>
+                    <td><label>{{ aoi.aoi_name|truncatechars:150 }}</label></td>
+                    <td><label>{{ aoi.aoi_description|truncatechars:150 }}</label></td>
                     <td>
                         <button class="btn-primary btn"
                                 {#                                onclick="location.href='{% url 'edit-coll' coll.pk %}'"#}
