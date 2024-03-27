@@ -26,7 +26,7 @@ from scap.utils import doi_valid
 from scap.views import test, home, aoi, userData, thailand, protected_aois, map, generate_emissions, generate_fc, \
     pilot_country, deleteColl, editColl, updateColl, ForestCoverCollectionList, ForestCoverCollectionCreate, \
     ForestCoverCollectionUpdate, ForestCoverCollectionDelete, page_not_found_view, AOICollectionCreate, \
-    AOICollectionList, AGBCollectionCreate, AGBCollectionList
+    AOICollectionList, AGBCollectionCreate, AGBCollectionList, add_user_data
 from django.contrib.auth import views as auth_views
 from scap import getData
 
@@ -84,8 +84,9 @@ urlpatterns = [
                   path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
                   # path('protected_areas/get-aoi/', get_AOI, name='get-aoi'),
                   path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),
-                  path('user-data/add-coll/doi/', doi_valid, name='doi-valid')
+                  path('user-data/add-coll/doi/', doi_valid, name='doi-valid'),
                   # path('map/get-updated-series/',get_updated_series,name='get-updated-series'),
+                  path('add-user-data/',add_user_data,name='add-user-data')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found_view

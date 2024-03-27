@@ -59,7 +59,8 @@ def home(request):
 def map(request):
     return render(request, 'scap/map.html')
 
-
+def add_user_data(request):
+    return render(request, 'scap/add_user_data.html')
 def generate_colors():
     colors = []
     try:
