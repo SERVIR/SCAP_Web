@@ -21,7 +21,7 @@ class BoundaryFilesAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name','orig_name','iso3','desig_eng')
-    list_filter = ('name','iso3')
+    list_filter = ('iso3','desig_eng')
     search_fields = ['name']
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
