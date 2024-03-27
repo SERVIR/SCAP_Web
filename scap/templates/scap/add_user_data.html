@@ -119,10 +119,9 @@
 {% if user.is_authenticated %}
     <section class="page-section mt-4">
         <div class="container-fluid">
-            <div class="row text-center">
-                <div class="col-md-4 d-flex align-items-stretch">
-                  <div class="card" style="width: 100%;">
-                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal">
+                <div class="row" style="padding:30px 150px 30px 150px">
+                  <div class="col" style="display:flex;">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal" style="display: inline">
                         <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
@@ -130,26 +129,24 @@
                         </span>
                         </div>
                     </a>
-                        <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Forest Loss & Degradation</h5>
-                  <div class="card-body d-flex flex-column">
-                    <p class="text-muted">Forest degradation refers to the decline in the quality and health of forest
-                        ecosystems, often resulting from human activities. It encompasses a range of negative impacts on
-                        forests, such as deforestation, logging, unsustainable agriculture, mining, and infrastructure
-                        development. Forest degradation also impacts local communities that rely on forests for their
-                        livelihoods and cultural practices. Addressing forest degradation requires concerted efforts in
-                        sustainable land management, reforestation, and responsible resource extraction practices to
-                        ensure
-                        the long-term conservation and regeneration of our precious forest ecosystems.</p>
-                        <a href="{% url 'userData' %}" class="btn btn-primary mt-auto align-content-center">
-                            + Add Your Own Data</a>
+                       
+                  <div style="display:inline;">
+                                              <h5 class="">Forest Loss & Degradation</h5>
+
+                      <p>Forest loss is measured by comparing binary Forest/No Forest coverages for different years. The system handles this information as a collection of GeoTiff files with 0 values indicating No Forest and 1 values indicating Forest Cover. Years don’t need to be consecutive.</p><p>
+
+When adding a forest cover collections, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                        <a href="{% url 'userData' %}" class="btn btn-primary mt-auto float-end">
+                            + Add Your Own</a>
                   </div>
                    
                   </div>
 
                 </div>
-                <div class="col-md-4 d-flex align-items-stretch">
-                  <div class="card" style="width: 100%">
-                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal">
+                <div class="row"  style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
+                   <div class="col" style="display:flex;">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal" style="display:inline;">
                         <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
@@ -157,25 +154,23 @@
                         </span>
                         </div>
                     </a>
-                   <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Above Ground Biomass</h5>
-                  <div class="card-body d-flex flex-column">
-                    <p class="text-muted">Above-ground biomass refers to the total mass of living vegetation and organic
-                        matter present above the soil surface in a given area, such as trees, shrubs, and herbaceous
-                        plants.
-                        Above-ground biomass is an important measure of the carbon stored in terrestrial ecosystems, as
-                        plants absorb carbon dioxide from the atmosphere through photosynthesis and store it in their
-                        biomass. It serves as a crucial component of the global carbon cycle and plays a significant
-                        role in
-                        mitigating climate change by acting as a carbon sink.</p>
-                          <a href="{% url 'agbData' %}" class="btn btn-primary mt-auto align-content-center">
-                            + Add Your Own AGB</a>
+                 
+                  
+                  <div class="" style="display: inline">
+                       <h5 class="">Above Ground Biomass</h5>
+                      <p>Above ground biomass (AGB) estimations are expected to be expressed in Metric Tons of Carbon per Ha. This estimations are assumed to be valid for the calibration year they were produced for, and therefore applied for emission and carbon stock calculations for forest cover data in all following years.</p><p>
+
+Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                          <a href="{% url 'agbData' %}" class="btn btn-primary mt-auto  float-end">
+                            + Add Your Own</a>
                   </div>
                   
                   </div>
                 </div>
-                <div class="col-md-4 d-flex align-items-stretch">
-                    <div class="card" style="width: 100%">
-                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal">
+                <div class="row"  style="padding:30px 150px 30px 150px">
+                    <div class="col" style="display: flex">
+                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal" style="display:inline;">
                             <div class="pilotcountry-hover">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
@@ -183,30 +178,24 @@
                         </span>
                             </div>
                         </a>
-                        <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Area of Interest</h5>
+            
+                      
 
 
-                        <div class="card-body d-flex flex-column">
-                            <p class="text-muted">A user-defined Area of Interest (AOI) provides the boundaries of the
-                                region to use
-                                for estimations. The selection of an area of interest depends on the objectives and
-                                requirements of
-                                the project or analysis being conducted. It could be defined by factors such as
-                                environmental
-                                features, political boundaries, economic considerations, social demographics, or any
-                                other criteria
-                                relevant to the specific application. The area of interest provides the spatial context
-                                for
-                                decision-making within that defined region.</p>
-                         <a href="{% url 'aoiData' %}" class="btn btn-primary mt-auto align-content-center">
-                            + Add Your Own AOI</a></div>
+                        <div class="" style="display: inline">
+                              <h5 class="">Area of Interest</h5>
+                            <p>You can upload your Areas of Interest, to facilitate the extraction of forest change, carbon stock and emissions derived from all public (and your private Forest Cover and AGB data) for your specific AOI.</p><p>
+
+Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                         <a href="{% url 'aoiData' %}" class="btn btn-primary  float-end">
+                            + Add Your Own</a></div>
 
                    
                     </div>
                 </div>
 
             </div>
-        </div>
     </section>
 
 
