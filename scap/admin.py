@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from scap.models import (PredefinedAOI, BoundaryFiles, AOI, ForestCoverChange, AGBSource, ForestCoverSource, Emissions,
                          ForestCoverChangeFile, ForestCoverFile, AOICollection, ForestCoverCollection,
                          ForestCoverChangeNew,
-                         TiffFile, PilotCountry,
+                         TiffFile, PilotCountry, AGBCollection,
                          )
 
 
@@ -23,6 +23,8 @@ class AOIAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name','orig_name','iso3','desig_eng')
     list_filter = ('iso3','desig_eng')
     search_fields = ['name']
+
+
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('country_name',)
@@ -56,6 +58,9 @@ class ForestCoverFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class AOICollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('aoi_name', 'last_accessed_on')
+
+class AGBCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('agb_name', 'last_accessed_on')
 
 
 class TiffFileInline(admin.StackedInline):
@@ -91,6 +96,8 @@ admin.site.register(AOI, AOIAdmin)
 admin.site.register(PilotCountry, PilotCountryAdmin)
 # admin.site.register(TiffFile, TiffFileAdmin)
 admin.site.register(AOICollection, AOICollectionAdmin)
+admin.site.register(AGBCollection, AGBCollectionAdmin)
+
 admin.site.register(ForestCoverCollection, ForestCoverCollectionAdmin)
 admin.site.register(ForestCoverChange, ForestCoverChangeAdmin)
 admin.site.register(ForestCoverChangeNew, ForestCoverChangeNewAdmin)

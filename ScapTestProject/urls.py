@@ -20,13 +20,14 @@ from django.views.generic.base import RedirectView
 
 from ScapTestProject import settings
 from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
-    saveAOItomodel, get_aoi_list, delete_AOI, get_AOI
+    saveAOItomodel, get_aoi_list, delete_AOI, get_AOI, get_tiff_data
 from scap.getData import get_updated_series
-from scap.utils import doi_valid
+from scap.utils import doi_valid, stage_for_processing
 from scap.views import test, home, aoi, userData, thailand, protected_aois, map, generate_emissions, generate_fc, \
     pilot_country, deleteColl, editColl, updateColl, ForestCoverCollectionList, ForestCoverCollectionCreate, \
     ForestCoverCollectionUpdate, ForestCoverCollectionDelete, page_not_found_view, AOICollectionCreate, \
-    AOICollectionList, AGBCollectionCreate, AGBCollectionList, add_user_data
+    AOICollectionList, AGBCollectionCreate, AGBCollectionList, add_user_data, AOICollectionDelete, AGBCollectionDelete, \
+    AOICollectionUpdate, AGBCollectionUpdate
 from django.contrib.auth import views as auth_views
 from scap import getData
 
@@ -58,7 +59,11 @@ urlpatterns = [
                   path('agb-data/', AGBCollectionList.as_view(), name='agbData'),
                   # path('user-data/delete-coll/<str:coll_name>/', deleteColl, name='delete-coll'),
                   path('user-data/delete-coll/<int:pk>/', ForestCoverCollectionDelete.as_view(), name='delete-coll'),
+                  path('agb-data/delete-agb/<int:pk>/', AGBCollectionDelete.as_view(), name='delete-agb'),
+                  path('aoi-data/delete-aoi/<int:pk>/', AOICollectionDelete.as_view(), name='delete-aoi'),
                   path('user-data/edit-coll/<int:pk>/', ForestCoverCollectionUpdate.as_view(), name='edit-coll'),
+                  path('agb-data/edit-agb/<int:pk>/', AGBCollectionUpdate.as_view(), name='edit-agb'),
+                  path('aoi-data/edit-aoi/<int:pk>/',AOICollectionUpdate.as_view(), name='edit-aoi'),
                   # path('user-data/edit-coll/<str:coll_name>/',editColl, name='edit-coll'),
                   # path('update-coll/<str:coll_name>/',updateColl, name='update-coll'),
                   path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
@@ -85,8 +90,11 @@ urlpatterns = [
                   # path('protected_areas/get-aoi/', get_AOI, name='get-aoi'),
                   path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),
                   path('user-data/add-coll/doi/', doi_valid, name='doi-valid'),
+                  path('user-data/edit-coll/<int:pk>/doi/', doi_valid, name='doi-valid'),
+                  path('user-data/edit-coll/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get_tiff_data'),
                   # path('map/get-updated-series/',get_updated_series,name='get-updated-series'),
-                  path('add-user-data/',add_user_data,name='add-user-data')
+                  path('add-user-data/',add_user_data,name='add-user-data'),
+                  path('user-data/edit-coll/<int:pk>/stage-for-processing/',stage_for_processing,name='stage-for-processing')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found_view

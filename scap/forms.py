@@ -25,7 +25,7 @@ class ForestCoverCollectionForm(forms.ModelForm):
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Collection Name'}),
             'last_accessed_on': forms.DateTimeInput(attrs={'class': 'form-control'}),
-            'doi_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': ''}),
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
             'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
         }
 
@@ -52,15 +52,22 @@ class AOICollectionForm(forms.ModelForm):
 
     class Meta:
         model = AOICollection
-        fields = ['aoi_name', 'aoi_description', 'doi_link', 'metadata_link', 'aoi_shape_file']
+        fields = ['aoi_name', 'aoi_description', 'doi_link', 'metadata_link', 'aoi_shape_file','access_level']
+        ACCESS_CHOICES = (
+            ('Select', 'Select'),
+            ('Public', 'Public'),  # First one is the value of select option and second is the displayed value in option
+            ('Private', 'Private'),
+        )
         widgets = {
             'aoi_name': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Enter a name for the AOI'}),
             'aoi_description': forms.Textarea(
                 attrs={'class': 'form-control', 'placeholder': 'Enter the details about the AOI'}),
             'aoi_shape_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
-            'doi_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': ''}),
-            'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control'}),
+            'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
+
         }
 
 
@@ -70,7 +77,12 @@ class AGBCollectionForm(forms.ModelForm):
 
     class Meta:
         model = AGBCollection
-        fields = ['agb_name', 'agb_description', 'doi_link', 'metadata_link','agb_boundary_file','agb_tiff_file']
+        fields = ['agb_name', 'agb_description', 'doi_link', 'metadata_link','agb_boundary_file','agb_tiff_file','access_level']
+        ACCESS_CHOICES = (
+            ('Select', 'Select'),
+            ('Public', 'Public'),  # First one is the value of select option and second is the displayed value in option
+            ('Private', 'Private'),
+        )
         widgets = {
             'agb_name': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Enter a name for the AGB'}),
@@ -78,6 +90,8 @@ class AGBCollectionForm(forms.ModelForm):
                 attrs={'class': 'form-control', 'placeholder': 'Enter the details about the AGB'}),
             'agb_boundary_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
             'agb_tiff_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/tiff'}),
-            'doi_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': ''}),
-            'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control'}),
+            'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
+
         }

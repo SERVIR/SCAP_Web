@@ -21,6 +21,8 @@ import geopandas as gpd
 from pyproj import CRS
 import rioxarray
 
+from scap.models import ForestCoverCollection, AGBCollection, AOICollection
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 params = json.load(f)
@@ -29,13 +31,29 @@ import doi
 
 
 @csrf_exempt
-def doi_valid(request):
+def doi_valid(request,pk):
+    if request.POST.get('doi')=='':
+        return JsonResponse({"url": ""})
     try:
         url = doi.validate_doi(request.POST.get('doi'))
         return JsonResponse({"url": url})
     except Exception as e:
-        return JsonResponse({"url": ""})
-
+        return JsonResponse({"error": "error"})
+@csrf_exempt
+def stage_for_processing(request,pk):
+    if request.POST.get('type')=='fc':
+        coll=ForestCoverCollection.objects.get(collection_name=request.POST.get('coll_name'))
+        coll.processing_status="Staged"
+        coll.save()
+    if request.POST.get('type')=='agb':
+        coll=AGBCollection.objects.get(agb_name=request.POST.get('agb_name'))
+        coll.processing_status="Staged"
+        coll.save()
+    if request.POST.get('type')=='aoi':
+        coll=AOICollection.objects.get(aoi_name=request.POST.get('aoi_name'))
+        coll.processing_status="Staged"
+        coll.save()
+    return JsonResponse({})
 
 # This method uses the tif file and generates temporary shape file
 def gdal_polygonize(dir, in_path):

@@ -318,14 +318,14 @@ class ForestCoverCollectionCreate(CreateView):
         return data
 
     def get_success_url(self):
-        return reverse("userData")
+        return reverse("edit-coll", kwargs={"pk": self.object.pk})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         print(self.request.FILES)
         dirname = datetime.now().strftime('%Y.%m.%d.%H.%M.%S')
         username = self.request.user
-        file_path = params['PATH_TO_NEW_TIFFS'] + str(username) + '\\Public'
+        file_path = params['PATH_TO_NEW_TIFFS'] + str(username) + '\\'+self.request.POST['collection_name']
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         folder = file_path + '/'.format(dirname)
@@ -377,10 +377,9 @@ class AGBCollectionCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        print(self.request.FILES)
         dirname = datetime.now().strftime('%Y.%m.%d.%H.%M.%S')
         username = self.request.user
-        file_path = params['PATH_TO_NEW_TIFFS'] + str(username) + '\\Public'
+        file_path = params['PATH_TO_NEW_TIFFS'] + str(username) +  '\\'+self.request.POST['agb_name']
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         folder = file_path + '/'.format(dirname)
@@ -388,7 +387,7 @@ class AGBCollectionCreate(CreateView):
         fs = FileSystemStorage(location=folder)
         name = fs.save(uploaded_file.name, uploaded_file)
         form.instance.username = self.request.user
-        form.instance.resolution = 100.0
+        form.instance.processing_status='Staged'
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -396,7 +395,7 @@ class AGBCollectionCreate(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(reverse("agbData"))
 
     def form_invalid(self, form):
         if not form.is_valid():
@@ -416,22 +415,20 @@ class ForestCoverCollectionUpdate(UpdateView):
         return qs.filter(username=self.request.user)
 
     def get_context_data(self, **kwargs):
-        print('get con')
         context = super(ForestCoverCollectionUpdate, self).get_context_data(**kwargs)
 
         if self.request.POST:
             context['form'] = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
 
             filename = self.request.FILES['boundary_file'].name
-            context['boundary_file'] = filename
+            context['boundary_file'] = filename.split('/')[-1]
         else:
             context['form'] = ForestCoverCollectionForm(instance=self.object)
-            context['boundary_file'] = self.object.boundary_file.name
+            context['boundary_file'] = self.object.boundary_file.name.split('/')[-1]
         context['operation'] = 'EDIT'
         return context
 
     def post(self, request, *args, **kwargs):
-        print('get post`')
         self.object = self.get_object()
         form = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
         print('in post')
@@ -452,7 +449,96 @@ class ForestCoverCollectionUpdate(UpdateView):
         return self.render_to_response(
             self.get_context_data(form=form, operation='EDIT'))
 
+class AGBCollectionUpdate(UpdateView):
+    model = AGBCollection
+    success_url = '/agb-data/'
+    form_class = AGBCollectionForm
+    template_name = 'scap/agbcollection_form.html'
 
+    def get_queryset(self):
+        qs = super(AGBCollectionUpdate, self).get_queryset()
+        return qs.filter(username=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(AGBCollectionUpdate, self).get_context_data(**kwargs)
+
+        if self.request.POST:
+            context['form'] = AGBCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+
+            filename = self.request.FILES['boundary_file'].name
+            context['agb_boundary_file'] = filename.split('/')[-1]
+        else:
+            context['form'] = AGBCollectionForm(instance=self.object)
+            context['agb_boundary_file'] = self.object.agb_boundary_file.name.split('/')[-1]
+        context['operation'] = 'EDIT'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = AGBCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+        print('in post')
+        print(form.is_valid())
+        if (form.is_valid()):
+            print('form is valid')
+            return self.form_valid(form)
+        else:
+
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        print("invalid")
+        return self.render_to_response(
+            self.get_context_data(form=form, operation='EDIT'))
+
+class AOICollectionUpdate(UpdateView):
+    model = AOICollection
+    success_url = '/aoi-data/'
+    form_class = AOICollectionForm
+    template_name = 'scap/aoicollection_form.html'
+
+    def get_queryset(self):
+        qs = super(AOICollectionUpdate, self).get_queryset()
+        return qs.filter(username=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(AOICollectionUpdate, self).get_context_data(**kwargs)
+
+        if self.request.POST:
+            context['form'] = AOICollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+
+            filename = self.request.FILES['aoi_shape_file'].name
+            context['aoi_shape_file'] = filename.split('/')[-1]
+        else:
+            context['form'] = AOICollectionForm(instance=self.object)
+            context['aoi_shape_file'] = self.object.aoi_shape_file.name.split('/')[-1]
+        context['operation'] = 'EDIT'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = AOICollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+        print('in post')
+        print(form.is_valid())
+        if (form.is_valid()):
+            print('form is valid')
+            return self.form_valid(form)
+        else:
+
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        print("invalid")
+        return self.render_to_response(
+            self.get_context_data(form=form, operation='EDIT'))
 class ForestCoverCollectionDelete(DeleteView):
     model = ForestCoverCollection
     success_url = reverse_lazy('userData')
@@ -480,10 +566,9 @@ class AOICollectionCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        print(self.request.FILES)
         dirname = datetime.now().strftime('%Y.%m.%d.%H.%M.%S')
         username = self.request.user
-        file_path = params['PATH_TO_NEW_AOIS'] + str(username) + '\\Public'
+        file_path = params['PATH_TO_NEW_AOIS'] + str(username) + '\\'+self.request.POST['aoi_name']
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         folder = file_path + '/'.format(dirname)
@@ -491,7 +576,8 @@ class AOICollectionCreate(CreateView):
         fs = FileSystemStorage(location=folder)
         name = fs.save(uploaded_file.name, uploaded_file)
         form.instance.username = self.request.user
-        form.instance.resolution = 100.0
+        form.instance.processing_status='Staged'
+
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -510,7 +596,7 @@ class AOICollectionCreate(CreateView):
 
 class AOICollectionDelete(DeleteView):
     model = AOICollection
-    success_url = reverse_lazy('agbData')
+    success_url = reverse_lazy('aoiData')
 
 
 class AGBCollectionDelete(DeleteView):

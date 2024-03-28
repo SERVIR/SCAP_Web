@@ -4,6 +4,8 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
+
+import doi
 import requests
 from django.contrib.gis.geos import GEOSGeometry
 import fiona
@@ -318,10 +320,8 @@ def generate_from_lambda():
 
 @csrf_exempt
 def savetomodel(request):
-    print('in save')
     uploaded_tiffs = request.FILES.get('FC_tiff')
-    print(uploaded_tiffs)
-    path_to_tiffs = os.path.join(params['PATH_TO_NEW_TIFFS'] + str(request.user.username) + '/Public')
+    path_to_tiffs = os.path.join(params['PATH_TO_NEW_TIFFS'] + str(request.user.username) + '/'+request.POST['coll_name'])
 
     if not os.path.exists(path_to_tiffs):
         os.makedirs(path_to_tiffs)
@@ -336,22 +336,49 @@ def savetomodel(request):
         #     pass
         # else:
         #     return JsonResponse({"result": "error", "error_message": "Invalid file " + original_names[i]})
-
+        coll=ForestCoverCollection.objects.get(collection_name=request.POST['coll_name'])
         new_tiff = TiffFile()
         new_tiff.year = request.POST['year']
         new_tiff.file = request.FILES['FC_tiff']
         new_tiff.metadata_link = request.POST['metadata']
-        new_tiff.doi_link = request.POST['doi']
-        new_tiff.collection.collection_name = request.POST['coll_name']
+        try:
+            new_tiff.doi_link = doi.validate_doi(request.POST['doi'])
+
+        except Exception as e:
+            new_tiff.doi_link=""
+
+        new_tiff.collection=coll
+
         new_tiff.save()
 
         # if 'Mollweide' in proj:
         #     new_collection.save()
         # else:
-        return JsonResponse({"result": "error", "error_message": "Invalid file "})
+        return JsonResponse({"result": "success", "error_message": ""})
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
+
+@csrf_exempt
+def get_tiff_data(request,pk):
+    try:
+        coll_name=request.POST['coll_name']
+        coll = ForestCoverCollection.objects.get(collection_name=coll_name)
+        print(coll)
+        return_obj={}
+        results_arr=[]
+        tiffs=TiffFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
+        for tiff in tiffs:
+
+            filename=str("fc_" + str(request.user.username) + "_" + str(request.POST['coll_name']) + "_" + str(
+                                   tiff.get('year')) + "_1ha.tif")
+
+            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':filename,'metadata':tiff.get('metadata_link'),'doi':tiff.get('doi_link')})
+        return_obj['data']=results_arr
+        return JsonResponse(return_obj)
+    except:
+        return JsonResponse({})
+
 
 
 @csrf_exempt

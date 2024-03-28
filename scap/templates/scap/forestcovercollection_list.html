@@ -121,9 +121,15 @@
                     <td><label>{{ coll.collection_description|truncatechars:150 }}</label></td>
                     <td><label>{{ coll.tifffile_set.all.count }}</label></td>
                     <td>
+                        {% if coll.processing_status == 'Staged' %}
+                        <button class="btn-secondary btn disabled" title="Collection is currently being processed"
+                                style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Edit
+                        </button>
+                        {% else %}
                         <button class="btn-primary btn" onclick="location.href='{% url 'edit-coll' coll.pk %}'"
                                 style="margin: 10px;width:80px;margin-top:0px">Edit
                         </button>
+                        {% endif %}
                     </td>
                     <td>
                         <button class="btn-danger btn"
@@ -144,6 +150,7 @@
         </div>
 
 
+    </div>
     </div>
     <!-- Footer-->
     {#    <div class="py-4">#}
