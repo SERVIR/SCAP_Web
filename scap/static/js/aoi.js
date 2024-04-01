@@ -67,7 +67,7 @@ $("#storeAOI").click(function (e) {
     }
     $.ajax({
         type: 'POST',
-        url: '/saveAOItomodel/',
+        url: '/save-aoi/',
         data: form_data,
         contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
         processData: false,
@@ -156,7 +156,7 @@ function update_aois() {
 const deleteAOI = e => {
     $.ajax({
         type: 'POST',
-        url: '/delete_AOI/', data: {'aoi_name': e.target.id},
+        url: '/delete-aoi/', data: {'aoi_name': e.target.id},
         success: function (data) {
             console.log("msg")
             update_aois();

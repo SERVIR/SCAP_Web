@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load i18n %}
+{% load socialaccount %}
+{% load static %}
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SERVIR S-CAP</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+    <style>
+        label {
+            padding: 5px;
+            background: white;
+            margin: 5px;
+
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td {
+            max-width: 100px;
+
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "home" %}" style="padding-left: 20px"><img
+                src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ADD
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/forest-cover-collections/add/">FOREST COVER</a>
+                        <a class="dropdown-item" href="/agb-collections/add-agb/">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="/aoi-collections/add/">AREAS OF INTEREST (AOI)</a>
+
+                    </div>
+                </div>
+                <div class="dropdown" style="margin-right: 10px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        MANAGE
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
+                        <a class="dropdown-item" href="/forest-cover-collections/">FOREST COVER</a>
+                        <a class="dropdown-item" href="/agb-collections/">ABOVE GROUND BIOMASS (AGB)</a>
+                        <a class="dropdown-item" href="/aoi-collections/">AREAS OF INTEREST (AOI)</a>
+                    </div>
+                </div>
+                {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
+
+                {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+
+                        Login
+                    </a></li>
+
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<br/>
+<br/>
+<br/>
+{% if user.is_authenticated %}
+    <section class="page-section mt-4">
+        <div class="container-fluid">
+                <div class="row" style="padding:30px 150px 30px 150px">
+                  <div class="col" style="display:flex;">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal" style="display: inline">
+                        <div class="pilotcountry-hover">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-layer-group fa-stack-1x fa-inverse"></i>
+                        </span>
+                        </div>
+                    </a>
+
+                  <div style="display:inline;">
+                                              <h5 class="">Forest Loss & Degradation</h5>
+
+                      <p>Forest loss is measured by comparing binary Forest/No Forest coverages for different years. The system handles this information as a collection of GeoTiff files with 0 values indicating No Forest and 1 values indicating Forest Cover. Years don’t need to be consecutive.</p><p>
+
+When adding a forest cover collections, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                        <a href="{% url 'create-forest-cover-collection' %}" class="btn btn-primary mt-auto float-end">
+                            + Add Your Own</a>
+                  </div>
+
+                  </div>
+
+                </div>
+                <div class="row"  style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
+                   <div class="col" style="display:flex;">
+                    <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal" style="display:inline;">
+                        <div class="pilotcountry-hover">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-tree fa-stack-1x fa-inverse"></i>
+                        </span>
+                        </div>
+                    </a>
+
+
+                  <div class="" style="display: inline">
+                       <h5 class="">Above Ground Biomass</h5>
+                      <p>Above ground biomass (AGB) estimations are expected to be expressed in Metric Tons of Carbon per Ha. This estimations are assumed to be valid for the calibration year they were produced for, and therefore applied for emission and carbon stock calculations for forest cover data in all following years.</p><p>
+
+Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                          <a href="{% url 'create-agb-collection' %}" class="btn btn-primary mt-auto  float-end">
+                            + Add Your Own</a>
+                  </div>
+
+                  </div>
+                </div>
+                <div class="row"  style="padding:30px 150px 30px 150px">
+                    <div class="col" style="display: flex">
+                        <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal" style="display:inline;">
+                            <div class="pilotcountry-hover">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-map fa-stack-1x fa-inverse"></i>
+                        </span>
+                            </div>
+                        </a>
+
+
+
+
+                        <div class="" style="display: inline">
+                              <h5 class="">Area of Interest</h5>
+                            <p>You can upload your Areas of Interest, to facilitate the extraction of forest change, carbon stock and emissions derived from all public (and your private Forest Cover and AGB data) for your specific AOI.</p><p>
+
+Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+</p>
+                         <a href="{% url 'create-aoi-collection' %}" class="btn btn-primary mt-auto float-end">
+                            + Add Your Own</a></div>
+                    </div>
+                </div>
+
+            </div>
+    </section>
+
+
+
+{% else %}
+    <br/>
+    <br/>
+    <br/>
+    <p class="text-center">Please login to add your collections, files and AOIs</p>
+{% endif %}
+
+<!-- AOI modal popup-->
+
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+
+<script src="{% static "js/scripts.js" %}"></script>
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+{#<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>#}
+</body>
+</html>

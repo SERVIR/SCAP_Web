@@ -17,84 +17,85 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
+from django.contrib.auth import views as auth_views
 
 from ScapTestProject import settings
-from scap.api import savetomodel, check_if_coll_exists, getcollections, updatetomodel, getfilesfromcollection, \
-    saveAOItomodel, get_aoi_list, delete_AOI, get_AOI, get_tiff_data
-from scap.getData import get_updated_series
-from scap.utils import doi_valid, stage_for_processing
-from scap.views import test, home, aoi, userData, thailand, protected_aois, map, generate_emissions, generate_fc, \
-    pilot_country, deleteColl, editColl, updateColl, ForestCoverCollectionList, ForestCoverCollectionCreate, \
-    ForestCoverCollectionUpdate, ForestCoverCollectionDelete, page_not_found_view, AOICollectionCreate, \
-    AOICollectionList, AGBCollectionCreate, AGBCollectionList, add_user_data, AOICollectionDelete, AGBCollectionDelete, \
-    AOICollectionUpdate, AGBCollectionUpdate
-from django.contrib.auth import views as auth_views
-from scap import getData
+from scap.validation import doi_valid
+
+from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, get_forest_cover_collections,
+                      updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
+                      get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
+                      stage_for_processing)
+
+from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
+                        ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
+                        CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
+                        DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection)
 
 urlpatterns = [
-                  path('admin', RedirectView.as_view(url='admin/')),
-                  path('admin/', admin.site.urls),
-                  path('', home, name='home'),
-                  path('pilot/<str:country>/', pilot_country, name='pilot_country'),
-                  path('home/', home, name='home2'),
-                  path("", include("allauth.account.urls")),
-                  path("accounts/", include("django.contrib.auth.urls")),
-                  path('savetomodel/', savetomodel, name='savetomodel'),
-                  path('test/', test, name='test'),
-                  path('google-login/', include('allauth.urls')),
-                  path('getcollections/', getcollections, name='getcollections'),
-                  path('getfilesfromcollection/', getfilesfromcollection, name='getfilesfromcollection'),
-                  path('delete_AOI/', delete_AOI, name='delete_AOI'),
-                  path('saveAOItomodel/', saveAOItomodel, name='saveAOItomodel'),
-                  path('updatetomodel/', updatetomodel, name='updatetomodel'),
-                  path('check_if_coll_exists/', check_if_coll_exists, name='check_if_coll_exists'),
-                  path('login/', auth_views.LoginView.as_view(), name='login'),
-                  path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
-                  path('aoi', aoi, name='aoi'),
-                  path('protected_areas/', protected_aois, name='protected_aois'),
-                  path('thailand/', thailand, name='thailand'),
-                  # path('user-data/', userData, name='userData'),
-                  path('user-data/', ForestCoverCollectionList.as_view(), name='userData'),
-                  path('aoi-data/', AOICollectionList.as_view(), name='aoiData'),
-                  path('agb-data/', AGBCollectionList.as_view(), name='agbData'),
-                  # path('user-data/delete-coll/<str:coll_name>/', deleteColl, name='delete-coll'),
-                  path('user-data/delete-coll/<int:pk>/', ForestCoverCollectionDelete.as_view(), name='delete-coll'),
-                  path('agb-data/delete-agb/<int:pk>/', AGBCollectionDelete.as_view(), name='delete-agb'),
-                  path('aoi-data/delete-aoi/<int:pk>/', AOICollectionDelete.as_view(), name='delete-aoi'),
-                  path('user-data/edit-coll/<int:pk>/', ForestCoverCollectionUpdate.as_view(), name='edit-coll'),
-                  path('agb-data/edit-agb/<int:pk>/', AGBCollectionUpdate.as_view(), name='edit-agb'),
-                  path('aoi-data/edit-aoi/<int:pk>/',AOICollectionUpdate.as_view(), name='edit-aoi'),
-                  # path('user-data/edit-coll/<str:coll_name>/',editColl, name='edit-coll'),
-                  # path('update-coll/<str:coll_name>/',updateColl, name='update-coll'),
-                  path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
-                  # path('user-data/add-coll/', addColl, name='add-coll'),
-                  path('user-data/add-coll/', ForestCoverCollectionCreate.as_view(), name='add-coll'),
-                  path('aoi-data/add-aoi/', AOICollectionCreate.as_view(), name='add-aoi'),
-                  path('agb-data/add-agb/', AGBCollectionCreate.as_view(), name='add-agb'),
-                  # path('profile/<int:pk>', views.ProfileDelete.as_view(), name='profile-delete'),
-                  path('get-series/', getData.chart, name='get-series'),
-                  path('emissions/', pilot_country, name='emissions'),
-                  # path('deforestation/', views.deforestation, name='deforestation'),
-                  path('aoi/<str:country>/get-min-max/', getData.get_agg_check, name='get-min-max'),
-                  path('pilot/<str:country>/get-min-max/', getData.get_agg_check, name='get-min-max'),
-                  path('protected_areas/<str:country>/get-series-name/', getData.get_series_name,
-                       name='get-series-name'),
-                  path('protected_areas/get-min-max/', getData.get_agg_check, name='get-min-max'),
-                  path('protected_areas/get-series-name/', getData.get_series_name, name='get-series-name'),
-                  path('get-series-name/', getData.get_series_name, name='get-series-name'),
-                  path('map/', map, name='map'),
-                  path('map/get-aoi/', get_AOI, name='get-aoi'),
-                  path('aoi/<str:aoi>/', protected_aois, name='aoi_page'),
-                  path('aoi/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
-                  path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
-                  # path('protected_areas/get-aoi/', get_AOI, name='get-aoi'),
-                  path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),
-                  path('user-data/add-coll/doi/', doi_valid, name='doi-valid'),
-                  path('user-data/edit-coll/<int:pk>/doi/', doi_valid, name='doi-valid'),
-                  path('user-data/edit-coll/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get_tiff_data'),
-                  # path('map/get-updated-series/',get_updated_series,name='get-updated-series'),
-                  path('add-user-data/',add_user_data,name='add-user-data'),
-                  path('user-data/edit-coll/<int:pk>/stage-for-processing/',stage_for_processing,name='stage-for-processing')
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+      path('', home, name='home'),
+      path('', include("allauth.account.urls")),
+
+      path('admin', RedirectView.as_view(url='admin/')),
+      path('admin/', admin.site.urls),
+      path("accounts/", include("django.contrib.auth.urls")),
+      path('google-login/', include('allauth.urls')),
+      path('login/', auth_views.LoginView.as_view(), name='login'),
+
+      path('home/', home, name='home2'),
+      path('pilot/<str:country>/', pilot_country, name='pilot_country'),
+      path('map/', map, name='map'),
+      path('aoi/<str:aoi>/', protected_aois, name='aoi_page'),
+      path('add-new-collection/', add_new_collection, name='add-new-collection'),
+
+      path('get-series-name/', get_series_name, name='get-series-name'),
+      path('aoi/<str:country>/get-min-max/', get_agg_check, name='get-min-max'),
+      path('pilot/<str:country>/get-min-max/', get_agg_check, name='get-min-max'),
+
+      path('map/get-aoi/', get_AOI, name='get-aoi'),
+      path('aoi/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+      path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+
+      path('delete-aoi/', delete_AOI, name='delete-aoi'),
+      path('save-aoi/', save_AOI, name='save-aoi'),
+
+      path('save-forest-cover-file/', save_forest_cover_file, name='savetomodel'),
+      path('get-forest-cover-collections/', get_forest_cover_collections, name='getcollections'),
+      path('get-yearly-forest-cover-files/', get_yearly_forest_cover_files, name='get-yearly-forest-cover-files'),
+      path('is-forest-cover-collection-valid/', is_forest_cover_collection_valid, name='is-forest-cover-collection-valid'),
+
+      path('forest-cover-collections/', ManageForestCoverCollections.as_view(), name='forest-cover-collections'),
+      path('forest-cover-collections/add/', CreateForestCoverCollection.as_view(), name='create-forest-cover-collection'),
+      path('forest-cover-collections/edit/<int:pk>/', EditForestCoverCollection.as_view(), name='edit-forest-cover-collection'),
+      path('forest-cover-collections/delete/<int:pk>/', DeleteForestCoverCollection.as_view(), name='delete-forest-cover-collection'),
+
+      path('aoi-collections/', ManageAOICollections.as_view(), name='aoi-collections'),
+      path('aoi-collections/add/', CreateAOICollection.as_view(), name='create-aoi-collection'),
+      path('aoi-collections/edit/<int:pk>/', EditAOICollection.as_view(), name='edit-aoi-collection'),
+      path('aoi-collections/delete/<int:pk>/', DeleteAOICollection.as_view(), name='delete-aoi-collection'),
+
+      path('agb-collections/', ManageAGBCollections.as_view(), name='agb-collections'),
+      path('agb-collections/add/', CreateAGBCollection.as_view(), name='create-agb-collection'),
+      path('agb-collections/edit/<int:pk>/', EditAGBCollection.as_view(), name='edit-agb-collection'),
+      path('agb-collections/delete/<int:pk>/', DeleteAGBCollection.as_view(), name='delete-agb-collection'),
+
+      path('forest-cover-collections/add/doi/', doi_valid, name='doi-valid'),
+      path('forest-cover-collections/edit/<int:pk>/doi/', doi_valid, name='doi-valid-by-year'),
+      path('forest-cover-collections/edit/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get-tiff-data'),
+      path('forest-cover-collections/edit/<int:pk>/stage-for-processing/',stage_for_processing,name='stage-for-processing'),
+
+      # STAGE FOR DELETION
+      # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
+      # path('test/', test, name='test'),
+      # path('emissions/', pilot_country, name='emissions'),
+      # path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
+      # path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),
+      # path('protected_areas/get-series-name/', get_series_name, name='get-series-name'),
+      # path('protected_areas/', protected_aois, name='protected_aois'),
+      # path('protected_areas/get-min-max/', get_agg_check, name='get-min-max'),
+      # path('protected_areas/<str:country>/get-series-name/', get_series_name, name='get-series-name'),
+      # path('updatetomodel/', updatetomodel, name='updatetomodel'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found_view

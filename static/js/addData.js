@@ -21,7 +21,7 @@ $("#savetoDB").click(function (e) {
         }
         $.ajax({
             type: 'POST',
-            url: '/savetomodel/',
+            url: '/save-forest-cover-file/',
             data: form_data,
             contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
             processData: false,
@@ -91,7 +91,7 @@ $("#coll_name").on("keyup", function () {
     var coll = $(this).val().trim();
     $.ajax({
         type: 'POST',
-        url: '/check_if_coll_exists/',
+        url: '/is-forest-cover-collection-valid/',
         data: {
             "coll_name": coll,
         },
@@ -171,7 +171,7 @@ btn_new.onclick = function () {
     var coll = $('#coll_name').val().trim();
     $.ajax({
         type: 'POST',
-        url: '/check_if_coll_exists/',
+        url: '/is-forest-cover-collection-valid/',
         data: {
             "coll_name": coll,
         },
@@ -271,7 +271,7 @@ function populateCollections() {
     document.getElementById("existing_list").appendChild(el);
     $.ajax({
         type: 'POST',
-        url: '/getcollections/',
+        url: '/get-forest-cover-collections/',
         success: function (data) {
             console.log(data);
             var select = document.getElementById("existing_list");
@@ -298,7 +298,7 @@ $('#existing_list').on('change', function () {
     console.log(coll_name);
     $.ajax({
         type: 'POST',
-        url: '/getfilesfromcollection/', data: {"coll_name": coll_name},
+        url: '/get-yearly-forest-cover-files/', data: {"coll_name": coll_name},
         success: function (data) {
             console.log(data);
             var files = data.tiffs;

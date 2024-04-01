@@ -6,7 +6,7 @@ function stage_for_processing() {
         url: 'stage-for-processing/',
         data: {'type':'agb','coll_name': name},
         success: function (data) {
-           // location.href=window.location.protocol + "//" +location.host+'/agb-data/';
+           // location.href=window.location.protocol + "//" +location.host+'/agb-collections/';
         }
     });
 

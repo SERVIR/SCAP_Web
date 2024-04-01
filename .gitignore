@@ -4,3 +4,5 @@ scap/static/
 scap/__pycache__/
 SCAPTestProject/__pycache__/
 scap/migrations/
+media/
+logfile

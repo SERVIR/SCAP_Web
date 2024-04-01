@@ -1,7 +1,7 @@
 import sys
 import os
 from django.core.management.base import BaseCommand
-from scap.models import AOI, ForestCoverChangeNew, BoundaryFiles, ForestCoverChange
+from scap.models import AOIFeature, ForestCoverStatistic, BoundaryFiles, ForestCoverChange
 import json
 import numpy as np
 from osgeo import gdal, osr, ogr
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         datasets = os.listdir(os.path.join(config['DATA_DIR'], 'fc'))
         for l_dataset in datasets:
             # TODO change when we go global
-            needed_aois = AOI.objects.all()
+            needed_aois = AOIFeature.objects.all()
 
             fc_data_dir = os.path.join(config['DATA_DIR'], 'fc', l_dataset)
             fcc_data_dir = os.path.join(config['DATA_DIR'], 'fcc', l_dataset)
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                                                                  'gain', row_offset, col_offset)
 
                         end = time.time()
-                        model_row = ForestCoverChangeNew()
+                        model_row = ForestCoverStatistic()
                         model_row.fc_filename = l_dataset
                         model_row.aoi = aoi
                         model_row.year = change_year

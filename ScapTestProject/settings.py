@@ -37,7 +37,7 @@ LOGGING = {
 }
 import os
 try:
-    os.environ["PROJ_LIB"] = "/home/Socrates/agoberna/.conda/envs/test_env/share/proj"
+    os.environ["PROJ_LIB"] = "/home/alex/anaconda3/envs/SCAP/share/proj"
 except:
     pass
 # Quick-start development settings - unsuitable for production
@@ -173,7 +173,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Additional configuration settings
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = data["http_https"]
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = data["HTTP_HTTPS"]
 SOCIALACCOUNT_QUERY_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -193,3 +193,9 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+UPLOAD_ROOT = data["UPLOAD_ROOT"]
+MEDIA_URL = data["MEDIA_URL"]
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+CELERY_BROKER_URL = data["CELERY_BROKER_URL"]
+CELERY_RESULT_BACKEND = data["CELERY_RESULT_BACKEND"]

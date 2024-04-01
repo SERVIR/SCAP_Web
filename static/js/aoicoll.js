@@ -5,7 +5,7 @@ function stage_for_processing() {
         url: 'stage-for-processing/',
         data: {'type':'aoi','coll_name': name},
         success: function (data) {
-            location.href=window.location.protocol + "//" +location.host+'/user-data/';
+            location.href=window.location.protocol + "//" +location.host+'/forest-cover-collections/';
         }
     });
 

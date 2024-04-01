@@ -155,7 +155,7 @@
             <div class="col-lg-4 col-sm-6 mb-4">
                 <!-- pilotcountry item 2-->
                 <div class="pilotcountry-item">
-                    <a class="pilotcountry-link" target="_blank" href="{% url "thailand" %}">
+                    <a class="pilotcountry-link" target="_blank" href="{% url "pilot_country" country='Peru' %}" %}">
                         <div class="pilotcountry-hover">
                             <div class="pilotcountry-hover-content"><i class="fas fa-plus fa-3x"></i></div>
                         </div>
@@ -449,7 +449,7 @@
 {#                {% if user.is_authenticated %}#}
 {##}
 {#                    <div class="text-center">#}
-{#                        <a href="{% url 'agbData' %}">#}
+{#                        <a href="{% url 'agb-collections' %}">#}
 {#                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own AGB</button>#}
 {#                        </a>#}
 {#                    </div>#}
@@ -474,7 +474,7 @@
                     decision-making within that defined region.</p>
 {#                {% if user.is_authenticated %}#}
 {#                    <div class="text-center">#}
-{#                        <a href="{% url 'aoiData' %}">#}
+{#                        <a href="{% url 'aoi-collections' %}">#}
 {#                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own AOI</button>#}
 {#                        </a>#}
 {#                    </div>#}
@@ -485,7 +485,7 @@
     </div>
  {% if user.is_authenticated %}
                     <div class="text-center">
-                        <a href="{% url 'add-user-data' %}">
+                        <a href="{% url 'add-new-collection' %}">
                             <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
                         </a>
                     </div>

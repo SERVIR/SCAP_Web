@@ -5,7 +5,7 @@ function stage_for_processing() {
         url: 'stage-for-processing/',
         data: {'type':'fc','coll_name': name},
         success: function (data) {
-            location.href=window.location.protocol + "//" +location.host+'/user-data/';
+            location.href=window.location.protocol + "//" +location.host+'/forest-cover-collections/';
         }
     });
 
@@ -69,7 +69,7 @@ function storeTiffs() {
 
     $.ajax({
         type: 'POST',
-        url: '/savetomodel/',
+        url: '/save-forest-cover-file/',
         data: form_data,
         contentType: false,
         processData: false,
