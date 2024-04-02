@@ -124,16 +124,23 @@
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Edit
                         </button>
                         {% else %}
-                        <button class="btn-primary btn" onclick="location.href='{% url 'edit1' agb.pk %}'"
+                        <button class="btn-primary btn" onclick="location.href='{% url 'edit-agb-collection' agb.pk %}'"
                                 style="margin: 10px;width:80px;margin-top:0px">Edit
                         </button>
                         {% endif %}
                     </td>
                     <td>
-                        <button class="btn-danger btn"
+                           {% if agb.processing_status == 'Staged' %}
+                        <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"
+                                style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Delete
+                        </button>
+                        {% else %}
+                       <button class="btn-danger btn"
                                                                 onclick="location.href='{% url 'delete-agb-collection' agb.pk %}'"
                                 style="margin: 10px;margin-top:0px">Delete
                         </button>
+                        {% endif %}
+
                     </td>
 
                 </tr>

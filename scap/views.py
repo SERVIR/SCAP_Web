@@ -259,19 +259,24 @@ class EditForestCoverCollection(UpdateView):
         context = super(EditForestCoverCollection, self).get_context_data(**kwargs)
 
         if self.request.POST:
-            context['form'] = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+            context['form'] = ForestCoverCollectionForm(self.request.POST, instance=self.object)
+            context['owner'] = User.objects.get(username=self.request.user).id
 
-            filename = self.request.FILES['boundary_file'].name
-            context['boundary_file'] = filename.split('/')[-1]
+            # filename = self.request.FILES['boundary_file'].name
+            # context['boundary_file'] = filename.split('/')[-1]
+
         else:
             context['form'] = ForestCoverCollectionForm(instance=self.object)
             context['boundary_file'] = self.object.boundary_file.name.split('/')[-1]
+            context['owner'] = User.objects.get(username=self.request.user).id
+
         context['operation'] = 'EDIT'
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
+        form = ForestCoverCollectionForm(self.request.POST, instance=self.object)
+        form.instance.owner = User.objects.get(username=self.request.user)
         if form.is_valid():
             return self.form_valid(form)
         else:

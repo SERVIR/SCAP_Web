@@ -108,8 +108,8 @@ def get_tiff_data(request,pk):
 
 @csrf_exempt
 def get_tiff_id(request,pk):
-    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_id=pk)
-    print(tiff.id)
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_name=request.POST.get('coll_name'))
+    print(tiff)
     return JsonResponse({"id":tiff.id})
 
 @csrf_exempt
@@ -136,7 +136,7 @@ def update_tiff_record(request,pk):
     return JsonResponse({"udpated":"success"})
 @csrf_exempt
 def delete_tiff_record(request,pk):
-    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_id=pk)
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
     tiff.delete()
     return JsonResponse({"deleted":"success"})
 

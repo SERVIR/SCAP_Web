@@ -132,10 +132,17 @@
                         {% endif %}
                     </td>
                     <td>
-                        <button class="btn-danger btn"
+                           {% if coll.processing_status == 'Staged' %}
+                        <button class="btn-secondary btn disabled" title="Collection is currently being processed"
+                                style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Delete
+                        </button>
+                        {% else %}
+                         <button class="btn-danger btn"
                                 onclick="location.href='{% url 'delete-forest-cover-collection' coll.pk %}'"
                                 style="margin: 10px;margin-top:0px">Delete
                         </button>
+                        {% endif %}
+
                     </td>
 
                 </tr>

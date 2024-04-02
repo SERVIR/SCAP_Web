@@ -152,6 +152,9 @@
                                 <div class=" mt-3 common">
                                     <h5>Editing collection: <span id="current_coll">{{ form.name.value }}</span></h5>
                                 </div>
+                                  <div class="mb-3 common" hidden><label>Collection Identification Name </label>
+                                {{ form.name }}
+                            </div>
                                 {% endif %}
                             <div class="mb-3 common"><label style="display: block">Source and Supplemental
                                 information</label>
@@ -205,11 +208,15 @@
                                             <th>File</th>
                                             <th>DOI</th>
                                             <th>Metadata</th>
+                                            <th>
+
+                                            </th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody id="tifffTableBody">
                                         <tr id="no-records" class="text-center">
-                                            <td colspan="5">No tiff files added yet.</td>
+                                            <td colspan="7">No tiff files added yet.</td>
                                         </tr>
                                         </tbody>
                                     </table>

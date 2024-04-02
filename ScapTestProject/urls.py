@@ -74,11 +74,13 @@ urlpatterns = [
       path('aoi-collections/add/', CreateAOICollection.as_view(), name='create-aoi-collection'),
       path('aoi-collections/edit/<int:pk>/', EditAOICollection.as_view(), name='edit-aoi-collection'),
       path('aoi-collections/delete/<int:pk>/', DeleteAOICollection.as_view(), name='delete-aoi-collection'),
+      path('aoi-collections/add/doi/', doi_valid, name='doi-valid'),
 
       path('agb-collections/', ManageAGBCollections.as_view(), name='agb-collections'),
       path('agb-collections/add/', CreateAGBCollection.as_view(), name='create-agb-collection'),
       path('agb-collections/edit/<int:pk>/', EditAGBCollection.as_view(), name='edit-agb-collection'),
       path('agb-collections/delete/<int:pk>/', DeleteAGBCollection.as_view(), name='delete-agb-collection'),
+      path('agb-collections/add/doi/', doi_valid, name='doi-valid'),
 
       path('forest-cover-collections/add/doi/', doi_valid, name='doi-valid'),
       path('forest-cover-collections/edit/<int:pk>/doi/', doi_valid, name='doi-valid-by-year'),

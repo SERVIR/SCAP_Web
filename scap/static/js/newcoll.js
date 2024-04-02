@@ -1,5 +1,57 @@
 document.getElementById('id_doi_link').onchange = function() {
     var doi=document.getElementById('id_doi_link').value;
+    if(doi!=='') {
+
+
+        $.ajax({
+            type: 'POST',
+            url: 'doi/',
+            data: {'doi': doi},
+            success: function (data) {
+                if (data.error) {
+                    alert('please enter a valid doi or leave blank');
+                    document.getElementById('id_doi_link').value = "";
+                } else {
+                    console.log("valid doi");
+
+                }
+            }
+        });
+    }
+
+};
+function isUrlValid(userInput) {
+    var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    if (res == null)
+        return false;
+    else
+        return true;
+}
+document.getElementById('tiff_metadata').onchange = function() {
+    var metadata=document.getElementById('tiff_metadata').value;
+
+
+   if(metadata===''){
+
+
+   }
+   else if(isUrlValid(metadata)){
+
+   }
+   else{
+       alert("Please enter valid metadata link or leave blank")
+   }
+
+};
+document.getElementById('tiff_year').onchange = function() {
+  var year=document.getElementById('tiff_year').value;
+ var current_year=new Date().getFullYear();
+    if (year.length < 4 || year<=1979 ||year>current_year) {
+        alert("Please enter a valid year between 1980 and "+current_year);
+    }
+};
+document.getElementById('tiff_doi').onchange = function() {
+    var doi=document.getElementById('tiff_doi').value;
 
 
         $.ajax({
@@ -8,8 +60,8 @@ document.getElementById('id_doi_link').onchange = function() {
             data: {'doi': doi},
             success: function (data) {
                 if(data.error){
-                    alert('please enter a valid doi')
-                    document.getElementById('id_doi_link').value="";
+                    alert('please enter a valid doi');
+                    document.getElementById('tiff_doi').value="";
                 }
                 else{
                     console.log("valid doi");
@@ -18,8 +70,7 @@ document.getElementById('id_doi_link').onchange = function() {
             }
         });
 
-}
-
+};
 function stage_for_processing() {
     var name=$('#current_coll').html();
     $.ajax({
@@ -39,8 +90,9 @@ function validate_all_fields(year, file,doi_link) {
         alert("Please select a file");
         res = false;
     }
-    if (year.length < 4) {
-        alert("Please enter a valid year");
+    var current_year=new Date().getFullYear();
+    if (year.length < 4 || year<=1979 ||year>current_year) {
+        alert("Please enter a valid year between 1980 and "+current_year);
         res = false;
     }
 
@@ -210,6 +262,7 @@ deleteTiffFile(id,row);
 }
 // console.log({{operation}});
 if(opn==='EDIT'){
+    console.log("show here")
         show_tiffs($('#current_coll').html());
     }
 
@@ -220,7 +273,7 @@ function deleteTiffFile(id,row) {
     $.ajax({
          type: 'POST',
          url: 'delete-tiff-record/',
-         data: {'year':year,'coll_id':id},
+         data: {'year':year,'coll_name':$('#current_coll').html()},
          success: function (data) {
            console.log("deleted");
             row.parentNode.removeChild(row);
@@ -267,7 +320,7 @@ function populateTiffForm(row) {
      $.ajax({
          type: 'POST',
          url: 'get-tiff-id/',
-         data: {'year':year},
+         data: {'year':year,'coll_name':$('#current_coll').html()},
          success: function (data) {
             document.getElementById("tiff_id_to_update").value=data.id;
          }
@@ -400,7 +453,7 @@ deleteTiffFile(id,row);
             if (document.getElementById("no-records"))
                 document.getElementById("no-records").remove();
         } else {
-            $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="5">No tiff files added yet.</td></tr>');
+            $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="7">No tiff files added yet.</td></tr>');
 
         }
     }

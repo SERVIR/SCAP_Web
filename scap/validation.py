@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 @csrf_exempt
-def doi_valid(request,pk):
+def doi_valid(request,pk=0):
     if request.POST.get('doi')=='':
         return JsonResponse({"url": ""})
     try:
