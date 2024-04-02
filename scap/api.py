@@ -113,12 +113,11 @@ def get_tiff_id(request,pk):
 
 @csrf_exempt
 def add_tiff_record(request,pk):
-    print("in add")
     existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
     new_tiff = ForestCoverFile()
     new_tiff.collection=existing_coll
     new_tiff.year=request.POST.get('year')
-    new_tiff.file=request.POST.get('file')
+    new_tiff.file=request.FILES['file']
     new_tiff.metadata_link = request.POST.get('metadata_link')
     new_tiff.doi_link = request.POST.get('doi_link')
     new_tiff.save()

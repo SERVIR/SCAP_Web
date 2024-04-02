@@ -26,6 +26,7 @@ def process_agb_collection(agb_collection_name):
     print("About to process " + agb_collection_name)
     agb_obj = AGBCollection.objects.get(name=agb_collection_name)
     owner = agb_obj.username
+
     collection_type = 'agb'
     input_path = processing.temp_load(agb_obj.file.path)
 

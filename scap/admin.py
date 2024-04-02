@@ -28,13 +28,15 @@ class AGBCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name',)
 
 
-class TiffFileInline(admin.StackedInline):
+class ForestCoverFileInline(admin.TabularInline):
     model = ForestCoverFile
+    show_change_link = True
+    extra = 0
 
 
 class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name', 'boundary_file')
-    inlines = [ TiffFileInline, ]
+    inlines = [ ForestCoverFileInline, ]
 
 
 class CarbonStatisticsAdmin(ImportExportModelAdmin, admin.ModelAdmin):

@@ -31,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection, test)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection)
 
 urlpatterns = [
       path('', home, name='home'),
