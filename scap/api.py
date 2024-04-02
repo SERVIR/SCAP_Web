@@ -42,6 +42,7 @@ config = json.load(f)
 #     lm.save(strict=True, verbose=verbose)
 
 
+
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
         'wdpa_pid': 'WDPA_PID',
@@ -55,7 +56,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(r'C:\Users\gtondapu\Downloads\ProtectedAreas_AllPilotCountries\PilotCountries.shp'),
+        os.path.join(r'C:\Users\gtondapu\Desktop\PilotCountries_All\PilotCountries_All.shp'),
     )
 
     lm = LayerMapping(AOIFeature, aoi, aoi_mapping, transform=False)

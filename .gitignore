@@ -6,3 +6,4 @@ SCAPTestProject/__pycache__/
 scap/migrations/
 media/
 logfile
+/scap/migrations/

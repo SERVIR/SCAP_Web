@@ -12,7 +12,7 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
-                      get_available_colors)
+                      get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
 from scap.models import CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection
 
@@ -25,7 +25,6 @@ config = json.load(f)
 
 def home(request):
     return render(request, 'scap/index.html')
-
 
 def map(request):
     return render(request, 'scap/map.html')

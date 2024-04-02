@@ -1,3 +1,25 @@
+document.getElementById('id_doi_link').onchange = function() {
+    var doi=document.getElementById('id_doi_link').value;
+
+
+        $.ajax({
+            type: 'POST',
+            url: 'doi/',
+            data: {'doi': doi},
+            success: function (data) {
+                if(data.error){
+                    alert('please enter a valid doi')
+                    document.getElementById('id_doi_link').value="";
+                }
+                else{
+                    console.log("valid doi");
+
+                }
+            }
+        });
+
+}
+
 function stage_for_processing() {
     var name=$('#current_coll').html();
     $.ajax({

@@ -174,7 +174,13 @@
                                     collection) </label>
                                 {{ form.boundary_file }}
     {% else %}
-     Current boundary file: {{ boundary_file }}
+               {% if boundary_file %}
+                                     Current boundary file: {{ boundary_file }}
+
+                                {% else %}
+                                     Current boundary file: None
+
+                                {% endif %}
     {% endif %}
                             </div>
                                <div class="mb-3 common">
