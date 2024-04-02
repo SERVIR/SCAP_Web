@@ -73,14 +73,19 @@ document.getElementById('tiff_doi').onchange = function() {
 };
 function stage_for_processing() {
     var name=$('#current_coll').html();
-    $.ajax({
-        type: 'POST',
-        url: 'stage-for-processing/',
-        data: {'type':'fc','coll_name': name},
-        success: function (data) {
-            location.href=window.location.protocol + "//" +location.host+'/forest-cover-collections/';
-        }
-    });
+    if(name==undefined){
+        alert("Please save collection first")
+    }
+    else {
+        $.ajax({
+            type: 'POST',
+            url: 'stage-for-processing/',
+            data: {'type': 'fc', 'coll_name': name},
+            success: function (data) {
+                location.href = window.location.protocol + "//" + location.host + '/forest-cover-collections/';
+            }
+        });
+    }
 
 }
 
