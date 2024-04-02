@@ -45,7 +45,6 @@ def pilot_country(request, country=1):
     pa = PilotCountry.objects.get(id=country)
 
     try:
-        print(pa.country_name)
         pa_name=pa.country_name
     except:
         pa_name = "Peru"
