@@ -5,8 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="map layers in pa">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logfile" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScapTestProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScapTestProject/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScapTestProject/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScapTestProject/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/migrations/0002_agbsource_forestcoversource_emissions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/migrations/0003_alter_emissions_aoi_id.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/migrations/0004_emissions_total_agb_alter_emissions_lc_agb_value.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/migrations/0005_alter_boundaryfiles_options.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/static/js/newcoll.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/newcoll.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,10 +33,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2cbK5FHBqCXaeevRcH2YcjRnFJt" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -32,16 +45,20 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Django Server.Unnamed (1).executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "interface",
-    "last_opened_file_path": "/home/alex/PycharmProjects/Generalized-ETL",
+    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/SCAP_Web/scap/static/js",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "com.jetbrains.django.DjangoModulesConfigurable",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -52,14 +69,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\scap\static\js" />
       <recent name="$PROJECT_DIR$/scap/static/assets/img/team" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\js" />
       <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\static\css" />
-      <recent name="C:\Users\gtondapu\PycharmProjects\ScapTestProject\scap\static\css" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Django Server.Unnamed (1)">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -95,20 +112,6 @@
       <option name="ADDITIONAL_ARGS" value="" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="Python.FlaskServer">
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -132,6 +135,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Unnamed (1)" type="Python.DjangoServer" factoryName="Django server" nameIsGenerated="true">
+      <module name="SCAP_Web" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="ScapTestProject.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="SCAP_Web" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="localhost" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Unnamed" type="Python.DjangoServer" factoryName="Django server" nameIsGenerated="true">
       <module name="ScapTestProject" />
       <option name="ENV_FILES" value="" />
@@ -142,6 +171,7 @@
         <env name="DJANGO_SETTINGS_MODULE" value="ScapTestProject.settings" />
       </envs>
       <option name="SDK_HOME" value="C:\ProgramData\anaconda3\envs\ScapTestProject\python.exe" />
+      <option name="SDK_NAME" value="SCAP_Web" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -160,6 +190,20 @@
       <option name="runNoReload" value="false" />
       <option name="useCustomRunCommand" value="false" />
       <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
@@ -230,6 +274,10 @@
       <option name="USE_PATTERN" value="false" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Django Server.Unnamed (1)" />
+      <item itemvalue="Django Server.Unnamed" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

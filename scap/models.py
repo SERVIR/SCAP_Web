@@ -36,7 +36,7 @@ class ForestCoverCollection(models.Model):
     doi_link = models.CharField(max_length=200, default="", blank=True)
     metadata_link = models.URLField(max_length=200, default="", blank=True)
 
-    boundary_file = models.FileField(max_length=254, help_text="Boundary File")
+    boundary_file = models.FileField(max_length=254, help_text="Boundary File", null=True, blank=True)
 
     access_level = models.CharField(max_length=10, default="Select", help_text="Access Level", choices=ACCESS_CHOICES)
 
@@ -131,7 +131,7 @@ class AGBCollection(models.Model):
     doi_link = models.CharField(max_length=200, default="", blank=True)
     metadata_link = models.URLField(max_length=200, default="", blank=True)
 
-    boundary_file = models.FileField(upload_to=agb_upload_path)
+    boundary_file = models.FileField(upload_to=agb_upload_path, null=True, blank=True)
     source_file = models.FileField(upload_to=agb_upload_path)
 
     owner = models.ForeignKey(User, verbose_name="Resource Owner", on_delete=models.CASCADE)

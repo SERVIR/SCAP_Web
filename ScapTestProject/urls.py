@@ -25,13 +25,13 @@ from scap.validation import doi_valid
 from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, get_forest_cover_collections,
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
-                      stage_for_processing)
+                      stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection, test)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -84,8 +84,12 @@ urlpatterns = [
       path('forest-cover-collections/edit/<int:pk>/doi/', doi_valid, name='doi-valid-by-year'),
       path('forest-cover-collections/edit/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get-tiff-data'),
       path('forest-cover-collections/edit/<int:pk>/stage-for-processing/',stage_for_processing,name='stage-for-processing'),
+      path('forest-cover-collections/edit/<int:pk>/delete-tiff-record/',delete_tiff_record,name='delete-tiff-record'),
+      path('forest-cover-collections/edit/<int:pk>/get-tiff-id/', get_tiff_id, name='get-tiff-id'),
+      path('forest-cover-collections/edit/<int:pk>/add-tiff-record/', add_tiff_record, name='add-tiff-record'),
+      path('forest-cover-collections/edit/<int:pk>/update-tiff-record/', update_tiff_record, name='update-tiff-record')
 
-      # STAGE FOR DELETION
+                    # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
       # path('test/', test, name='test'),
       # path('emissions/', pilot_country, name='emissions'),

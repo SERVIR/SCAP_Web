@@ -24,22 +24,22 @@ config = json.load(f)
 
 # This method is used to generate geodjango objects for AOI or Boundary Data Source
 # Uses LayerMapping technique to update the object from shape file
-def generate_geodjango_objects_boundary(verbose=True):
-    boundaryfiles_mapping = {
-        'feature_id': 'feature_id',
-        'name_es': 'name_es',
-        'nomedep': 'nomedep',
-        'nomemun': 'nomemun',
-        'pais': 'pais',
-        'fid': 'FID',
-        'geom': 'MULTIPOLYGON',
-    }
-    boundary = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), 'data',
-                     r"C:\Users\gtondapu\Desktop\SCAP\Boundary\mapbiomas\mapbiomas_merged.shp"),
-    )
-    lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
-    lm.save(strict=True, verbose=verbose)
+# def generate_geodjango_objects_boundary(verbose=True):
+#     boundaryfiles_mapping = {
+#         'feature_id': 'feature_id',
+#         'name_es': 'name_es',
+#         'nomedep': 'nomedep',
+#         'nomemun': 'nomemun',
+#         'pais': 'pais',
+#         'fid': 'FID',
+#         'geom': 'MULTIPOLYGON',
+#     }
+#     boundary = os.path.abspath(
+#         os.path.join(os.path.dirname(__file__), 'data',
+#                      r"C:\Users\gtondapu\Desktop\SCAP\Boundary\mapbiomas\mapbiomas_merged.shp"),
+#     )
+#     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
+#     lm.save(strict=True, verbose=verbose)
 
 
 def generate_geodjango_objects_aoi(verbose=True):
@@ -55,7 +55,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(r'C:\Users\gtondapu\Desktop\WDPA_World_Mar2024_simplified_ecl_PER\WDPA_World_Mar2024_simplified_2_excl_PER.shp'),
+        os.path.join(r'C:\Users\gtondapu\Downloads\ProtectedAreas_AllPilotCountries\PilotCountries.shp'),
     )
 
     lm = LayerMapping(AOIFeature, aoi, aoi_mapping, transform=False)
@@ -105,6 +105,40 @@ def get_tiff_data(request,pk):
         return JsonResponse({})
 
 
+@csrf_exempt
+def get_tiff_id(request,pk):
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_id=pk)
+    print(tiff.id)
+    return JsonResponse({"id":tiff.id})
+
+@csrf_exempt
+def add_tiff_record(request,pk):
+    print("in add")
+    existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
+    new_tiff = ForestCoverFile()
+    new_tiff.collection=existing_coll
+    new_tiff.year=request.POST.get('year')
+    new_tiff.file=request.POST.get('file')
+    new_tiff.metadata_link = request.POST.get('metadata_link')
+    new_tiff.doi_link = request.POST.get('doi_link')
+    new_tiff.save()
+    return JsonResponse({"added":"success"})
+
+@csrf_exempt
+def update_tiff_record(request,pk):
+    existing_tiff = ForestCoverFile.objects.get(id=request.POST.get('id'))
+    print(existing_tiff)
+    existing_tiff.year=request.POST.get('year')
+    # existing_tiff.file=request.POST.get('file')
+    existing_tiff.metadata_link = request.POST.get('metadata_link')
+    existing_tiff.doi_link = request.POST.get('doi_link')
+    existing_tiff.save()
+    return JsonResponse({"udpated":"success"})
+@csrf_exempt
+def delete_tiff_record(request,pk):
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_id=pk)
+    tiff.delete()
+    return JsonResponse({"deleted":"success"})
 
 @csrf_exempt
 def updatetomodel(request):

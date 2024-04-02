@@ -169,7 +169,7 @@
                                 
                                
 {% if operation == 'ADD' %}
-    <label for="formFile" class="form-label">Upload your Boundary shape file(applies to all
+    <label class="form-label">Upload your Boundary shape file(applies to all
                                     files in the
                                     collection) </label>
                                 {{ form.boundary_file }}
@@ -207,6 +207,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                    <label id="label_edit_tiff" style="display: none">Editing Tiff: <i><span id="current_tiff_name"></span></i></label>
 
                                     <label>Upload a file</label>
                                     <input class="form-control" accept="image/tiff" type="file" id="tiff_new_file"/>
@@ -222,7 +223,9 @@
                                 <script type="application/javascript">var opn='{{ operation }}';</script>
                                 <input type="button" class="btn btn-primary" id="save_year" value="Add to list"
                                        onclick="addFields('{{ user.username }}','{{ operation }}' )">
-
+                                <input type="hidden" value="0" id="tiff_id_to_update">
+    <input type="hidden" class="btn btn-primary " id="update_tiff" value="Update"
+                                       onclick="updateFields(this,form.id )">
                             </div>
                          
                             {##}{% endif %}

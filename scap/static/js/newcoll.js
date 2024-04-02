@@ -60,16 +60,16 @@ function storeTiffs() {
     var upload_form = $('#upload-file-new')[0];
     var form_data = new FormData(upload_form);
     let file = $("#tiff_new_file").prop('files')[0];
-    form_data.append('FC_tiff', file);
+    form_data.append('file', file);
     form_data.append('year', $('#tiff_year').val());
-    form_data.append('doi', $('#tiff_doi').val());
-    form_data.append('metadata', $('#tiff_metadata').val());
+    form_data.append('doi_link', $('#tiff_doi').val());
+    form_data.append('metadata_link', $('#tiff_metadata').val());
     form_data.append('coll_name', $('#current_coll').html());
 
 
     $.ajax({
         type: 'POST',
-        url: '/save-forest-cover-file/',
+        url: 'add-tiff-record/',
         data: form_data,
         contentType: false,
         processData: false,
@@ -78,7 +78,7 @@ function storeTiffs() {
             if (data.result == "success")
                 console.log('Success!');
             else {
-                alert(data.error_message);
+                // alert(data.error_message);
 
             }
         },
@@ -111,6 +111,8 @@ function show_tiffs(col) {
                     var td3 = document.createElement('td');
                     var td4 = document.createElement('td');
                     var td5 = document.createElement('td');
+                    var td6 = document.createElement('td');
+                    var td7 = document.createElement('td');
 
                     var text1 = document.createTextNode(userId);
                     var text2 = document.createTextNode(year);
@@ -140,6 +142,29 @@ function show_tiffs(col) {
                     td1.appendChild(text1);
                     td2.appendChild(text2);
                     td3.appendChild(text3);
+                    var editButton = document.createElement('button');
+editButton.textContent = 'Edit';
+editButton.type="button";
+editButton.classList="btn btn-primary";
+editButton.onclick=function (){
+    var row=this.parentElement.parentElement;
+
+
+populateTiffForm(row);
+};
+                    var deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.type="button";
+deleteButton.classList="btn btn-danger";
+td6.appendChild(editButton);
+td7.appendChild(deleteButton);
+deleteButton.onclick=function (){
+    var row=this.parentElement.parentElement;
+
+var id=parseInt(window.location.pathname.split('/')[3]);
+deleteTiffFile(id,row);
+
+};
 
 
                     tr.appendChild(td1);
@@ -147,7 +172,8 @@ function show_tiffs(col) {
                     tr.appendChild(td3);
                     tr.appendChild(td4);
                     tr.appendChild(td5);
-
+                    tr.appendChild(td6);
+                    tr.appendChild(td7);
                     tiff_table.appendChild(tr);
                 }
                 var tbodyRowCount = tiff_table.rows.length; // 3
@@ -164,6 +190,69 @@ function show_tiffs(col) {
 if(opn==='EDIT'){
         show_tiffs($('#current_coll').html());
     }
+
+function deleteTiffFile(id,row) {
+    console.log(id);
+      var tds = row.getElementsByTagName("td");   // Finds all children <td> elements
+        var year=tds[1].textContent;
+    $.ajax({
+         type: 'POST',
+         url: 'delete-tiff-record/',
+         data: {'year':year,'coll_id':id},
+         success: function (data) {
+           console.log("deleted");
+            row.parentNode.removeChild(row);
+         }
+     });
+
+}
+
+function updateFields(button,pk){
+    console.log(pk)
+
+ var tiff_id=document.getElementById("tiff_id_to_update").value;
+    var doi_link = $('#tiff_doi').val();
+     var year = $('#tiff_year').val();
+    var metadata_link = $('#tiff_metadata').val();
+
+ $.ajax({
+         type: 'POST',
+         url: 'update-tiff-record/',
+         data: {'id':parseInt(tiff_id),'year':year,'doi_link':doi_link,'metadata_link':metadata_link},
+         success: function (data) {
+            console.log("updated tiff record");
+              document.getElementById("update_tiff").type="hidden";
+               document.getElementById("label_edit_tiff").style.display="none";
+                 document.getElementById("save_year").type="button";
+                document.location.reload(true)
+         }
+     });
+}
+function populateTiffForm(row) {
+        var tds = row.getElementsByTagName("td");   // Finds all children <td> elements
+        var year=tds[1].textContent;
+        var doi=tds[3].getElementsByTagName("a")[0]?tds[3].getElementsByTagName("a")[0].href:"";
+        var metadata=tds[4].getElementsByTagName("a")[0]?tds[4].getElementsByTagName("a")[0].href:"";
+        var curr_file=tds[2].textContent;
+        document.getElementById("tiff_year").value=year;
+        document.getElementById("tiff_doi").value=doi;
+        document.getElementById("tiff_metadata").value=metadata;
+        document.getElementById("update_tiff").type="button";
+        document.getElementById("label_edit_tiff").style.display="block";
+        document.getElementById("current_tiff_name").innerHTML=curr_file;
+        document.getElementById("save_year").type="hidden";
+
+     $.ajax({
+         type: 'POST',
+         url: 'get-tiff-id/',
+         data: {'year':year},
+         success: function (data) {
+            document.getElementById("tiff_id_to_update").value=data.id;
+         }
+     });
+
+}
+
 function addFields(user,opn) {
     var tiff_table = document.getElementById("tifffTableBody");
 
@@ -194,10 +283,12 @@ function addFields(user,opn) {
                 var td3 = document.createElement('td');
                 var td4 = document.createElement('td');
                 var td5 = document.createElement('td');
-
+     var td6 = document.createElement('td');
+                    var td7 = document.createElement('td');
                 var text1 = document.createTextNode(user);
                 var text2 = document.createTextNode($('#tiff_year').val());
                 var text3 = document.createTextNode('fc_'+user+'_'+$('#current_coll').html()+'_'+year+'_1ha.tif');
+                text3.id='fc_'+user+'_'+$('#current_coll').html()+'_'+year+'_1ha';
                 console.log(data.error);
                    if(data.error!==undefined) {
                        doi_url = $('#tiff_doi').val();
@@ -236,14 +327,37 @@ function addFields(user,opn) {
                 td2.appendChild(text2);
 
                 td3.appendChild(text3);
+                    var editButton = document.createElement('button');
+editButton.textContent = 'Edit';
+editButton.type="button";
+editButton.classList="btn btn-primary";
+editButton.onclick=function (){
+    var row=this.parentElement.parentElement;
 
+
+populateTiffForm(row);
+};
+                    var deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.type="button";
+deleteButton.classList="btn btn-danger";
+td6.appendChild(editButton);
+td7.appendChild(deleteButton);
+deleteButton.onclick=function (){
+    var row=this.parentElement.parentElement;
+
+var id=parseInt(window.location.pathname.split('/')[3]);
+deleteTiffFile(id,row);
+
+};
 
                 tr.appendChild(td1);
                 tr.appendChild(td2);
                 tr.appendChild(td3);
                 tr.appendChild(td4);
                 tr.appendChild(td5);
-
+       tr.appendChild(td6);
+                    tr.appendChild(td7);
                 tiff_table.appendChild(tr);
                 storeTiffs();
                 if (tbodyRowCount > 0) {
