@@ -44,7 +44,7 @@ urlpatterns = [
       path('login/', auth_views.LoginView.as_view(), name='login'),
 
       path('home/', home, name='home2'),
-      path('pilot/<str:country>/', pilot_country, name='pilot_country'),
+      path('pilot/<int:country>/', pilot_country, name='pilot_country'),
       path('map/', map, name='map'),
       path('aoi/<str:aoi>/', protected_aois, name='aoi_page'),
       path('add-new-collection/', add_new_collection, name='add-new-collection'),

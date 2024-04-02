@@ -14,7 +14,8 @@ from django.contrib.auth.models import User
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
                       get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
-from scap.models import CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection
+from scap.models import CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection, \
+    PilotCountry
 
 from scap.async_tasks import process_agb_collection, process_aoi_collection
 
@@ -24,7 +25,13 @@ config = json.load(f)
 
 
 def home(request):
-    return render(request, 'scap/index.html')
+    pilot_countries=[]
+    try:
+        pilot_countries=PilotCountry.objects.all().order_by('country_name')
+    except:
+        pass
+
+    return render(request, 'scap/index.html',context={'pilot_countries':pilot_countries})
 
 def map(request):
     return render(request, 'scap/map.html')
@@ -34,17 +41,20 @@ def add_new_collection(request):
     return render(request, 'scap/add_new_collection.html')
 
 
-def pilot_country(request, country):
-    pa_name = country
+def pilot_country(request, country=1):
+    pa = PilotCountry.objects.get(id=country)
 
-    if country == 'None':
+    try:
+        print(pa.country_name)
+        pa_name=pa.country_name
+    except:
         pa_name = "Peru"
     colors = get_available_colors()
     chart, lcs, agbs = fetch_carbon_charts(pa_name, 'container')
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor})
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'image':pa.hero_image.url    })
 
 
 def protected_aois(request, aoi):

@@ -12,6 +12,8 @@ from django.http import JsonResponse
 from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
 from django.views.decorators.csrf import csrf_exempt
+
+from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
                          AOICollection, ForestCoverCollection, AGBCollection)
 from scap.async_tasks import process_aoi_collection, process_fc_collection, process_agb_collection
