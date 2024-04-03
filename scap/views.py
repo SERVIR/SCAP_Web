@@ -15,7 +15,7 @@ from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_
                       get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
 from scap.models import CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection, \
-    PilotCountry
+    PilotCountry, AOIFeature
 
 from scap.async_tasks import process_agb_collection, process_aoi_collection
 
@@ -58,15 +58,21 @@ def pilot_country(request, country=1):
 
 def protected_aois(request, aoi):
     try:
-        pa_name = aoi
-        if pa_name is None:
-            pa_name = 'Mantanay'
+        pa = AOIFeature.objects.get(id=aoi)
+        try:
+            pa_name = pa.name
+            pc=PilotCountry.objects.get(country_code=pa.iso3)
+            pc_name=pc.country_name
+        except:
+            pa_name = "Mantanay"
+            pc_name = "Peru"
         colors = get_available_colors()
         chart, lcs, agbs = fetch_carbon_charts(pa_name, 'emissions_chart_pa')
-        chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, 'container_fcpa')
+        chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
+        print('ajgdjasg')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name})
+                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'image':pc.hero_image.url})
     except Exception as e:
         return render(request, 'scap/protected_area.html')
 

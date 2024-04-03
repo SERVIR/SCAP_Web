@@ -9,6 +9,7 @@ import doi
 import requests
 import pandas as pd
 from django.http import JsonResponse
+from pandas_highcharts.core import serialize
 from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
 from django.views.decorators.csrf import csrf_exempt
@@ -92,16 +93,11 @@ def get_tiff_data(request,pk):
     try:
         coll_name=request.POST['coll_name']
         coll = ForestCoverCollection.objects.get(name=coll_name)
-        print(coll)
         return_obj={}
         results_arr=[]
         tiffs=ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
         for tiff in tiffs:
-
-            filename=str("fc_" + str(request.user.username) + "_" + str(request.POST['coll_name']) + "_" + str(
-                                   tiff.get('year')) + "_1ha.tif")
-
-            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':filename,'metadata':tiff.get('metadata_link'),'doi':tiff.get('doi_link')})
+            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),'doi':tiff.get('doi_link')})
         return_obj['data']=results_arr
         return JsonResponse(return_obj)
     except:
@@ -268,10 +264,13 @@ def delete_AOI(request):
         return JsonResponse({"result": "success"})
 
     except Exception as e:
-        print(e,__line_no__)
+        print(e)
         return JsonResponse({"result": "error", "message": str(e)})
-
-
+@csrf_exempt
+def get_aoi_id(request,country=0):
+    aoi=AOIFeature.objects.get(name=request.POST['aoi'],iso3=request.POST['iso3'],desig_eng=request.POST['desig_eng'])
+    print(aoi)
+    return JsonResponse({"id":aoi.id})
 @csrf_exempt
 def get_AOI(request, country='None'):
     json_obj = {}
@@ -333,24 +332,27 @@ def fetch_forest_change_charts(pa_name, container):
     return chart_fc, lcs_defor
 
 
-def fetch_forest_change_charts_by_aoi(pa_name, container):
+def fetch_forest_change_charts_by_aoi(aoi, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
-    df_defor = pd.DataFrame(list(ForestCoverChange.objects.filter(aoi__name=pa_name).values()))
-    df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
-        'id')))
-    lcs_defor = df_lc_defor.to_dict('records')
-    df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
-    df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
-    df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-    years_defor = list(df_defor['year'].unique())
+    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index=aoi).values()))
+    print(df_defor)
+    # df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
+    #     'id')))
+    # lcs_defor = df_lc_defor.to_dict('records')
+    lcs_defor=[]
+    # df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
+    # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
+    # df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
+    # years_defor = list(df_defor['year_index'].unique())
+    print("fdjksgf")
 
-    pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
-                                        index='year', fill_value=None)
+    # pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
+    #                                     index='year', fill_value=None)
 
-    chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
-                          xticks=years_defor,
-                          title="Change in Forest Cover: " + pa_name)
-    return chart_fc1, lcs_defor
+    # chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
+    #                       xticks=[],
+    #                       title="Change in Forest Cover: " + aoi)
+    return None, lcs_defor
 
 
 def get_agg_check(request, country='None'):

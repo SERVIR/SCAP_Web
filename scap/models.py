@@ -182,7 +182,7 @@ class ForestCoverStatistic(models.Model):
 
 class PilotCountry(models.Model):
     country_name = models.CharField(max_length=100, default="", help_text="Country Name")
-    country_code = models.CharField(max_length=2, default="", help_text="Country Code (ISO 2)")
+    country_code = models.CharField(max_length=3, default="", help_text="Country Code (ISO 3)")
     hero_image = models.ImageField(upload_to='assets/img/pilotcountry/', help_text="Hero Image")
     region = models.CharField(max_length=100, default="", help_text="Region")
     country_description = models.TextField(default="", help_text="Country Description")

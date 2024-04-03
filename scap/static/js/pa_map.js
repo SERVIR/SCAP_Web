@@ -3,6 +3,7 @@ var mapOptions = {
     center: [-10.4, -75.3],
     zoom: 8
 }
+
 // init_map();
 var first_layer;
 var second_layer;
@@ -23,6 +24,11 @@ function get_years(ds) {
 }
 
 $('#datasource_select').on('change', function () {
+    console.log("jhfjdh")
+var bounds = L.latLng(40.737, -73.923).toBounds();
+    console.log("kshjkdhsds")
+map.fitBounds(bounds, {animation: false});
+    console.log("kdlhfkjd")
     if (first_layer !== undefined) {
         map.removeLayer(first_layer);
     }

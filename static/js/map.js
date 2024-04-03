@@ -74,34 +74,25 @@ function whenClicked(e) {
         opacity: 1,
         color: 'cyan',  //Outline color
         fillOpacity: 0.4,
-    })
+    });
 
     var name = e.target.feature.properties.NAME;
-    pa_selected_name = name;
-    if (name !== undefined) {
-        //    let req_to_update = ajax_call("get-updated-series", {'pa_name':pa_selected_name});
-        // req_to_update.done(function (result) {
-        //     var updated_emissions_chart=JSON.parse(result.chart_epa);
-        //     var updated_forestchange_chart=JSON.parse(result.chart_fcpa);
-        //     // getMMA(pa_selected_name,updated_emissions_chart);
-        //     // getFC(pa_selected_name,updated_forestchange_chart);
-        // });
+    $.ajax({
+        type: 'POST',
+        url: 'get-aoi-id/',
+        data: {'aoi': name,'iso3':e.target.feature.properties.ISO3,'desig_eng':e.target.feature.properties.DESIG_ENG},
+        success: function (data) {
 
-        var zoomlevel = map.getZoom();
+            pa_selected_name = data.id;
+            var zoomlevel = map.getZoom();
 
-        if (zoomlevel >= 7) {
-            // var a = document.createElement('a');
-            // a.href =  window.location.origin + '/protected_areas/?protected_area_region=' + pa_selected_name;
-            //    a.setAttribute('target', '_blank');
-            // a.click();
-            window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
-
-            // window.location = window.location.origin + '/aoi/?protected_area_region=' + pa_selected_name;
-        } else {
-            window.location = window.location.origin + '/aoi/' + 'Peru' + '/';
+            if (zoomlevel >= 7) {
+                window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+            } else {
+                window.location = window.location.origin + '/aoi/1/';
+            }
         }
-        // window.location.hash = "Emissions_PA";
-    }
+    });
 }
 
 function onEachFeature(feature, layer) {

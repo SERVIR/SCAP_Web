@@ -25,7 +25,8 @@ from scap.validation import doi_valid
 from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, get_forest_cover_collections,
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
-                      stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record)
+                      stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
+                      get_aoi_id)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -46,15 +47,17 @@ urlpatterns = [
       path('home/', home, name='home2'),
       path('pilot/<int:country>/', pilot_country, name='pilot_country'),
       path('map/', map, name='map'),
-      path('aoi/<str:aoi>/', protected_aois, name='aoi_page'),
+      path('aoi/<int:aoi>/', protected_aois, name='aoi_page'),
       path('add-new-collection/', add_new_collection, name='add-new-collection'),
 
       path('get-series-name/', get_series_name, name='get-series-name'),
-      path('aoi/<str:country>/get-min-max/', get_agg_check, name='get-min-max'),
-      path('pilot/<str:country>/get-min-max/', get_agg_check, name='get-min-max'),
+      path('aoi/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
+      path('pilot/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
 
       path('map/get-aoi/', get_AOI, name='get-aoi'),
-      path('aoi/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+      path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
+      path('map/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
+      path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),
       path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
 
       path('delete-aoi/', delete_AOI, name='delete-aoi'),

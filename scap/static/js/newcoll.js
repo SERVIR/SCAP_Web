@@ -1,3 +1,16 @@
+function sortTable(table, col, reverse) {
+    var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+        tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+        i;
+    reverse = -((+reverse) || -1);
+    tr = tr.sort(function (a, b) { // sort rows
+        return reverse // `-1 *` if want opposite order
+            * (a.cells[col].textContent.trim() // using `.textContent.trim()` for test
+                .localeCompare(b.cells[col].textContent.trim())
+               );
+    });
+    for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
+}
 document.getElementById('id_doi_link').onchange = function() {
     var doi=document.getElementById('id_doi_link').value;
     if(doi!=='') {
@@ -153,15 +166,21 @@ function storeTiffs() {
         contentType: false,
         processData: false,
         success: function (data) {
+
             console.log(data);
-            if (data.result == "success")
+            if (data.result == "success"){
                 console.log('Success!');
+
+        }
             else {
                 // alert(data.error_message);
 
             }
+
+
         },
     });
+
 }
 
 function show_tiffs(col) {
@@ -177,7 +196,6 @@ function show_tiffs(col) {
                         }
                 for (var i=0;i<data.length;i++) {
 
-                    var userId = data[i].userId;
                     var year = data[i].year;
                     var filename = data[i].filename;
                     var doi_link = data[i].doi;
@@ -185,7 +203,6 @@ function show_tiffs(col) {
 
                     var tr = document.createElement('tr');
 
-                    var td1 = document.createElement('td');
                     var td2 = document.createElement('td');
                     var td3 = document.createElement('td');
                     var td4 = document.createElement('td');
@@ -193,7 +210,6 @@ function show_tiffs(col) {
                     var td6 = document.createElement('td');
                     var td7 = document.createElement('td');
 
-                    var text1 = document.createTextNode(userId);
                     var text2 = document.createTextNode(year);
                     var text3 = document.createTextNode(filename);
                      if(doi_link.length>0) {
@@ -218,7 +234,6 @@ function show_tiffs(col) {
                     else{
                          td5.appendChild( document.createTextNode(''));
                     }
-                    td1.appendChild(text1);
                     td2.appendChild(text2);
                     td3.appendChild(text3);
                     var editButton = document.createElement('button');
@@ -246,7 +261,6 @@ deleteTiffFile(id,row);
 };
 
 
-                    tr.appendChild(td1);
                     tr.appendChild(td2);
                     tr.appendChild(td3);
                     tr.appendChild(td4);
@@ -260,9 +274,10 @@ deleteTiffFile(id,row);
                     if (document.getElementById("no-records"))
                         document.getElementById("no-records").remove();
                 }
+                sortTable(document.getElementById("tifffTable"),0,false);
+
             }
             });
-
 
 }
 // console.log({{operation}});
@@ -274,7 +289,7 @@ if(opn==='EDIT'){
 function deleteTiffFile(id,row) {
     console.log(id);
       var tds = row.getElementsByTagName("td");   // Finds all children <td> elements
-        var year=tds[1].textContent;
+        var year=tds[0].textContent;
     $.ajax({
          type: 'POST',
          url: 'delete-tiff-record/',
@@ -288,7 +303,7 @@ function deleteTiffFile(id,row) {
 }
 
 function updateFields(button,pk){
-    console.log(pk)
+    console.log(pk);
 
  var tiff_id=document.getElementById("tiff_id_to_update").value;
     var doi_link = $('#tiff_doi').val();
@@ -358,16 +373,14 @@ function addFields(user,opn) {
 
                 var tr = document.createElement('tr');
 
-                var td1 = document.createElement('td');
                 var td2 = document.createElement('td');
                 var td3 = document.createElement('td');
                 var td4 = document.createElement('td');
                 var td5 = document.createElement('td');
      var td6 = document.createElement('td');
                     var td7 = document.createElement('td');
-                var text1 = document.createTextNode(user);
                 var text2 = document.createTextNode($('#tiff_year').val());
-                var text3 = document.createTextNode('fc_'+user+'_'+$('#current_coll').html()+'_'+year+'_1ha.tif');
+                var text3 = document.createTextNode($("#tiff_new_file").prop('files')[0].name);
                 text3.id='fc_'+user+'_'+$('#current_coll').html()+'_'+year+'_1ha';
                 console.log(data.error);
                    if(data.error!==undefined) {
@@ -403,7 +416,6 @@ function addFields(user,opn) {
                     td5.appendChild( document.createTextNode(''));
 
                 }
-                td1.appendChild(text1);
                 td2.appendChild(text2);
 
                 td3.appendChild(text3);
@@ -431,7 +443,6 @@ deleteTiffFile(id,row);
 
 };
 
-                tr.appendChild(td1);
                 tr.appendChild(td2);
                 tr.appendChild(td3);
                 tr.appendChild(td4);
@@ -439,7 +450,10 @@ deleteTiffFile(id,row);
        tr.appendChild(td6);
                     tr.appendChild(td7);
                 tiff_table.appendChild(tr);
+
+
                 storeTiffs();
+
                 if (tbodyRowCount > 0) {
                     if (document.getElementById("no-records"))
                         document.getElementById("no-records").remove();
@@ -450,15 +464,16 @@ deleteTiffFile(id,row);
             error: function (jqXHR, textStatus, errorThrown) {
                 alert(errorThrown);
             }
-
         });
+
+
     } else {
         var tbodyRowCount = tiff_table.rows.length; // 3
         if (tbodyRowCount > 0) {
             if (document.getElementById("no-records"))
                 document.getElementById("no-records").remove();
         } else {
-            $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="7">No tiff files added yet.</td></tr>');
+            $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
 
         }
     }
