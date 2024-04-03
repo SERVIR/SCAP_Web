@@ -108,6 +108,8 @@
             <tr>
                 <th>AOI Name</th>
                 <th>AOI Description</th>
+                <th>Processing Status</th>
+
                 <th></th>
                 <th></th>
             </tr>
@@ -118,6 +120,7 @@
                 <tr>
                     <td><label>{{ aoi.name|truncatechars:150 }}</label></td>
                     <td><label>{{ aoi.description|truncatechars:150 }}</label></td>
+                      <td><label>{{ aoi.processing_status}}</label></td>
                     <td>
                       {% if aoi.processing_status == 'Staged' %}
                         <button class="btn-secondary btn disabled" title="AOI Shape File is currently being processed"

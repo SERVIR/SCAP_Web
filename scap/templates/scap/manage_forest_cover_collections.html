@@ -109,6 +109,7 @@
                 <th>Collection Name</th>
                 <th>Collection Description</th>
                 <th># of Tiff Files</th>
+                <th>Processing Status</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -120,6 +121,7 @@
                     <td><label>{{ coll.name|truncatechars:150 }}</label></td>
                     <td><label>{{ coll.description|truncatechars:150 }}</label></td>
                     <td><label>{{ coll.yearly_files.all.count }}</label></td>
+                       <td><label>{{ coll.processing_status}}</label></td>
                     <td>
                         {% if coll.processing_status == 'Staged' %}
                         <button class="btn-secondary btn disabled" title="Collection is currently being processed"

@@ -192,9 +192,11 @@
                             </div>
 
                             <input type="hidden" name="owner" value=" {{ owner }}">
-                            
+                   {% if operation == 'ADD' %}
  <input type="submit" class="btn-primary btn" value="Save Collection"/> 
-
+{% else %}
+                                 <input type="submit" class="btn-primary btn" value="Update Collection"/>
+                                {% endif %}
                             <div class="mb-3 common">
                                 <label for="formFileMultiple" class="form-label"><b>Upload Yearly Land Cover Tiff
                                     files:</b> </label>

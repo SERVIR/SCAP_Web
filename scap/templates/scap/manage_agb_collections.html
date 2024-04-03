@@ -108,6 +108,7 @@
             <tr>
                 <th>AGB Name</th>
                 <th>AGB Description</th>
+                 <th>Processing Status</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -118,6 +119,7 @@
                 <tr>
                     <td><label>{{ agb.name|truncatechars:150 }}</label></td>
                     <td><label>{{ agb.description|truncatechars:150}}</label></td>
+                     <td><label>{{ agb.processing_status}}</label></td>
                     <td>
                             {% if agb.processing_status == 'Staged' %}
                         <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"

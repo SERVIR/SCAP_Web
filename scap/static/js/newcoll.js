@@ -1,3 +1,7 @@
+var coll_doi=false;
+var coll_metadata=false;
+var tiff_doi=false;
+var doi_metadata=false;
 function sortTable(table, col, reverse) {
     var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
         tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
@@ -23,8 +27,10 @@ document.getElementById('id_doi_link').onchange = function() {
             success: function (data) {
                 if (data.error) {
                     alert('please enter a valid doi or leave blank');
+                    coll_doi=false;
                     document.getElementById('id_doi_link').value = "";
                 } else {
+                    coll_doi=true;
                     console.log("valid doi");
 
                 }
@@ -74,9 +80,12 @@ document.getElementById('tiff_doi').onchange = function() {
             success: function (data) {
                 if(data.error){
                     alert('please enter a valid doi');
+                                        tiff_doi=false;
+
                     document.getElementById('tiff_doi').value="";
                 }
                 else{
+                    tiff_doi=true
                     console.log("valid doi");
 
                 }
@@ -449,16 +458,20 @@ deleteTiffFile(id,row);
                 tr.appendChild(td5);
        tr.appendChild(td6);
                     tr.appendChild(td7);
-                tiff_table.appendChild(tr);
+                    if (tiff_doi) {
+                        tiff_table.appendChild(tr);
+                        storeTiffs();
+                         clear_fields();
+                    }
 
 
-                storeTiffs();
+
 
                 if (tbodyRowCount > 0) {
                     if (document.getElementById("no-records"))
                         document.getElementById("no-records").remove();
                 }
-                clear_fields();
+
 
             },
             error: function (jqXHR, textStatus, errorThrown) {

@@ -132,7 +132,10 @@ def update_tiff_record(request,pk):
     existing_tiff.year=request.POST.get('year')
     # existing_tiff.file=request.POST.get('file')
     existing_tiff.metadata_link = request.POST.get('metadata_link')
-    existing_tiff.doi_link = request.POST.get('doi_link')
+    if request.POST.get('doi_link')!='' and request.POST.get('doi_link') is not None:
+        existing_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
+    else:
+        existing_tiff.doi_link = request.POST.get('doi_link')
     existing_tiff.save()
     return JsonResponse({"udpated":"success"})
 @csrf_exempt

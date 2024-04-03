@@ -12,7 +12,7 @@ class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('country_name',)
+    list_display = ('country_name','region','country_code','year_added')
     list_display_links = ('country_name',)
 
 
