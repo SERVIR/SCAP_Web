@@ -69,7 +69,6 @@ def protected_aois(request, aoi):
         colors = get_available_colors()
         chart, lcs, agbs = fetch_carbon_charts(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
-        print('ajgdjasg')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                                'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'image':pc.hero_image.url})
