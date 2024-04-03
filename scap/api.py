@@ -118,7 +118,10 @@ def add_tiff_record(request,pk):
     new_tiff.year=request.POST.get('year')
     new_tiff.file=request.FILES['file']
     new_tiff.metadata_link = request.POST.get('metadata_link')
-    new_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
+    if request.POST.get('doi_link')!='' and request.POST.get('doi_link') is not None:
+        new_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
+    else:
+        new_tiff.doi_link = request.POST.get('doi_link')
     new_tiff.save()
     return JsonResponse({"added":"success"})
 
