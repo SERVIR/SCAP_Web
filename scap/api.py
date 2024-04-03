@@ -59,7 +59,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(r'C:\Users\gtondapu\Desktop\PilotCountries_All\PilotCountries_All.shp'),
+        os.path.join(r'C:\Users\gtondapu\Documents\pc_4326.shp'),
     )
 
     lm = LayerMapping(AOIFeature, aoi, aoi_mapping, transform=False)

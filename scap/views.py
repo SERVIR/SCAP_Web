@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 
 from django.contrib.auth.models import User
@@ -22,7 +23,6 @@ from scap.async_tasks import process_agb_collection, process_aoi_collection
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
-
 
 def home(request):
     pilot_countries=[]
