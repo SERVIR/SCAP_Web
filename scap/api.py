@@ -106,7 +106,7 @@ def get_tiff_data(request,pk):
 
 @csrf_exempt
 def get_tiff_id(request,pk):
-    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection_name=request.POST.get('coll_name'))
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
     print(tiff)
     return JsonResponse({"id":tiff.id})
 
@@ -118,7 +118,7 @@ def add_tiff_record(request,pk):
     new_tiff.year=request.POST.get('year')
     new_tiff.file=request.FILES['file']
     new_tiff.metadata_link = request.POST.get('metadata_link')
-    new_tiff.doi_link = request.POST.get('doi_link')
+    new_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
     new_tiff.save()
     return JsonResponse({"added":"success"})
 
@@ -277,7 +277,7 @@ def get_AOI(request, country='None'):
     try:
         vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
 
-        json_obj["data"] = json.loads(vec.to_json())
+        json_obj["data_pa"] = json.loads(vec.to_json())
     except:
         return JsonResponse({})
     return JsonResponse(json_obj)
@@ -335,7 +335,6 @@ def fetch_forest_change_charts(pa_name, container):
 def fetch_forest_change_charts_by_aoi(aoi, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index=aoi).values()))
-    print(df_defor)
     # df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
     #     'id')))
     # lcs_defor = df_lc_defor.to_dict('records')
@@ -344,7 +343,6 @@ def fetch_forest_change_charts_by_aoi(aoi, container):
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
     # df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
     # years_defor = list(df_defor['year_index'].unique())
-    print("fdjksgf")
 
     # pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
     #                                     index='year', fill_value=None)

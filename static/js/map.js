@@ -149,7 +149,7 @@ function redraw_map_layers() {
 
     let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
-        aoi_layer_left = L.geoJSON(result['data'], {
+        aoi_layer_left = L.geoJSON(result['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -159,7 +159,7 @@ function redraw_map_layers() {
             onEachFeature: onEachFeature,
             pane: 'left'
         })
-        aoi_layer_right = L.geoJSON(result['data'], {
+        aoi_layer_right = L.geoJSON(result['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -169,6 +169,7 @@ function redraw_map_layers() {
             onEachFeature: onEachFeature,
             pane: 'right'
         });
+
         aoi_layer_left.on('add', (e) => {
             document.getElementById("loading_spinner_map").style.display = "none";
         });

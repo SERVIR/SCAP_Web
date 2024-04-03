@@ -325,10 +325,10 @@ function updateFields(button,pk){
 }
 function populateTiffForm(row) {
         var tds = row.getElementsByTagName("td");   // Finds all children <td> elements
-        var year=tds[1].textContent;
-        var doi=tds[3].getElementsByTagName("a")[0]?tds[3].getElementsByTagName("a")[0].href:"";
-        var metadata=tds[4].getElementsByTagName("a")[0]?tds[4].getElementsByTagName("a")[0].href:"";
-        var curr_file=tds[2].textContent;
+        var year=tds[0].textContent;
+        var doi=tds[2].getElementsByTagName("a")[0]?tds[2].getElementsByTagName("a")[0].href:"";
+        var metadata=tds[3].getElementsByTagName("a")[0]?tds[3].getElementsByTagName("a")[0].href:"";
+        var curr_file=tds[1].textContent;
         document.getElementById("tiff_year").value=year;
         document.getElementById("tiff_doi").value=doi;
         document.getElementById("tiff_metadata").value=metadata;
