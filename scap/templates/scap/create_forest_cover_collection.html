@@ -164,7 +164,7 @@
                             </label>
                                 {{ form.doi_link }}
                             </div>
-                            <div class="mb-3 common"><label style="display: block">Metadata
+                            <div class="mb-3 common"><label style="display: block">Metadata Link
                             </label>
                                 {{ form.metadata_link }}
                             </div>
@@ -172,7 +172,7 @@
                                 
                                
 {% if operation == 'ADD' %}
-    <label class="form-label">Upload your Boundary shape file(applies to all
+    <label class="form-label">Upload Boundary shape file(applies to all
                                     files in the
                                     collection) </label>
                                 {{ form.boundary_file }}
@@ -187,7 +187,7 @@
     {% endif %}
                             </div>
                                <div class="mb-3 common">
-                                <label for="access">Access Level</label>
+                                <label>Access Level</label>
                                 {{ form.access_level }}
                             </div>
 
@@ -198,7 +198,7 @@
                                  <input type="submit" class="btn-primary btn" value="Update Collection"/>
                                 {% endif %}
                             <div class="mb-3 common">
-                                <label for="formFileMultiple" class="form-label"><b>Upload Yearly Land Cover Tiff
+                                <label class="form-label"><b>Upload Yearly Land Cover Tiff
                                     files:</b> </label>
 
                                 <div style="padding:10px;" class="new_tiff">
@@ -229,29 +229,38 @@
                                     <input class="form-control" type="number" id="tiff_year"/>
                                     <label>DOI</label>
                                     <input class="form-control" type="text" id="tiff_doi"/>
-                                    <label>Metadata</label>
+                                    <label>Metadata Link</label>
                                     <input class="form-control" type="text" id="tiff_metadata"/>
 
 
                                 </div>
                                 <script type="application/javascript">var opn='{{ operation }}';</script>
+                                 {% if operation == 'EDIT' %}
                                 <input type="button" class="btn btn-primary" id="save_year" value="Add to list"
                                        onclick="addFields('{{ user.username }}','{{ operation }}' )">
                                 <input type="hidden" value="0" id="tiff_id_to_update">
+                                 <input type="hidden" value="0" id="row_to_update">
     <input type="hidden" class="btn btn-primary " id="update_tiff" value="Update"
                                        onclick="updateFields(this,form.id )">
+                                {% else %}
+                                                         <input type="button" class="btn btn-secondary disabled" value="Add to list"
+                                       onclick="addFields('{{ user.username }}','{{ operation }}' )">
+                                <input type="hidden" value="0" >
+    <input type="hidden" class="btn btn-primary disabled " value="Update"
+                                       onclick="updateFields(this,form.id )"><span class="text-secondary fst-italic">You can add tiff files after saving the collection</span>
+                                {% endif %}
                             </div>
-                         
+
                             {##}{% endif %}
                         {#                            <div class="mb-3 common">#}
-                        {#                                <label for="access">Resolution (meters per pixel)</label>#}
+                        {#                                <label>Resolution (meters per pixel)</label>#}
                         {#                                {{ form.resolution }}#}
                         {#                            </div>#}
-                
+
                             <a  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a> 
                         <a
                                 class="btn btn-outline-warning" href="{% url 'forest-cover-collections' %}">Go to the list</a>
-  
+
                     {##}
                         </div>
                 </form>

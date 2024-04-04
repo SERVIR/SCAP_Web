@@ -85,7 +85,7 @@ def save_forest_cover_file(request):
 
         return JsonResponse({"result": "success", "error_message": ""})
     except Exception as e:
-        print(e,__line_no__)
+        print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
 
 @csrf_exempt
@@ -97,7 +97,12 @@ def get_tiff_data(request,pk):
         results_arr=[]
         tiffs=ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
         for tiff in tiffs:
-            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),'doi':tiff.get('doi_link')})
+            try:
+                doi_full = doi.validate_doi(tiff.get('doi_link'))
+            except Exception as e:
+                doi_full=""
+            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),
+                                'doi':tiff.get('doi_link'),'doi_full_link':doi_full})
         return_obj['data']=results_arr
         return JsonResponse(return_obj)
     except:
@@ -108,7 +113,7 @@ def get_tiff_data(request,pk):
 def get_tiff_id(request,pk):
     tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
     print(tiff)
-    return JsonResponse({"id":tiff.id})
+    return JsonResponse({"id":tiff.id,"doi":tiff.doi_link})
 
 @csrf_exempt
 def add_tiff_record(request,pk):
@@ -118,26 +123,21 @@ def add_tiff_record(request,pk):
     new_tiff.year=request.POST.get('year')
     new_tiff.file=request.FILES['file']
     new_tiff.metadata_link = request.POST.get('metadata_link')
-    if request.POST.get('doi_link')!='' and request.POST.get('doi_link') is not None:
-        new_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
-    else:
-        new_tiff.doi_link = request.POST.get('doi_link')
+    new_tiff.doi_link = request.POST.get('doi_link')
     new_tiff.save()
     return JsonResponse({"added":"success"})
 
 @csrf_exempt
 def update_tiff_record(request,pk):
+    return_obj={}
     existing_tiff = ForestCoverFile.objects.get(id=request.POST.get('id'))
-    print(existing_tiff)
     existing_tiff.year=request.POST.get('year')
-    # existing_tiff.file=request.POST.get('file')
     existing_tiff.metadata_link = request.POST.get('metadata_link')
-    if request.POST.get('doi_link')!='' and request.POST.get('doi_link') is not None:
-        existing_tiff.doi_link = doi.validate_doi(request.POST.get('doi_link'))
-    else:
-        existing_tiff.doi_link = request.POST.get('doi_link')
+    if request.FILES:
+        existing_tiff.file=request.FILES['file']
+    existing_tiff.doi_link=request.POST.get('doi_link')
     existing_tiff.save()
-    return JsonResponse({"udpated":"success"})
+    return JsonResponse(return_obj)
 @csrf_exempt
 def delete_tiff_record(request,pk):
     tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
@@ -175,7 +175,7 @@ def updatetomodel(request):
                 return JsonResponse({"result": "error", "error_message": "Invalid file " + original_names[i]})
             return JsonResponse({"result": "success"})
     except Exception as e:
-        print(e,__line_no__)
+        print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
 
 

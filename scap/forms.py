@@ -18,13 +18,13 @@ class ForestCoverCollectionForm(forms.ModelForm):
                 attrs={'class': 'form-control', 'placeholder': 'Enter a name for the collection'}),
             'description': forms.Textarea(
                 attrs={'class': 'form-control',
-                       'placeholder': 'Please describe the collection (source, projections, post-processing'}),
+                       'placeholder': 'Enter the collection information (source, projections, post-processing)'}),
             'boundary_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Collection Name'}),
             'last_accessed_on': forms.DateTimeInput(attrs={'class': 'form-control'}),
-            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
-            'metadata_link': forms.URLInput(attrs={'class': 'form-control'})
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a DOI URL'}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control','placeholder':'Enter a Metadata URL'})
         }
 
 
@@ -43,8 +43,8 @@ class AOICollectionForm(forms.ModelForm):
             'description': forms.Textarea(
                 attrs={'class': 'form-control', 'placeholder': 'Enter the details about the AOI'}),
             'source_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
-            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
-            'metadata_link': forms.URLInput(attrs={'class': 'form-control'}),
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a DOI URL'}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Enter a Metadata URL'}),
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'})
         }
 
@@ -63,10 +63,10 @@ class AGBCollectionForm(forms.ModelForm):
             'name': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Enter a name for the AGB'}),
             'description': forms.Textarea(
-                attrs={'class': 'form-control', 'placeholder': 'Enter the details about the AGB'}),
+                attrs={'class': 'form-control', 'placeholder': 'Enter details about the AGB'}),
             'boundary_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/zip'}),
             'source_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/tiff'}),
-            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
-            'metadata_link': forms.URLInput(attrs={'class': 'form-control'}),
+            'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a DOI URL'}),
+            'metadata_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Enter a Metadata URL'}),
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'})
         }

@@ -59,21 +59,18 @@ def pilot_country(request, country=1):
 def protected_aois(request, aoi):
     try:
         pa = AOIFeature.objects.get(id=aoi)
-        try:
-            pa_name = pa.name
-            pc=PilotCountry.objects.get(country_code=pa.iso3)
-            pc_name=pc.country_name
-        except:
-            pa_name = "Mantanay"
-            pc_name = "Peru"
+        pa_name = pa.name
+        pc=PilotCountry.objects.get(country_code=pa.iso3)
+        pc_name=pc.country_name
+        country_id=pc.id
         colors = get_available_colors()
         chart, lcs, agbs = fetch_carbon_charts(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'image':pc.hero_image.url})
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name})
     except Exception as e:
-        return render(request, 'scap/protected_area.html')
+        return render(request, 'scap/index.html')
 
 
 
