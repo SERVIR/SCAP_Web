@@ -189,6 +189,10 @@ class PilotCountry(models.Model):
     year_added = models.IntegerField(help_text="Year Added as Pilot Country", default=2024)
     aoi_polygon = models.ForeignKey(AOIFeature, help_text="Country Polygon AOI ID (reference to AOI model)",
                                     on_delete=models.CASCADE, blank=True, null=True)
+    latitude = models.FloatField(default=0, help_text="Latitude")
+    longitude = models.FloatField(default=0, help_text="Longitude")
+    zoom_level = models.IntegerField(default=0, help_text="Default Zoom level")
+    forest_cover_collection = models.ForeignKey(ForestCoverCollection, help_text="Default Forest Cover Collection to show on map",blank=True,null=True,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.country_name
