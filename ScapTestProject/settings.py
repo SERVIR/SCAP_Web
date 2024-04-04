@@ -104,7 +104,7 @@ TEMPLATES = [
         },
     },
 ]
-
+SOCIALACCOUNT_LOGIN_ON_GET=True
 WSGI_APPLICATION = 'ScapTestProject.wsgi.application'
 
 # Database
