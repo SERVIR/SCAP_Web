@@ -133,11 +133,14 @@
 
                     <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">
                         <div></div>
-                        {% if form.errors %}
-                            <div>
-                                {{ form.errors }}
-                            </div>
-                        {% else %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class="text-danger small {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
                             {{ operation }} a forest cover collection
 
                             </h3>
@@ -169,8 +172,8 @@
                                 {{ form.metadata_link }}
                             </div>
                             <div class="mb-3 common">
-                                
-                               
+
+
 {% if operation == 'ADD' %}
     <label class="form-label">Upload Boundary shape file(applies to all
                                     files in the
@@ -193,7 +196,7 @@
 
                             <input type="hidden" name="owner" value=" {{ owner }}">
                    {% if operation == 'ADD' %}
- <input type="submit" class="btn-primary btn" value="Save Collection"/> 
+ <input type="submit" class="btn-primary btn" value="Save Collection"/>
 {% else %}
                                  <input type="submit" class="btn-primary btn" value="Update Collection"/>
                                 {% endif %}
@@ -251,23 +254,20 @@
                                 {% endif %}
                             </div>
 
-                            {##}{% endif %}
-                        {#                            <div class="mb-3 common">#}
-                        {#                                <label>Resolution (meters per pixel)</label>#}
-                        {#                                {{ form.resolution }}#}
-                        {#                            </div>#}
 
-                            <a  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a> 
+
+
+                            <a  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a>
                         <a
                                 class="btn btn-outline-warning" href="{% url 'forest-cover-collections' %}">Go to the list</a>
 
-                    {##}
+
                         </div>
                 </form>
             </div>
         </div>
     </div>
-    
+
 
     <!-- Footer-->
     <footer class="footer py-4">

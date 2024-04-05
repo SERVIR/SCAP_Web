@@ -1,12 +1,12 @@
 from django import forms
+from django.core.exceptions import ValidationError
+
 from scap.models import ForestCoverCollection, AOICollection, AGBCollection
 
 
 class ForestCoverCollectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ForestCoverCollectionForm, self).__init__(*args, **kwargs)
-
-
     class Meta:
         model = ForestCoverCollection
         fields = ['name', 'description', 'doi_link', 'metadata_link', 'boundary_file', 'access_level', 'owner']

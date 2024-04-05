@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated hover logo">
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updated pilot country">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/templates/scap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scap/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scap/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -618,7 +624,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712239271891</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="updated pilot country">
+      <option name="closed" value="true" />
+      <created>1712241885192</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1712241885192</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -636,7 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="model" />
     <MESSAGE value="updated emissions" />
     <MESSAGE value="updated map" />
     <MESSAGE value="updated fc" />
@@ -661,7 +674,8 @@
     <MESSAGE value="updates to protected area page and dois" />
     <MESSAGE value="google login" />
     <MESSAGE value="updated hover logo" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated hover logo" />
+    <MESSAGE value="updated pilot country" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated pilot country" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />

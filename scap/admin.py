@@ -12,7 +12,7 @@ class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('country_name','region','country_code','year_added')
+    list_display = ('country_name','region','country_code','year_added','latitude','longitude','zoom_level')
     list_display_links = ('country_name',)
 
 
@@ -35,7 +35,7 @@ class ForestCoverFileInline(admin.TabularInline):
 
 
 class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name', 'boundary_file')
+    list_display = ('name', 'boundary_file','owner')
     inlines = [ ForestCoverFileInline, ]
 
 

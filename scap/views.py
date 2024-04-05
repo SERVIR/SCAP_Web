@@ -142,7 +142,6 @@ class CreateForestCoverCollection(CreateView):
             data['form'] = ForestCoverCollectionForm()
         data['owner'] = User.objects.get(username=self.request.user).id
         data['operation'] = 'ADD'
-        data['resolution'] = 100.0
         return data
 
     def get_success_url(self):
@@ -150,6 +149,7 @@ class CreateForestCoverCollection(CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+        form.instance.owner = User.objects.get(username=self.request.user)
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -160,10 +160,12 @@ class CreateForestCoverCollection(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
+        form.instance.owner = User.objects.get(username=self.request.user)
         if not form.is_valid():
-            messages.add_message(self.request, messages.WARNING, form.errors)
-
-        return HttpResponseRedirect(reverse("create-forest-cover-collection"))
+            print(form.errors)
+            messages.error(self.request, "You already have a forest cover collection with that name, please use a unique name")
+        return render(self.request, self.template_name, { 'form': form,'operation': 'ADD','owner':User.objects.get(username=self.request.user).id})
+        # return HttpResponseRedirect(reverse("create-forest-cover-collection"))
 
 
 class CreateAGBCollection(CreateView):

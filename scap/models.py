@@ -30,7 +30,7 @@ class ForestCoverCollection(models.Model):
         ('Processed', 'Processed')
     )
 
-    name = models.CharField(max_length=100, default="", help_text="Forest Cover Collection Name", unique=True)
+    name = models.CharField(max_length=100, default="", help_text="Forest Cover Collection Name")
     description = models.TextField(default="", help_text="Forest Cover Collection Description")
 
     doi_link = models.CharField(max_length=200, default="", blank=True)
@@ -45,6 +45,7 @@ class ForestCoverCollection(models.Model):
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
+        unique_together='name','owner'
 
 
 class ForestCoverFile(models.Model):
