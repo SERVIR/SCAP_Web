@@ -137,9 +137,9 @@
                 <label>Dataset</label>
                 <select name="selected_region" id="selected_region" class="form-control"
                         onchange="redraw_map_layers()">
-                    <option value="esri" selected="selected">ESRI</option>
+                    <option value="esri">ESRI</option>
                     <option value="modis">MODIS</option>
-                    <option value="jaxa">JAXA</option>
+                    <option value="jaxa" selected="selected">JAXA</option>
                     <option value="worldcover">WorldCover</option>
                     <option value="mapbiomas">Mapbiomas</option>
                     <option value="cci">CCI</option>
@@ -157,6 +157,21 @@
                             onchange="redraw_map_layers()">
                     </select>
                 </div>
+            </div>
+
+        </div>
+         <div class="d-flex">
+            <div class="form-group">
+                <label>Dataset</label>
+                <select name="comparing_region" id="comparing_region" class="form-control"
+                        onchange="redraw_map_layers()">
+                    <option value="esri" selected="selected">ESRI</option>
+                    <option value="modis">MODIS</option>
+                    <option value="jaxa">JAXA</option>
+                    <option value="worldcover">WorldCover</option>
+                    <option value="mapbiomas">Mapbiomas</option>
+                    <option value="cci">CCI</option>
+                </select>
             </div>
         </div>
     </div>

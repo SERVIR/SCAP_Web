@@ -137,15 +137,11 @@ function onEachFeature(feature, layer) {
 function redraw_map_layers() {
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
-    let years = get_years(document.getElementById('selected_region').value);
-    console.log(years)
-    console.log(document.getElementById('selected_region').value)
-    //console.log(result['data']);
-    fill_years_selector(get_years_range(years[0], years[1]));
-    fill_comparison_years_selector(get_years_range(years[0], years[1]));
-    document.getElementById('selected_year').value = years[0];
-    document.getElementById('comparison_year').value = years[1];
-    let selected_dataset = document.getElementById('selected_region').value;
+
+    // document.getElementById('selected_year').value = years[0];
+    // document.getElementById('comparison_year').value = c_years[0];
+    let selected_dataset_left = document.getElementById('selected_region').value;
+     let selected_dataset_right = document.getElementById('comparing_region').value;
 
     let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
@@ -176,10 +172,11 @@ function redraw_map_layers() {
         aoi_layer_right.on('add', (e) => {
             document.getElementById("loading_spinner_map").style.display = "none";
         });
-        let selected_year = document.getElementById('selected_year').value
-        let comparison_year = document.getElementById('comparison_year').value
-        let selected_dataset = document.getElementById('selected_region').value
-        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        let selected_year = document.getElementById('selected_year').value;
+        let comparison_year = document.getElementById('comparison_year').value;
+        let selected_dataset_left = document.getElementById('selected_region').value;
+        let selected_dataset_right = document.getElementById('comparing_region').value;
+        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -189,9 +186,9 @@ function redraw_map_layers() {
                 transparent: true,
                 styles: 'boxfill/crimsonbluegreen',
                 pane: 'left'
-            })
+            });
 
-        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -203,7 +200,7 @@ function redraw_map_layers() {
                 pane: 'left'
             })
 
-        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -214,7 +211,7 @@ function redraw_map_layers() {
                 transparent: true,
                 pane: 'right'
             })
-        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset}/${selected_dataset}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -283,12 +280,13 @@ function get_available_years() {
     //xhr.done(function (result) {
     // let years = Object.values([2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021,2022]);
     let years = get_years(document.getElementById('selected_region').value);
-    console.log(document.getElementById('selected_region').value)
+    console.log(document.getElementById('selected_region').value);
     //console.log(result['data']);
     fill_years_selector(get_years_range(years[0], years[1]));
-    fill_comparison_years_selector(get_years_range(years[0], years[1]));
+    let c_years = get_years(document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
     document.getElementById('selected_year').value = years[0];
-    document.getElementById('comparison_year').value = years[1];
+    document.getElementById('comparison_year').value = c_years[1];
     redraw_map_layers();
     //})
 }
@@ -312,22 +310,7 @@ function init_map() {
         showPopup: false,
         autoClose: true
     }));
-    /*var url_to_geotiff_file = "http://localhost:8000/static/assets/watermask_geom_COG.tif";
-      fetch(url_to_geotiff_file)
-        .then(response => response.arrayBuffer())
-        .then(arrayBuffer => {
-            parseGeoraster(arrayBuffer).then(georaster => {
-                console.log("georaster:", georaster);
-                var layer = new GeoRasterLayer({
-                    georaster: georaster,
-                    opacity: 0.7,
 
-                });
-                layer.addTo(map);
-
-                map.fitBounds(layer.getBounds());
-            });
-        });*/
     var wmsLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
         layers: 's-cap:watermask_2',
         format: 'image/png',
@@ -383,5 +366,8 @@ function add_basemap(map_name) {
 
 $(function () {
     init_map();
-
+ let years = get_years(document.getElementById('selected_region').value);
+    fill_years_selector(get_years_range(years[0], years[1]));
+    let c_years = get_years(document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
 });
