@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updates to validation and menu">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/static/js/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/scap/static/js/map.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/create_forest_cover_collection.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scap/templates/scap/map.html" beforeDir="false" afterPath="$PROJECT_DIR$/scap/templates/scap/map.html" afterDir="false" />
-    </list>
+    <list default="true" id="b33ea50d-8428-4690-a961-5cecacde0a36" name="Changes" comment="updates to map comparison" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +36,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "interface",
-    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/SCAP_Web/static/css",
+    "last_opened_file_path": "C:/Users/gtondapu/PycharmProjects/SCAP_Web/static/js",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -58,8 +53,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\static\css" />
       <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\static\js" />
+      <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\static\css" />
       <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\static\assets\img" />
       <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\static" />
       <recent name="C:\Users\gtondapu\PycharmProjects\SCAP_Web\scap\static\js" />
@@ -645,7 +640,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712628726354</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="updates to map comparison">
+      <option name="closed" value="true" />
+      <created>1712690550973</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1712690550973</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -663,7 +666,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated fc" />
     <MESSAGE value="updated chart" />
     <MESSAGE value="fixed emissions chart, removed Belize from pilot countries" />
     <MESSAGE value="for fc" />
@@ -688,7 +690,8 @@
     <MESSAGE value="updated pilot country" />
     <MESSAGE value="updates to fc model and template" />
     <MESSAGE value="updates to validation and menu" />
-    <option name="LAST_COMMIT_MESSAGE" value="updates to validation and menu" />
+    <MESSAGE value="updates to map comparison" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates to map comparison" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ScapTestProject$utils.coverage" NAME="utils Coverage Results" MODIFIED="1707865242037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scap" />
