@@ -86,6 +86,7 @@ function whenClicked(e) {
             pa_selected_name = data.id;
             var zoomlevel = map.getZoom();
 
+
             if (zoomlevel >= 7) {
                 window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
             } else {
@@ -133,18 +134,22 @@ function onEachFeature(feature, layer) {
         })
     });
 }
-
-function redraw_map_layers() {
-    document.getElementById("loading_spinner_map").style.display = "block";
+function  redraw_based_on_year(){
+        document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
-
-    // document.getElementById('selected_year').value = years[0];
-    // document.getElementById('comparison_year').value = c_years[0];
     let selected_dataset_left = document.getElementById('selected_region').value;
      let selected_dataset_right = document.getElementById('comparing_region').value;
 
     let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
+        try {
+            map.panTo(new L.LatLng(result.latitude, result.longitude));
+            map.setZoom(result.zoom);
+        }
+        catch(except){
+            console.log("err")
+        }
+
         aoi_layer_left = L.geoJSON(result['data_pa'], {
             style: {
                 weight: 2,
@@ -222,13 +227,139 @@ function redraw_map_layers() {
                 transparent: true,
                 pane: 'right'
             })
-        primary_underlay_layer.addTo(map)
-        primary_overlay_layer.addTo(map)
-        secondary_underlay_layer.addTo(map)
-        secondary_overlay_layer.addTo(map)
-        aoi_layer_left.addTo(map)
-        aoi_layer_right.addTo(map)
+        primary_underlay_layer.addTo(map);
+        primary_overlay_layer.addTo(map);
+        secondary_underlay_layer.addTo(map);
+        secondary_overlay_layer.addTo(map);
+        aoi_layer_left.addTo(map);
+        aoi_layer_right.addTo(map);
+        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
+        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+        map.on("zoomend", function () {
+            var zoomlevel = map.getZoom();
 
+            if (zoomlevel < 7) {
+                if (map.hasLayer(aoi_layer_left)) {
+                    map.removeLayer(aoi_layer_left);
+                }
+                if (map.hasLayer(aoi_layer_right)) {
+                    map.removeLayer(aoi_layer_right);
+                }
+            } else {
+                map.addLayer(aoi_layer_left);
+                map.addLayer(aoi_layer_right);
+            }
+            console.log("Current Zoom Level = " + zoomlevel);
+        });
+    });
+}
+
+function redraw_map_layers() {
+    document.getElementById("loading_spinner_map").style.display = "block";
+    clear_map_layers();
+ let years = get_years(document.getElementById('selected_region').value);
+    fill_years_selector(get_years_range(years[0], years[1]));
+    let c_years = get_years(document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
+    // document.getElementById('selected_year').value = years[0];
+    // document.getElementById('comparison_year').value = c_years[0];
+    let selected_dataset_left = document.getElementById('selected_region').value;
+     let selected_dataset_right = document.getElementById('comparing_region').value;
+
+    let xhr = ajax_call("get-aoi/", {});
+    xhr.done(function (result) {
+        try {
+            map.panTo(new L.LatLng(result.latitude, result.longitude));
+            map.setZoom(result.zoom);
+        }
+        catch(except){
+            console.log("err")
+        }
+
+        aoi_layer_left = L.geoJSON(result['data_pa'], {
+            style: {
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            },
+            onEachFeature: onEachFeature,
+            pane: 'left'
+        })
+        aoi_layer_right = L.geoJSON(result['data_pa'], {
+            style: {
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            },
+            onEachFeature: onEachFeature,
+            pane: 'right'
+        });
+
+        aoi_layer_left.on('add', (e) => {
+            document.getElementById("loading_spinner_map").style.display = "none";
+        });
+        aoi_layer_right.on('add', (e) => {
+            document.getElementById("loading_spinner_map").style.display = "none";
+        });
+        let selected_year = document.getElementById('selected_year').value;
+        let comparison_year = document.getElementById('comparison_year').value;
+        let selected_dataset_left = document.getElementById('selected_region').value;
+        let selected_dataset_right = document.getElementById('comparing_region').value;
+        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/crimsonbluegreen',
+                pane: 'left'
+            });
+
+        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/cwg',
+                pane: 'left'
+            })
+
+        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: 'boxfill/cwg',
+                transparent: true,
+                pane: 'right'
+            })
+        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+            {
+                layers: ["forest_cover"],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: 'boxfill/redblue',
+                transparent: true,
+                pane: 'right'
+            })
+        primary_underlay_layer.addTo(map);
+        primary_overlay_layer.addTo(map);
+        secondary_underlay_layer.addTo(map);
+        secondary_overlay_layer.addTo(map);
+        aoi_layer_left.addTo(map);
+        aoi_layer_right.addTo(map);
         comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
@@ -366,8 +497,8 @@ function add_basemap(map_name) {
 
 $(function () {
     init_map();
- let years = get_years(document.getElementById('selected_region').value);
-    fill_years_selector(get_years_range(years[0], years[1]));
-    let c_years = get_years(document.getElementById('comparing_region').value);
-    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
+ // let years = get_years(document.getElementById('selected_region').value);
+ //    fill_years_selector(get_years_range(years[0], years[1]));
+ //    let c_years = get_years(document.getElementById('comparing_region').value);
+ //    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
 });

@@ -58,7 +58,7 @@ urlpatterns = [
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
       path('map/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
       path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),
-      path('pilot/<str:country>/get-aoi/', get_AOI, name='get-aoi'),
+      path('pilot/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
 
       path('delete-aoi/', delete_AOI, name='delete-aoi'),
       path('save-aoi/', save_AOI, name='save-aoi'),

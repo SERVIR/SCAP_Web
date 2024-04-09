@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
-                         AOICollection, ForestCoverCollection, AGBCollection)
+                         AOICollection, ForestCoverCollection, AGBCollection, PilotCountry)
 from scap.async_tasks import process_aoi_collection, process_fc_collection, process_agb_collection
 import geopandas as gpd
 
@@ -281,11 +281,14 @@ def get_aoi_id(request,country=0):
     print(aoi)
     return JsonResponse({"id":aoi.id})
 @csrf_exempt
-def get_AOI(request, country='None'):
+def get_AOI(request, country=0):
     json_obj = {}
     try:
         vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-
+        pilot_country = list(PilotCountry.objects.filter(id=country).values())
+        json_obj['latitude'] =pilot_country[0]['latitude']
+        json_obj['longitude'] = pilot_country[0]['longitude']
+        json_obj['zoom'] = pilot_country[0]['zoom_level']
         json_obj["data_pa"] = json.loads(vec.to_json())
     except:
         return JsonResponse({})
