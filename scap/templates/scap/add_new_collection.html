@@ -57,30 +57,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        ADD
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="/forest-cover-collections/add/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/add/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/add/">AREAS OF INTEREST (AOI)</a>
 
-                    </div>
-                </div>
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        MANAGE
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
-                        <a class="dropdown-item" href="/forest-cover-collections/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/">AREAS OF INTEREST (AOI)</a>
-                    </div>
-                </div>
-
+                <li class="nav-item"><a class="nav-link" href="{% url 'forest-cover-collections' %}">Forest Cover</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'agb-collections' %}">AGB</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
                 {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">
@@ -112,9 +92,9 @@
 <br/>
 <br/>
 {% if user.is_authenticated %}
-    <section class="page-section mt-4">
+    <section class="page-section">
         <div class="container-fluid">
-                <div class="row" style="padding:30px 150px 30px 150px">
+                <div class="row" style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
                   <div class="col" style="display:flex;">
                     <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal" style="display: inline">
                         <div class="pilotcountry-hover">
@@ -132,14 +112,14 @@
 
 When adding a forest cover collections, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
 </p>
-                        <a href="{% url 'create-forest-cover-collection' %}" class="btn btn-primary mt-auto float-end">
+                        <a href="{% url 'forest-cover-collections' %}" class="btn btn-primary mt-auto float-end">
                             + Add Your Own</a>
                   </div>
 
                   </div>
 
                 </div>
-                <div class="row"  style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
+                <div class="row"  style="padding:30px 150px 30px 150px;">
                    <div class="col" style="display:flex;">
                     <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal" style="display:inline;">
                         <div class="pilotcountry-hover">
@@ -157,13 +137,13 @@ When adding a forest cover collections, please provide reference information suc
 
 Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
 </p>
-                          <a href="{% url 'create-agb-collection' %}" class="btn btn-primary mt-auto  float-end">
+                          <a href="{% url 'agb-collections' %}" class="btn btn-primary mt-auto  float-end">
                             + Add Your Own</a>
                   </div>
 
                   </div>
                 </div>
-                <div class="row"  style="padding:30px 150px 30px 150px">
+                <div class="row"  style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
                     <div class="col" style="display: flex">
                         <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal" style="display:inline;">
                             <div class="pilotcountry-hover">
@@ -183,15 +163,55 @@ Please provide reference information such as a comprehensive description, digita
 
 Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
 </p>
-                         <a href="{% url 'create-aoi-collection' %}" class="btn btn-primary mt-auto float-end">
+                         <a href="{% url 'aoi-collections' %}" class="btn btn-primary mt-auto float-end">
                             + Add Your Own</a></div>
                     </div>
                 </div>
 
             </div>
     </section>
-
-
+<!-- Clients-->
+<div class="py-5">
+    <div class="logo-container">
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
+                              aria-label="USAID Logo"/></a>
+        </div>
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
+                              aria-label="NASA Logo"/></a>
+        </div>
+        <div>
+            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
+                              aria-label="SERVIR Logo"/></a>
+        </div>
+        <!--
+        <div class="col-md-3 col-sm-6 my-3">
+            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/ibm.svg" alt="..." aria-label="IBM Logo" /></a>
+        </div>
+        -->
+    </div>
+</div>
+<!-- Footer-->
+<footer class="footer py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-lg-start">Copyright &copy; SERVIR 2023</div>
+            <div class="col-lg-4 my-3 my-lg-0">
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
+                        class="fab fa-twitter"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
+                        class="fab fa-facebook-f"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
+                        class="fab fa-linkedin-in"></i></a>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+            </div>
+        </div>
+    </div>
+</footer>
 
 {% else %}
     <br/>

@@ -76,7 +76,7 @@ class AOICollection(models.Model):
         ('Processed', 'Processed')
     )
 
-    name = models.CharField(max_length=100, default="", unique=True, help_text="AOI name")
+    name = models.CharField(max_length=100, default="", help_text="AOI name")
     description = models.TextField(default="", help_text="AOI description")
 
     doi_link = models.CharField(max_length=200, default="", blank=True)
@@ -91,6 +91,7 @@ class AOICollection(models.Model):
 
     class Meta:
         verbose_name_plural = "AOI Collections"
+        unique_together = 'name', 'owner'
 
 
 class AOIFeature(models.Model):
@@ -126,7 +127,7 @@ class AGBCollection(models.Model):
         ('Processed', 'Processed')
     )
 
-    name = models.CharField(max_length=100, default="", unique=True, help_text="Collection Name")
+    name = models.CharField(max_length=100, default="", help_text="Collection Name")
     description = models.CharField(max_length=100, default="", help_text="Collection Description")
 
     doi_link = models.CharField(max_length=200, default="", blank=True)
@@ -142,6 +143,7 @@ class AGBCollection(models.Model):
 
     class Meta:
         verbose_name_plural = "AGB Collections"
+        unique_together = 'name', 'owner'
         
 class CarbonStatistic(models.Model):
     fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)

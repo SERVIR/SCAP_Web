@@ -162,7 +162,6 @@ class CreateForestCoverCollection(CreateView):
     def form_invalid(self, form):
         form.instance.owner = User.objects.get(username=self.request.user)
         if not form.is_valid():
-            print(form.errors)
             messages.error(self.request, "You already have a forest cover collection with that name, please use a unique name")
         return render(self.request, self.template_name, { 'form': form,'operation': 'ADD','owner':User.objects.get(username=self.request.user).id})
         # return HttpResponseRedirect(reverse("create-forest-cover-collection"))
@@ -205,12 +204,13 @@ class CreateAGBCollection(CreateView):
         return HttpResponseRedirect(reverse("agb-collections"))
 
     def form_invalid(self, form):
+        form.instance.owner = User.objects.get(username=self.request.user)
+        print(form.errors)
         if not form.is_valid():
-            messages.add_message(self.request, messages.WARNING, form.errors)
-            print(form)
-            print(form.errors)
-
-        return HttpResponseRedirect(reverse("create-agb-collection"))
+            messages.error(self.request,
+                               "You already have a AGB collection with that name, please use a unique name")
+            return render(self.request, self.template_name,
+                          {'form': form, 'operation': 'ADD', 'owner': User.objects.get(username=self.request.user).id})
 
 
 class CreateAOICollection(CreateView):
@@ -250,12 +250,12 @@ class CreateAOICollection(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
+        form.instance.owner = User.objects.get(username=self.request.user)
         if not form.is_valid():
-            messages.add_message(self.request, messages.WARNING, form.errors)
-            print(form)
-            print(form.errors)
-
-        return HttpResponseRedirect(reverse("add-aoi-collection"))
+            messages.error(self.request,
+                           "You already have a AOI collection with that name, please use a unique name")
+            return render(self.request, self.template_name,
+                          {'form': form, 'operation': 'ADD', 'owner': User.objects.get(username=self.request.user).id})
 
 
 class EditForestCoverCollection(UpdateView):

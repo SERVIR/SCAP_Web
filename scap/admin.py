@@ -22,10 +22,10 @@ class ForestCoverFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class AOICollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name','owner','access_level')
 
 class AGBCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name','owner','access_level')
 
 
 class ForestCoverFileInline(admin.TabularInline):
@@ -35,7 +35,7 @@ class ForestCoverFileInline(admin.TabularInline):
 
 
 class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name', 'boundary_file','owner')
+    list_display = ('name', 'boundary_file','owner','access_level')
     inlines = [ ForestCoverFileInline, ]
 
 

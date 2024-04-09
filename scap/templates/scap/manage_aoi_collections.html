@@ -42,29 +42,9 @@
         </button>
              <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        ADD
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                       <a class="dropdown-item" href="/forest-cover-collections/add/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/add/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/add/">AREAS OF INTEREST (AOI)</a>
-
-                    </div>
-                </div>
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        MANAGE
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
-                        <a class="dropdown-item" href="/forest-cover-collections/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/">AREAS OF INTEREST (AOI)</a>
-                    </div>
-                </div>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'forest-cover-collections' %}">Forest Cover</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'agb-collections' %}">AGB</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
                 {% if user.is_authenticated %}
 

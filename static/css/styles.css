@@ -3217,6 +3217,7 @@ textarea.form-control-lg {
     background-color: var(--bs-btn-disabled-bg);
     border-color: var(--bs-btn-disabled-border-color);
     opacity: var(--bs-btn-disabled-opacity);
+    cursor: default
 }
 
 .btn-primary {
@@ -13061,4 +13062,10 @@ section#contact form#contactForm :-ms-input-placeholder {
 
 #peru-map > div {
     position: absolute !important;
+}
+img.leaflet-tile, img.leaflet-marker-icon, img.leaflet-marker-shadow {
+    /* work-around from here: https://github.com/Leaflet/Leaflet/issues/161 */
+    outline: 1px solid transparent;
+    /* work-around from here: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
+    mix-blend-mode: plus-lighter;
 }

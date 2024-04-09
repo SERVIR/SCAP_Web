@@ -48,7 +48,7 @@ urlpatterns = [
       path('pilot/<int:country>/', pilot_country, name='pilot_country'),
       path('map/', map, name='map'),
       path('aoi/<int:aoi>/', protected_aois, name='aoi_page'),
-      path('add-new-collection/', add_new_collection, name='add-new-collection'),
+      path('contribute-data/', add_new_collection, name='contribute-data'),
 
       path('get-series-name/', get_series_name, name='get-series-name'),
       path('aoi/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),

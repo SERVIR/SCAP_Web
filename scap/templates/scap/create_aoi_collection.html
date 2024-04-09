@@ -57,29 +57,10 @@
         </button>
            <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        ADD
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="/forest-cover-collections/add/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/add/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/add/">AREAS OF INTEREST (AOI)</a>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'forest-cover-collections' %}">Forest Cover</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'agb-collections' %}">AGB</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
-                    </div>
-                </div>
-                <div class="dropdown" style="margin-right: 10px">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        MANAGE
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -50%">
-                        <a class="dropdown-item" href="/forest-cover-collections/">FOREST COVER</a>
-                        <a class="dropdown-item" href="/agb-collections/">ABOVE GROUND BIOMASS (AGB)</a>
-                        <a class="dropdown-item" href="/aoi-collections/">AREAS OF INTEREST (AOI)</a>
-                    </div>
-                </div>
                 {#                <li class="nav-item"><a class="nav-link" href="#update_coll">UPDATE</a></li>#}
                 {#                <li class="nav-item"><a class="nav-link" href="#aoi">AOI</a></li>#}
                 {#                <li class="nav-item"><a class="nav-link" href="#delete">DELETE</a></li>#}
@@ -127,11 +108,13 @@
 
                     <h3 class="section-heading text-uppercase text-center" style="margin-top:50px">
                         <div></div>
-                        {% if form.errors %}
-                            <div>
-                                {{ form.errors }}
-                            </div>
-                        {% else %}
+                    {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class="text-danger small {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
                             {{ operation }} AREA OF INTEREST (AOI)
 
                             </h3>
@@ -173,8 +156,6 @@
                                 <input type="submit" class="btn-primary btn" value="Stage for processing"/> <a
                                     class="btn btn-outline-warning" href="{% url 'aoi-collections' %}">Go to the list</a>
                             </div>
-                        {% endif %}
-                    {##}
 
                 </form>
             </div>

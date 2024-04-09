@@ -1,6 +1,7 @@
 var coll_doi=false;
 var coll_metadata=false;
 var tiff_doi=false;
+var year_exists=true;
 var doi_metadata=false;
 function sortTable(table, col, reverse) {
     var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
@@ -175,7 +176,14 @@ function storeTiffs() {
         contentType: false,
         processData: false,
         success: function (data) {
-            console.log(data);
+            console.log(data.error);
+            if(data.error==="error") {
+                alert("Year exists, please change year");
+                show_tiffs($('#current_coll').html());
+            }
+            else {
+                year_exists = true;
+            }
         },
     });
 
@@ -184,17 +192,17 @@ function storeTiffs() {
 
 function show_tiffs(col) {
     $.ajax({
-            type: 'POST',
-            url: 'get-tiff-data/',
-            data: {'coll_name': col},
-            success: function (result) {
-                                    var tiff_table = document.getElementById("tifffTableBody");
-                        var data=result.data;
-                        console.log(result);
-                        if (data.length>0){
-                            $("#tifffTableBody").html('');
-                        }
-                for (var i=0;i<data.length;i++) {
+        type: 'POST',
+        url: 'get-tiff-data/',
+        data: {'coll_name': col},
+        success: function (result) {
+            var tiff_table = document.getElementById("tifffTableBody");
+            var data = result.data;
+            console.log(result);
+            if (data.length > 0) {
+                $("#tifffTableBody").html('');
+
+                for (var i = 0; i < data.length; i++) {
 
                     var year = data[i].year;
                     var filename = data[i].filename;
@@ -212,53 +220,51 @@ function show_tiffs(col) {
 
                     var text2 = document.createTextNode(year);
                     var text3 = document.createTextNode(filename);
-                     if(doi_link.length>0) {
+                    if (doi_link.length > 0) {
                         var doi = document.createElement('a');
                         var link = document.createTextNode('Link');
                         doi.href = doi_link;
                         doi.target = "_blank";
                         doi.appendChild(link);
                         td4.appendChild(doi);
+                    } else {
+                        td4.appendChild(document.createTextNode(''));
                     }
-                    else{
-                      td4.appendChild( document.createTextNode(''));
-                    }
-                    if(metadata_link.length>0) {
+                    if (metadata_link.length > 0) {
                         var metadata = document.createElement('a');
                         mlink = document.createTextNode('Link');
                         metadata.href = metadata_link;
                         metadata.target = "_blank";
                         metadata.appendChild(mlink);
-                         td5.appendChild(metadata);
-                    }
-                    else{
-                         td5.appendChild( document.createTextNode(''));
+                        td5.appendChild(metadata);
+                    } else {
+                        td5.appendChild(document.createTextNode(''));
                     }
                     td2.appendChild(text2);
                     td3.appendChild(text3);
                     var editButton = document.createElement('button');
-editButton.textContent = 'Edit';
-editButton.type="button";
-editButton.classList="btn btn-primary";
-editButton.onclick=function (){
-    var row=this.parentElement.parentElement;
+                    editButton.textContent = 'Edit';
+                    editButton.type = "button";
+                    editButton.classList = "btn btn-primary";
+                    editButton.onclick = function () {
+                        var row = this.parentElement.parentElement;
 
 
-populateTiffForm(row);
-};
+                        populateTiffForm(row);
+                    };
                     var deleteButton = document.createElement('button');
-deleteButton.textContent = 'Delete';
-deleteButton.type="button";
-deleteButton.classList="btn btn-danger";
-td6.appendChild(editButton);
-td7.appendChild(deleteButton);
-deleteButton.onclick=function (){
-    var row=this.parentElement.parentElement;
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.type = "button";
+                    deleteButton.classList = "btn btn-danger";
+                    td6.appendChild(editButton);
+                    td7.appendChild(deleteButton);
+                    deleteButton.onclick = function () {
+                        var row = this.parentElement.parentElement;
 
-var id=parseInt(window.location.pathname.split('/')[3]);
-deleteTiffFile(id,row);
+                        var id = parseInt(window.location.pathname.split('/')[3]);
+                        deleteTiffFile(id, row);
 
-};
+                    };
 
 
                     tr.appendChild(td2);
@@ -274,17 +280,17 @@ deleteTiffFile(id,row);
                     if (document.getElementById("no-records"))
                         document.getElementById("no-records").remove();
                 }
-                sortTable(document.getElementById("tifffTable"),0,false);
-
+                sortTable(document.getElementById("tifffTable"), 0, false);
+            } else {
+                $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
             }
-            });
+        }
+    });
 
 }
-// console.log({{operation}});
-if(opn==='EDIT'){
-    console.log("show here")
-        show_tiffs($('#current_coll').html());
-    }
+if(opn==='EDIT') {
+    show_tiffs($('#current_coll').html());
+}
 
 function deleteTiffFile(id,row) {
     console.log(id);
@@ -322,7 +328,7 @@ function updateFields(button,pk) {
                     var rowIndex = document.getElementById("row_to_update").value;
                     var a = document.getElementById('tifffTable').rows[rowIndex].cells[2].firstChild;
                     console.log(data.url)
-                   a.setAttribute('href', data.url);
+                   a.href= data.url;
                 } else {
                     alert('Please enter a valid doi or leave blank');
                 }
@@ -491,11 +497,15 @@ deleteTiffFile(id,row);
                 tr.appendChild(td5);
        tr.appendChild(td6);
                     tr.appendChild(td7);
-                    if (tiff_doi) {
-                        tiff_table.appendChild(tr);
-                        storeTiffs();
-                         clear_fields();
-                    }
+                    // if (tiff_doi) {
+
+                      storeTiffs();
+
+                             tiff_table.appendChild(tr);
+                                                      clear_fields();
+
+
+                    // }
 
 
 

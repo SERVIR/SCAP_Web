@@ -90,41 +90,45 @@ def save_forest_cover_file(request):
 
 @csrf_exempt
 def get_tiff_data(request,pk):
+    return_obj = {'data':[]}
+
     try:
         coll_name=request.POST['coll_name']
-        coll = ForestCoverCollection.objects.get(name=coll_name)
-        return_obj={}
-        results_arr=[]
-        tiffs=ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
-        for tiff in tiffs:
-            try:
-                doi_full = doi.validate_doi(tiff.get('doi_link'))
-            except Exception as e:
-                doi_full=""
-            results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),
-                                'doi':tiff.get('doi_link'),'doi_full_link':doi_full})
-        return_obj['data']=results_arr
+        if coll_name:
+            coll = ForestCoverCollection.objects.get(name=coll_name,owner__username=request.user.username)
+            results_arr=[]
+            tiffs=ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
+            for tiff in tiffs:
+                try:
+                    doi_full = doi.validate_doi(tiff.get('doi_link'))
+                except Exception as e:
+                    doi_full=""
+                results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),
+                                    'doi':tiff.get('doi_link'),'doi_full_link':doi_full})
+            return_obj['data']=results_arr
         return JsonResponse(return_obj)
-    except:
-        return JsonResponse({})
+    except Exception as e:
+        return JsonResponse(return_obj)
 
 
 @csrf_exempt
 def get_tiff_id(request,pk):
     tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
-    print(tiff)
     return JsonResponse({"id":tiff.id,"doi":tiff.doi_link})
 
 @csrf_exempt
 def add_tiff_record(request,pk):
-    existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
-    new_tiff = ForestCoverFile()
-    new_tiff.collection=existing_coll
-    new_tiff.year=request.POST.get('year')
-    new_tiff.file=request.FILES['file']
-    new_tiff.metadata_link = request.POST.get('metadata_link')
-    new_tiff.doi_link = request.POST.get('doi_link')
-    new_tiff.save()
+    existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),owner__username=request.user.username)
+    try:
+        new_tiff = ForestCoverFile()
+        new_tiff.collection=existing_coll
+        new_tiff.year=request.POST.get('year')
+        new_tiff.file=request.FILES['file']
+        new_tiff.metadata_link = request.POST.get('metadata_link')
+        new_tiff.doi_link = request.POST.get('doi_link')
+        new_tiff.save()
+    except:
+        return JsonResponse({"error": "error"})
     return JsonResponse({"added":"success"})
 
 @csrf_exempt
@@ -150,7 +154,6 @@ def updatetomodel(request):
 
         coll_name = request.POST['coll_name']
         existing_collection = ForestCoverCollection.objects.filter(name=coll_name).first()
-        print(existing_collection.collection_description)
         uploaded_tiffs = request.FILES.getlist('FC_tiffs_New[]')
         original_names = request.POST.getlist('FC_tiffs_New_OriginalNames[]')
         uploaded_tiffs_names = request.POST.getlist('FC_tiffs_New_Name[]')
