@@ -7,3 +7,5 @@ scap/migrations/
 media/
 logfile
 /scap/migrations/
+dump.rdb
+.idea/

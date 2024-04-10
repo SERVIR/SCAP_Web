@@ -56,7 +56,7 @@ class AGBCollectionForm(forms.ModelForm):
     class Meta:
         model = AGBCollection
         fields = ['name', 'description', 'doi_link', 'metadata_link', 'boundary_file',
-                  'source_file', 'access_level', 'owner']
+                  'source_file', 'access_level', 'owner', 'year']
         ACCESS_CHOICES =AGBCollection.ACCESS_CHOICES
 
         widgets = {
@@ -68,5 +68,6 @@ class AGBCollectionForm(forms.ModelForm):
             'source_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/tiff'}),
             'doi_link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a DOI URL'}),
             'metadata_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Enter a Metadata URL'}),
-            'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'})
+            'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
+            'year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '2000'})
         }

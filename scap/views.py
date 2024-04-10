@@ -15,10 +15,10 @@ from django.contrib.auth.models import User
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
                       get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
-from scap.models import CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection, \
-    PilotCountry, AOIFeature
+from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
+                         PilotCountry, AOIFeature, CurrentTask)
 
-from scap.async_tasks import process_agb_collection, process_aoi_collection
+from scap.async_tasks import process_updated_collection
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
@@ -200,7 +200,12 @@ class CreateAGBCollection(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        process_agb_collection.delay(form.instance.name)
+        collection_type = 'agb'
+        collection = AGBCollection.objects.get(name=form.instance.name)
+        process_updated_collection.delay(collection.id, collection_type)
+
+        collection.processing_status = "Staged"
+        collection.save()
         return HttpResponseRedirect(reverse("agb-collections"))
 
     def form_invalid(self, form):
@@ -246,7 +251,12 @@ class CreateAOICollection(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        process_aoi_collection.delay(form.instance.name)
+        collection_type = 'aoi'
+        collection = AOICollection.objects.get(name=form.instance.name)
+        process_updated_collection.delay(collection.id, collection_type)
+
+        collection.processing_status = "Staged"
+        collection.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):

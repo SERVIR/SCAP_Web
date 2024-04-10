@@ -13,11 +13,13 @@ from pandas_highcharts.core import serialize
 from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
-                         AOICollection, ForestCoverCollection, AGBCollection, PilotCountry)
-from scap.async_tasks import process_aoi_collection, process_fc_collection, process_agb_collection
+                         AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry)
+
+from scap.async_tasks import process_updated_collection
 import geopandas as gpd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -463,40 +465,6 @@ def get_updated_series(request, country=None):
                              'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name})
 
 
-
-
-def get_fc_area(fc_source, aoi, row_offset, col_offset):
-    area = 0
-    with rio.open(fc_source) as fc_obj, rio.open(aoi) as aoi_obj:
-        aoi_block = aoi_obj.read(1)
-        corresponding_window = Window.from_slices((row_offset, row_offset + aoi_obj.height),
-                                                  (col_offset, col_offset + aoi_obj.width))
-        fc_block = fc_obj.read(1, window=corresponding_window)
-        area += np.count_nonzero(fc_block * (aoi_block > 0))
-
-    return area
-
-
-def get_change_area(fcc_source, aoi, change_type, row_offset, col_offset):
-    if change_type == 'loss':
-        target_value = -1
-    else:
-        # Default to gain
-        target_value = 1
-
-    area = 0
-    with rio.open(fcc_source) as fcc_obj, rio.open(aoi) as aoi_obj:
-        aoi_block = aoi_obj.read(1)
-        corresponding_window = Window.from_slices((row_offset, row_offset + aoi_obj.height),
-                                                  (col_offset, col_offset + aoi_obj.width))
-        fcc_block = fcc_obj.read(1, window=corresponding_window)
-
-        target_change_arr = (fcc_block == target_value)
-        area += np.count_nonzero((target_change_arr > 0) * (aoi_block > 0))
-
-    return area
-
-
 def generate_fcc_file(request):
     try:
         year = request.GET.get('year')
@@ -579,30 +547,76 @@ def get_available_colors():
     return colors
 
 
+def get_available_agbs(collection):
+    owner = collection.owner
+    scap_admin = User.objects.get(username='scap_admin')
+
+    available_agbs_scap = []
+    if owner != scap_admin:
+        available_agbs_scap = list(AGBCollection.filter(owner=scap_admin))
+
+    available_agbs = list(AGBCollection.filter(owner=owner)) + available_agbs_scap
+
+    return available_agbs
+
+
+def get_available_fcs(collection):
+    owner = collection.owner
+    scap_admin = User.objects.get(username='scap_admin')
+
+    available_fcs_scap = []
+    if owner != scap_admin:
+        available_fcs_scap = list(ForestCoverCollection.objects.filter(owner=scap_admin))
+
+    available_fcs = list(ForestCoverCollection.objects.filter(owner=owner)) + available_fcs_scap
+
+    return available_fcs
+
+
+def get_available_aois(collection):
+    owner = collection.owner
+    scap_admin = User.objects.get(username='scap_admin')
+
+    available_aois_scap = []
+    if owner != scap_admin:
+        available_aois_scap = list(AOICollection.objects.filter(owner=scap_admin))
+
+    available_aois = list(AOICollection.objects.filter(owner=owner)) + available_aois_scap
+
+    return available_aois
+
+
+def get_available_agbs(collection):
+    owner = collection.owner
+    scap_admin = User.objects.get(username='scap_admin')
+
+    available_agbs_scap = []
+    if owner != scap_admin:
+        available_agbs_scap = list(AGBCollection.objects.filter(owner=scap_admin))
+
+    available_agbs = list(AGBCollection.objects.filter(owner=owner)) + available_agbs_scap
+
+    return available_agbs
+
+
 @csrf_exempt
 def stage_for_processing(request,pk):
-    if request.POST.get('type')=='fc':
+    collection_type = request.POST.get('type')
+    if collection_type=='fc':
         fc_collection_name = request.POST.get('coll_name')
-        coll=ForestCoverCollection.objects.get(name=fc_collection_name)
-
-        coll.processing_status="Staged"
-        coll.save()
-
-        process_fc_collection.delay(fc_collection_name)
-    if request.POST.get('type')=='agb':
+        collection = ForestCoverCollection.objects.get(name=fc_collection_name)
+    elif collection_type=='agb':
         agb_collection_name = request.POST.get('agb_name')
-        coll=AGBCollection.objects.get(name=agb_collection_name)
-
-        coll.processing_status="Staged"
-        coll.save()
-
-        process_agb_collection.delay(agb_collection_name)
-    if request.POST.get('type')=='aoi':
+        collection = AGBCollection.objects.get(name=agb_collection_name)
+    else:
         aoi_collection_name = request.POST.get('aoi_name')
-        coll=AOICollection.objects.get(name=aoi_collection_name)
+        collection = AOICollection.objects.get(name=aoi_collection_name)
 
-        coll.processing_status="Staged"
-        coll.save()
+    try:
+        process_updated_collection.delay(collection.id, collection_type)
+    except Exception as error:
+        print(error)
 
-        process_aoi_collection.delay(aoi_collection_name)
+    collection.processing_status = "Staged"
+    collection.save()
     return JsonResponse({})

@@ -17,6 +17,16 @@ def fc_upload_path(instance, filename):
     return '/'.join(['uploads', instance.collection.owner.username, 'fc', instance.collection.name, filename])
 
 
+class CurrentTask(models.Model):
+    id = models.CharField(max_length=100, default="", help_text="Task ID", primary_key=True)
+    overall_progress = models.FloatField(default=0.0, help_text="Overall Progress")
+    subprocess_progress = models.FloatField(default=0.0, help_text="Current Process Progress")
+    description = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        verbose_name_plural = "Running Tasks"
+
+
 class ForestCoverCollection(models.Model):
     ACCESS_CHOICES = (
         ('Public', 'Public'),
@@ -40,8 +50,10 @@ class ForestCoverCollection(models.Model):
 
     access_level = models.CharField(max_length=10, default="Select", help_text="Access Level", choices=ACCESS_CHOICES)
 
-    owner = models.ForeignKey(User, verbose_name="Resource Owner", on_delete=models.CASCADE)
-    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status")
+    owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
+    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
@@ -84,10 +96,12 @@ class AOICollection(models.Model):
 
     source_file = models.FileField(upload_to=aoi_upload_path)
 
-    owner = models.ForeignKey(User, verbose_name="Resource Owner", on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
 
     access_level = models.CharField(max_length=10, default="Private", help_text="Access Level", choices=ACCESS_CHOICES)
     processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "AOI Collections"
@@ -95,7 +109,7 @@ class AOICollection(models.Model):
 
 
 class AOIFeature(models.Model):
-    collection = models.ForeignKey(AOICollection, null=True, on_delete=models.CASCADE)
+    collection = models.ForeignKey(AOICollection, null=True, on_delete=models.CASCADE, related_name='features')
 
     wdpa_pid = models.CharField(max_length=52)
     name = models.CharField(max_length=254)
@@ -136,10 +150,14 @@ class AGBCollection(models.Model):
     boundary_file = models.FileField(upload_to=agb_upload_path, null=True, blank=True)
     source_file = models.FileField(upload_to=agb_upload_path)
 
-    owner = models.ForeignKey(User, verbose_name="Resource Owner", on_delete=models.CASCADE)
+    year = models.IntegerField(default=0, help_text="Calibration Year")
+
+    owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
 
     access_level = models.CharField(max_length=10, default="Private", help_text="Access Level", choices=ACCESS_CHOICES)
     processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "AGB Collections"
@@ -148,11 +166,11 @@ class AGBCollection(models.Model):
 class CarbonStatistic(models.Model):
     fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
     agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
-    aoi_index = models.ForeignKey(AOICollection, verbose_name="AOI Source", on_delete=models.CASCADE)
+    aoi_index = models.ForeignKey(AOIFeature, default=1, help_text="AOI the calculation was made for", on_delete=models.CASCADE)
     year_index = models.IntegerField(help_text="Year")
 
-    initial_carbon_stock = models.FloatField(help_text="Carbon Stock")
-    emissions = models.FloatField(help_text="Carbon Stock")
+    final_carbon_stock = models.FloatField(help_text="Carbon Stock")
+    emissions = models.FloatField(help_text="Emissions")
     agb_value = models.FloatField(help_text="Total AGB")
 
     processing_time = models.FloatField(

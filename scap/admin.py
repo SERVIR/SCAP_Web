@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from scap.models import (AOIFeature, AOICollection, ForestCoverCollection, AGBCollection,
+from scap.models import (AOIFeature, AOICollection, ForestCoverCollection, AGBCollection, CurrentTask,
                          ForestCoverStatistic, CarbonStatistic, ForestCoverFile, PilotCountry)
 
 
@@ -9,6 +9,9 @@ class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('iso3','desig_eng')
     search_fields = ['name']
 
+
+class CurrentTaskAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id','overall_progress')
 
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -41,7 +44,7 @@ class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class CarbonStatisticsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'fc_index', 'agb_index', 'aoi_index', 'year_index',
-                    'initial_carbon_stock', 'emissions', 'agb_value')
+                    'final_carbon_stock', 'emissions', 'agb_value')
     list_filter = ('fc_index', 'agb_index', 'year_index')
 
 
@@ -62,3 +65,5 @@ admin.site.register(AOIFeature, AOIFeatureAdmin)
 
 admin.site.register(ForestCoverStatistic, ForestCoverStatisticsAdmin)
 admin.site.register(CarbonStatistic, CarbonStatisticsAdmin)
+
+admin.site.register(CurrentTask, CurrentTaskAdmin)
