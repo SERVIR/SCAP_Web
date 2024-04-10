@@ -19,8 +19,8 @@ def fc_upload_path(instance, filename):
 
 class CurrentTask(models.Model):
     id = models.CharField(max_length=100, default="", help_text="Task ID", primary_key=True)
-    overall_progress = models.FloatField(default=0.0, help_text="Overall Progress")
-    subprocess_progress = models.FloatField(default=0.0, help_text="Current Process Progress")
+    stage_progress = models.CharField(max_length=100, default="", help_text="Stage Tracker")
+    subprocess_progress = models.FloatField(default=0.0, help_text="Current Task Progress")
     description = models.CharField(max_length=100, null=True)
 
     class Meta:
@@ -37,7 +37,8 @@ class ForestCoverCollection(models.Model):
         ('Not Processed', 'Not Processed'),
         ('Staged', 'Staged'),
         ('In Progress', 'In Progress'),
-        ('Processed', 'Processed')
+        ('Processed', 'Processed'),
+        ('Available', 'Available')
     )
 
     name = models.CharField(max_length=100, default="", help_text="Forest Cover Collection Name")
@@ -85,7 +86,8 @@ class AOICollection(models.Model):
         ('Not Processed', 'Not Processed'),
         ('Staged', 'Staged'),
         ('In Progress', 'In Progress'),
-        ('Processed', 'Processed')
+        ('Processed', 'Processed'),
+        ('Available', 'Available')
     )
 
     name = models.CharField(max_length=100, default="", help_text="AOI name")
@@ -138,7 +140,8 @@ class AGBCollection(models.Model):
         ('Not Processed', 'Not Processed'),
         ('Staged', 'Staged'),
         ('In Progress', 'In Progress'),
-        ('Processed', 'Processed')
+        ('Processed', 'Processed'),
+        ('Available', 'Available')
     )
 
     name = models.CharField(max_length=100, default="", help_text="Collection Name")

@@ -13,7 +13,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
-params = json.load(f)
+config = json.load(f)
 
 
 def get_raster_offset(offset_raster, control_raster):
@@ -51,7 +51,7 @@ def rasterize_aoi(aoi_feature, filepath):
     geom = aoi_feature.geom.json
 
     # TODO modify to specific transform and projection
-    match_path = "/home/alex/Desktop/global_agb_2000_liu_.tif"
+    match_path = config['GRID_MATCH_SOURCE']
 
     match_obj = gdal.Open(match_path)
     src_proj = match_obj.GetProjection()
@@ -131,7 +131,7 @@ def reproject_gtiff(source, outputpath, progress_callback):
     dtype (OPTIONAL): datatype to save as
     nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
     """
-    match = "/home/alex/Desktop/global_agb_2000_liu_.tif"
+    match = config['GRID_MATCH_SOURCE']
     dtype = gdal.GDT_Int16
     nbands = 1
     nodata = 0
@@ -175,7 +175,7 @@ def reproject_gtiff(source, outputpath, progress_callback):
 
 
 def is_snapped_mollweide(source):
-    match = "/home/alex/Desktop/global_agb_2000_liu_.tif"
+    match = config['GRID_MATCH_SOURCE']
 
     source_obj = gdal.Open(source)
     match_obj = gdal.Open(match)

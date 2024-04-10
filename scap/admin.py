@@ -11,7 +11,7 @@ class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class CurrentTaskAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id','overall_progress')
+    list_display = ('id','stage_progress')
 
 
 class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):

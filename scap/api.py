@@ -564,11 +564,15 @@ def get_available_fcs(collection):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
 
+    available_states = ["Processed", "Available"]
+
     available_fcs_scap = []
     if owner != scap_admin:
-        available_fcs_scap = list(ForestCoverCollection.objects.filter(owner=scap_admin))
+        available_fcs_scap = list(ForestCoverCollection.objects.filter(owner=scap_admin,
+                                                                       processing_status__in=available_states))
 
-    available_fcs = list(ForestCoverCollection.objects.filter(owner=owner)) + available_fcs_scap
+    available_fcs = (list(ForestCoverCollection.objects.filter(owner=owner, processing_status__in=available_states)) +
+                     available_fcs_scap)
 
     return available_fcs
 
@@ -577,11 +581,15 @@ def get_available_aois(collection):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
 
+    available_states = ["Processed", "Available"]
+
     available_aois_scap = []
     if owner != scap_admin:
-        available_aois_scap = list(AOICollection.objects.filter(owner=scap_admin))
+        available_aois_scap = list(AOICollection.objects.filter(owner=scap_admin,
+                                                                processing_status__in=available_states))
 
-    available_aois = list(AOICollection.objects.filter(owner=owner)) + available_aois_scap
+    available_aois = (list(AOICollection.objects.filter(owner=owner, processing_status__in=available_states)) +
+                      available_aois_scap)
 
     return available_aois
 
@@ -590,11 +598,15 @@ def get_available_agbs(collection):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
 
+    available_states = ["Processed", "Available"]
+
     available_agbs_scap = []
     if owner != scap_admin:
-        available_agbs_scap = list(AGBCollection.objects.filter(owner=scap_admin))
+        available_agbs_scap = list(AGBCollection.objects.filter(owner=scap_admin,
+                                                                processing_status__in=available_states))
 
-    available_agbs = list(AGBCollection.objects.filter(owner=owner)) + available_agbs_scap
+    available_agbs = (list(AGBCollection.objects.filter(owner=owner, processing_status__in=available_states)) +
+                      available_agbs_scap)
 
     return available_agbs
 
