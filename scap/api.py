@@ -47,7 +47,6 @@ config = json.load(f)
 #     lm.save(strict=True, verbose=verbose)
 
 
-
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
         'wdpa_pid': 'WDPA_PID',
@@ -61,7 +60,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(r'C:\Users\gtondapu\Documents\pc_4326.shp'),
+        os.path.join(r'C:\Users\gtondapu\Desktop\PilotCountries_All\PilotCountries_All.shp'),
     )
 
     lm = LayerMapping(AOIFeature, aoi, aoi_mapping, transform=False)
@@ -121,6 +120,7 @@ def get_tiff_id(request,pk):
 @csrf_exempt
 def add_tiff_record(request,pk):
     existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),owner__username=request.user.username)
+    print(existing_coll)
     try:
         new_tiff = ForestCoverFile()
         new_tiff.collection=existing_coll
@@ -282,15 +282,13 @@ def get_aoi_id(request,country=0):
     aoi=AOIFeature.objects.get(name=request.POST['aoi'],iso3=request.POST['iso3'],desig_eng=request.POST['desig_eng'])
     print(aoi)
     return JsonResponse({"id":aoi.id})
+
 @csrf_exempt
-def get_AOI(request, country=0):
+def get_AOI(request, country=1):
     json_obj = {}
     try:
         vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-        pilot_country = list(PilotCountry.objects.filter(id=country).values())
-        json_obj['latitude'] =pilot_country[0]['latitude']
-        json_obj['longitude'] = pilot_country[0]['longitude']
-        json_obj['zoom'] = pilot_country[0]['zoom_level']
+
         json_obj["data_pa"] = json.loads(vec.to_json())
     except:
         return JsonResponse({})

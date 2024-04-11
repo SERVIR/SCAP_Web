@@ -6,6 +6,7 @@ let secondary_underlay_layer;
 let comparison_control;
 let aoi_layer_left;
 let aoi_layer_right;
+let pilot_center=[-8.60436, -74.73243];
 
 function add_option_by_id(selector, value, label) {
     let opt = document.createElement('option');
@@ -142,13 +143,6 @@ function  redraw_based_on_year(){
 
     let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
-        try {
-            map.panTo(new L.LatLng(result.latitude, result.longitude));
-            map.setZoom(result.zoom);
-        }
-        catch(except){
-            console.log("err")
-        }
 
         aoi_layer_left = L.geoJSON(result['data_pa'], {
             style: {
@@ -159,7 +153,8 @@ function  redraw_based_on_year(){
             },
             onEachFeature: onEachFeature,
             pane: 'left'
-        })
+        });
+        console.log("aftye lkl")
         aoi_layer_right = L.geoJSON(result['data_pa'], {
             style: {
                 weight: 2,
@@ -226,7 +221,7 @@ function  redraw_based_on_year(){
                 styles: 'boxfill/redblue',
                 transparent: true,
                 pane: 'right'
-            })
+            });
         primary_underlay_layer.addTo(map);
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
@@ -252,6 +247,15 @@ function  redraw_based_on_year(){
             }
             console.log("Current Zoom Level = " + zoomlevel);
         });
+        //  try {
+        //      // pilot_center=[result.latitude, result.longitude];
+        //     // map.panTo(new L.LatLng(result.latitude, result.longitude));
+        //     // map.setZoom(result.zoom);
+        // }
+        // catch(except){
+        //     console.log("err");
+        // }
+console.log("after err");
     });
 }
 
@@ -269,13 +273,13 @@ function redraw_map_layers() {
 
     let xhr = ajax_call("get-aoi/", {});
     xhr.done(function (result) {
-        try {
-            map.panTo(new L.LatLng(result.latitude, result.longitude));
-            map.setZoom(result.zoom);
-        }
-        catch(except){
-            console.log("err")
-        }
+        // try {
+        //     map.panTo(new L.LatLng(result.latitude, result.longitude));
+        //     map.setZoom(result.zoom);
+        // }
+        // catch(except){
+        //     console.log("err")
+        // }
 
         aoi_layer_left = L.geoJSON(result['data_pa'], {
             style: {
@@ -424,8 +428,15 @@ function get_available_years() {
 
 function init_map() {
     // Initialize with map control with basemap and time slider
+    if(document.getElementById("lat_from_db")){
+        pilot_center = [parseFloat(document.getElementById("lat_from_db").innerHTML), parseFloat(document.getElementById("lon_from_db").innerHTML)];
+    }
+    var zoom=10;
+   if(document.getElementById("zoom_from_db")){
+       zoom = parseFloat(document.getElementById("zoom_from_db").innerHTML);
+   }
     map = L.map('map_chart', {
-        fullscreenControl: true, center: [-8.60436, -74.73243], zoom: 10
+        fullscreenControl: true, center: pilot_center, zoom: zoom
     });
 
     map.createPane('left');
