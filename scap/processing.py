@@ -28,7 +28,31 @@ config = json.load(f)
 def assign_task(collection, task_id):
     task = CurrentTask.objects.create(id=task_id)
     collection.processing_task = task
+    collection.processing_status = 'In Progress'
     collection.save()
+
+
+def set_stage(collection, current_stage, total_stages):
+    task = collection.processing_task
+    task.stage_progress = "Stage {} of {}".format(current_stage, total_stages)
+    task.save()
+
+
+def mark_available(collection):
+    collection.processing_status = "Available"
+    collection.save()
+
+
+def mark_complete(collection):
+    task = collection.processing_task
+    task.subprocess_progress = 100.0
+    task.stage_progress = 'All Stages Complete'
+    task.description = 'Done Processing Collection'
+    task.save()
+
+    collection.processing_status = "Processed"
+    collection.save()
+
 
 
 def get_upload_path(file):
@@ -218,7 +242,7 @@ def generate_forest_cover_files(fc_collection):
 
 def generate_agb_files(agb_collection):
     task = agb_collection.processing_task
-    task.description = "Generating Forest Cover Files"
+    task.description = "Generating AGB File"
 
     update_task_progress(task, 0.0, 0.0)
 
@@ -337,19 +361,26 @@ def generate_carbon_files(fc_collection, agb_collection, user, carbon_type):
 
 
 def generate_stocks_and_emissions_files(collection, collection_type):
+    task = collection.processing_task
+    progress = update_task_progress(task, 0.0, 0.0)
     carbon_pairs = None
+    task.description = "Generating Stock and Emissions Files"
+    task.save()
+
     match collection_type:
         case 'fc':
-            carbon_pairs = product([ collection ], api.get_available_agbs(collection))
+            carbon_pairs = list(product([ collection ], api.get_available_agbs(collection)))
         case 'agb':
-            carbon_pairs = product(api.get_available_fcs(collection), [ collection ])
+            carbon_pairs = list(product(api.get_available_fcs(collection), [ collection ]))
         case _:
             print("Error generating stocks and emissions files")
             # TODO Raise error
             pass
     for fc, agb in carbon_pairs:
         generate_carbon_files(fc, agb, agb.owner.username, 'emissions')
+        progress = update_task_progress(task, progress, 50.0 / len(carbon_pairs))
         generate_carbon_files(fc, agb, agb.owner.username, 'carbon-stock')
+        progress = update_task_progress(task, progress, 50.0 / len(carbon_pairs))
 
 
 def calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath):
@@ -387,16 +418,9 @@ def calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepat
     return final_carbon_stock, emissions, agb_value, processing_time
 
 
-def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, task):
+def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection):
     # Assumptions: All FC Files, the AGB file, and all AOI Features have been loaded for stats
     # TODO Ensure mutual availability and lack of modification to all collections
-
-    task.description = "Calculating Zonal Statistics {}x{}x{}".format(fc_collection.name,
-                                                                      agb_collection.name,
-                                                                      aoi_collection.name)
-
-    progress = update_task_progress(task, 0.0, 0.0)
-
     fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
     agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
     aoi_dataset_name = get_filesystem_dataset_name(aoi_collection.name)
@@ -439,8 +463,6 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, ta
 
         statistic.save()
 
-        progress = update_task_progress(task, progress, 50.0 / len(possible_combinations))
-
         (final_carbon_stock,
          emissions,
          agb_value,
@@ -459,19 +481,12 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, ta
 
         statistic.save()
 
-        progress = update_task_progress(task, progress, 50.0 / len(possible_combinations))
-
-
-
-    task.description = "Calculating Zonal Statistics {} x {} x {}".format(fc_collection.name,
-                                                                          agb_collection.name,
-                                                                          aoi_collection.name)
-
 
 def generate_zonal_statistics(collection, collection_type):
     fc_collections = None
     agb_collections = None
     aoi_collections = None
+    task = collection.processing_task
 
     match collection_type:
         case 'fc':
@@ -490,7 +505,18 @@ def generate_zonal_statistics(collection, collection_type):
             # TODO Raise error
             pass
 
-    available_sets = product(fc_collections, agb_collections, aoi_collections)
+    available_sets = list(product(fc_collections, agb_collections, aoi_collections))
 
+    progress = 0.0
     for fc, agb, aoi in available_sets:
-        calculate_zonal_statistics(fc, agb, aoi, collection.processing_task)
+        task.description = "Calculating Zonal Statistics {} x {} x {}".format(fc_collection.name,
+                                                                              agb_collection.name,
+                                                                              aoi_collection.name)
+        task.save()
+
+        calculate_zonal_statistics(fc, agb, aoi)
+        progress = update_task_progress(task, progress, 100.0 / len(available_sets))
+
+
+    task.description = "Done Calculating Zonal Statistics"
+    task.save()
