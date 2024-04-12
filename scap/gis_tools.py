@@ -196,13 +196,15 @@ def is_snapped_mollweide(source):
     return src_proj == match_proj and matching_transforms
 
 
-def calculate_change_file(baseline_filepath, current_filepath, target_path):
+def calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback):
     # Assumes both files are already Mollweide and snapped to SCAP grid
 
     with rio.open(baseline_filepath) as base_raster, rio.open(current_filepath) as curr_raster:
         profile = curr_raster.profile.copy()
         profile.update({'count': 1, 'dtype': rio.int16})
         with rio.open(target_path, 'w', **profile) as dst:
+            total_blocks = len(list(base_raster.block_windows(1)))
+            block_counter = 0
             for (_, window) in base_raster.block_windows(1):
                 # Read blocks of data
                 # Should be same transform, so no need to offset windows
@@ -215,7 +217,8 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path):
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
 
-    return outputpath
+                block_counter += 1
+                progress_callback(float(block_counter) / total_blocks)
 
 
 def copy_mollweide(source_file, target_path, progress_callback):
