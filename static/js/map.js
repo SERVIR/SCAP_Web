@@ -212,7 +212,7 @@ function  redraw_based_on_year(){
                 pane: 'right'
             })
          var style='boxfill/maize';
-        if (selected_dataset_left!=selected_dataset_right){
+        if (selected_dataset_left===selected_dataset_right){
             style='boxfill/redblue';
         }
         secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
@@ -352,7 +352,7 @@ function redraw_map_layers() {
                 pane: 'right'
             })
     var style='boxfill/maize';
-        if (selected_dataset_left!=selected_dataset_right){
+        if (selected_dataset_left===selected_dataset_right){
             style='boxfill/redblue';
         }
         secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
