@@ -210,6 +210,7 @@ class PilotCountry(models.Model):
     hero_image = models.ImageField(upload_to='assets/img/pilotcountry/', help_text="Hero Image")
     region = models.CharField(max_length=100, default="", help_text="Region")
     country_description = models.TextField(default="", help_text="Country Description")
+    country_tagline = models.TextField(default="", help_text="Country Tagline")
     year_added = models.IntegerField(help_text="Year Added as Pilot Country", default=2024)
     aoi_polygon = models.ForeignKey(AOIFeature, help_text="Country Polygon AOI ID (reference to AOI model)",
                                     on_delete=models.CASCADE, blank=True, null=True)
