@@ -68,7 +68,7 @@ def protected_aois(request, aoi):
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name})
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'tagline':pc.country_tagline,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name})
     except Exception as e:
         return render(request, 'scap/index.html')
 

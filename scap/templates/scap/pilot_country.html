@@ -54,6 +54,7 @@
     <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
 
+
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
             integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
     <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js"
@@ -74,6 +75,8 @@
     <script src="{% static '/js/utils.js' %}"></script>
     <script src="{% static '/js/basemaps.js' %}"></script>
     <script src="{% static '/js/geosearch.umd.js' %}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="{% static '/js/map.js' %}"></script>
 </head>
 <body id="page-top">
@@ -478,7 +481,53 @@ margin-right: 0;">
         </div>
     </div>
 </footer>
+<div class="pilotcountry-modal modal fade" id="info_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content"  style="width: 50%;margin:auto;padding-bottom: 10px;padding-top: 10px">
 
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <div class="modal-body" >
+                            <!-- Project details-->
+                            <h4 class="text-uppercase">Understanding the map</h4>
+                           <div class="container justify-content-center">
+                               <div class="row">
+                                   <div class="col-6"><img src="{% static "assets/img/red_image.PNG" %}"
+                                                                  alt="image for red area" width=350 height=300/></div>
+                                   <div class="col-6"><p>Comparing <b>different years for same forest cover collection</b></p>
+                                   <p>The left side (A) shows the earlier year in bright green, indicating the places that were
+                                   originally identified as forest.</p>
+                                       <p>The right side (B) shows the later year in darker green, with the areas that have lost forest cover in red.
+                                       </p>
+                                   </div>
+                               </div>
+                               <div class="row">
+                                   <div class="col-6"><img src="{% static "assets/img/yellow_image.PNG" %}"
+                                                                  alt="image for yellow area" width=350 height=300/></div>
+                                   <div class="col-6">
+                                       <p>Comparing <b>data from different forest cover collections</b></p>
+                                       <p>The left side (A) shows the first dataset in green, while the yellow pixels indicate
+                                       locations identified as forest only in the second dataset.</p>
+                                       <p>
+                                           The right side (B) shows the second dataset in green, with yellow pixels indicating locations
+                                           identified as forest only in the first dataset
+                                       </p>
+
+                                   </div>
+                               </div>
+                           </div>
+                            <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{% static '/js/forestchange.js' %}"></script>
 <script src="{% static '/js/emissions.js' %}"></script>
 
