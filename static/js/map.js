@@ -211,6 +211,10 @@ function  redraw_based_on_year(){
                 transparent: true,
                 pane: 'right'
             })
+         var style='boxfill/maize';
+        if (selected_dataset_left!=selected_dataset_right){
+            style='boxfill/redblue';
+        }
         secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
@@ -218,17 +222,17 @@ function  redraw_based_on_year(){
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: 'boxfill/redblue',
+                styles: style,
                 transparent: true,
                 pane: 'right'
             });
-        primary_underlay_layer.addTo(map);
+        // primary_underlay_layer.addTo(map);
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
         aoi_layer_left.addTo(map);
         aoi_layer_right.addTo(map);
-        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
         map.on("zoomend", function () {
@@ -347,6 +351,10 @@ function redraw_map_layers() {
                 transparent: true,
                 pane: 'right'
             })
+    var style='boxfill/maize';
+        if (selected_dataset_left!=selected_dataset_right){
+            style='boxfill/redblue';
+        }
         secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
@@ -354,17 +362,17 @@ function redraw_map_layers() {
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: 'boxfill/redblue',
+                styles: style,
                 transparent: true,
                 pane: 'right'
             })
-        primary_underlay_layer.addTo(map);
+        // primary_underlay_layer.addTo(map);
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
         aoi_layer_left.addTo(map);
         aoi_layer_right.addTo(map);
-        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer, primary_underlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
         document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
         map.on("zoomend", function () {
@@ -452,7 +460,9 @@ function init_map() {
         showPopup: false,
         autoClose: true
     }));
-
+L.easyButton('fa-info',function(btn,map){
+    $('#info_modal').modal('show');
+},'Info').addTo(map);
     var wmsLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
         layers: 's-cap:watermask_2',
         format: 'image/png',
