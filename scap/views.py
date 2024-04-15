@@ -53,7 +53,7 @@ def pilot_country(request, country=1):
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'image':pa.hero_image.url,'latitude':pa.latitude,'longitude':pa.longitude,'zoom_level':pa.zoom_level    })
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'tagline':pa.country_tagline,'image':pa.hero_image.url,'latitude':pa.latitude,'longitude':pa.longitude,'zoom_level':pa.zoom_level    })
 
 
 def protected_aois(request, aoi):
