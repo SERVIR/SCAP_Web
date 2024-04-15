@@ -152,9 +152,12 @@ def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
     mask_water(mollweide_file)
 
 
-def generate_forest_cover_change_file(fc_file, username, dataset_name):
+def generate_forest_cover_change_file(fc_file, username, dataset_name, task_obj, current_progress, step_progress):
     # Assumes fc_file and its respective baseline file to be loaded to stats directory
     # Assumes fc_file is not the collection's baseline file
+    def progress_callback(complete):
+        update_task_progress(task_obj, current_progress, round(step_progress * complete, 2))
+
     baseline_fc_file = list(ForestCoverFile.objects.filter(collection=fc_file.collection,
                                                            year__lt=fc_file.year).order_by('year'))[-1]
 
@@ -167,7 +170,7 @@ def generate_forest_cover_change_file(fc_file, username, dataset_name):
         os.makedirs(file_dir)
 
     # TODO Add progress tracking?
-    calculate_change_file(baseline_filepath, current_filepath, target_path)
+    calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback)
 
 
 def generate_scap_source_files(task, current_progress, progress_total, dataset_info, file, is_public, filepath=None):
@@ -232,8 +235,8 @@ def generate_forest_cover_files(fc_collection):
                                               dataset_info, yearly_file, is_public, target_filepath)
 
         if yearly_file != baseline_file:
-            generate_forest_cover_change_file(yearly_file, user, dataset_name)
-            progress = update_task_progress(task, progress, (1.0 - progress_scale) * single_file_progress)
+            generate_forest_cover_change_file(yearly_file, user, dataset_name,
+                                              task, progress, (1.0 - progress_scale) * single_file_progress)
 
 
     task.description = "Done Generating Forest Cover Files"
