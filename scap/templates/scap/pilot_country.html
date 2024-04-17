@@ -82,7 +82,6 @@
 <body id="page-top">
 <script>
    var shp_obj = {{ shp_obj|safe }};
-   console.log(shp_obj);
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -175,10 +174,10 @@ margin-right: 0;">
                     <div class="form-group">
                         <label>Primary Year</label>
                         <select name="selected_year" id="selected_year"
-                                class="form-control"
-                                onchange="redraw_map_layers()">
-                            <option value="0" selected="selected">Loading...</option>
-                        </select>
+                        class="form-control"
+                        onchange="redraw_based_on_year()">
+                    <option value="0" selected="selected">Loading...</option>
+                </select>
                     </div>
                 </div>
                 <div class="d-flex">
@@ -203,9 +202,9 @@ margin-right: 0;">
                         <div class="form-group">
                             <label>Comparison Year</label>
                             <select name="comparison_year" id="comparison_year"
-                                    class="form-control"
-                                    onchange="redraw_map_layers()">
-                            </select>
+                            class="form-control"
+                            onchange="redraw_based_on_year()">
+                    </select>
                         </div>
                     </div>
                 </div>
@@ -487,7 +486,7 @@ margin-right: 0;">
 </footer>
 <div class="pilotcountry-modal modal fade" id="info_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content"  style="width: 50%;margin:auto;padding-bottom: 10px;padding-top: 10px">
+        <div class="modal-content"  style="width: 85%;margin:auto;padding-bottom: 10px;padding-top: 10px">
 
 
             <div class="container">
