@@ -19,7 +19,7 @@ from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection
                          PilotCountry, AOIFeature, CurrentTask)
 
 from scap.async_tasks import process_updated_collection
-
+import geopandas as gpd
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
@@ -34,7 +34,11 @@ def home(request):
     return render(request, 'scap/index.html',context={'pilot_countries':pilot_countries})
 
 def map(request):
-    return render(request, 'scap/map.html')
+    json_obj={}
+    vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+
+    json_obj["data_pa"] = json.loads(vec.to_json())
+    return render(request, 'scap/map.html',context={'shp_obj': json_obj})
 
 
 def add_new_collection(request):
@@ -42,6 +46,10 @@ def add_new_collection(request):
 
 
 def pilot_country(request, country=1):
+    json_obj = {}
+    vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+
+    json_obj["data_pa"] = json.loads(vec.to_json())
     pa = PilotCountry.objects.get(id=country)
 
     try:
@@ -53,11 +61,15 @@ def pilot_country(request, country=1):
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'tagline':pa.country_tagline,'image':pa.hero_image.url,'latitude':pa.latitude,'longitude':pa.longitude,'zoom_level':pa.zoom_level    })
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'tagline':pa.country_tagline,'image':pa.hero_image.url,'latitude':pa.latitude,'longitude':pa.longitude,'zoom_level':pa.zoom_level,'shp_obj': json_obj    })
 
 
 def protected_aois(request, aoi):
     try:
+        json_obj = {}
+        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+
+        json_obj["data_pa"] = json.loads(vec.to_json())
         pa = AOIFeature.objects.get(id=aoi)
         pa_name = pa.name
         pc=PilotCountry.objects.get(country_code=pa.iso3)
@@ -68,7 +80,7 @@ def protected_aois(request, aoi):
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'tagline':pc.country_tagline,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name})
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'tagline':pc.country_tagline,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name,'shp_obj': json_obj})
     except Exception as e:
         return render(request, 'scap/index.html')
 

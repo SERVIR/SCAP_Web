@@ -76,6 +76,10 @@
 
 </head>
 <body id="page-top">
+<script>
+   var shp_obj = {{ shp_obj|safe }};
+   console.log(shp_obj);
+</script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
     <div class="container-fluid">
@@ -335,43 +339,47 @@
 
 
             <div class="container">
-                <div class="row justify-content-center">
+                 <div class="row">
                     <div class="col">
                         <div class="modal-body" >
                             <!-- Project details-->
                             <h4 class="text-uppercase">Understanding the map</h4>
-                           <div class="container justify-content-center">
+                           <div class="container">
                                <div class="row">
-                                   <div class="col-6"><img src="{% static "assets/img/red_image.PNG" %}"
-                                                                  alt="image for red area" width=350 height=300/></div>
-                                   <div class="col-6"><p>Comparing <b>different years for same forest cover collection</b></p>
-                                   <p>The left side (A) shows the earlier year in bright green, indicating the places that were
+<div class="col-md-6">
+    <div class="thumbnail">
+     <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image for red area"/>
+        <div class="caption">
+                                   <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
+                                   <p style="text-align: left">The left side (A) shows the earlier year in bright green, indicating the places that were
                                    originally identified as forest.</p>
-                                       <p>The right side (B) shows the later year in darker green, with the areas that have lost forest cover in red.
+                                       <p style="text-align: left">The right side (B) shows the later year in darker green, with the areas that have lost forest cover in red.
                                        </p>
-                                   </div>
-                               </div>
-                               <div class="row">
-                                   <div class="col-6"><img src="{% static "assets/img/yellow_image.PNG" %}"
-                                                                  alt="image for yellow area" width=350 height=300/></div>
-                                   <div class="col-6">
-                                       <p>Comparing <b>data from different forest cover collections</b></p>
-                                       <p>The left side (A) shows the first dataset in green, while the yellow pixels indicate
+        </div>
+
+    </div>
+</div>
+                                   <div class="col-md-6">
+    <div class="thumbnail">
+     <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for yellow area"/>
+        <div class="caption">
+                                         <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
+                                       <p style="text-align: left">The left side (A) shows the first dataset in green, while the yellow pixels indicate
                                        locations identified as forest only in the second dataset.</p>
-                                       <p>
+                                       <p style="text-align: left">
                                            The right side (B) shows the second dataset in green, with yellow pixels indicating locations
                                            identified as forest only in the first dataset
                                        </p>
+        </div>
+
+    </div>
+</div>
 
                                    </div>
-                               </div>
-                           </div>
+
                             <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
                                 Close
                             </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

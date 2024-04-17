@@ -138,13 +138,12 @@ function onEachFeature(feature, layer) {
 function  redraw_based_on_year(){
         document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
-    let selected_dataset_left = document.getElementById('selected_region').value;
-     let selected_dataset_right = document.getElementById('comparing_region').value;
 
-    let xhr = ajax_call("get-aoi/", {});
-    xhr.done(function (result) {
 
-        aoi_layer_left = L.geoJSON(result['data_pa'], {
+    // let xhr = ajax_call("get-aoi/", {});
+    // xhr.done(function (result) {
+
+        aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -155,7 +154,7 @@ function  redraw_based_on_year(){
             pane: 'left'
         });
         console.log("aftye lkl")
-        aoi_layer_right = L.geoJSON(result['data_pa'], {
+        aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -260,7 +259,7 @@ function  redraw_based_on_year(){
         //     console.log("err");
         // }
 console.log("after err");
-    });
+    // });
 }
 
 function redraw_map_layers() {
@@ -272,11 +271,10 @@ function redraw_map_layers() {
     fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
     // document.getElementById('selected_year').value = years[0];
     // document.getElementById('comparison_year').value = c_years[0];
-    let selected_dataset_left = document.getElementById('selected_region').value;
-     let selected_dataset_right = document.getElementById('comparing_region').value;
 
-    let xhr = ajax_call("get-aoi/", {});
-    xhr.done(function (result) {
+
+    // let xhr = ajax_call("get-aoi/", {});
+    // xhr.done(function (result) {
         // try {
         //     map.panTo(new L.LatLng(result.latitude, result.longitude));
         //     map.setZoom(result.zoom);
@@ -285,7 +283,7 @@ function redraw_map_layers() {
         //     console.log("err")
         // }
 
-        aoi_layer_left = L.geoJSON(result['data_pa'], {
+        aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -295,7 +293,7 @@ function redraw_map_layers() {
             onEachFeature: onEachFeature,
             pane: 'left'
         })
-        aoi_layer_right = L.geoJSON(result['data_pa'], {
+        aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
             style: {
                 weight: 2,
                 opacity: 1,
@@ -391,7 +389,7 @@ function redraw_map_layers() {
             }
             console.log("Current Zoom Level = " + zoomlevel);
         });
-    });
+    // });
 
 }
 
