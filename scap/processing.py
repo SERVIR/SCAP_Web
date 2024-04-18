@@ -237,7 +237,6 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
 
 
 def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
-    return
     def progress_callback(complete, unknown, message):
         update_task_progress(task_obj, current_progress, round(step_progress * complete, 2))
 
