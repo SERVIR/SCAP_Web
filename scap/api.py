@@ -545,32 +545,67 @@ def get_available_colors():
     return colors
 
 
-def get_available_agbs(collection):
-    owner = collection.owner
-    scap_admin = User.objects.get(username='scap_admin')
-
-    available_agbs_scap = []
-    if owner != scap_admin:
-        available_agbs_scap = list(AGBCollection.filter(owner=scap_admin))
-
-    available_agbs = list(AGBCollection.filter(owner=owner)) + available_agbs_scap
-
-    return available_agbs
-
-
-def get_available_fcs(collection):
+def get_available_agbs(collection, generating_carbon_files=False):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
 
     available_states = ["Processed", "Available"]
+    source_file_states = ["Available"]
+    publishing_states = ['Public']
+
+    if generating_carbon_files:
+        available_states += ["In Progress"]
+
+    available_agbs_scap = []
+    # Add SCAP datasets if the owner isn't SCAP_Admin
+    if owner != scap_admin:
+        available_agbs_scap = list(AGBCollection.objects.filter(owner=scap_admin,
+                                                                processing_status__in=available_states,
+                                                                source_file_status__in=source_file_states))
+    else:
+        # SCAP Admin can always access private datasets from other owners to update calculations
+        publishing_states += ['Private']
+
+    available_agbs = list(AGBCollection.objects.filter(owner=owner,
+                                                       processing_status__in=available_states,
+                                                       source_file_status__in=source_file_states)) + available_agbs_scap
+
+    available_agbs += list(AGBCollection.objects.filter(processing_status__in=available_states,
+                                                        source_file_status__in=source_file_states,
+                                                        access_level__in=publishing_states).exclude(owner__in=[owner, scap_admin]))
+
+    return available_agbs
+
+
+def get_available_fcs(collection, generating_carbon_files=False):
+    owner = collection.owner
+    scap_admin = User.objects.get(username='scap_admin')
+
+    available_states = ["Processed", "Available"]
+    source_file_states = ["Available"]
+    publishing_states = ['Public']
+
+    if generating_carbon_files:
+        available_states += ["In Progress"]
 
     available_fcs_scap = []
+    # Add SCAP datasets if the owner isn't SCAP_Admin
     if owner != scap_admin:
         available_fcs_scap = list(ForestCoverCollection.objects.filter(owner=scap_admin,
-                                                                       processing_status__in=available_states))
+                                                                       processing_status__in=available_states,
+                                                                       source_file_status__in=source_file_states))
+    else:
+        # SCAP Admin can always access private datasets from other owners to update calculations
+        publishing_states += ['Private']
 
-    available_fcs = (list(ForestCoverCollection.objects.filter(owner=owner, processing_status__in=available_states)) +
+    available_fcs = (list(ForestCoverCollection.objects.filter(owner=owner,
+                                                               processing_status__in=available_states,
+                                                               source_file_status__in=source_file_states)) +
                      available_fcs_scap)
+
+    available_fcs += list(ForestCoverCollection.objects.filter(processing_status__in=available_states,
+                                                               source_file_status__in=source_file_states,
+                                                               access_level__in=publishing_states).exclude(owner__in=[owner, scap_admin]))
 
     return available_fcs
 
@@ -590,23 +625,6 @@ def get_available_aois(collection):
                       available_aois_scap)
 
     return available_aois
-
-
-def get_available_agbs(collection):
-    owner = collection.owner
-    scap_admin = User.objects.get(username='scap_admin')
-
-    available_states = ["Processed", "Available"]
-
-    available_agbs_scap = []
-    if owner != scap_admin:
-        available_agbs_scap = list(AGBCollection.objects.filter(owner=scap_admin,
-                                                                processing_status__in=available_states))
-
-    available_agbs = (list(AGBCollection.objects.filter(owner=owner, processing_status__in=available_states)) +
-                      available_agbs_scap)
-
-    return available_agbs
 
 
 @csrf_exempt
