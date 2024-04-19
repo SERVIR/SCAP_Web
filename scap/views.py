@@ -35,9 +35,12 @@ def home(request):
 
 def map(request):
     json_obj={}
-    vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+    try:
+        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
 
-    json_obj["data_pa"] = json.loads(vec.to_json())
+        json_obj["data_pa"] = json.loads(vec.to_json())
+    except:
+        json_obj={}
     return render(request, 'scap/map.html',context={'shp_obj': json_obj})
 
 
@@ -47,9 +50,12 @@ def add_new_collection(request):
 
 def pilot_country(request, country=1):
     json_obj = {}
-    vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+    try:
+        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
 
-    json_obj["data_pa"] = json.loads(vec.to_json())
+        json_obj["data_pa"] = json.loads(vec.to_json())
+    except:
+        json_obj={}
     pa = PilotCountry.objects.get(id=country)
 
     try:
