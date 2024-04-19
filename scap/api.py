@@ -70,7 +70,7 @@ def generate_geodjango_objects_aoi(verbose=True):
 @csrf_exempt
 def save_forest_cover_file(request):
     try:
-        coll=ForestCoverCollection.objects.get(name=request.POST['coll_name'])
+        coll = ForestCoverCollection.objects.get(name=request.POST['coll_name'])
         new_tiff = ForestCoverFile()
         new_tiff.year = request.POST['year']
         new_tiff.file = request.FILES['FC_tiff']
@@ -79,9 +79,9 @@ def save_forest_cover_file(request):
             new_tiff.doi_link = doi.validate_doi(request.POST['doi'])
 
         except Exception as e:
-            new_tiff.doi_link=""
+            new_tiff.doi_link = ""
 
-        new_tiff.collection=coll
+        new_tiff.collection = coll
         new_tiff.save()
 
         return JsonResponse({"result": "success", "error_message": ""})
@@ -89,66 +89,75 @@ def save_forest_cover_file(request):
         print(e)
         return JsonResponse({"result": "error", "error_message": str(e)})
 
+
 @csrf_exempt
-def get_tiff_data(request,pk):
-    return_obj = {'data':[]}
+def get_tiff_data(request, pk):
+    return_obj = {'data': []}
 
     try:
-        coll_name=request.POST['coll_name']
+        coll_name = request.POST['coll_name']
         if coll_name:
-            coll = ForestCoverCollection.objects.get(name=coll_name,owner__username=request.user.username)
-            results_arr=[]
-            tiffs=ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
+            coll = ForestCoverCollection.objects.get(name=coll_name, owner__username=request.user.username)
+            results_arr = []
+            tiffs = ForestCoverFile.objects.filter(collection=coll).values('year', 'file', 'metadata_link', 'doi_link')
             for tiff in tiffs:
                 try:
                     doi_full = doi.validate_doi(tiff.get('doi_link'))
                 except Exception as e:
-                    doi_full=""
-                results_arr.append({'userId':str(request.user),'year':tiff.get('year'),'filename':tiff.get('file').split('/')[-1],'metadata':tiff.get('metadata_link'),
-                                    'doi':tiff.get('doi_link'),'doi_full_link':doi_full})
-            return_obj['data']=results_arr
+                    doi_full = ""
+                results_arr.append(
+                    {'userId': str(request.user), 'year': tiff.get('year'), 'filename': tiff.get('file').split('/')[-1],
+                     'metadata': tiff.get('metadata_link'),
+                     'doi': tiff.get('doi_link'), 'doi_full_link': doi_full})
+            return_obj['data'] = results_arr
         return JsonResponse(return_obj)
     except Exception as e:
         return JsonResponse(return_obj)
 
 
 @csrf_exempt
-def get_tiff_id(request,pk):
-    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
-    return JsonResponse({"id":tiff.id,"doi":tiff.doi_link})
+def get_tiff_id(request, pk):
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'), collection__name=request.POST.get('coll_name'))
+    return JsonResponse({"id": tiff.id, "doi": tiff.doi_link})
+
 
 @csrf_exempt
-def add_tiff_record(request,pk):
-    existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),owner__username=request.user.username)
+def add_tiff_record(request, pk):
+    existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),
+                                                      owner__username=request.user.username)
     print(existing_coll)
     try:
         new_tiff = ForestCoverFile()
-        new_tiff.collection=existing_coll
-        new_tiff.year=request.POST.get('year')
-        new_tiff.file=request.FILES['file']
+        new_tiff.collection = existing_coll
+        new_tiff.year = request.POST.get('year')
+        new_tiff.file = request.FILES['file']
         new_tiff.metadata_link = request.POST.get('metadata_link')
         new_tiff.doi_link = request.POST.get('doi_link')
         new_tiff.save()
     except Exception as e:
         return JsonResponse({"error": str(e)})
-    return JsonResponse({"added":"success"})
+    return JsonResponse({"added": "success"})
+
 
 @csrf_exempt
-def update_tiff_record(request,pk):
-    return_obj={}
+def update_tiff_record(request, pk):
+    return_obj = {}
     existing_tiff = ForestCoverFile.objects.get(id=request.POST.get('id'))
-    existing_tiff.year=request.POST.get('year')
+    existing_tiff.year = request.POST.get('year')
     existing_tiff.metadata_link = request.POST.get('metadata_link')
     if request.FILES:
-        existing_tiff.file=request.FILES['file']
-    existing_tiff.doi_link=request.POST.get('doi_link')
+        existing_tiff.file = request.FILES['file']
+    existing_tiff.doi_link = request.POST.get('doi_link')
     existing_tiff.save()
     return JsonResponse(return_obj)
+
+
 @csrf_exempt
-def delete_tiff_record(request,pk):
-    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'),collection__name=request.POST.get('coll_name'))
+def delete_tiff_record(request, pk):
+    tiff = ForestCoverFile.objects.get(year=request.POST.get('year'), collection__name=request.POST.get('coll_name'))
     tiff.delete()
-    return JsonResponse({"deleted":"success"})
+    return JsonResponse({"deleted": "success"})
+
 
 @csrf_exempt
 def updatetomodel(request):
@@ -207,7 +216,7 @@ def get_forest_cover_collections(request):
     # print(collections)
     for c in collections:
         arr.append(c['name'])
-        
+
     return JsonResponse({"coll": arr})
 
 
@@ -242,7 +251,7 @@ def save_AOI(request):
             new_aoi.save()
             return JsonResponse({"result": "success"})
     except Exception as e:
-        print(e,__line_no__)
+        print(e, __line_no__)
         return JsonResponse({"result": "error", "error_message": str(e)})
 
 
@@ -259,7 +268,7 @@ def get_aoi_list(request):
             last_accessed_on.append(aois[i]['last_accessed_on'])
         return JsonResponse({"result": "success", "names": names, "last_accessed_on": last_accessed_on})
     except Exception as e:
-        print(e,__line_no__)
+        print(e, __line_no__)
         return JsonResponse({"result": "error", "message": str(e)})
 
 
@@ -277,11 +286,15 @@ def delete_AOI(request):
     except Exception as e:
         print(e)
         return JsonResponse({"result": "error", "message": str(e)})
+
+
 @csrf_exempt
-def get_aoi_id(request,country=0):
-    aoi=AOIFeature.objects.get(name=request.POST['aoi'],iso3=request.POST['iso3'],desig_eng=request.POST['desig_eng'])
+def get_aoi_id(request, country=0):
+    aoi = AOIFeature.objects.get(name=request.POST['aoi'], iso3=request.POST['iso3'],
+                                 desig_eng=request.POST['desig_eng'])
     print(aoi)
-    return JsonResponse({"id":aoi.id})
+    return JsonResponse({"id": aoi.id})
+
 
 @csrf_exempt
 def get_AOI(request, country=1):
@@ -298,24 +311,23 @@ def get_AOI(request, country=1):
 def fetch_carbon_charts(pa_name, container):
     # TODO Add charts for carbon stock and AGB in addition to emissions
     try:
-        # TODO Replace following with ForestCoverCollection query
-        df_lc = pd.DataFrame([])
+        df_lc = pd.DataFrame(ForestCoverCollection.objects.all().values())
         lcs = df_lc.to_dict('records')
-        # TODO Replace following with AGBCollection query
-        df_agb = pd.DataFrame([])  # Get the AGB dataset data
+        df_agb = pd.DataFrame((AGBCollection.objects.all().values()))  # Get the AGB dataset data
         agbs = df_agb.to_dict('records')
         df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
-
-        # TODO Fix this chart generator
-        # df["lc_id_id"] = "LC" + df["lc_id_id"].apply(str)
-        # df["agb_id_id"] = "AGB" + df["agb_id_id"]  # Add the prefix AGB to the AGB id column
-        # grouped_data = df.groupby(['year', 'lc_id_id', 'agb_id_id'])['lc_agb_value'].sum().reset_index()
-        # pivot_table = pd.pivot_table(grouped_data, values='lc_agb_value', columns=['lc_id_id', 'agb_id_id'],
-        #                              index='year',
-        #                              fill_value=None)
-        # chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
-        #                  title='CarbonStatistics: ' + pa_name)
-        chart = None
+        if df.empty:
+            chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
+                              title='CarbonStatistics: ' + pa_name)
+            return chart,lcs,agbs
+        df["fc_index"] = "LC" + df["fc_index"].apply(str)
+        df["agb_index"] = "AGB" + df["agb_index"].apply(str)  # Add the prefix AGB to the AGB id column
+        grouped_data = df.groupby(['year_index', 'fc_index', 'agb_index'])['emissions'].sum().reset_index()
+        pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index', 'agb_index'],
+                                     index='year_index',
+                                     fill_value=None)
+        chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
+                          title='CarbonStatistics: ' + pa_name)
     except Exception as e:
         error_msg = "Could not generate chart data for emissions"
         print(str(e))
@@ -324,22 +336,24 @@ def fetch_carbon_charts(pa_name, container):
 
 
 def fetch_forest_change_charts(pa_name, container):
-    # TODO Add charts for reforestation, deforestation
-    # TODO Not sure how to reformat this call, meet with me
-    df_defor = pd.DataFrame()  # Get the ForestCoverChange dataset data
-    # TODO Make ForestCoverCollection query to get names
-    df_lc_defor = pd.DataFrame([])
+    df_defor = pd.DataFrame(ForestCoverStatistic.objects.all().values())
+    df_lc_defor =pd.DataFrame(ForestCoverCollection.objects.all().values())
     lcs_defor = df_lc_defor.to_dict('records')
-    # TODO Fix this chat generator
-    chart_fc = None
-    #df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-    #df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
-    #years_defor = list(df_defor['year'].unique())
-    #pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_source_id'],
-    #                                   index='year', fill_value=None)
-    #chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
-    #                     xticks=years_defor,
-    #                     title='Change in Forest Cover: ' + pa_name, )
+    if df_defor.empty:
+        chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
+                             xticks=[],
+                             title='Change in Forest Cover: ' + pa_name, )
+
+        return chart_fc, lcs_defor
+
+    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
+    df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
+    years_defor = list(df_defor['year_index'].unique())
+    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index'],
+                                      index='year_index', fill_value=None)
+    chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
+                        xticks=years_defor,
+                        title='Change in Forest Cover: ' + pa_name, )
 
     return chart_fc, lcs_defor
 
@@ -347,22 +361,20 @@ def fetch_forest_change_charts(pa_name, container):
 def fetch_forest_change_charts_by_aoi(aoi, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index=aoi).values()))
-    # df_lc_defor = pd.DataFrame(list(BoundaryFiles.objects.all().values('id', 'name_es').order_by(
-    #     'id')))
-    # lcs_defor = df_lc_defor.to_dict('records')
-    lcs_defor=[]
-    # df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
+    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.all().values())
+    lcs_defor = df_lc_defor.to_dict('records')
+    df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
-    # df_defor['fc_source_id'] = 'LC' + df_defor['fc_source_id'].apply(str)
-    # years_defor = list(df_defor['year_index'].unique())
+    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
+    years_defor = list(df_defor['year_index'].unique())
 
-    # pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_source_id'],
-    #                                     index='year', fill_value=None)
+    pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_index'],
+                                        index='year_index', fill_value=None)
 
-    # chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
-    #                       xticks=[],
-    #                       title="Change in Forest Cover: " + aoi)
-    return None, lcs_defor
+    chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
+                          xticks=[],
+                          title="Change in Forest Cover: " + aoi)
+    return chart_fc1, lcs_defor
 
 
 def get_agg_check(request, country='None'):
@@ -382,13 +394,15 @@ def get_agg_check(request, country='None'):
             print(pa_name)
 
             data1 = list(
-                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values('year').annotate(
+                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values(
+                    'year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
             print(data1)
         else:
             pa_name = country
             data1 = list(
-                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values('year').annotate(
+                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values(
+                    'year').annotate(
                     min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
 
         if len(data1) < 25:
@@ -522,10 +536,8 @@ def generate_fcc_file(request):
         fcc.save()
         return HttpResponse("Success")
     except Exception as e:
-        print(e,__line_no__)
+        print(e, __line_no__)
         return HttpResponse(str(e))
-
-
 
 
 def get_available_colors():
@@ -572,7 +584,8 @@ def get_available_agbs(collection, generating_carbon_files=False):
 
     available_agbs += list(AGBCollection.objects.filter(processing_status__in=available_states,
                                                         source_file_status__in=source_file_states,
-                                                        access_level__in=publishing_states).exclude(owner__in=[owner, scap_admin]))
+                                                        access_level__in=publishing_states).exclude(
+        owner__in=[owner, scap_admin]))
 
     return available_agbs
 
@@ -605,7 +618,8 @@ def get_available_fcs(collection, generating_carbon_files=False):
 
     available_fcs += list(ForestCoverCollection.objects.filter(processing_status__in=available_states,
                                                                source_file_status__in=source_file_states,
-                                                               access_level__in=publishing_states).exclude(owner__in=[owner, scap_admin]))
+                                                               access_level__in=publishing_states).exclude(
+        owner__in=[owner, scap_admin]))
 
     return available_fcs
 
@@ -628,12 +642,12 @@ def get_available_aois(collection):
 
 
 @csrf_exempt
-def stage_for_processing(request,pk):
+def stage_for_processing(request, pk):
     collection_type = request.POST.get('type')
-    if collection_type=='fc':
+    if collection_type == 'fc':
         fc_collection_name = request.POST.get('coll_name')
         collection = ForestCoverCollection.objects.get(name=fc_collection_name)
-    elif collection_type=='agb':
+    elif collection_type == 'agb':
         agb_collection_name = request.POST.get('agb_name')
         collection = AGBCollection.objects.get(name=agb_collection_name)
     else:
