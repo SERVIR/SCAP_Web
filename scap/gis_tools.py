@@ -7,13 +7,21 @@ import shutil
 import rasterio as rio
 import numpy as np
 
-from osgeo import gdal, ogr, osr, gdalconst
+from celery.utils.log import get_task_logger
 from rasterio.windows import Window
 from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
+
+if 'PROJ_LIB' in config:
+    os.environ['PROJ_LIB'] = config['PROJ_LIB']
+
+from osgeo import gdal, ogr, osr, gdalconst
+
+logger = get_task_logger('ScapTestProject.async_tasks')
 
 
 def get_raster_offset(offset_raster, control_raster):
@@ -184,7 +192,17 @@ def reproject_latlon(source, outputpath, progress_callback):
     dtype (OPTIONAL): datatype to save as
     nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
     """
-    warp = gdal.Warp(outputpath, source, dstSRS='EPSG:4326', callback=progress_callback)
+    srs = osr.SpatialReference()
+    srs.ImportFromEPSG(4326)
+    wkt = srs.ExportToWkt()
+    options = gdal.WarpOptions(
+       dstSRS=wkt,
+       callback= progress_callback
+    )
+
+    logger.info(os.environ)
+
+    warp = gdal.Warp(outputpath, source, options=options)
     warp = None
 
     return outputpath

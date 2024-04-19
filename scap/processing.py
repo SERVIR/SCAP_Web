@@ -10,6 +10,7 @@ import json
 import time
 import os
 
+from celery.utils.log import get_task_logger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.gis.utils import LayerMapping
 from celery.utils.log import get_task_logger
@@ -142,7 +143,9 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
     def progress_callback(complete, unknown, message):
         update_task_progress(task_obj, current_progress, round(step_progress * complete * 0.75, 2))
 
-    final_load_path = raster_path.replace('temp/', '').replace('data/', '').replace('.tif', '.nc4')
+    final_load_path = raster_path.replace('temp/', '').replace('data/', 'public/').replace('.tif', '.nc4')
+
+    logger.info('Loading {} for visualization'.format(final_load_path))
 
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
@@ -151,7 +154,7 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
     split_path = os.path.split(raster_path)
     reprojection_load_path = os.path.join(split_path[0], 'latlon_' + split_path[1])
 
-    copy_latlon(raster_path, reprojection_load_path, progress_callback)
+    copy_latlon(str(raster_path), str(reprojection_load_path), progress_callback)
 
     with xr.open_dataset(reprojection_load_path, engine="rasterio") as file:
         ds = file.isel(band=0).rename({'band_data': variable_name})
@@ -242,6 +245,7 @@ def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
 
     # Assumes raster is loaded to temp directory
     final_load_path = raster_path.replace('temp/', '')
+    logger.info('Loading {} for statistics'.format(final_load_path))
 
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
@@ -255,6 +259,8 @@ def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
 def generate_forest_cover_change_file(fc_file, username, dataset_name, task_obj, current_progress, step_progress):
     # Assumes fc_file and its respective baseline file to be loaded to stats directory
     # Assumes fc_file is not the collection's baseline file
+    logger.info('Generating forest cover change file: {} - {}'.format(dataset_name, fc_file.year))
+
     def progress_callback(complete):
         update_task_progress(task_obj, current_progress, round(step_progress * complete, 2))
 
@@ -269,7 +275,6 @@ def generate_forest_cover_change_file(fc_file, username, dataset_name, task_obj,
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 
-    # TODO Add progress tracking?
     calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback)
 
 
@@ -307,6 +312,7 @@ def generate_forest_cover_files(fc_collection):
     is_public = fc_collection.access_level == 'Public'
     user = fc_collection.owner.username
     dataset_name = get_filesystem_dataset_name(fc_collection.name)
+    logger.info('Generating forest cover files: {}'.format(dataset_name))
 
     # TODO Update to only modified files
     yearly_files = fc_collection.yearly_files.all().order_by('year')

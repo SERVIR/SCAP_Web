@@ -129,8 +129,8 @@ def add_tiff_record(request,pk):
         new_tiff.metadata_link = request.POST.get('metadata_link')
         new_tiff.doi_link = request.POST.get('doi_link')
         new_tiff.save()
-    except:
-        return JsonResponse({"error": "error"})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
     return JsonResponse({"added":"success"})
 
 @csrf_exempt
