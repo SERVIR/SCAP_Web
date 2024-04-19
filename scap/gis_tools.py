@@ -7,13 +7,21 @@ import shutil
 import rasterio as rio
 import numpy as np
 
-from osgeo import gdal, ogr, osr, gdalconst
+from celery.utils.log import get_task_logger
 from rasterio.windows import Window
 from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
+
+if 'PROJ_LIB' in config:
+    os.environ['PROJ_LIB'] = config['PROJ_LIB']
+
+from osgeo import gdal, ogr, osr, gdalconst
+
+logger = get_task_logger('ScapTestProject.async_tasks')
 
 
 def get_raster_offset(offset_raster, control_raster):
@@ -121,7 +129,7 @@ def rasterize_aoi(aoi_feature, filepath):
     gdal.RasterizeLayer(dest, [1], layer)
 
 
-def reproject_gtiff(source, outputpath, progress_callback):
+def reproject_mollweide(source, outputpath, progress_callback):
     """
     Writes a geotiff.
 
@@ -174,6 +182,32 @@ def reproject_gtiff(source, outputpath, progress_callback):
     return outputpath
 
 
+def reproject_latlon(source, outputpath, progress_callback):
+    """
+    Writes a geotiff.
+
+    array: numpy array to write as geotiff
+    gdal_obj: object created by gdal.Open() using a tiff that has the SAME CRS, geotransform, and size as the array you're writing
+    outputpath: path including filename.tiff
+    dtype (OPTIONAL): datatype to save as
+    nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
+    """
+    srs = osr.SpatialReference()
+    srs.ImportFromEPSG(4326)
+    wkt = srs.ExportToWkt()
+    options = gdal.WarpOptions(
+       dstSRS=wkt,
+       callback= progress_callback
+    )
+
+    logger.info(os.environ)
+
+    warp = gdal.Warp(outputpath, source, options=options)
+    warp = None
+
+    return outputpath
+
+
 def is_snapped_mollweide(source):
     match = config['GRID_MATCH_SOURCE']
 
@@ -194,6 +228,16 @@ def is_snapped_mollweide(source):
     matching_transforms = x_aligned and y_aligned and affine_aligned
 
     return src_proj == match_proj and matching_transforms
+
+
+def is_latlon(raster_path):
+    srs = osr.SpatialReference()
+    srs.ImportFromEPSG(4326)
+
+    ds = gdal.Open(raster_path)
+    wkt = ds.GetProjection()
+
+    return srs.ExportToWkt() == wkt
 
 
 def calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback):
@@ -218,17 +262,28 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path, prog
                 dst.write(change_block_data, window=window, indexes=1)
 
                 block_counter += 1
-                progress_callback(float(block_counter) / total_blocks)
+                if block_counter % 10000 == 0:
+                    progress_callback(float(block_counter) / total_blocks)
 
 
 def copy_mollweide(source_file, target_path, progress_callback):
     if is_snapped_mollweide(source_file):
         shutil.copyfile(source_file, target_path)
+        progress_callback(1.0, None, None)
     else:
-        reproject_gtiff(source_file, target_path, progress_callback)
+        reproject_mollweide(source_file, target_path, progress_callback)
 
 
-def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path, carbon_type):
+def copy_latlon(source_file, target_path, progress_callback):
+    if is_latlon(source_file):
+        shutil.copyfile(source_file, target_path)
+        progress_callback(1.0, None, None)
+    else:
+        reproject_latlon(source_file, target_path, progress_callback)
+
+
+
+def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path, carbon_type, progress_callback):
     target_fc_value = 1 if carbon_type == 'carbon-stock' else -1
 
     if agb_year > fc_year:
@@ -240,6 +295,8 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
         profile = fc_raster.profile.copy()
         profile.update({'count': 1, 'dtype': rio.uint16, 'nodata': 0})  # Update band count to 1 for masked output
         with rio.open(output_path, 'w', **profile) as dst:
+            total_blocks = len(list(fc_raster.block_windows(1)))
+            block_counter = 0
             for (_, window) in fc_raster.block_windows(1):
                 # Read blocks of data
                 fc_block_data = fc_raster.read(1, window=window)
@@ -260,6 +317,11 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
 
                 # Write masked block to output TIF
                 dst.write(forest_carbon_total, window=window, indexes=1)
+
+                block_counter += 1
+
+                if block_counter % 10000 == 0:
+                    progress_callback(float(block_counter) / total_blocks)
 
 
 def compute_masked_pixels(data_raster, aoi, target_value, compute_function):

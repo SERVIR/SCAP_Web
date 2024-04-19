@@ -33,6 +33,11 @@ class ForestCoverCollection(models.Model):
         ('Private', 'Private'),
     )
 
+    SOURCE_FILE_STATES = (
+        ('Unavailable', 'Unavailable'),
+        ('Available', 'Available'),
+    )
+
     PROCESSING_STATES = (
         ('Not Processed', 'Not Processed'),
         ('Staged', 'Staged'),
@@ -53,12 +58,17 @@ class ForestCoverCollection(models.Model):
 
     owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
     processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status", choices=SOURCE_FILE_STATES)
 
     processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
         unique_together='name','owner'
+
+
+    def __str__(self):
+        return self.name
 
 
 class ForestCoverFile(models.Model):
@@ -110,6 +120,10 @@ class AOICollection(models.Model):
         unique_together = 'name', 'owner'
 
 
+    def __str__(self):
+        return self.name
+
+
 class AOIFeature(models.Model):
     collection = models.ForeignKey(AOICollection, null=True, on_delete=models.CASCADE, related_name='features')
 
@@ -136,6 +150,11 @@ class AGBCollection(models.Model):
         ('Private', 'Private'),
     )
 
+    SOURCE_FILE_STATES = (
+        ('Unavailable', 'Unavailable'),
+        ('Available', 'Available'),
+    )
+
     PROCESSING_STATES = (
         ('Not Processed', 'Not Processed'),
         ('Staged', 'Staged'),
@@ -159,12 +178,17 @@ class AGBCollection(models.Model):
 
     access_level = models.CharField(max_length=10, default="Private", help_text="Access Level", choices=ACCESS_CHOICES)
     processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status", choices=SOURCE_FILE_STATES)
 
     processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "AGB Collections"
         unique_together = 'name', 'owner'
+
+
+    def __str__(self):
+        return self.name
         
 class CarbonStatistic(models.Model):
     fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)

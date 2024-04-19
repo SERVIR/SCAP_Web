@@ -175,6 +175,23 @@ function storeTiffs() {
         data: form_data,
         contentType: false,
         processData: false,
+        xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                // Listen to the 'progress' event
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        // Calculate the percentage of the upload completed
+                        var percentComplete = evt.loaded / evt.total * 100;
+                        console.log('Upload progress: ' + percentComplete + '%');
+                        // You can update a progress bar or do anything else with the progress information here
+                    }
+                }, false);
+                return xhr;
+            },error: function(xhr, status, error) {
+               console.log(xhr);
+               console.log(status);
+               console.log(error);
+            },
         success: function (data) {
             console.log(data.error);
             if(data.error==="error") {
