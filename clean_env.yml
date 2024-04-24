@@ -1,0 +1,22 @@
+name: SCAP
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - django
+  - django-colorfield
+  - django-import-export
+  - django-allauth
+  - psycopg2
+  - gdal
+  - pandas-highcharts
+  - shapely
+  - xarray
+  - rasterio
+  - rioxarray
+  - geopandas
+  - dask
+  - gunicorn
+  - netcdf4
+prefix: /opt/anaconda3/envs/SCAP
