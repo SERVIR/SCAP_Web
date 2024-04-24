@@ -67,3 +67,4 @@ def process_updated_collection(self, collection, collection_type):
     processing.set_stage(collection, stage, total_stages)
     processing.generate_zonal_statistics(collection, collection_type)
     processing.mark_complete(collection)
+    logger.info('Done processing dataset')

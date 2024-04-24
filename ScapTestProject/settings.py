@@ -37,7 +37,7 @@ LOGGING = {
 }
 import os
 try:
-    os.environ["PROJ_LIB"] = "/home/alex/anaconda3/envs/SCAP/share/proj"
+    os.environ["PROJ_LIB"] = "/opt/anaconda3/envs/SCAP/share/proj"
 except:
     pass
 # Quick-start development settings - unsuitable for production
@@ -47,7 +47,7 @@ except:
 SECRET_KEY = data["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
 CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]

@@ -2,6 +2,7 @@ import os
 import json
 import math
 import operator
+import subprocess
 import shutil
 
 import rasterio as rio
@@ -18,6 +19,11 @@ config = json.load(f)
 
 if 'PROJ_LIB' in config:
     os.environ['PROJ_LIB'] = config['PROJ_LIB']
+
+if 'GDAL_DATA' in config:
+    os.environ['GDAL_DATA'] = config['GDAL_DATA']
+
+os.environ['PROJ_DEBUG'] = '3'
 
 from osgeo import gdal, ogr, osr, gdalconst
 
@@ -53,15 +59,25 @@ def add_collection_name_field(shp, collection_name):
         layer.SetFeature(feat)
 
     source_file = None
+    
+
+def leftmost_corner(bound, compare):
+    if not bound:
+        return compare
+    return (min(bound[0], compare[0]), max(bound[1], compare[1]))
+
+
+def rightmost_corner(bound, compare):
+    if not bound:
+        return compare
+    return (max(bound[0], compare[0]), min(bound[1], compare[1]))
 
 
 def rasterize_aoi(aoi_feature, filepath):
     geom = aoi_feature.geom.json
 
     # TODO modify to specific transform and projection
-    match_path = config['GRID_MATCH_SOURCE']
-
-    match_obj = gdal.Open(match_path)
+    match_obj = gdal.Open(str(BASE_DIR) + '/base_stats_file.tif', gdal.GA_ReadOnly)
     src_proj = match_obj.GetProjection()
     wkt = src_proj
     srs = osr.SpatialReference()
@@ -70,8 +86,12 @@ def rasterize_aoi(aoi_feature, filepath):
     geom_gdal_obj = gdal.OpenEx(geom)
     layer = geom_gdal_obj.GetLayer()
 
+
+    tl_bound = None
+    br_bound = None
     for feature in layer:
         (minX, maxX, minY, maxY) = feature.GetGeometryRef().GetEnvelope()
+        minX, maxX, minY, maxY = minX - 0.5, maxX + 0.5, minY - 0.5, maxY + 0.5
         aoi_srs = osr.SpatialReference()
         aoi_srs.ImportFromEPSG(4326)
 
@@ -81,6 +101,7 @@ def rasterize_aoi(aoi_feature, filepath):
         tl.AssignSpatialReference(aoi_srs)
         tl.TransformTo(srs)
         tl_moll = (tl.GetX(), tl.GetY())
+        tl_bound = leftmost_corner(tl_bound, tl_moll)
 
         # Reproject bottom right point of extent to Mollweide
         br = ogr.Geometry(ogr.wkbPoint)
@@ -88,12 +109,22 @@ def rasterize_aoi(aoi_feature, filepath):
         br.AssignSpatialReference(aoi_srs)
         br.TransformTo(srs)
         br_moll = (br.GetX(), br.GetY())
+        br_bound = rightmost_corner(br_bound, br_moll)
+        logger.info("Envelope: {}".format(str(feature.GetGeometryRef().GetEnvelope())))
+        logger.info("New TL: {}".format(str(tl_bound)))
+        logger.info("New BR: {}".format(str(br_bound)))
+        
 
-    width = int((br_moll[0] - tl_moll[0]) // 100)
+    width = int((br_bound[0] - tl_bound[0]) // 100)
     if width > match_obj.RasterXSize:
         width = match_obj.RasterXSize
 
-    height = int((tl_moll[1] - br_moll[1]) // 100)
+    height = int((tl_bound[1] - br_bound[1]) // 100)
+    if width <= 0 or height <= 0:
+        logger.info("ERROR Generating {} AOI raster: Area is smaller than 100m in width or height".format(filepath))
+        logger.info("TL: {}".format(br_bound))
+        logger.info("BR: {}".format(tl_bound))
+        return
 
     # Prepare destination file
     driver = gdal.GetDriverByName("GTiff")
@@ -110,8 +141,8 @@ def rasterize_aoi(aoi_feature, filepath):
     transform = list(transform)
 
     # Keep ones/tens/decimals from matching raster to align pixels
-    new_origin_x = math.trunc(tl_moll[0] // 100 * 100) + (transform[0] % 100)
-    new_origin_y = math.trunc(tl_moll[1] // 100 * 100) + (transform[3] % 100)
+    new_origin_x = math.trunc(tl_bound[0] // 100 * 100) + (transform[0] % 100)
+    new_origin_y = math.trunc(tl_bound[1] // 100 * 100) + (transform[3] % 100)
 
     if new_origin_x < transform[0]:
         new_origin_x = transform[0]
@@ -130,89 +161,36 @@ def rasterize_aoi(aoi_feature, filepath):
 
 
 def reproject_mollweide(source, outputpath, progress_callback):
-    """
-    Writes a geotiff.
+    if os.path.isfile(outputpath):
+        os.remove(outputpath)
 
-    array: numpy array to write as geotiff
-    gdal_obj: object created by gdal.Open() using a tiff that has the SAME CRS, geotransform, and size as the array you're writing
-    outputpath: path including filename.tiff
-    dtype (OPTIONAL): datatype to save as
-    nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
-    """
-    match = config['GRID_MATCH_SOURCE']
-    dtype = gdal.GDT_Int16
-    nbands = 1
-    nodata = 0
+    shutil.copyfile(str(BASE_DIR) + '/base_stats_file.tif', outputpath)
+    gt = gdal.Open(outputpath).GetGeoTransform()
 
-    source_obj = gdal.Open(source)
-    match_obj = gdal.Open(match)
+    # gdal.ReprojectImage(source_obj, dest, src_proj, match_proj, gdalconst.GRA_Bilinear, callback=progress_callback)
+    affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
+    logger.info("Running GDAL warp (Mollweide)")
+    subprocess.run("gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath), shell=True)
 
-    src_proj = source_obj.GetProjection()
-    match_proj = match_obj.GetProjection()
-
-    gt = match_obj.GetGeoTransform()
-
-    width = match_obj.RasterXSize
-    height = match_obj.RasterYSize
-
-    # Prepare destination file
-    driver = gdal.GetDriverByName("GTiff")
-
-    options = ["TILED=YES", "BLOCKXSIZE=256", "BLOCKYSIZE=256", "COMPRESS=LZW"]
-
-    if options != 0:
-        dest = driver.Create(outputpath, width, height, nbands, dtype, options)
-    else:
-        dest = driver.Create(outputpath, width, height, nbands, dtype)
-
-    # Set transform and projection
-    dest.SetGeoTransform(gt)
-    wkt = match_obj.GetProjection()
-    srs = osr.SpatialReference()
-    srs.ImportFromWkt(wkt)
-    dest.SetProjection(srs.ExportToWkt())
-
-    if nodata is not False:
-        dest.GetRasterBand(1).SetNoDataValue(nodata)
-
-    gdal.ReprojectImage(source_obj, dest, src_proj, match_proj, gdalconst.GRA_Bilinear, callback=progress_callback)
-
-    # Close output raster dataset
-    dest = None
     return outputpath
 
 
 def reproject_latlon(source, outputpath, progress_callback):
-    """
-    Writes a geotiff.
+    resampling_alg = 'sum' if '/carbon-stock' in outputpath or '/emissions' in outputpath else 'average'
 
-    array: numpy array to write as geotiff
-    gdal_obj: object created by gdal.Open() using a tiff that has the SAME CRS, geotransform, and size as the array you're writing
-    outputpath: path including filename.tiff
-    dtype (OPTIONAL): datatype to save as
-    nodata (default: FALSE): set to any value you want to use for nodata; if FALSE, nodata is not set
-    """
-    srs = osr.SpatialReference()
-    srs.ImportFromEPSG(4326)
-    wkt = srs.ExportToWkt()
-    options = gdal.WarpOptions(
-       dstSRS=wkt,
-       callback= progress_callback
-    )
+    shutil.copyfile(str(BASE_DIR) + '/base_vis_file.tif', outputpath)
+    gt = gdal.Open(outputpath).GetGeoTransform()
 
-    logger.info(os.environ)
+    affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
+    logger.info("Running GDAL warp (EPSG:4326)")
 
-    warp = gdal.Warp(outputpath, source, options=options)
-    warp = None
-
+    subprocess.run("gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r {} {} {}".format(affine_str, resampling_alg, source, outputpath), shell=True)
     return outputpath
 
 
 def is_snapped_mollweide(source):
-    match = config['GRID_MATCH_SOURCE']
-
     source_obj = gdal.Open(source)
-    match_obj = gdal.Open(match)
+    match_obj = gdal.Open(str(BASE_DIR) + '/base_stats_file.tif')
 
     src_proj = source_obj.GetProjection()
     match_proj = match_obj.GetProjection()
@@ -231,6 +209,7 @@ def is_snapped_mollweide(source):
 
 
 def is_latlon(raster_path):
+    # TODO also return false if raster is EPSG:4326 but at too high resolution
     srs = osr.SpatialReference()
     srs.ImportFromEPSG(4326)
 
@@ -242,7 +221,6 @@ def is_latlon(raster_path):
 
 def calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback):
     # Assumes both files are already Mollweide and snapped to SCAP grid
-
     with rio.open(baseline_filepath) as base_raster, rio.open(current_filepath) as curr_raster:
         profile = curr_raster.profile.copy()
         profile.update({'count': 1, 'dtype': rio.int16})
@@ -256,30 +234,30 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path, prog
                 curr_block_data = curr_raster.read(1, window=window)
 
                 # Apply mask to AGB block
-                change_block_data = np.subtract(curr_block_data, base_block_data)
+                change_block_data = np.multiply(np.logical_xor((curr_block_data > 0), (base_block_data > 0)), curr_block_data)
 
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
 
                 block_counter += 1
-                if block_counter % 10000 == 0:
+                if block_counter % 25000 == 0:
                     progress_callback(float(block_counter) / total_blocks)
 
 
 def copy_mollweide(source_file, target_path, progress_callback):
     if is_snapped_mollweide(source_file):
         shutil.copyfile(source_file, target_path)
-        progress_callback(1.0, None, None)
     else:
         reproject_mollweide(source_file, target_path, progress_callback)
+    progress_callback(1.0, None, None)
 
 
 def copy_latlon(source_file, target_path, progress_callback):
     if is_latlon(source_file):
         shutil.copyfile(source_file, target_path)
-        progress_callback(1.0, None, None)
     else:
         reproject_latlon(source_file, target_path, progress_callback)
+    progress_callback(1.0, None, None)
 
 
 
@@ -287,7 +265,7 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
     target_fc_value = 1 if carbon_type == 'carbon-stock' else -1
 
     if agb_year > fc_year:
-        # TODO Log message on skip?
+        logger.info("Skipping {} gtiff generation for FC year {} and AGB year {}".format(carbon_type, fc_year, agb_year))
         return
 
     with rio.open(fc_source) as fc_raster, rio.open(agb_source) as agb_raster:
@@ -320,7 +298,7 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
 
                 block_counter += 1
 
-                if block_counter % 10000 == 0:
+                if block_counter % 25000 == 0:
                     progress_callback(float(block_counter) / total_blocks)
 
 
@@ -366,7 +344,7 @@ def stitch_geotiffs(input_dir, target_path):
     input_files = list(Path(input_dir).rglob('*.tif'))
 
     if not input_files:
-        # TODO Log error
+        logger.info("[stitch_geotiffs] No input files found")
         return
 
     # Initialize variables to store total geographic extent

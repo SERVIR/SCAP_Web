@@ -68,13 +68,14 @@ def get_upload_path(file):
     return upload_path
 
 
-def get_dataset_item_relative_filepath(dataset_type, username, dataset_name, unique_identifier=None):
+def get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, unique_identifier=None):
+    user_id = str(user_id)
     if unique_identifier:
-        filename = '.'.join((dataset_type, username, dataset_name, unique_identifier)) + '.tif'
+        filename = '.'.join((dataset_type, user_id, dataset_name, unique_identifier)) + '.tif'
     else:
-        filename = '.'.join((dataset_type, username, dataset_name)) + '.tif'
+        filename = '.'.join((dataset_type, user_id, dataset_name)) + '.tif'
 
-    filepath = os.sep.join((dataset_type, username, dataset_name))
+    filepath = os.sep.join((dataset_type, user_id, dataset_name))
     return os.path.join(filepath, filename)
 
 
@@ -87,17 +88,19 @@ def get_filesystem_dataset_name(original_collection_name, paired_collection_name
     return dataset_name
 
 
-def get_full_filepath(dataset_type, username, dataset_name, unique_identifier=None):
+def get_full_filepath(dataset_type, user_id, dataset_name, unique_identifier=None):
+    user_id = str(user_id)
     final_dir = os.path.join(config['DATA_DIR'])
-    relative_path = get_dataset_item_relative_filepath(dataset_type, username, dataset_name, unique_identifier)
+    relative_path = get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, unique_identifier)
     full_filepath = os.path.join(final_dir, relative_path)
 
     return full_filepath
 
 
-def load_temp(source_file, dataset_type, username, dataset_name, unique_identifier=None):
+def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifier=None):
+    user_id = str(user_id)
     temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-    relative_path = get_dataset_item_relative_filepath(dataset_type, username, dataset_name, unique_identifier)
+    relative_path = get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, unique_identifier)
     temp_filepath = os.path.join(temp_dir, relative_path)
 
     file_dir = os.path.dirname(temp_filepath)
@@ -156,87 +159,88 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
 
     copy_latlon(str(raster_path), str(reprojection_load_path), progress_callback)
 
-    with xr.open_dataset(reprojection_load_path, engine="rasterio") as file:
-        ds = file.isel(band=0).rename({'band_data': variable_name})
+    try:
+        with xr.open_dataset(reprojection_load_path, engine="rasterio", chunks=dict(band=1,x=256, y=256)) as file:
+            ds = file.isel(band=0).rename({'band_data': variable_name})
 
-    # Set default timestamps
-    start_time = datetime.datetime.strptime('{}{}{}'.format(year, 1, 1), '%Y%m%d')
-    end_time = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
-    ds_time_index = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
+        # Set default timestamps
+        start_time = datetime.datetime.strptime('{}{}{}'.format(year, 1, 1), '%Y%m%d')
+        end_time = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
+        ds_time_index = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
 
-    # Add the time dimension as a new coordinate.
-    ds = ds.assign_coords(time=ds_time_index).expand_dims(dim='time', axis=0)
-    ds['time_bnds'] = xr.DataArray([[start_time, end_time]], dims=['time', 'nbnds'])
+        # Add the time dimension as a new coordinate.
+        ds = ds.assign_coords(time=ds_time_index).expand_dims(dim='time', axis=0)
+        ds['time_bnds'] = xr.DataArray([[start_time, end_time]], dims=['time', 'nbnds'])
+        # 3) Rename and add attributes to this dataset.
+        ds = ds.rename({'y': 'latitude', 'x': 'longitude'})
+        ds = ds.assign_coords(latitude=np.around(ds.latitude.values, decimals=6),
+                              longitude=np.around(ds.longitude.values, decimals=6))
 
-    # 3) Rename and add attributes to this dataset.
-    ds = ds.rename({'y': 'latitude', 'x': 'longitude'})
-    ds = ds.assign_coords(latitude=np.around(ds.latitude.values, decimals=6),
-                          longitude=np.around(ds.longitude.values, decimals=6))
+        # 4) Reorder latitude dimension into ascending order
+        if ds.latitude.values[1] - ds.latitude.values[0] < 0:
+            ds = ds.reindex(latitude=ds.latitude[::-1])
 
-    # 4) Reorder latitude dimension into ascending order
-    if ds.latitude.values[1] - ds.latitude.values[0] < 0:
-        ds = ds.reindex(latitude=ds.latitude[::-1])
+        lat_attr = OrderedDict([('long_name', 'latitude'), ('units', 'degrees_north'), ('axis', 'Y')])
+        lon_attr = OrderedDict([('long_name', 'longitude'), ('units', 'degrees_east'), ('axis', 'X')])
 
-    lat_attr = OrderedDict([('long_name', 'latitude'), ('units', 'degrees_north'), ('axis', 'Y')])
-    lon_attr = OrderedDict([('long_name', 'longitude'), ('units', 'degrees_east'), ('axis', 'X')])
+        time_attr = OrderedDict([('long_name', 'time'), ('axis', 'T'), ('bounds', 'time_bnds')])
+        time_bounds_attr = OrderedDict([('long_name', 'time_bounds')])
 
-    time_attr = OrderedDict([('long_name', 'time'), ('axis', 'T'), ('bounds', 'time_bnds')])
-    time_bounds_attr = OrderedDict([('long_name', 'time_bounds')])
+        metadata_dict = {'description': 'Filler', 'contact': 'Contact Filler', 'version': '1', 'reference': 'Reference',
+                         'temporal_resolution': 'Resolution', 'spatial_resolution': 'Spatial Resolution', 'source': 'None',
+                         'south': np.min(ds.latitude.values), 'north': np.max(ds.latitude.values),
+                         'east': np.max(ds.longitude.values), 'west': np.min(ds.longitude.values)}
 
-    metadata_dict = {'description': 'Filler', 'contact': 'Contact Filler', 'version': '1', 'reference': 'Reference',
-                     'temporal_resolution': 'Resolution', 'spatial_resolution': 'Spatial Resolution', 'source': 'None',
-                     'south': np.min(ds.latitude.values), 'north': np.max(ds.latitude.values),
-                     'east': np.max(ds.longitude.values), 'west': np.min(ds.longitude.values)}
-
-    file_attr = OrderedDict([('Description', metadata_dict['description']),
-                             ('DateCreated', pd.Timestamp.now().strftime('%Y-%m-%dT%H:%M:%SZ')),
-                             ('Contact', metadata_dict['contact']),
-                             ('Source', metadata_dict['source']),
-                             ('Version', metadata_dict['version']),
-                             ('Reference', metadata_dict['reference']),
-                             ('RangeStartTime', datetime.date(year=year, month=1, day=1).strftime('%Y-%m-%dT%H:%M:%SZ')),
-                             ('RangeEndTime', datetime.date(year=year, month=12, day=31).strftime('%Y-%m-%dT%H:%M:%SZ')),
-                             ('SouthernmostLatitude', metadata_dict['south']),
-                             ('NorthernmostLatitude', metadata_dict['north']),
-                             ('WesternmostLongitude', metadata_dict['west']),
-                             ('EasternmostLongitude', metadata_dict['east']),
-                             ('TemporalResolution', metadata_dict['temporal_resolution']),
-                             ('SpatialResolution', metadata_dict['spatial_resolution'])])
+        file_attr = OrderedDict([('Description', metadata_dict['description']),
+                                 ('DateCreated', pd.Timestamp.now().strftime('%Y-%m-%dT%H:%M:%SZ')),
+                                 ('Contact', metadata_dict['contact']),
+                                 ('Source', metadata_dict['source']),
+                                 ('Version', metadata_dict['version']),
+                                 ('Reference', metadata_dict['reference']),
+                                 ('RangeStartTime', datetime.date(year=year, month=1, day=1).strftime('%Y-%m-%dT%H:%M:%SZ')),
+                                 ('RangeEndTime', datetime.date(year=year, month=12, day=31).strftime('%Y-%m-%dT%H:%M:%SZ')),
+                                 ('SouthernmostLatitude', metadata_dict['south']),
+                                 ('NorthernmostLatitude', metadata_dict['north']),
+                                 ('WesternmostLongitude', metadata_dict['west']),
+                                 ('EasternmostLongitude', metadata_dict['east']),
+                                 ('TemporalResolution', metadata_dict['temporal_resolution']),
+                                 ('SpatialResolution', metadata_dict['spatial_resolution'])])
 
 
-    time_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
-    time_bounds_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
+        time_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
+        time_bounds_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
 
-    # Set the Attributes
-    ds.latitude.attrs = lat_attr
-    ds.longitude.attrs = lon_attr
+        # Set the Attributes
+        ds.latitude.attrs = lat_attr
+        ds.longitude.attrs = lon_attr
+        ds.time.attrs = time_attr
+        ds.time_bnds.attrs = time_bounds_attr
+        ds.time.encoding = time_encoding
+        ds.time_bnds.encoding = time_bounds_encoding
 
-    ds.time.attrs = time_attr
-    ds.time_bnds.attrs = time_bounds_attr
-    ds.time.encoding = time_encoding
-    ds.time_bnds.encoding = time_bounds_encoding
+        ds.attrs = file_attr
 
-    print(ds.time.encoding)
+        ds[variable_name].attrs = OrderedDict([('long_name', variable_name),
+                                               ('units', 'None'),
+                                               ('accumulation_interval', 'yearly'),
+                                               ('comment', 'SCAP Dataset')])# TODO
 
-    ds.attrs = file_attr
+        ds_dtype = ds[variable_name].dtype
+        logger.info(ds_dtype)
+        ds[variable_name].encoding = OrderedDict([('dtype', ds_dtype),
+                                                  ('_FillValue', np.zeros(1,ds_dtype)[0]),
+                                                  ('chunksizes', (1, 256, 256)),
+                                                  ('missing_value', np.zeros(1,ds_dtype)[0]),
+                                                  ('zlib', True),
+                                                  ('complevel', 5)])# TODO
 
-    ds[variable_name].attrs = OrderedDict([('long_name', 'Dataset'),
-                                           ('units', 'None'),
-                                           ('accumulation_interval', 'yearly'),
-                                           ('comment', 'SCAP Dataset')])# TODO
-
-    ds_dtype = ds[variable_name].dtype
-    ds[variable_name].encoding = OrderedDict([('dtype', ds_dtype),
-                                              ('_FillValue', np.zeros(1,ds_dtype)[0]),
-                                              ('chunksizes', (1, 256, 256)),
-                                              ('missing_value', np.zeros(1,ds_dtype)[0])])# TODO
-
-    ds.to_netcdf(final_load_path, unlimited_dims='time')
-    ds = None
-
+        ds.to_netcdf(final_load_path, unlimited_dims='time')
+        ds = None
+    except Exception as error:
+        logger.info(error)
     update_task_progress(task_obj, current_progress, step_progress)
 
-    #delete_temp(reprojection_load_path) TODO
+    delete_temp(reprojection_load_path)
 
 
 def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
@@ -256,7 +260,7 @@ def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
     mask_water(mollweide_file)
 
 
-def generate_forest_cover_change_file(fc_file, username, dataset_name, task_obj, current_progress, step_progress):
+def generate_forest_cover_change_file(fc_file, user_id, dataset_name, task_obj, current_progress, step_progress):
     # Assumes fc_file and its respective baseline file to be loaded to stats directory
     # Assumes fc_file is not the collection's baseline file
     logger.info('Generating forest cover change file: {} - {}'.format(dataset_name, fc_file.year))
@@ -267,9 +271,9 @@ def generate_forest_cover_change_file(fc_file, username, dataset_name, task_obj,
     baseline_fc_file = list(ForestCoverFile.objects.filter(collection=fc_file.collection,
                                                            year__lt=fc_file.year).order_by('year'))[-1]
 
-    target_path = get_full_filepath('fcc', username, dataset_name, str(fc_file.year))
-    baseline_filepath = get_full_filepath('fc', username, dataset_name, str(baseline_fc_file.year))
-    current_filepath = get_full_filepath('fc', username, dataset_name, str(fc_file.year))
+    target_path = get_full_filepath('fcc', user_id, dataset_name, str(fc_file.year))
+    baseline_filepath = get_full_filepath('fc', user_id, dataset_name, str(baseline_fc_file.year))
+    current_filepath = get_full_filepath('fc', user_id, dataset_name, str(fc_file.year))
 
     file_dir = os.path.dirname(target_path)
     if not os.path.exists(file_dir):
@@ -310,7 +314,7 @@ def generate_forest_cover_files(fc_collection):
     progress = update_task_progress(task, 0.0, 0.0)
 
     is_public = fc_collection.access_level == 'Public'
-    user = fc_collection.owner.username
+    user_id = fc_collection.owner.id
     dataset_name = get_filesystem_dataset_name(fc_collection.name)
     logger.info('Generating forest cover files: {}'.format(dataset_name))
 
@@ -322,7 +326,7 @@ def generate_forest_cover_files(fc_collection):
     for yearly_file in yearly_files:
         progress_scale = 2.0/3 if yearly_file != baseline_file else 1.0
         dataset_type = 'fc'
-        dataset_info = (dataset_type, user, dataset_name, str(yearly_file.year))
+        dataset_info = (dataset_type, user_id, dataset_name, str(yearly_file.year))
 
         target_filepath = None
         yearly_filename = yearly_file.file.name
@@ -331,7 +335,7 @@ def generate_forest_cover_files(fc_collection):
             upload_path = os.path.join(settings.MEDIA_ROOT, yearly_filename)
 
             temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-            relative_path = get_dataset_item_relative_filepath(dataset_type, user, dataset_name, str(yearly_file.year))
+            relative_path = get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, str(yearly_file.year))
             target_filepath = os.path.join(temp_dir, relative_path)
 
             target_dir = os.path.dirname(target_filepath)
@@ -346,7 +350,7 @@ def generate_forest_cover_files(fc_collection):
                                               yearly_file.year, target_filepath)
 
         if yearly_file != baseline_file:
-            generate_forest_cover_change_file(yearly_file, user, dataset_name,
+            generate_forest_cover_change_file(yearly_file, user_id, dataset_name,
                                               task, progress, (1.0 - progress_scale) * single_file_progress)
 
 
@@ -367,11 +371,11 @@ def generate_agb_files(agb_collection):
     update_task_progress(task, 0.0, 0.0)
 
     is_public = agb_collection.access_level == 'Public'
-    user = agb_collection.owner.username
+    user_id = agb_collection.owner.id
     dataset_name = get_filesystem_dataset_name(agb_collection.name)
     file = agb_collection.source_file
 
-    dataset_info = ('agb', user, dataset_name)
+    dataset_info = ('agb', user_id, dataset_name)
 
     generate_scap_source_files(task, 0.0, 100.0, dataset_info, file, is_public,
                                'agb', agb_collection.year)
@@ -384,7 +388,7 @@ def generate_agb_files(agb_collection):
 
 
 def generate_aoi_file(aoi_feature, collection, task, current_progress, single_feature_progress):
-    user = collection.owner.username
+    user_id = collection.owner.id
     dataset_name = get_filesystem_dataset_name(collection.name)
     feature_name = get_filesystem_dataset_name(aoi_feature.name)
     is_public = False
@@ -392,13 +396,18 @@ def generate_aoi_file(aoi_feature, collection, task, current_progress, single_fe
     dataset_info = None
 
     temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-    relative_path = get_dataset_item_relative_filepath('aoi', user, dataset_name, feature_name)
+    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name, feature_name)
     temp_filepath = os.path.join(temp_dir, relative_path)
+
+    file_dir = os.path.dirname(temp_filepath)
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
 
     rasterize_aoi(aoi_feature, temp_filepath)
 
-    generate_scap_source_files(task, current_progress, single_feature_progress,
-                               dataset_info, file, is_public, None, None, temp_filepath)
+    if os.path.isfile(temp_filepath):
+        generate_scap_source_files(task, current_progress, single_feature_progress,
+                                   dataset_info, file, is_public, None, None, temp_filepath)
 
 
 def generate_aoi_features(aoi_collection):
@@ -407,11 +416,11 @@ def generate_aoi_features(aoi_collection):
 
     update_task_progress(task, 0.0, 0.0)
 
-    user = aoi_collection.owner.username
+    user_id = aoi_collection.owner.id
     dataset_name = get_filesystem_dataset_name(aoi_collection.name)
 
     temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-    relative_path = get_dataset_item_relative_filepath('aoi', user, dataset_name).replace('.tif', os.sep)
+    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name).replace('.tif', os.sep)
     target_dir = os.path.join(temp_dir, relative_path)
 
     upload_path = get_upload_path(aoi_collection.source_file)
@@ -450,7 +459,7 @@ def generate_aoi_features(aoi_collection):
     task.description = "Done Generating AOI Features"
 
 
-def generate_carbon_files(fc_collection, agb_collection, user, carbon_type, task, current_progress, step_progress):
+def generate_carbon_files(fc_collection, agb_collection, user_id, carbon_type, task, current_progress, step_progress):
     # Assumptions: All FC Files and the AGB file have been loaded for stats
     # TODO Ensure mutual availability and lack of modification to both collections
 
@@ -458,7 +467,7 @@ def generate_carbon_files(fc_collection, agb_collection, user, carbon_type, task
     agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
     carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
 
-    agb_filepath = get_full_filepath('agb', user, agb_dataset_name)
+    agb_filepath = get_full_filepath('agb', user_id, agb_dataset_name)
 
     forest_cover_type = 'fcc' if carbon_type == 'emissions' else 'fc'
 
@@ -472,10 +481,10 @@ def generate_carbon_files(fc_collection, agb_collection, user, carbon_type, task
         def progress_callback(complete):
             update_task_progress(task, current_progress, round(step_progress * complete, 2))
 
-        fc_filepath = get_full_filepath(forest_cover_type, user, fc_dataset_name, str(yearly_fc_file.year))
+        fc_filepath = get_full_filepath(forest_cover_type, user_id, fc_dataset_name, str(yearly_fc_file.year))
         if not os.path.isfile(fc_filepath):
             continue
-        target_filepath = get_full_filepath(carbon_type, user, carbon_dataset_name, str(yearly_fc_file.year))
+        target_filepath = get_full_filepath(carbon_type, user_id, carbon_dataset_name, str(yearly_fc_file.year))
 
         file_dir = os.path.dirname(target_filepath)
         if not os.path.exists(file_dir):
@@ -512,9 +521,9 @@ def generate_stocks_and_emissions_files(collection, collection_type):
             pass
     print('Carbon Dataset Generation Pairs: {}'.format(carbon_pairs))
     for fc, agb in carbon_pairs:
-        generate_carbon_files(fc, agb, agb.owner.username, 'emissions',
+        generate_carbon_files(fc, agb, agb.owner.id, 'emissions',
                               task, progress, 50.0 / len(carbon_pairs))
-        generate_carbon_files(fc, agb, agb.owner.username, 'carbon-stock',
+        generate_carbon_files(fc, agb, agb.owner.id, 'carbon-stock',
                               task, progress, 50.0 / len(carbon_pairs))
 
 
@@ -565,7 +574,7 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection):
     aoi_dataset_name = get_filesystem_dataset_name(aoi_collection.name)
     carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
 
-    agb_filepath = get_full_filepath('agb', agb_collection.owner.username, agb_dataset_name)
+    agb_filepath = get_full_filepath('agb', agb_collection.owner.id, agb_dataset_name)
 
     yearly_fc_files = fc_collection.yearly_files.all()
     aoi_features = aoi_collection.features.all()
@@ -574,51 +583,58 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection):
     for yearly_fc_file, aoi_feature in possible_combinations:
         feature_name = get_filesystem_dataset_name(aoi_feature.name)
 
-        fc_filepath = get_full_filepath('fc', fc_collection.owner.username,
+        fc_filepath = get_full_filepath('fc', fc_collection.owner.id,
                                         fc_dataset_name, str(yearly_fc_file.year))
-        fcc_filepath = get_full_filepath('fcc', fc_collection.owner.username,
+        fcc_filepath = get_full_filepath('fcc', fc_collection.owner.id,
                                          fc_dataset_name, str(yearly_fc_file.year))
-        carbon_filepath = get_full_filepath('carbon-stock', agb_collection.owner.username,
+        carbon_filepath = get_full_filepath('carbon-stock', agb_collection.owner.id,
                                             carbon_dataset_name, str(yearly_fc_file.year))
-        emissions_filepath = get_full_filepath('emissions', agb_collection.owner.username,
+        emissions_filepath = get_full_filepath('emissions', agb_collection.owner.id,
                                                carbon_dataset_name, str(yearly_fc_file.year))
-        aoi_filepath = get_full_filepath('aoi', aoi_collection.owner.username,
+        aoi_filepath = get_full_filepath('aoi', aoi_collection.owner.id,
                                          aoi_dataset_name, feature_name)
 
-        (fc_area,
-         fc_gain_area,
-         fc_loss_area,
-         processing_time) = calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath)
+        if os.path.isfile(fc_filepath) and os.path.isfile(aoi_filepath):
+            (fc_area,
+             fc_gain_area,
+             fc_loss_area,
+             processing_time) = calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath)
 
-        statistic = ForestCoverStatistic()
+            statistic = ForestCoverStatistic()
 
-        statistic.fc_index = fc_collection
-        statistic.aoi_index = aoi_feature
-        statistic.year_index = yearly_fc_file.year
-        statistic.final_forest_area = fc_area
-        statistic.forest_gain = fc_gain_area
-        statistic.forest_loss = fc_loss_area
-        statistic.processing_time = processing_time
+            statistic.fc_index = fc_collection
+            statistic.aoi_index = aoi_feature
+            statistic.year_index = yearly_fc_file.year
+            statistic.final_forest_area = fc_area
+            statistic.forest_gain = fc_gain_area
+            statistic.forest_loss = fc_loss_area
+            statistic.processing_time = processing_time
 
-        statistic.save()
+            statistic.save()
+        else:
+            logger.info("One of the following files is invalid: \n{}\n{}".format(fc_filepath, aoi_filepath))
 
-        (final_carbon_stock,
-         emissions,
-         agb_value,
-         processing_time) = calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepath, aoi_filepath)
+        if os.path.isfile(carbon_filepath) and os.path.isfile(aoi_filepath):
+            (final_carbon_stock,
+             emissions,
+             agb_value,
+             processing_time) = calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepath, aoi_filepath)
 
-        statistic = CarbonStatistic()
+            statistic = CarbonStatistic()
 
-        statistic.fc_index = fc_collection
-        statistic.aoi_index = aoi_feature
-        statistic.agb_index = agb_collection
-        statistic.year_index = yearly_fc_file.year
-        statistic.final_carbon_stock = final_carbon_stock
-        statistic.emissions = emissions
-        statistic.agb_value = agb_value
-        statistic.processing_time = processing_time
+            statistic.fc_index = fc_collection
+            statistic.aoi_index = aoi_feature
+            statistic.agb_index = agb_collection
+            statistic.year_index = yearly_fc_file.year
+            statistic.final_carbon_stock = final_carbon_stock
+            statistic.emissions = emissions
+            statistic.agb_value = agb_value
+            statistic.processing_time = processing_time
 
-        statistic.save()
+            statistic.save()
+        else:
+            logger.info("One of the following files is invalid: \n{}\n{}".format(carbon_filepath, aoi_filepath))
+
 
 
 def generate_zonal_statistics(collection, collection_type):
@@ -645,13 +661,13 @@ def generate_zonal_statistics(collection, collection_type):
             pass
 
     available_sets = list(product(fc_collections, agb_collections, aoi_collections))
-    print('Zonal Stats Sets: {}'.format('\n'.join(available_sets)))
+    print('Zonal Stats Sets: {}'.format(available_sets))
 
     progress = 0.0
     for fc, agb, aoi in available_sets:
-        task.description = "Calculating Zonal Statistics {} x {} x {}".format(fc_collection.name,
-                                                                              agb_collection.name,
-                                                                              aoi_collection.name)
+        task.description = "Calculating Zonal Statistics {} x {} x {}".format(fc.name,
+                                                                              agb.name,
+                                                                              aoi.name)
         task.save()
 
         calculate_zonal_statistics(fc, agb, aoi)
