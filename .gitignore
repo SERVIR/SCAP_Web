@@ -9,3 +9,5 @@ data.json
 /scap/static/assets
 logfile
 db.sqlite3
+base_vis_file.tif
+base_stats_file.tif
