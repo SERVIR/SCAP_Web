@@ -73,7 +73,7 @@ class ForestCoverCollection(models.Model):
 
 class ForestCoverFile(models.Model):
     file = models.FileField(upload_to=fc_upload_path)
-    year = models.IntegerField(default=0, help_text="Year")
+    year = models.IntegerField(help_text="Year",default=0,)
     collection = models.ForeignKey(ForestCoverCollection, on_delete=models.CASCADE, related_name='yearly_files')
     doi_link = models.CharField(max_length=100, default="", blank=True)
     metadata_link = models.URLField(max_length=100, default="", blank=True)
@@ -81,10 +81,9 @@ class ForestCoverFile(models.Model):
     def filename(self):
         return os.path.basename(self.file.name)
 
-
     class Meta:
         verbose_name_plural = "Forest Cover Files"
-
+        unique_together='year','collection'
 
 class AOICollection(models.Model):
     ACCESS_CHOICES = (

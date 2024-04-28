@@ -22,6 +22,8 @@ from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCov
 from scap.async_tasks import process_updated_collection
 import geopandas as gpd
 
+from django.db.models import Count, Max, Min, Avg
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
@@ -125,7 +127,6 @@ def get_tiff_id(request, pk):
 def add_tiff_record(request, pk):
     existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),
                                                       owner__username=request.user.username)
-    print(existing_coll)
     try:
         new_tiff = ForestCoverFile()
         new_tiff.collection = existing_coll
@@ -136,7 +137,7 @@ def add_tiff_record(request, pk):
         new_tiff.save()
     except Exception as e:
         return JsonResponse({"error": str(e)})
-    return JsonResponse({"added": "success"})
+    return JsonResponse({"added": "success", "error": ""})
 
 
 @csrf_exempt
@@ -292,7 +293,6 @@ def delete_AOI(request):
 def get_aoi_id(request, country=0):
     aoi = AOIFeature.objects.get(name=request.POST['aoi'], iso3=request.POST['iso3'],
                                  desig_eng=request.POST['desig_eng'])
-    print(aoi)
     return JsonResponse({"id": aoi.id})
 
 
@@ -308,26 +308,30 @@ def get_AOI(request, country=1):
     return JsonResponse(json_obj)
 
 
-def fetch_carbon_charts(pa_name, container):
+def fetch_carbon_charts(pa_name, owner, container):
     # TODO Add charts for carbon stock and AGB in addition to emissions
+    chart = None
+    lcs = []
+    agbs = []
     try:
-        df_lc = pd.DataFrame(ForestCoverCollection.objects.all().values())
+        df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
         lcs = df_lc.to_dict('records')
-        df_agb = pd.DataFrame((AGBCollection.objects.all().values()))  # Get the AGB dataset data
+        df_agb = pd.DataFrame((AGBCollection.objects.filter(owner=owner).values()))  # Get the AGB dataset data
         agbs = df_agb.to_dict('records')
         df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
         if df.empty:
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                               title='CarbonStatistics: ' + pa_name)
-            return chart,lcs,agbs
-        df["fc_index"] = "LC" + df["fc_index"].apply(str)
-        df["agb_index"] = "AGB" + df["agb_index"].apply(str)  # Add the prefix AGB to the AGB id column
-        grouped_data = df.groupby(['year_index', 'fc_index', 'agb_index'])['emissions'].sum().reset_index()
-        pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index', 'agb_index'],
+            return chart, lcs, agbs
+        df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
+        df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
+        grouped_data = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])['emissions'].sum().reset_index()
+        pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index_id', 'agb_index_id'],
                                      index='year_index',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
                           title='CarbonStatistics: ' + pa_name)
+        return chart, lcs, agbs
     except Exception as e:
         error_msg = "Could not generate chart data for emissions"
         print(str(e))
@@ -335,9 +339,9 @@ def fetch_carbon_charts(pa_name, container):
     return chart, lcs, agbs
 
 
-def fetch_forest_change_charts(pa_name, container):
-    df_defor = pd.DataFrame(ForestCoverStatistic.objects.all().values())
-    df_lc_defor =pd.DataFrame(ForestCoverCollection.objects.all().values())
+def fetch_forest_change_charts(pa_name, owner, container):
+    df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
+    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
@@ -350,22 +354,23 @@ def fetch_forest_change_charts(pa_name, container):
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index'],
-                                      index='year_index', fill_value=None)
+                                       index='year_index', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
-                        xticks=years_defor,
-                        title='Change in Forest Cover: ' + pa_name, )
+                         xticks=years_defor,
+                         title='Change in Forest Cover: ' + pa_name, )
 
     return chart_fc, lcs_defor
 
 
-def fetch_forest_change_charts_by_aoi(aoi, container):
+def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
-    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index=aoi).values()))
-    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.all().values())
+    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
+    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
-    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
+    # df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
+    # print(df_defor)
     years_defor = list(df_defor['year_index'].unique())
 
     pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_index'],
@@ -377,9 +382,9 @@ def fetch_forest_change_charts_by_aoi(aoi, container):
     return chart_fc1, lcs_defor
 
 
-def get_agg_check(request, country='None'):
-    result = CarbonStatistic.objects.all().order_by('year')
-    data = list(result.values_list('year').distinct())
+def get_agg_check(request, country=0):
+    result = CarbonStatistic.objects.all().order_by('year_index')
+    data = list(result.values_list('year_index').distinct())
     years = []
     for x in range(len(data)):
         years.append(data[x][0])
@@ -390,34 +395,32 @@ def get_agg_check(request, country='None'):
         min_arr = []
         max_arr = []
         avg_arr = []
-        if len(pa_name) > 0:
-            print(pa_name)
-
+        if pa_name > 0:
             data1 = list(
-                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values(
-                    'year').annotate(
-                    min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
-            print(data1)
+                CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
+                    'year_index').annotate(
+                    min=Min('emissions'), max=Max('emissions'), avg=Avg('emissions')))
         else:
             pa_name = country
             data1 = list(
-                CarbonStatistic.objects.filter(lc_id__in=lcs, agb_id__in=agbs, aoi_id__name=pa_name).values(
-                    'year').annotate(
-                    min=Min('lc_agb_value'), max=Max('lc_agb_value'), avg=Avg('lc_agb_value')))
-
+                CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
+                    'year_index').annotate(
+                    min=Min('emissions'), max=Max('emissions'), avg=Avg('emissions')))
+        if len(data1) == 0:
+            return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
         if len(data1) < 25:
+
             for y in years:
-                if not any(d['year'] == y for d in data1):
+                if not any(d['year_index'] == y for d in data1):
                     data1.append({'year': y, 'min': None, 'max': None, 'avg': None})
                 else:
                     pass
-        data1.sort(key=lambda x: x['year'])
-        print(data1)
+        data1.sort(key=lambda x: x['year_index'])
 
         for x in range(len(data1)):
-            min_arr.append([data1[x]['year'], data1[x]['min']])
-            max_arr.append([data1[x]['year'], data1[x]['max']])
-            avg_arr.append([data1[x]['year'], data1[x]['avg']])
+            min_arr.append([data1[x]['year_index'], data1[x]['min']])
+            max_arr.append([data1[x]['year_index'], data1[x]['max']])
+            avg_arr.append([data1[x]['year_index'], data1[x]['avg']])
 
     return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 
@@ -427,24 +430,25 @@ def get_series_name(request):
     if request.method == 'POST':
         lc_id = request.POST.get('ds_lc')
         agb_id = request.POST.get('ds_agb')
+
         try:
             if lc_id[2:] != '':
-                ds = BoundaryFiles.objects.get(id=lc_id[2:])
-                lc_name = ds.fcs_name
+                ds = ForestCoverCollection.objects.get(fc_index=lc_id[2:])
+                lc_name = ds.name
                 if agb_id != "":
-                    ds = AGBSource.objects.get(agb_id=agb_id[3:])
-                    agb_name = ds.agb_name
+                    ds = AGBCollection.objects.get(agb_index=agb_id[3:])
+                    agb_name = ds.name
                 else:
                     agb_name = ''
             else:
                 lc_name = ''
                 agb_name = ''
         except:
-            ds = BoundaryFiles.objects.get(id=lc_id[2:])
-            lc_name = ds.name_es
+            ds = ForestCoverCollection.objects.get(fc_index=lc_id[2:])
+            lc_name = ds.name
             if agb_id != "":
-                ds = AGBSource.objects.get(agb_id=agb_id[3:])
-                agb_name = ds.agb_name
+                ds = AGBCollection.objects.get(agb_index=agb_id[3:])
+                agb_name = ds.name
             else:
                 agb_name = ''
 
@@ -480,7 +484,6 @@ def get_updated_series(request, country=None):
 def generate_fcc_file(request):
     try:
         year = request.GET.get('year')
-        print(year)
         dataset = 'JAXA'
         l_dataset = dataset.lower()
         start = time.time()
@@ -642,7 +645,7 @@ def get_available_aois(collection):
 
 
 @csrf_exempt
-def stage_for_processing(request, pk):
+def stage_for_processing(request, pk=0):
     collection_type = request.POST.get('type')
     if collection_type == 'fc':
         fc_collection_name = request.POST.get('coll_name')
@@ -658,7 +661,50 @@ def stage_for_processing(request, pk):
         process_updated_collection.delay(collection.id, collection_type)
     except Exception as error:
         print(error)
-
     collection.processing_status = "Staged"
     collection.save()
     return JsonResponse({})
+
+
+def add_aoi_data(request):
+    try:
+        aoi_coll = AOICollection()
+        aoi_coll.name = request.POST.get('aoi_name')
+        aoi_coll.description = request.POST.get('aoi_desc')
+        aoi_coll.source_file = request.FILES['file']
+        aoi_coll.metadata_link = request.POST.get('metadata_link')
+        aoi_coll.doi_link = request.POST.get('doi_link')
+        aoi_coll.access_level = request.POST.get('access')
+        aoi_coll.owner = request.user
+        # aoi_coll.processing_status = "Staged"
+        aoi_coll.save()
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
+    return JsonResponse({"error": ""})
+
+
+def add_agb_data(request):
+    try:
+        try:
+            boundary_file = request.FILES['boundary_file']
+        except MultiValueDictKeyError:
+            boundary_file = None
+        try:
+            file = request.FILES['file']
+        except MultiValueDictKeyError:
+            return JsonResponse({"error": str(e)})
+
+        agb_coll = AGBCollection()
+        agb_coll.name = request.POST.get('agb_name')
+        agb_coll.description = request.POST.get('agb_desc')
+        agb_coll.source_file = file
+        agb_coll.boundary_file = boundary_file
+        agb_coll.metadata_link = request.POST.get('metadata_link')
+        agb_coll.doi_link = request.POST.get('doi_link')
+        agb_coll.access_level = request.POST.get('access')
+        agb_coll.owner = request.user
+        # agb_coll.processing_status = "Staged"
+        agb_coll.save()
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
+    return JsonResponse({"error": ""})

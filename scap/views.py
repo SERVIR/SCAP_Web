@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 
 from django.contrib.auth.models import User
-
+import shapely
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
                       get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
@@ -20,28 +20,51 @@ from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection
 
 from scap.async_tasks import process_updated_collection
 import geopandas as gpd
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
 
+
 def home(request):
-    pilot_countries=[]
+    pilot_countries = []
     try:
-        pilot_countries=PilotCountry.objects.all().order_by('country_name')
+        pilot_countries = PilotCountry.objects.all().order_by('country_name')
     except:
         pass
 
-    return render(request, 'scap/index.html',context={'pilot_countries':pilot_countries})
+    return render(request, 'scap/index.html', context={'pilot_countries': pilot_countries})
 
-def map(request):
-    json_obj={}
+
+def map(request, country=0):
+    json_obj = {}
+    aoi_arr = []
+    zoom_level = 8
+    lat_long = [-9.19, -75.0152]
+    pc = PilotCountry.objects.filter(id=country).values()
+    for pilot in pc:
+        zoom_level = pilot['zoom_level']
+        lat_long = [pilot['latitude'], pilot['longitude']]
+        break
+    pilot_countries = PilotCountry.objects.all().order_by('country_name')
+
     try:
-        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-
-        json_obj["data_pa"] = json.loads(vec.to_json())
-    except:
-        json_obj={}
-    return render(request, 'scap/map.html',context={'shp_obj': json_obj})
+        aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
+        aoi_arr=[]
+        for aoi in aois:
+            aoi_geojson=json.loads(aoi.geom.geojson)
+            aoi_geojson['properties']={'name':aoi.name,'ISO3':aoi.iso3,'desig_eng':aoi.desig_eng}
+            aoi_arr.append(aoi_geojson)
+        # vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+        # print(type(vec))
+        # from django.core.serializers import serialize
+        json_obj["data_pa"] = aoi_arr
+        # print(type(  json_obj["data_pa"]  ))
+    except Exception as e:
+        print(e)
+        json_obj["data_pa"] = ""
+    return render(request, 'scap/map.html', context={'shp_obj': json_obj, 'pilot_countries': pilot_countries,
+                                                     'zoom_level': zoom_level, 'lat_long': lat_long})
 
 
 def add_new_collection(request):
@@ -51,45 +74,55 @@ def add_new_collection(request):
 def pilot_country(request, country=1):
     json_obj = {}
     try:
-        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-
-        json_obj["data_pa"] = json.loads(vec.to_json())
+        pc = PilotCountry.objects.filter(id=country).values()
+        aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
+        aoi_arr = []
+        for aoi in aois:
+            aoi_geojson = json.loads(aoi.geom.geojson)
+            aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
+            aoi_arr.append(aoi_geojson)
+        json_obj["data_pa"] = aoi_arr
     except:
-        json_obj={}
+        json_obj = {}
     pa = PilotCountry.objects.get(id=country)
 
     try:
-        pa_name=pa.country_name
+        pa_name = pa.country_name
     except:
         pa_name = "Peru"
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, 'container')
-    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, 'container1')
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
+    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'name':pa_name,'desc':pa.country_description,'tagline':pa.country_tagline,'image':pa.hero_image.url,'latitude':pa.latitude,'longitude':pa.longitude,'zoom_level':pa.zoom_level,'shp_obj': json_obj    })
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
+                           'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
+                           'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
+                           'shp_obj': json_obj,'country':country})
 
 
 def protected_aois(request, aoi):
     try:
         json_obj = {}
-        vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-
-        json_obj["data_pa"] = json.loads(vec.to_json())
+        # vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
+        #
+        # json_obj["data_pa"] = json.loads(vec.to_json())
         pa = AOIFeature.objects.get(id=aoi)
         pa_name = pa.name
-        pc=PilotCountry.objects.get(country_code=pa.iso3)
-        pc_name=pc.country_name
-        country_id=pc.id
+        pc = PilotCountry.objects.get(country_code=pa.iso3)
+        pc_name = pc.country_name
+        country_id = pc.id
         colors = get_available_colors()
-        chart, lcs, agbs = fetch_carbon_charts(pa_name, 'emissions_chart_pa')
-        chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(aoi, 'container_fcpa')
+        chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
+        chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
         return render(request, 'scap/protected_area.html',
                       context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name+', '+pc_name,'country_desc':pc.country_description,'tagline':pc.country_tagline,'image':pc.hero_image.url,'country_id':country_id,'country_name':pc_name,'shp_obj': json_obj})
+                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
+                               'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
+                               'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                               'country_name': pc_name, 'shp_obj': json_obj})
     except Exception as e:
         return render(request, 'scap/index.html')
-
 
 
 def updateColl(request, coll_name):
@@ -180,8 +213,10 @@ class CreateForestCoverCollection(CreateView):
     def form_invalid(self, form):
         form.instance.owner = User.objects.get(username=self.request.user)
         if not form.is_valid():
-            messages.error(self.request, "You already have a forest cover collection with that name, please use a unique name")
-        return render(self.request, self.template_name, { 'form': form,'operation': 'ADD','owner':User.objects.get(username=self.request.user).id})
+            messages.error(self.request,
+                           "You already have a forest cover collection with that name, please use a unique name")
+        return render(self.request, self.template_name,
+                      {'form': form, 'operation': 'ADD', 'owner': User.objects.get(username=self.request.user).id})
         # return HttpResponseRedirect(reverse("create-forest-cover-collection"))
 
 
@@ -210,7 +245,7 @@ class CreateAGBCollection(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         form.instance.owner = User.objects.get(username=self.request.user)
-        form.instance.processing_status='Staged'
+        form.instance.processing_status = 'Staged'
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -231,7 +266,7 @@ class CreateAGBCollection(CreateView):
         print(form.errors)
         if not form.is_valid():
             messages.error(self.request,
-                               "You already have a AGB collection with that name, please use a unique name")
+                           "You already have a AGB collection with that name, please use a unique name")
             return render(self.request, self.template_name,
                           {'form': form, 'operation': 'ADD', 'owner': User.objects.get(username=self.request.user).id})
 
@@ -260,7 +295,7 @@ class CreateAOICollection(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         form.instance.owner = User.objects.get(username=self.request.user)
-        form.instance.processing_status='Staged'
+        form.instance.processing_status = 'Staged'
 
         if form.is_valid():
             return self.form_valid(form)
@@ -331,6 +366,7 @@ class EditForestCoverCollection(UpdateView):
         return self.render_to_response(
             self.get_context_data(form=form, operation='EDIT'))
 
+
 class EditAGBCollection(UpdateView):
     model = AGBCollection
     success_url = '/agb-collections/'
@@ -339,7 +375,7 @@ class EditAGBCollection(UpdateView):
 
     def get_queryset(self):
         qs = super(EditAGBCollection, self).get_queryset()
-        return qs.filter(username=self.request.user)
+        return qs.filter(owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(EditAGBCollection, self).get_context_data(**kwargs)
@@ -348,10 +384,13 @@ class EditAGBCollection(UpdateView):
             context['form'] = AGBCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
 
             filename = self.request.FILES['boundary_file'].name
-            context['agb_boundary_file'] = filename.split('/')[-1]
+            context['boundary_file'] = filename.split('/')[-1]
+            source_filename=self.request.FILES['source_file'].name
+            context['source_file'] = source_filename.split('/')[-1]
         else:
             context['form'] = AGBCollectionForm(instance=self.object)
-            context['agb_boundary_file'] = self.object.agb_boundary_file.name.split('/')[-1]
+            context['boundary_file'] = self.object.boundary_file.name.split('/')[-1]
+            context['source_file'] = self.object.source_file.name.split('/')[-1]
         context['operation'] = 'EDIT'
         return context
 
@@ -372,6 +411,7 @@ class EditAGBCollection(UpdateView):
         return self.render_to_response(
             self.get_context_data(form=form, operation='EDIT'))
 
+
 class EditAOICollection(UpdateView):
     model = AOICollection
     success_url = '/aoi-collections/'
@@ -380,7 +420,7 @@ class EditAOICollection(UpdateView):
 
     def get_queryset(self):
         qs = super(EditAOICollection, self).get_queryset()
-        return qs.filter(username=self.request.user)
+        return qs.filter(owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(EditAOICollection, self).get_context_data(**kwargs)
@@ -388,11 +428,11 @@ class EditAOICollection(UpdateView):
         if self.request.POST:
             context['form'] = AOICollectionForm(self.request.POST, self.request.FILES, instance=self.object)
 
-            filename = self.request.FILES['aoi_shape_file'].name
-            context['aoi_shape_file'] = filename.split('/')[-1]
+            filename = self.request.FILES['source_file'].name
+            context['source_file'] = filename.split('/')[-1]
         else:
             context['form'] = AOICollectionForm(instance=self.object)
-            context['aoi_shape_file'] = self.object.aoi_shape_file.name.split('/')[-1]
+            context['source_file'] = self.object.source_file.name.split('/')[-1]
         context['operation'] = 'EDIT'
         return context
 

@@ -80,7 +80,7 @@ chart1.update({
             const ss = this.series.name;
             const lc = ss;
             const color = this.series.color;
-            const s_name = get_name(ss);
+            // const s_name = get_name(ss);
             // if (this.y > 0) {
             //     label = "Forest Gain";
             // } else {

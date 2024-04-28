@@ -177,12 +177,43 @@ function storeTiffs() {
         processData: false,
         xhr: function() {
                 var xhr = new window.XMLHttpRequest();
+                var parent_div=document.createElement("div");
+                parent_div.className="progress";
+                parent_div.style.marginBottom="10px";
+                var label=document.createElement('span');
+
+                label.innerHTML="Uploading "+file.name;;
+
+                         var progress_div=document.createElement("div");
+                            progress_div.className='progress-bar progress-bar-striped progress-bar-animated';
+                        progress_div.role='progressbar';
+                        progress_div.id= "id" + Math.random().toString(16).slice(2);
+                        parent_div.appendChild(progress_div);
+                        document.getElementById("fc_progress_parent").appendChild(label);
+                        document.getElementById("fc_progress_parent").appendChild(parent_div);
+
                 // Listen to the 'progress' event
                 xhr.upload.addEventListener("progress", function(evt) {
                     if (evt.lengthComputable) {
                         // Calculate the percentage of the upload completed
                         var percentComplete = evt.loaded / evt.total * 100;
-                        console.log('Upload progress: ' + percentComplete + '%');
+                        console.log('Upload progress: ' + percentComplete.toFixed(2) + '%');
+
+                        progress_div.innerHTML=percentComplete.toFixed(2) + '%';
+                        progress_div.style.width=percentComplete.toFixed(2) + '%';
+
+                        // document.getElementById("fc_progress").innerHTML=percentComplete.toFixed(2) + '%';
+                        // document.getElementById("fc_progress").style.width=percentComplete.toFixed(2) + '%';
+                        if(percentComplete===100.00){
+                            document.getElementById("fc_progress_parent").style.display="none";
+                            document.getElementById("stage_processing").classList.remove("disabled");
+
+                        }
+                        else{
+                            document.getElementById("fc_progress_parent").style.display="flex";
+                            document.getElementById("stage_processing").classList.add("disabled");
+
+                        }
                         // You can update a progress bar or do anything else with the progress information here
                     }
                 }, false);
@@ -194,7 +225,7 @@ function storeTiffs() {
             },
         success: function (data) {
             console.log(data.error);
-            if(data.error==="error") {
+            if(data.error.length>0) {
                 alert("Year exists, please change year");
                 show_tiffs($('#current_coll').html());
             }
@@ -298,8 +329,11 @@ function show_tiffs(col) {
                         document.getElementById("no-records").remove();
                 }
                 sortTable(document.getElementById("tifffTable"), 0, false);
+                                document.getElementById("stage_processing").classList.remove("disabled");
+
             } else {
                 $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
+                document.getElementById("stage_processing").classList.add("disabled");
             }
         }
     });
@@ -318,8 +352,19 @@ function deleteTiffFile(id,row) {
          url: 'delete-tiff-record/',
          data: {'year':year,'coll_name':$('#current_coll').html()},
          success: function (data) {
-           console.log("deleted");
+
             row.parentNode.removeChild(row);
+             var tiff_table = document.getElementById("tifffTableBody");
+             var tbodyRowCount = tiff_table.rows.length; // 3
+        if (tbodyRowCount > 0) {
+            if (document.getElementById("no-records"))
+                document.getElementById("no-records").remove();
+            document.getElementById("stage_processing").classList.remove("disabled");
+
+        } else {
+            $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
+            document.getElementById("stage_processing").classList.add("disabled");
+        }
          }
      });
 
@@ -545,9 +590,11 @@ deleteTiffFile(id,row);
         if (tbodyRowCount > 0) {
             if (document.getElementById("no-records"))
                 document.getElementById("no-records").remove();
+            document.getElementById("stage_processing").classList.remove("disabled");
+
         } else {
             $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
-
+            document.getElementById("stage_processing").classList.add("disabled");
         }
     }
 

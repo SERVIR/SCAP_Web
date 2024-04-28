@@ -137,18 +137,37 @@
                                     {{ form.metadata_link }}
                                 </div>
                                 <div class="mb-3 common">
-                                    <label for="formFile" class="form-label">Upload your Boundary shape file</label>
+                                    {% if operation == 'ADD' %}
+    <label class="form-label">Upload Boundary shape file </label>
+                                {{ form.boundary_file }}
+    {% else %}
+               {% if boundary_file %}
+                                     Current boundary file: {{ boundary_file }}
 
+                                {% else %}
+                                     Current boundary file: None
 
-                                    {{ form.boundary_file }}
+                                {% endif %}
+    {% endif %}
                                 </div>
 
                                <div class="mb-3 common">
-                                    <label for="formFile" class="form-label">Upload your Tiff file</label>
+                                   {% if operation == 'ADD' %}
+    <label class="form-label">Upload your Tiff file </label>
+                                {{ form.source_file }}
+    {% else %}
+               {% if source_file %}
+                                     Current Tiff file: {{ source_file }}
 
+                                {% else %}
+                                     Current Tiff file: None
 
-                                    {{ form.source_file }}
+                                {% endif %}
+    {% endif %}
                                 </div>
+                                           <div class="progress" id="agb_progress_parent" style="display: none">
+  <div id="agb_progress" class="progress-bar progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+</div>
 
                                 <div class="mb-3 common">
                                     <label class="form-label">Calibration Year</label>
@@ -167,7 +186,7 @@
                             </div>
 
                             <div class=" mt-3">
-                                <input type="submit" class="btn-primary btn" value="Stage for processing"/> <a
+                                <input id="agb_stage_processing" type="button" class="btn-primary btn" value="Stage for processing" onclick="check_progress_agb()"/> <a
                                     class="btn btn-outline-warning" href="{% url 'agb-collections' %}">Go to the list</a>
                             </div>
 

@@ -26,7 +26,7 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id)
+                      get_aoi_id,add_aoi_data,add_agb_data)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -46,6 +46,7 @@ urlpatterns = [
 
       path('home/', home, name='home2'),
       path('pilot/<int:country>/', pilot_country, name='pilot_country'),
+      path('map/<int:country>/', map, name='map'),
       path('map/', map, name='map'),
       path('aoi/<int:aoi>/', protected_aois, name='aoi_page'),
       path('contribute-data/', add_new_collection, name='contribute-data'),
@@ -53,10 +54,11 @@ urlpatterns = [
       path('get-series-name/', get_series_name, name='get-series-name'),
       path('aoi/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
       path('pilot/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
+      path('pilot/<int:country>/get-series-name/', get_series_name, name='get_series_name'),
 
       path('map/get-aoi/', get_AOI, name='get-aoi'),
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
-      path('map/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
+      path('map/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
       path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),
       path('pilot/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
 
@@ -78,13 +80,15 @@ urlpatterns = [
       path('aoi-collections/edit/<int:pk>/', EditAOICollection.as_view(), name='edit-aoi-collection'),
       path('aoi-collections/delete/<int:pk>/', DeleteAOICollection.as_view(), name='delete-aoi-collection'),
       path('aoi-collections/add/doi/', doi_valid, name='doi-valid'),
+      path('aoi-collections/add/store-for-processing/', add_aoi_data, name='add-aoi-data'),
+      path('aoi-collections/add/stage-for-processing/', stage_for_processing, name='stage-aoi-data'),
 
       path('agb-collections/', ManageAGBCollections.as_view(), name='agb-collections'),
       path('agb-collections/add/', CreateAGBCollection.as_view(), name='create-agb-collection'),
       path('agb-collections/edit/<int:pk>/', EditAGBCollection.as_view(), name='edit-agb-collection'),
       path('agb-collections/delete/<int:pk>/', DeleteAGBCollection.as_view(), name='delete-agb-collection'),
       path('agb-collections/add/doi/', doi_valid, name='doi-valid'),
-
+      path('agb-collections/add/store-agb-for-processing/', add_agb_data, name='add-agb-data'),
       path('forest-cover-collections/add/doi/', doi_valid, name='doi-valid'),
       path('forest-cover-collections/edit/<int:pk>/doi/', doi_valid, name='doi-valid-by-year'),
       path('forest-cover-collections/edit/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get-tiff-data'),

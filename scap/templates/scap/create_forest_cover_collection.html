@@ -187,7 +187,7 @@
                                     files:</b> </label>
 
                                 <div style="padding:10px;" class="new_tiff">
-                                    <table id="tifffTable" class="table">
+                                    <table id="tifffTable">
                                         <thead>
                                         <tr>
                                             <th>Year</th>
@@ -207,7 +207,7 @@
                                         </tbody>
                                     </table>
                                     <label id="label_edit_tiff" style="display: none">Editing Tiff: <i><span id="current_tiff_name"></span></i></label>
-
+                                    <div id="fc_progress_parent" style="flex-direction: column;display: none"></div>
                                     <label>Upload a file</label>
                                     <input class="form-control" accept="image/tiff" type="file" id="tiff_new_file"/>
                                     <label>Enter an year for the file</label>
@@ -219,6 +219,7 @@
 
 
                                 </div>
+
                                 <script type="application/javascript">var opn='{{ operation }}';</script>
                                  {% if operation == 'EDIT' %}
                                 <input type="button" class="btn btn-primary" id="save_year" value="Add to list"
@@ -227,6 +228,7 @@
                                  <input type="hidden" value="0" id="row_to_update">
     <input type="hidden" class="btn btn-primary " id="update_tiff" value="Update"
                                        onclick="updateFields(this,form.id )">
+
                                 {% else %}
                                                          <input type="button" class="btn btn-secondary disabled" value="Add to list"
                                        onclick="addFields('{{ user.username }}','{{ operation }}' )">
@@ -239,7 +241,7 @@
 
 
 
-                            <a  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a>
+                            <a id="stage_processing"  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a>
                         <a
                                 class="btn btn-outline-warning" href="{% url 'forest-cover-collections' %}">Go to the list</a>
 

@@ -101,7 +101,7 @@
                     <td><label>{{ agb.description|truncatechars:150}}</label></td>
                      <td><label>{{ agb.processing_status}}</label></td>
                     <td>
-                            {% if agb.processing_status == 'Staged' %}
+                            {% if agb.processing_status == 'Staged' or agb.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Edit
                         </button>
@@ -112,7 +112,7 @@
                         {% endif %}
                     </td>
                     <td>
-                           {% if agb.processing_status == 'Staged' %}
+                           {% if agb.processing_status == 'Staged' or agb.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Delete
                         </button>

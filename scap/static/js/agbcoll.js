@@ -11,6 +11,81 @@ function stage_for_processing() {
     });
 
 }
+function check_progress_agb(){
+
+   if ($('#id_name').val().length>0 && $('#id_description').val().length>0) {
+       var upload_form = $('#upload-agb-new')[0];
+       var form_data = new FormData(upload_form);
+         let boundary_file = $("#id_boundary_file").prop('files')[0];
+         let file = $("#id_source_file").prop('files')[0];
+
+         if($("#id_boundary_file").prop('files')[0]===undefined){
+              form_data.append('boundary_file', null);
+         }
+         else{
+              form_data.append('boundary_file', boundary_file);
+         }
+          if($("#id_source_file").prop('files')[0]===undefined){
+              form_data.append('file', null);
+         }
+         else{
+              form_data.append('file', file);
+         }
+       form_data.append('agb_name', $('#id_name').val());
+       form_data.append('agb_desc', $('#id_description').val());
+       form_data.append('metadata_link', $('#id_metadata_link').val());
+       form_data.append('doi_link', $('#id_doi_link').val());
+       var e = document.getElementById("id_access_level");
+       var value = e.value;
+       var text = e.options[e.selectedIndex].text;
+       form_data.append('access', $('#id_access_level').val());
+       $.ajax({
+           type: 'POST',
+           url: 'store-agb-for-processing/',
+           data: form_data,
+           contentType: false,
+           processData: false,
+           xhr: function () {
+               var xhr = new window.XMLHttpRequest();
+               // Listen to the 'progress' event
+               xhr.upload.addEventListener("progress", function (evt) {
+                   if (evt.lengthComputable) {
+                       // Calculate the percentage of the upload completed
+                       var percentComplete = evt.loaded / evt.total * 100;
+                       console.log('Upload progress: ' + percentComplete.toFixed(2) + '%');
+                       document.getElementById("agb_progress").innerHTML = percentComplete.toFixed(2) + '%';
+                       document.getElementById("agb_progress").style.width = percentComplete.toFixed(2) + '%';
+                       if (percentComplete === 100.00) {
+                           document.getElementById("agb_progress_parent").style.display = "none";
+
+                       } else {
+                           document.getElementById("agb_stage_processing").classList.add("disabled");
+                           document.getElementById("agb_progress_parent").style.display = "block";
+
+                       }
+                       // You can update a progress bar or do anything else with the progress information here
+                   }
+               }, false);
+               return xhr;
+           }, error: function (xhr, status, error) {
+               console.log(xhr);
+               console.log(status);
+               console.log(error);
+           },
+           success: function (data) {
+               if (data.error.length === 0) {
+                   location.href = window.location.protocol + "//" + location.host + '/agb-collections/';
+                   console.log("complete")
+               } else {
+                   alert(data.error)
+               }
+           },
+       });
+   }
+   else{
+       alert("Please check if you have entered AGB Name and Description.")
+   }
+}
 document.getElementById('id_doi_link').onchange = function() {
     var doi=document.getElementById('id_doi_link').value;
     if(doi!=='') {

@@ -46,7 +46,7 @@ function standardize_color(str) {
 
 function getMMA(pa, data_obj) {
 
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": pa});
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
         console.log((result2.min))
         min_arr = {
@@ -289,8 +289,7 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    console.log(pa_selected_name)
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": pa_selected_name});
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 
     xhr.done(function (result2) {
         min_arr = {

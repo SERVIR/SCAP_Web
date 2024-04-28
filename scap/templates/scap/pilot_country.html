@@ -77,6 +77,9 @@
     <script src="{% static '/js/geosearch.umd.js' %}"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css" integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="{% static '/js/map.js' %}"></script>
 </head>
 <body id="page-top">
@@ -230,7 +233,7 @@ margin-right: 0;">
                 <div class="card-body">
                     <h5 class="card-title">Visualize forest cover changes around protected areas</h5>
                     <p class="card-text">{{ desc|linebreaks }}</p>
-                    <a href="#" class="btn btn-primary">Navigate the map</a>
+                    <a href="{% url 'map' country=country %}" class="btn btn-primary">Navigate the map</a>
                 </div>
             </div>
             <div class="card-body">
@@ -257,7 +260,7 @@ margin-right: 0;">
                 data sources and to understand
                 the uncertainty in the estimations.
             </p>
-            <a href="#" class="btn btn-primary w-25" style="margin-left: 10px">Combine with your own data</a>
+            <a href="{% url "contribute-data" %}" class="btn btn-primary w-25" style="margin-left: 10px">Combine with your own data</a>
 
             <div class="card-body">
                 <div class="row h-100 ">
@@ -338,12 +341,12 @@ margin-right: 0;">
                                 <li class="lc_list-item">
                                     <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf"
                                            value="{{ lc.id }}" onchange="access_lines_fc(this,'LC')" name="lc"/><label
-                                        style="padding-left: 10px"><span
-                                        class="badge bg-light text-dark">LC{{ lc.id }}</span>
+                                        style="padding-left: 10px">
                                     {% if lc.name_es != "Mapbiomas" %}<i class="fa-solid fa-globe"></i>{% endif %}
-                                    &nbsp;{{ lc.name_es }}</label>
+                                    &nbsp;{{ lc.name }}<span
+                                        class="badge bg-light text-dark">(LC{{ lc.id }})</span></label>
                                 </li>
-                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name_es }}</p>
+                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</p>
 
                             {% endfor %}
                         </ul>

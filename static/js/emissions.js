@@ -50,7 +50,7 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": ""});
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 xhr.done(function (result2) {
     console.log((result2.min))
     min_arr = {
@@ -253,7 +253,7 @@ function access_lines(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss, "pa_name": ""});
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",

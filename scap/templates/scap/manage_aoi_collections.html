@@ -102,7 +102,7 @@
                     <td><label>{{ aoi.description|truncatechars:150 }}</label></td>
                       <td><label>{{ aoi.processing_status}}</label></td>
                     <td>
-                      {% if aoi.processing_status == 'Staged' %}
+                      {% if aoi.processing_status == 'Staged' or aoi.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AOI Shape File is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Edit
                         </button>
@@ -113,7 +113,7 @@
                         {% endif %}
                     </td>
                     <td>
-                            {% if aoi.processing_status == 'Staged' %}
+                            {% if aoi.processing_status == 'Staged' or aoi.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AOI Shape File is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Delete
                         </button>

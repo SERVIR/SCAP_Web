@@ -103,7 +103,7 @@
                     <td><label>{{ coll.yearly_files.all.count }}</label></td>
                        <td><label>{{ coll.processing_status}}</label></td>
                     <td>
-                        {% if coll.processing_status == 'Staged' %}
+                        {% if coll.processing_status == 'Staged' or coll.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="Collection is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Edit
                         </button>
@@ -114,7 +114,7 @@
                         {% endif %}
                     </td>
                     <td>
-                           {% if coll.processing_status == 'Staged' %}
+                           {% if coll.processing_status == 'Staged' or coll.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="Collection is currently being processed"
                                 style="margin: 10px;width:80px;margin-top:0px;pointer-events: auto;">Delete
                         </button>

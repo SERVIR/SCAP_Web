@@ -77,22 +77,22 @@ function whenClicked(e) {
         fillOpacity: 0.4,
     });
 
-    var name = e.target.feature.properties.NAME;
+    var name = e.target.feature.geometry.properties.name;
     $.ajax({
         type: 'POST',
         url: 'get-aoi-id/',
-        data: {'aoi': name,'iso3':e.target.feature.properties.ISO3,'desig_eng':e.target.feature.properties.DESIG_ENG},
+        data: {'aoi': name,'iso3':e.target.feature.geometry.properties.ISO3,'desig_eng':e.target.feature.geometry.properties.desig_eng},
         success: function (data) {
 
             pa_selected_name = data.id;
             var zoomlevel = map.getZoom();
 
-
-            if (zoomlevel >= 7) {
-                window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
-            } else {
-                window.location = window.location.origin + '/aoi/1/';
-            }
+window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+            // if (zoomlevel >= 7) {
+            //     window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+            // } else {
+            //     window.location = window.location.origin + '/aoi/1/';
+            // }
         }
     });
 }
@@ -104,10 +104,12 @@ function onEachFeature(feature, layer) {
     });
 
     layer.on('mouseover', function (e) {
+        console.log(e.target)
+        console.log(e.target.feature.geometry.properties)
 
-        var name = e.target.feature.properties.NAME;
+        var name = e.target.feature.geometry.properties.name;
         var popupText = name
-        var tooltipText = "blabla";
+        var tooltipText = "";
         layer.bindPopup(popupText, {
             closeButton: false
         });
@@ -135,186 +137,168 @@ function onEachFeature(feature, layer) {
         })
     });
 }
-function  redraw_based_on_year(){
-        document.getElementById("loading_spinner_map").style.display = "block";
+function  redraw_based_on_year() {
+    document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
+    aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
+        style: {
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.4,
+        },
+        onEachFeature: onEachFeature,
+        pane: 'left'
+    });
+    aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
+        style: {
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.4,
+        },
+        onEachFeature: onEachFeature,
+        pane: 'right'
+    });
 
-
-    // let xhr = ajax_call("get-aoi/", {});
-    // xhr.done(function (result) {
-
-        aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            },
-            onEachFeature: onEachFeature,
+    aoi_layer_left.on('add', (e) => {
+        document.getElementById("loading_spinner_map").style.display = "none";
+    });
+    aoi_layer_right.on('add', (e) => {
+        document.getElementById("loading_spinner_map").style.display = "none";
+    });
+    let selected_year = document.getElementById('selected_year').value;
+    let comparison_year = document.getElementById('comparison_year').value;
+    let selected_dataset_left = document.getElementById('selected_region').value;
+    let selected_dataset_right = document.getElementById('comparing_region').value;
+    primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        {
+            layers: ["forest_cover"],
+            format: "image/png",
+            colorscalerange: "0.5,1",
+            abovemaxcolor: 'transparent',
+            belowmincolor: 'transparent',
+            transparent: true,
+            styles: 'boxfill/crimsonbluegreen',
             pane: 'left'
         });
-        console.log("aftye lkl")
-        aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            },
-            onEachFeature: onEachFeature,
+
+    primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        {
+            layers: ["forest_cover"],
+            format: "image/png",
+            colorscalerange: "0.5,1",
+            abovemaxcolor: 'transparent',
+            belowmincolor: 'transparent',
+            transparent: true,
+            styles: 'boxfill/cwg',
+            pane: 'left'
+        })
+
+    secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        {
+            layers: ["forest_cover"],
+            format: "image/png",
+            colorscalerange: "0.5,1",
+            abovemaxcolor: 'transparent',
+            belowmincolor: 'transparent',
+            styles: 'boxfill/cwg',
+            transparent: true,
+            pane: 'right'
+        })
+    var style = 'boxfill/maize';
+    if (selected_dataset_left === selected_dataset_right) {
+        style = 'boxfill/redblue';
+    }
+    secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        {
+            layers: ["forest_cover"],
+            format: "image/png",
+            colorscalerange: "0.5,1",
+            abovemaxcolor: 'transparent',
+            belowmincolor: 'transparent',
+            styles: style,
+            transparent: true,
             pane: 'right'
         });
+    // primary_underlay_layer.addTo(map);
+    primary_overlay_layer.addTo(map);
+    secondary_underlay_layer.addTo(map);
+    secondary_overlay_layer.addTo(map);
+    aoi_layer_left.addTo(map);
+    aoi_layer_right.addTo(map);
+    comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+    map.on("zoomend", function () {
+        var zoomlevel = map.getZoom();
 
-        aoi_layer_left.on('add', (e) => {
-            document.getElementById("loading_spinner_map").style.display = "none";
-        });
-        aoi_layer_right.on('add', (e) => {
-            document.getElementById("loading_spinner_map").style.display = "none";
-        });
-        let selected_year = document.getElementById('selected_year').value;
-        let comparison_year = document.getElementById('comparison_year').value;
-        let selected_dataset_left = document.getElementById('selected_region').value;
-        let selected_dataset_right = document.getElementById('comparing_region').value;
-        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/crimsonbluegreen',
-                pane: 'left'
-            });
-
-        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/cwg',
-                pane: 'left'
-            })
-
-        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                styles: 'boxfill/cwg',
-                transparent: true,
-                pane: 'right'
-            })
-         var style='boxfill/maize';
-        if (selected_dataset_left===selected_dataset_right){
-            style='boxfill/redblue';
-        }
-        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-            {
-                layers: ["forest_cover"],
-                format: "image/png",
-                colorscalerange: "0.5,1",
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                styles: style,
-                transparent: true,
-                pane: 'right'
-            });
-        // primary_underlay_layer.addTo(map);
-        primary_overlay_layer.addTo(map);
-        secondary_underlay_layer.addTo(map);
-        secondary_overlay_layer.addTo(map);
-        aoi_layer_left.addTo(map);
-        aoi_layer_right.addTo(map);
-        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
-        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
-        map.on("zoomend", function () {
-            var zoomlevel = map.getZoom();
-
-            if (zoomlevel < 7) {
-                if (map.hasLayer(aoi_layer_left)) {
-                    map.removeLayer(aoi_layer_left);
-                }
-                if (map.hasLayer(aoi_layer_right)) {
-                    map.removeLayer(aoi_layer_right);
-                }
-            } else {
-                map.addLayer(aoi_layer_left);
-                map.addLayer(aoi_layer_right);
+        if (zoomlevel < 7) {
+            if (map.hasLayer(aoi_layer_left)) {
+                map.removeLayer(aoi_layer_left);
             }
-            console.log("Current Zoom Level = " + zoomlevel);
-        });
-        //  try {
-        //      // pilot_center=[result.latitude, result.longitude];
-        //     // map.panTo(new L.LatLng(result.latitude, result.longitude));
-        //     // map.setZoom(result.zoom);
-        // }
-        // catch(except){
-        //     console.log("err");
-        // }
-console.log("after err");
-    // });
+            if (map.hasLayer(aoi_layer_right)) {
+                map.removeLayer(aoi_layer_right);
+            }
+        } else {
+            map.addLayer(aoi_layer_left);
+            map.addLayer(aoi_layer_right);
+        }
+        console.log("Current Zoom Level = " + zoomlevel);
+    });
 }
 
 function redraw_map_layers() {
+
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
- let years = get_years(document.getElementById('selected_region').value);
+
+    let years = get_years(document.getElementById('selected_region').value);
     fill_years_selector(get_years_range(years[0], years[1]));
     let c_years = get_years(document.getElementById('comparing_region').value);
     fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
-    // document.getElementById('selected_year').value = years[0];
-    // document.getElementById('comparison_year').value = c_years[0];
 
+    aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
+        style: {
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.4,
+        },
+        onEachFeature: onEachFeature,
+        pane: 'left'
+    });
+    aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
+        style: {
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.4,
+        },
+        onEachFeature: onEachFeature,
+        pane: 'right'
+    });
+    console.log("after right")
 
-    // let xhr = ajax_call("get-aoi/", {});
-    // xhr.done(function (result) {
-        // try {
-        //     map.panTo(new L.LatLng(result.latitude, result.longitude));
-        //     map.setZoom(result.zoom);
-        // }
-        // catch(except){
-        //     console.log("err")
-        // }
+    aoi_layer_left.on('add', (e) => {
+        document.getElementById("loading_spinner_map").style.display = "none";
+    });
 
-        aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            },
-            onEachFeature: onEachFeature,
-            pane: 'left'
-        })
-        aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
-            },
-            onEachFeature: onEachFeature,
-            pane: 'right'
-        });
+    aoi_layer_right.on('add', (e) => {
+        document.getElementById("loading_spinner_map").style.display = "none";
+    });
+    aoi_layer_left.addTo(map);
+    aoi_layer_right.addTo(map);
+    // years and datasets
+    let selected_year = document.getElementById('selected_year').value;
+    let comparison_year = document.getElementById('comparison_year').value;
+    let selected_dataset_left = document.getElementById('selected_region').value;
+    let selected_dataset_right = document.getElementById('comparing_region').value;
 
-        aoi_layer_left.on('add', (e) => {
-            document.getElementById("loading_spinner_map").style.display = "none";
-        });
-        aoi_layer_right.on('add', (e) => {
-            document.getElementById("loading_spinner_map").style.display = "none";
-        });
-        let selected_year = document.getElementById('selected_year').value;
-        let comparison_year = document.getElementById('comparison_year').value;
-        let selected_dataset_left = document.getElementById('selected_region').value;
-        let selected_dataset_right = document.getElementById('comparing_region').value;
-        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+    //thredds forest cover data layers
+
+    try {
+        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -326,7 +310,7 @@ function redraw_map_layers() {
                 pane: 'left'
             });
 
-        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -338,7 +322,7 @@ function redraw_map_layers() {
                 pane: 'left'
             })
 
-        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -349,11 +333,11 @@ function redraw_map_layers() {
                 transparent: true,
                 pane: 'right'
             })
-    var style='boxfill/maize';
-        if (selected_dataset_left===selected_dataset_right){
-            style='boxfill/redblue';
+        var style = 'boxfill/maize';
+        if (selected_dataset_left === selected_dataset_right) {
+            style = 'boxfill/redblue';
         }
-        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
             {
                 layers: ["forest_cover"],
                 format: "image/png",
@@ -368,29 +352,33 @@ function redraw_map_layers() {
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
-        aoi_layer_left.addTo(map);
-        aoi_layer_right.addTo(map);
         comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
-        document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
-        map.on("zoomend", function () {
-            var zoomlevel = map.getZoom();
 
-            if (zoomlevel < 7) {
-                if (map.hasLayer(aoi_layer_left)) {
-                    map.removeLayer(aoi_layer_left);
-                }
-                if (map.hasLayer(aoi_layer_right)) {
-                    map.removeLayer(aoi_layer_right);
-                }
-            } else {
-                map.addLayer(aoi_layer_left);
-                map.addLayer(aoi_layer_right);
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
+
+    // display protected areas based on zoom level
+    map.on("zoomend", function () {
+        var zoomlevel = map.getZoom();
+        if (zoomlevel < 5) {
+            if (map.hasLayer(aoi_layer_left)) {
+                map.removeLayer(aoi_layer_left);
             }
-            console.log("Current Zoom Level = " + zoomlevel);
-        });
-    // });
-
+            if (map.hasLayer(aoi_layer_right)) {
+                map.removeLayer(aoi_layer_right);
+            }
+        } else {
+            map.addLayer(aoi_layer_left);
+            map.addLayer(aoi_layer_right);
+        }
+        console.log("Current Zoom Level = " + zoomlevel);
+    });
 }
 
 function get_years(ds) {
@@ -417,24 +405,31 @@ function get_years_range(start, end) {
 }
 
 function get_available_years() {
-    //let xhr = ajax_call("get-available-years", {});
-    //xhr.done(function (result) {
-    // let years = Object.values([2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020, 2021,2022]);
+    //left drop down
     let years = get_years(document.getElementById('selected_region').value);
-    console.log(document.getElementById('selected_region').value);
-    //console.log(result['data']);
     fill_years_selector(get_years_range(years[0], years[1]));
+
+    //right drop down
     let c_years = get_years(document.getElementById('comparing_region').value);
     fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
+
     document.getElementById('selected_year').value = years[0];
     document.getElementById('comparison_year').value = c_years[1];
+
     redraw_map_layers();
-    //})
 }
 
 function init_map() {
-    // Initialize with map control with basemap and time slider
-    if(document.getElementById("lat_from_db")){
+    var baseMaps = {
+        "Gray": darkGrayLayer,
+        "OpenTopo": OpenTopoMap,
+        "Streets": streets,
+        "Dark Map": osm1,
+        "Keep Default": terrainLayer
+
+    };
+
+     if(document.getElementById("lat_from_db")){
         pilot_center = [parseFloat(document.getElementById("lat_from_db").innerHTML), parseFloat(document.getElementById("lon_from_db").innerHTML)];
     }
     var zoom=10;
@@ -444,12 +439,63 @@ function init_map() {
     map = L.map('map_chart', {
         fullscreenControl: true, center: pilot_center, zoom: zoom
     });
-
-    map.createPane('left');
+        //basemap
+map.createPane('left');
     map.createPane('right');
 
     map.zoomControl.setPosition('topleft');
     satellite.addTo(map);
+
+    var layerControl = L.control.layers(baseMaps, null, {position: 'bottomleft'}).addTo(map);
+
+    var editableLayers = new L.FeatureGroup();
+    map.addLayer(editableLayers);
+    var drawPluginOptions = {
+        draw: {
+            polygon: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#660778', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                },
+                shapeOptions: {
+                    color: '#ffc800'
+                }
+            },
+            // disable toolbar item by setting it to false
+            polyline: false,
+            circle: false, // Turns off this drawing tool
+            rectangle: false,
+            marker: false,
+            circlemarker: false,
+        },
+        edit: {
+            featureGroup: editableLayers, //REQUIRED!!
+            remove: true
+        }
+    };
+    var drawControl = new L.Control.Draw(drawPluginOptions);
+    // draw polygon control
+    map.addControl(drawControl);
+    map.on('draw:created', function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+        editableLayers.addLayer(layer);
+    });
+
+
+    // info modal control
+    L.easyButton('fa-info', function (btn, map) {
+        $('#info_modal').modal('show');
+    }, 'Info').addTo(map);
+
+
+    //add watermask layer on  basemap
+    var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
+        layers: 's-cap:watermask_2',
+        format: 'image/png',
+        transparent: true
+    }).addTo(map);
 
     // Add the Search Control to the map
     map.addControl(new GeoSearch.GeoSearchControl({
@@ -458,18 +504,10 @@ function init_map() {
         showPopup: false,
         autoClose: true
     }));
-L.easyButton('fa-info',function(btn,map){
-    $('#info_modal').modal('show');
-},'Info').addTo(map);
-    var wmsLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
-        layers: 's-cap:watermask_2',
-        format: 'image/png',
-        transparent: true
-    }).addTo(map);
-
 
     get_available_years();
 }
+
 
 
 function removeLayers() {
@@ -513,11 +551,26 @@ function add_basemap(map_name) {
     }
 }
 
+//clicked on modal to select country
+function zoomtoArea(id){
+    if (id!==0) {
+        window.location = window.location.origin + "/map/" + id + "/";
+        $('#country_selection_modal').modal('hide');
+    }
+}
 
 $(function () {
     init_map();
- // let years = get_years(document.getElementById('selected_region').value);
- //    fill_years_selector(get_years_range(years[0], years[1]));
- //    let c_years = get_years(document.getElementById('comparing_region').value);
- //    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
+    var id = window.location.pathname.split('/')[2];
+    // if a country is selected, zoom to that country on loading the map
+    if (id <= 0) {
+        $('#country_selection_modal').modal('show');
+    } else {
+        try {
+            map.setView(lat_long, zoom_level);
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
 });
