@@ -1,3 +1,14 @@
+function  remove_boundary_file (){
+       $.ajax({
+            type: 'POST',
+            url: 'update-boundary-file/',
+            data: {'type':'agb'},
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+}
+
 function stage_for_processing() {
     console.log($('#id_agb_name').val());
     var name=$('#id_agb_name').val();
@@ -11,6 +22,8 @@ function stage_for_processing() {
     });
 
 }
+       console.log(location.pathname.split('/')[2]==='edit')
+
 function check_progress_agb(){
 
    if ($('#id_name').val().length>0 && $('#id_description').val().length>0) {
@@ -31,7 +44,14 @@ function check_progress_agb(){
          else{
               form_data.append('file', file);
          }
+         if(location.pathname.split('/')[2]==='edit'){
+              form_data.append('opn', 'edit');
+         }
+         else{
+              form_data.append('opn', 'add');
+         }
        form_data.append('agb_name', $('#id_name').val());
+         form_data.append('year', $('#id_year').val());
        form_data.append('agb_desc', $('#id_description').val());
        form_data.append('metadata_link', $('#id_metadata_link').val());
        form_data.append('doi_link', $('#id_doi_link').val());

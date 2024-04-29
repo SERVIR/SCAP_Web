@@ -591,8 +591,18 @@ def get_available_agbs(collection, generating_carbon_files=False):
         owner__in=[owner, scap_admin]))
 
     return available_agbs
-
-
+@csrf_exempt
+def update_boundary_file(request,pk):
+    collection_type = request.POST.get('type')
+    if collection_type=='fc':
+        fc = ForestCoverCollection.objects.get(owner=request.user,id=pk)
+        fc.boundary_file = None
+        fc.save()
+    else:
+        agb = AGBCollection.objects.get(owner=request.user,id=pk)
+        agb.boundary_file = None
+        agb.save()
+    return JsonResponse({})
 def get_available_fcs(collection, generating_carbon_files=False):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
@@ -683,26 +693,39 @@ def add_aoi_data(request):
     return JsonResponse({"error": ""})
 
 
-def add_agb_data(request):
+def add_agb_data(request,pk=None):
     try:
         try:
             boundary_file = request.FILES['boundary_file']
-        except MultiValueDictKeyError:
-            boundary_file = None
+        except Exception as e:
+            boundary_file=None
         try:
             file = request.FILES['file']
-        except MultiValueDictKeyError:
-            return JsonResponse({"error": str(e)})
+        except Exception as e:
+            file=None
+        if request.POST.get('opn')=='edit':
+            agb_coll = AGBCollection.objects.get(owner=request.user,pk=pk)
+            agb_coll.description = request.POST.get('agb_desc')
+            if file is not None:
+                agb_coll.source_file = file
+            agb_coll.boundary_file = boundary_file
+            agb_coll.metadata_link = request.POST.get('metadata_link')
+            agb_coll.doi_link = request.POST.get('doi_link')
+            agb_coll.access_level = request.POST.get('access')
+            agb_coll.year=request.POST.get('year')
+            agb_coll.owner = request.user
 
-        agb_coll = AGBCollection()
-        agb_coll.name = request.POST.get('agb_name')
-        agb_coll.description = request.POST.get('agb_desc')
-        agb_coll.source_file = file
-        agb_coll.boundary_file = boundary_file
-        agb_coll.metadata_link = request.POST.get('metadata_link')
-        agb_coll.doi_link = request.POST.get('doi_link')
-        agb_coll.access_level = request.POST.get('access')
-        agb_coll.owner = request.user
+        else:
+            agb_coll = AGBCollection()
+            agb_coll.name = request.POST.get('agb_name')
+            agb_coll.description = request.POST.get('agb_desc')
+            agb_coll.source_file = file
+            agb_coll.boundary_file = boundary_file
+            agb_coll.metadata_link = request.POST.get('metadata_link')
+            agb_coll.doi_link = request.POST.get('doi_link')
+            agb_coll.access_level = request.POST.get('access')
+            agb_coll.year=request.POST.get('year')
+            agb_coll.owner = request.user
         # agb_coll.processing_status = "Staged"
         agb_coll.save()
     except Exception as e:

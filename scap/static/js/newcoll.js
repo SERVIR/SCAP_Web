@@ -3,6 +3,16 @@ var coll_metadata=false;
 var tiff_doi=false;
 var year_exists=true;
 var doi_metadata=false;
+function  remove_boundary_file (){
+       $.ajax({
+            type: 'POST',
+            url: 'update-boundary-file/',
+            data: {'type':'fc'},
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+}
 function sortTable(table, col, reverse) {
     var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
         tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array

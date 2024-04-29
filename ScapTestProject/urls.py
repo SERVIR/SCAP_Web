@@ -26,7 +26,7 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id,add_aoi_data,add_agb_data)
+                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -74,6 +74,7 @@ urlpatterns = [
       path('forest-cover-collections/add/', CreateForestCoverCollection.as_view(), name='create-forest-cover-collection'),
       path('forest-cover-collections/edit/<int:pk>/', EditForestCoverCollection.as_view(), name='edit-forest-cover-collection'),
       path('forest-cover-collections/delete/<int:pk>/', DeleteForestCoverCollection.as_view(), name='delete-forest-cover-collection'),
+      path('forest-cover-collections/edit/<int:pk>/update-boundary-file/',update_boundary_file,name='update-boundary-file'),
 
       path('aoi-collections/', ManageAOICollections.as_view(), name='aoi-collections'),
       path('aoi-collections/add/', CreateAOICollection.as_view(), name='create-aoi-collection'),
@@ -89,6 +90,10 @@ urlpatterns = [
       path('agb-collections/delete/<int:pk>/', DeleteAGBCollection.as_view(), name='delete-agb-collection'),
       path('agb-collections/add/doi/', doi_valid, name='doi-valid'),
       path('agb-collections/add/store-agb-for-processing/', add_agb_data, name='add-agb-data'),
+      path('agb-collections/edit/<int:pk>/store-agb-for-processing/', add_agb_data, name='add-agb-data'),
+      path('agb-collections/edit/<int:pk>/update-boundary-file/', update_boundary_file,
+                         name='update-boundary-file'),
+
       path('forest-cover-collections/add/doi/', doi_valid, name='doi-valid'),
       path('forest-cover-collections/edit/<int:pk>/doi/', doi_valid, name='doi-valid-by-year'),
       path('forest-cover-collections/edit/<int:pk>/get-tiff-data/', get_tiff_data, name='doi-get-tiff-data'),
