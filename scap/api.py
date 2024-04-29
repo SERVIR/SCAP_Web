@@ -1,4 +1,4 @@
-import json
+import json as json_lib
 import os
 import shutil
 import tempfile
@@ -26,7 +26,7 @@ from django.db.models import Count, Max, Min, Avg
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
-config = json.load(f)
+config = json_lib.load(f)
 
 
 # This method is used to generate geodjango objects for AOI or Boundary Data Source
@@ -302,7 +302,7 @@ def get_AOI(request, country=1):
     try:
         vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
 
-        json_obj["data_pa"] = json.loads(vec.to_json())
+        json_obj["data_pa"] = json_lib.loads(vec.to_json())
     except:
         return JsonResponse({})
     return JsonResponse(json_obj)
@@ -478,7 +478,7 @@ def get_updated_series(request, country=None):
         chart, lcs, agbs = fetch_carbon_charts(pa_name, 'emissions_chart_pa')
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, 'container_fcpa')
         return JsonResponse({'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                             'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name})
+                             'lcs_defor': json_lib.dumps(lcs_defor), 'lc_data': lcs_defor, 'region_country': pa_name})
 
 
 def generate_fcc_file(request):
