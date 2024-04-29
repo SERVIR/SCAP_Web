@@ -344,9 +344,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
     df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
-        chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
-                             xticks=[],
-                             title='Change in Forest Cover: ' + pa_name, )
+        chart_fc = None
 
         return chart_fc, lcs_defor
 
