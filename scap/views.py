@@ -74,7 +74,7 @@ def add_new_collection(request):
 def pilot_country(request, country=1):
     json_obj = {}
     try:
-        pc = PilotCountry.objects.filter(id=country).values()
+        pc = PilotCountry.objects.filter(aoi_polygon__id=country).values()
         aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
         aoi_arr = []
         for aoi in aois:
@@ -84,7 +84,7 @@ def pilot_country(request, country=1):
         json_obj["data_pa"] = aoi_arr
     except:
         json_obj = {}
-    pa = PilotCountry.objects.get(id=country)
+    pa = PilotCountry.objects.get(aoi_polygon__id=country)
 
     try:
         pa_name = pa.country_name
