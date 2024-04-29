@@ -138,7 +138,7 @@
                 <div class="col-lg-4 col-sm-6 mb-4">
                     <!-- pilotcountry item 1-->
                     <div class="pilotcountry-item">
-                        <a class="pilotcountry-link" href="{% url 'pilot_country' country=pilot.id %}">
+                        <a class="pilotcountry-link" href="{% url 'pilot_country' country=pilot.aoi_polygon.id %}">
                             <div class="pilotcountry-hover">
                                 <div class="pilotcountry-hover-content"><i class="fas fa-tree fa-3x"></i></div>
                             </div>
