@@ -95,7 +95,7 @@
                     </div>
                 </a>
                 <h4 class="my-3">Monitor progress toward deforestation targets</h4>
-                <p class="text-muted">Placeholder text in this area.</p>
+                <p class="text-muted">Parties implementing REDD+ activities have set deforestation target’s within their region’s Forest Reference Emission Level Submissions. Through this tool, users can monitor progress towards these targets and determine the impact local decision making have on deforestation trends.</p>
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta2">
@@ -107,7 +107,7 @@
                     </div>
                 </a>
                 <h4 class="my-3">Monitor progress towards Net Zero deforestation</h4>
-                <p class="text-muted">Placeholder text in this area.</p>
+                <p class="text-muted">As committed through the UNFCCC, countries pledged their part to secure global net zero by mid-century. Users can track both deforestation and afforestation trends using various land cover change datasets to monitor the regions progress of net zero.</p>
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
@@ -119,7 +119,7 @@
                     </div>
                 </a>
                 <h4 class="my-3">See emission estimations</h4>
-                <p class="text-muted">Placeholder text in this area.</p>
+                <p class="text-muted">USAID missions have a responsibility to track greenhouse gas (GHG) emissions as part of monitoring environmental dynamics in their respective regions. Users can estimate GHG emissions generated using various dataset combinations to better understand local trends.</p>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
     <div class="container">
         <div class="text-center">
             <h2 class="section-heading text-uppercase">Pilot Countries</h2>
-            <h3 class="section-subheading text-muted">SERVIR is engaged with these pilot countries.</h3>
+            <h3 class="section-subheading text-muted">The SERVIR CArbon Pilot work is engaged with these pilot countries</h3>
         </div>
         <div class="row">
             {% for pilot in pilot_countries %}
@@ -162,7 +162,7 @@
     <div class="container">
         <div class="text-center">
             <h2 class="section-heading text-uppercase">Primary Data</h2>
-            <h3 class="section-subheading text-muted">Carbon emissions are calculated according to these components</h3>
+            <h3 class="section-subheading text-muted">The S-CAP methodology is based on those established by the Intergovernmental Panel on Climate Change (IPCC) and includes data layers describing the following:</h3>
         </div>
         <div class="row text-center">
             <div class="col-md-4">
@@ -174,14 +174,8 @@
                         </span>
                     </div>
                 </a>
-                <h4 class="my-3">Forest Loss & Degradation</h4>
-                <p class="text-muted">Forest degradation refers to the decline in the quality and health of forest
-                    ecosystems, often resulting from human activities. It encompasses a range of negative impacts on
-                    forests, such as deforestation, logging, unsustainable agriculture, mining, and infrastructure
-                    development. Forest degradation also impacts local communities that rely on forests for their
-                    livelihoods and cultural practices. Addressing forest degradation requires concerted efforts in
-                    sustainable land management, reforestation, and responsible resource extraction practices to ensure
-                    the long-term conservation and regeneration of our precious forest ecosystems.</p>
+                <h4 class="my-3">Forest Cover & Forest Cover Loss</h4>
+                <p class="text-muted">To characterize the carbon stocks contained within a region’s forest, one must understand an area’s historic and current forest coverage. Taking the difference in forest coverage between years provides the first half of variables needed to estimate emissions: activity data/area of deforestation.</p>
 {#                {% if user.is_authenticated %}#}
 {#                    <div class="text-center">#}
 {#                        <a href="{% url 'userData' %}">#}
@@ -200,13 +194,8 @@
                         </span>
                     </div>
                 </a>
-                <h4 class="my-3">Above Ground Biomass</h4>
-                <p class="text-muted">Above-ground biomass refers to the total mass of living vegetation and organic
-                    matter present above the soil surface in a given area, such as trees, shrubs, and herbaceous plants.
-                    Above-ground biomass is an important measure of the carbon stored in terrestrial ecosystems, as
-                    plants absorb carbon dioxide from the atmosphere through photosynthesis and store it in their
-                    biomass. It serves as a crucial component of the global carbon cycle and plays a significant role in
-                    mitigating climate change by acting as a carbon sink.</p>
+                <h4 class="my-3">Forest Above Ground Biomass</h4>
+                <p class="text-muted">Different carbon pools (living biomass, litter and debris, soil) serve various purposes in terms of measuring and monitoring an area’s carbon stock. For estimating carbon emissions from deforestation, the S-CAP methodology focuses on the change in aboveground biomass (AGB) as it makes up the majority of a tree’s biomass in tropical forests.</p>
 {#                {% if user.is_authenticated %}#}
 {##}
 {#                    <div class="text-center">#}
@@ -227,12 +216,7 @@
                     </div>
                 </a>
                 <h4 class="my-3">Area of Interest</h4>
-                <p class="text-muted">A user-defined Area of Interest (AOI) provides the boundaries of the region to use
-                    for estimations. The selection of an area of interest depends on the objectives and requirements of
-                    the project or analysis being conducted. It could be defined by factors such as environmental
-                    features, political boundaries, economic considerations, social demographics, or any other criteria
-                    relevant to the specific application. The area of interest provides the spatial context for
-                    decision-making within that defined region.</p>
+                <p class="text-muted">The boundary provided to constrain the analyses for determining forest cover loss and biomass. This platform allows for full country boundaries,  protected areas, or user defined regions.</p>
 {#                {% if user.is_authenticated %}#}
 {#                    <div class="text-center">#}
 {#                        <a href="{% url 'aoi-collections' %}">#}

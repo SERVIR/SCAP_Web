@@ -106,12 +106,11 @@
                     </a>
 
                   <div style="display:inline;">
-                                              <h5 class="">Forest Loss & Degradation</h5>
+                                              <h5 class="">Forest Cover & Forest Cover Loss</h5>
 
-                      <p>Forest loss is measured by comparing binary Forest/No Forest coverages for different years. The system handles this information as a collection of GeoTiff files with 0 values indicating No Forest and 1 values indicating Forest Cover. Years don’t need to be consecutive.</p><p>
-
-When adding a forest cover collections, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+<p>Forest loss is measured by comparing binary Forest/Non Forest coverages for different years. The system handles this information as a collection of GeoTiff files with 0 values indicating Non Forest and 1 values indicating Forest Cover. Years don’t need to be consecutive.
 </p>
+                      <p>When adding a forest cover collection, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                         <a href="{% url 'forest-cover-collections' %}" class="btn btn-primary mt-auto float-end">
                             + Add Your Own</a>
                   </div>
@@ -132,11 +131,10 @@ When adding a forest cover collections, please provide reference information suc
 
 
                   <div class="" style="display: inline">
-                       <h5 class="">Above Ground Biomass</h5>
-                      <p>Above ground biomass (AGB) estimations are expected to be expressed in Metric Tons of Carbon per Ha. This estimations are assumed to be valid for the calibration year they were produced for, and therefore applied for emission and carbon stock calculations for forest cover data in all following years.</p><p>
-
-Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
+                       <h5 class="">Forest Above Ground Biomass</h5>
+<p>Above ground biomass (AGB) estimations are expected to be expressed in metric tons of carbon per hectare. These estimations are assumed to be valid for the calibration year they were produced for, and therefore applied for emission and carbon stock calculations for forest cover data in all following years.
 </p>
+                      <p>Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                           <a href="{% url 'agb-collections' %}" class="btn btn-primary mt-auto  float-end">
                             + Add Your Own</a>
                   </div>
@@ -158,11 +156,9 @@ Please provide reference information such as a comprehensive description, digita
 
 
                         <div class="" style="display: inline">
-                              <h5 class="">Area of Interest</h5>
-                            <p>You can upload your Areas of Interest, to facilitate the extraction of forest change, carbon stock and emissions derived from all public (and your private Forest Cover and AGB data) for your specific AOI.</p><p>
-
-Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.
-</p>
+                              <h5 class="">Area of Interest (AOI)</h5>
+                            <p>You can upload your Areas of Interest, to facilitate the extraction of forest change, carbon stock and emissions derived from all public (and your private) Forest Cover and AGB data for your specific AOI.</p>
+<p>Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                          <a href="{% url 'aoi-collections' %}" class="btn btn-primary mt-auto float-end">
                             + Add Your Own</a></div>
                     </div>
