@@ -145,7 +145,7 @@
                                 </label>
                                     {{ form.metadata_link }}
                                 </div>
-                                <div class="mb-3 common">
+                                <div class="common">
                                     {% if operation == 'ADD' %}
     <label class="form-label">Upload Boundary shape file </label>
                                 {{ form.boundary_file }}
@@ -159,7 +159,7 @@
                                 {% endif %}
                                         {{ form.boundary_file }}
 
-                                    <label class="text-secondary"><i>Please note that replacing or removing the boundary file will trigger reprocessing of the AGB dataset.<br>If no boundary file is provided, the system will handle this dataset using global extent.</i></label>
+                                    <label class="alert alert-warning text-wrap mt-4"><i>Please note that replacing or removing the boundary file will trigger reprocessing of the AGB dataset.<br>If no boundary file is provided, the system will handle this dataset using global extent.</i></label>
 
     {% endif %}
                                 </div>

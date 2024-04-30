@@ -104,14 +104,11 @@ def pilot_country(request, country=1):
 def protected_aois(request, aoi):
     try:
         json_obj = {}
-        # vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-        #
-        # json_obj["data_pa"] = json.loads(vec.to_json())
         pa = AOIFeature.objects.get(id=aoi)
         pa_name = pa.name
         pc = PilotCountry.objects.get(country_code=pa.iso3)
         pc_name = pc.country_name
-        country_id = pc.id
+        country_id = pc.aoi_polygon.id
         colors = get_available_colors()
         chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
         chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')

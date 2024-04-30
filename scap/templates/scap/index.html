@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
+     <link href="{% static "css/carousel.css" %}" rel="stylesheet"/>
 </head>
 <body id="page-top">
 <!-- Navigation-->
@@ -241,78 +242,189 @@
 <section class="page-section" id="about">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">About S-CAP Implementation</h2>
-            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+            <h2 class="section-heading text-uppercase pb-4">S-CAP Timeline</h2>
+<!--            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>-->
         </div>
-        <ul class="timeline">
-            <li>
-                <div class="timeline-image"><img class="rounded-circle img-fluid"
-                                                 src="{% static "assets/img/about/1.jpg" %}" alt="..."/></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>2022-2023</h4>
-                        <h4 class="subheading">Service Design</h4>
-                    </div>
-                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
-                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                </div>
-            </li>
-            <li class="timeline-inverted">
-                <div class="timeline-image"><img class="rounded-circle img-fluid"
-                                                 src="{% static "assets/img/about/2.jpg" %}" alt="..."/></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>June 2024</h4>
-                        <h4 class="subheading">S-CAP available to users</h4>
-                    </div>
-                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
-                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                </div>
-            </li>
-            <li>
-                <div class="timeline-image"><img class="rounded-circle img-fluid"
-                                                 src="{% static "assets/img/about/3.jpg" %}" alt="..."/></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>September 2024</h4>
-                        <h4 class="subheading">Enabling user uploads</h4>
-                    </div>
-                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
-                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                </div>
-            </li>
-            <li class="timeline-inverted">
-                <div class="timeline-image"><img class="rounded-circle img-fluid"
-                                                 src="{% static "assets/img/about/4.jpg" %}" alt="..."/></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>2025</h4>
-                        <h4 class="subheading">Impact Assessment</h4>
-                    </div>
-                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae
-                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>
-                </div>
-            </li>
-            <li class="timeline-inverted">
-                <div class="timeline-image">
-                    <h4>
-                        Start
-                        <br/>
-                        Using
-                        <br/>
-                        S-CAP!
-                    </h4>
-                </div>
-            </li>
-        </ul>
+          <div class="carousel">
+            <input type="radio" name="slides" checked="checked" id="slide-1">
+            <input type="radio" name="slides" id="slide-2">
+            <input type="radio" name="slides" id="slide-3">
+            <input type="radio" name="slides" id="slide-4">
+            <input type="radio" name="slides" id="slide-5">
+            <input type="radio" name="slides" id="slide-6">
+			<input type="radio" name="slides" id="slide-7">
+            <ul class="carousel__slides">
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/planning.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>2021</h3>
+							Conceptual Framework and Theory of Change
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/writing.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>2021-2022</h3>
+							Initial Analyses by E. Cherrington & C. Evans
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/comparison.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>2022</h3>
+							FRL Comparison
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/fieldwork.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>2023-2024</h3>
+							Hub Roadshow, Partner Consultation, Capacity Building
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/webdesign.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>2023-2024</h3>
+							Webpage Application Development
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/website.jpg" %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>June 2024</h3>
+							Webpage Launch
+                        </figcaption>
+                    </figure>
+                </li>
+                <li class="carousel__slide">
+                    <figure>
+                        <div>
+                            <img src="{% static "assets/img/carousel_images/forest.jpg"  %}" alt="">
+                        </div>
+                        <figcaption>
+                            <h3>Moving Forward</h3>
+							Annual Updates & Connection to Hub Services
+                        </figcaption>
+                    </figure>
+                </li>
+            </ul>
+            <ul class="carousel__thumbnails">
+                <li>
+                    <label for="slide-1"><img src="{% static "assets/img/carousel_images/planning_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-2"><img src="{% static "assets/img/carousel_images/writing_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-3"><img src="{% static "assets/img/carousel_images/comparison_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-4"><img src="{% static "assets/img/carousel_images/fieldwork_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-5"><img src="{% static "assets/img/carousel_images/webdesign_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-6"><img src="{% static "assets/img/carousel_images/website_thumb.jpg" %}" alt=""></label>
+                </li>
+                <li>
+                    <label for="slide-7"><img src="{% static "assets/img/carousel_images/forest_thumb.jpg" %}" alt=""></label>
+                </li>
+            </ul>
+        </div>
+<!--        <ul class="timeline">-->
+<!--            <li>-->
+<!--                <div class="timeline-image"><img class="rounded-circle img-fluid"-->
+<!--                                                 src="{% static "assets/img/about/1.jpg" %}" alt="..."/></div>-->
+<!--                <div class="timeline-panel">-->
+<!--                    <div class="timeline-heading">-->
+<!--                        <h4>2022-2023</h4>-->
+<!--                        <h4 class="subheading">Service Design</h4>-->
+<!--                    </div>-->
+<!--                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing-->
+<!--                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae-->
+<!--                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="timeline-inverted">-->
+<!--                <div class="timeline-image"><img class="rounded-circle img-fluid"-->
+<!--                                                 src="{% static "assets/img/about/2.jpg" %}" alt="..."/></div>-->
+<!--                <div class="timeline-panel">-->
+<!--                    <div class="timeline-heading">-->
+<!--                        <h4>June 2024</h4>-->
+<!--                        <h4 class="subheading">S-CAP available to users</h4>-->
+<!--                    </div>-->
+<!--                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing-->
+<!--                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae-->
+<!--                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <div class="timeline-image"><img class="rounded-circle img-fluid"-->
+<!--                                                 src="{% static "assets/img/about/3.jpg" %}" alt="..."/></div>-->
+<!--                <div class="timeline-panel">-->
+<!--                    <div class="timeline-heading">-->
+<!--                        <h4>September 2024</h4>-->
+<!--                        <h4 class="subheading">Enabling user uploads</h4>-->
+<!--                    </div>-->
+<!--                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing-->
+<!--                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae-->
+<!--                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="timeline-inverted">-->
+<!--                <div class="timeline-image"><img class="rounded-circle img-fluid"-->
+<!--                                                 src="{% static "assets/img/about/4.jpg" %}" alt="..."/></div>-->
+<!--                <div class="timeline-panel">-->
+<!--                    <div class="timeline-heading">-->
+<!--                        <h4>2025</h4>-->
+<!--                        <h4 class="subheading">Impact Assessment</h4>-->
+<!--                    </div>-->
+<!--                    <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing-->
+<!--                        elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae-->
+<!--                        sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="timeline-inverted">-->
+<!--                <div class="timeline-image">-->
+<!--                    <h4>-->
+<!--                        Start-->
+<!--                        <br/>-->
+<!--                        Using-->
+<!--                        <br/>-->
+<!--                        S-CAP!-->
+<!--                    </h4>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--        </ul>-->
     </div>
 </section>
 <!-- Team-->
-<section class="page-section bg-light" id="team">
+<section class="page-section bg-light mt-3" id="team">
     <div class="container">
         <div class="text-center">
             <h2 class="section-heading text-uppercase">Meet The Team</h2>

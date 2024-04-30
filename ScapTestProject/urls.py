@@ -26,7 +26,7 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file)
+                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -105,7 +105,7 @@ urlpatterns = [
 
                     # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
-      # path('test/', test, name='test'),
+      path('test/', test, name='test'),
       # path('emissions/', pilot_country, name='emissions'),
       # path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
       # path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),

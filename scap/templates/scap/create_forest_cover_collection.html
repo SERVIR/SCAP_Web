@@ -153,7 +153,7 @@
                             </label>
                                 {{ form.metadata_link }}
                             </div>
-                            <div class="mb-3 common">
+                            <div class="common">
 
 
 {% if operation == 'ADD' %}
@@ -170,7 +170,10 @@
 
                                 {% endif %}
                                  {{ form.boundary_file }}
-                                                                <label class="text-secondary"><i>Please note that replacing or removing the boundary file will trigger reprocessing of the entire collection.<br>If no boundary file is provided, the system will handle this collection using global extent.</i></label>
+                                                                <label class="alert alert-warning text-wrap mt-4">
+                                                                    <i>Please note that replacing or removing the boundary file will trigger reprocessing of the entire collection.
+                                                                        <br>If no boundary file is provided, the system will handle this collection using global extent.</i>
+                                                                </label>
 
     {% endif %}
                             </div>

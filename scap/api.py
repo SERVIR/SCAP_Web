@@ -48,7 +48,9 @@ config = json_lib.load(f)
 #     lm = LayerMapping(BoundaryFiles, boundary, boundaryfiles_mapping, transform=False)
 #     lm.save(strict=True, verbose=verbose)
 
-
+def test(request):
+    generate_geodjango_objects_aoi()
+    return HttpResponse("sucess")
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
         'wdpa_pid': 'WDPA_PID',
@@ -62,7 +64,7 @@ def generate_geodjango_objects_aoi(verbose=True):
         'geom': 'MULTIPOLYGON',
     }
     aoi = os.path.abspath(
-        os.path.join(r'C:\Users\gtondapu\Desktop\PilotCountries_All\PilotCountries_All.shp'),
+        os.path.join(r'C:\Users\gtondapu\Downloads\ProtectedAreas_AllPilotCountries\PilotCountries.shp'),
     )
 
     lm = LayerMapping(AOIFeature, aoi, aoi_mapping, transform=False)
@@ -365,15 +367,18 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
     df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
+    print(df_defor)
+    if df_defor.empty:
+        chart_fc = None
+
+        return chart_fc, lcs_defor
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
     # df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
     # print(df_defor)
     years_defor = list(df_defor['year_index'].unique())
-
     pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_index'],
                                         index='year_index', fill_value=None)
-
     chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
                           xticks=[],
                           title="Change in Forest Cover: " + aoi)
