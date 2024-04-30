@@ -163,14 +163,15 @@
                                 {{ form.boundary_file }}
     {% else %}
                {% if boundary_file %}
-                                     Current boundary file: {{ boundary_file }}
-
+                                Current boundary file: <b>{{ boundary_file }}</b> <a href="#" onclick="remove_boundary_file()" class="btn btn-danger mb-1">Remove</a>
 
                                 {% else %}
                                      Current boundary file: None
 
                                 {% endif %}
                                  {{ form.boundary_file }}
+                                                                <label class="text-secondary"><i>Please note that replacing or removing the boundary file will trigger reprocessing of the entire collection.<br>If no boundary file is provided, the system will handle this collection using global extent.</i></label>
+
     {% endif %}
                             </div>
                                <div class="mb-3 common">

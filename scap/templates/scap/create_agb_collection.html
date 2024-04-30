@@ -121,9 +121,18 @@
 
 
                             <div id="new_agbinfo" class=" ">
-                                <div class="mb-3 common"><label>AGB Name </label>
-                                    {{ form.name }}
+                                {% if operation == 'ADD' %}
+                            <div class="mb-3 common"><label>AGB Name </label>
+                                {{ form.name }}
+                            </div>
+                                {% else %}
+                                <div class=" mt-3 common">
+                                    <h5>Editing AGB: <span id="current_coll">{{ form.name.value }}</span></h5>
                                 </div>
+                                  <div class="mb-3 common" hidden><label>AGB Name </label>
+                                {{ form.name }}
+                            </div>
+                                {% endif %}
                                 <div class="mb-3 common"><label style="display: block">Source and Supplemental
                                     information</label>
                                     {{ form.description }}
@@ -142,13 +151,16 @@
                                 {{ form.boundary_file }}
     {% else %}
                {% if boundary_file %}
-                                     Current boundary file: {{ boundary_file }}
+                                Current boundary file: <b>{{ boundary_file }}</b> <a href="#" onclick="remove_boundary_file()" class="btn btn-danger mb-1">Remove</a>
 
                                 {% else %}
                                      Current boundary file: None
 
                                 {% endif %}
                                         {{ form.boundary_file }}
+
+                                    <label class="text-secondary"><i>Please note that replacing or removing the boundary file will trigger reprocessing of the AGB dataset.<br>If no boundary file is provided, the system will handle this dataset using global extent.</i></label>
+
     {% endif %}
                                 </div>
 
