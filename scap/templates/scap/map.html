@@ -253,8 +253,8 @@
             <div class="container-fluid">
 
 
-                <div class="row justify-content-center mt-4">
-                     <h4 class="text-uppercase">what would you like to explore?</h4>
+                <div class="row justify-content-center mt-4 p-3">
+                     <h4 class="text-uppercase mb-4">what would you like to explore?</h4>
                      <div class="col-md-3">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta1">
                     <div class="pilotcountry-hover">
@@ -264,7 +264,7 @@
                         </span>
                     </div>
                 </a>
-                <h6 class="my-3">Monitor progress toward deforestation targets</h6>
+                <h6 class="my-3 text-dark">Monitor progress toward deforestation targets</h6>
             </div>
             <div class="col-md-3">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta2">
@@ -275,7 +275,7 @@
                         </span>
                     </div>
                 </a>
-                <h6 class="my-3">Monitor progress towards Net Zero deforestation</h6>
+                <h6 class="my-3 text-dark">Monitor progress towards Net Zero deforestation</h6>
             </div>
             <div class="col-md-3">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
@@ -286,7 +286,7 @@
                         </span>
                     </div>
                 </a>
-                <h6 class="my-3">See emission estimations</h6>
+                <h6 class="my-3 text-dark">See emission estimations</h6>
             </div>
                         <div class="col-md-3">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
@@ -297,7 +297,7 @@
                         </span>
                     </div>
                 </a>
-                <h6 class="my-3">Explore Carbon Stock</h6>
+                <h6 class="my-3 text-dark">Explore Carbon Stock</h6>
             </div>
                 </div>
 
@@ -311,24 +311,38 @@
                                <div class="row">
                              {% for pilot in pilot_countries %}
                 <div class="col-lg-2 col-sm-4 mb-4">
+                      <a class="pilotcountry-link" href="#"  onclick="zoomtoArea({{pilot.id}});">
+<div class="card bg-dark text-white" style="border:none;border-radius: 0">
 
-                    <!-- pilotcountry item 1-->
-                    <div class="pilotcountry-item">
-                        <a class="pilotcountry-link"  onclick="zoomtoArea({{pilot.id}});">
+  <img src="{{pilot.hero_image.url}}" class="card-img mb-0"  alt="{{pilot.country_name}}"/>
 
-                            <img class="img-fluid"
-                                 src="{{pilot.hero_image.url}}"
-                                 alt="{{pilot.country_name}}"/>
-                        </a>
-                        <div class="pilotcountry-caption">
-                            <div class="pilotcountry-caption-heading">{{pilot.country_name}}</div>
-                            <div class="pilotcountry-caption-subheading text-muted">{{pilot.region}}</div>
-                        </div>
-                    </div>
+  <div class="card-img-overlay p-0 w-100">
+      <div class="align-items-middle" style="background-color: rgba(255, 255, 255, 0.7);color: black">
+    <h5 class="card-title mt-3 p-2 pt-2  mb-0 pb-0">{{pilot.country_name}}</h5>
+    <span class="card-text p-0 text-muted small pb-2 mb-2"><i>{{pilot.region}}</i></span>
+          </div>
+  </div>
+
+</div>
+                      </a>
+<!--                    &lt;!&ndash; pilotcountry item 1&ndash;&gt;-->
+<!--                    <div class="pilotcountry-item">-->
+<!--                        <a class="pilotcountry-link"  onclick="zoomtoArea({{pilot.id}});">-->
+
+<!--                            <img class="img-fluid"-->
+<!--                                 src="{{pilot.hero_image.url}}"-->
+<!--                                 alt="{{pilot.country_name}}"/>-->
+<!--                        </a>-->
+<!--                        <div class="pilotcountry-caption">-->
+<!--                            <div class="pilotcountry-caption-heading">{{pilot.country_name}}</div>-->
+<!--                            <div class="pilotcountry-caption-subheading text-muted">{{pilot.region}}</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
+
             {% endfor %}
                                </div>
-                            <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
+                            <button class="btn btn-primary text-uppercase mb-2" data-bs-dismiss="modal" type="button">
                                 I'll Explore a different location
                             </button>
                         </div>
