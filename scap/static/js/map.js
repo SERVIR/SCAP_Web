@@ -425,7 +425,7 @@ function init_map() {
         "OpenTopo": OpenTopoMap,
         "Streets": streets,
         "Dark Map": osm1,
-        "Keep Default": terrainLayer
+        "Keep Default": satellite
 
     };
 
