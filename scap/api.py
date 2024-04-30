@@ -367,20 +367,20 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
     df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
-    print(df_defor)
     if df_defor.empty:
         chart_fc = None
 
         return chart_fc, lcs_defor
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
+    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
     # df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
     # print(df_defor)
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_index'],
                                         index='year_index', fill_value=None)
     chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
-                          xticks=[],
+                          xticks=years_defor,
                           title="Change in Forest Cover: " + aoi)
     return chart_fc1, lcs_defor
 

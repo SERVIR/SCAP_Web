@@ -102,24 +102,21 @@ def pilot_country(request, country=1):
 
 
 def protected_aois(request, aoi):
-    try:
-        json_obj = {}
-        pa = AOIFeature.objects.get(id=aoi)
-        pa_name = pa.name
-        pc = PilotCountry.objects.get(country_code=pa.iso3)
-        pc_name = pc.country_name
-        country_id = pc.aoi_polygon.id
-        colors = get_available_colors()
-        chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
-        chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
-        return render(request, 'scap/protected_area.html',
-                      context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                               'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
-                               'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
-                               'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
-                               'country_name': pc_name, 'shp_obj': json_obj})
-    except Exception as e:
-        return render(request, 'scap/index.html')
+    json_obj = {}
+    pa = AOIFeature.objects.get(id=aoi)
+    pa_name = pa.name
+    pc = PilotCountry.objects.get(country_code=pa.iso3)
+    pc_name = pc.country_name
+    country_id = pc.aoi_polygon.id
+    colors = get_available_colors()
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
+    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
+    return render(request, 'scap/protected_area.html',
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
+                           'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
+                           'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                           'country_name': pc_name, 'shp_obj': json_obj})
 
 
 def updateColl(request, coll_name):
