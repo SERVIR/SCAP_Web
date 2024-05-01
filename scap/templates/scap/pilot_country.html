@@ -80,11 +80,10 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css" integrity="sha512-vJfMKRRm4c4UupyPwGUZI8U651mSzbmmPgR3sdE3LcwBPsdGeARvUM5EcSTg34DK8YIRiIo+oJwNfZPMKEQyug==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="{% static '/js/map.js' %}"></script>
 </head>
 <body id="page-top">
 <script>
-   var shp_obj = {{ shp_obj|safe }};
+      var shp_obj = {{ shp_obj|safe }};
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -147,8 +146,8 @@ margin-right: 0;">
 <header class="masthead"  style="background-image:url('{{ image }}')">
     <div class="container">
         <div class="masthead-heading text-uppercase">{{ name }}</div>
-        <div class="section-subheading">{{tagline}}
-        </div>
+<!--        <div class="section-subheading">{{tagline}}-->
+<!--        </div>-->
         <!-- <a class="btn btn-primary btn-xl text-uppercase" href="#services">Tables and Maps</a> -->
     </div>
 </header>
@@ -232,7 +231,8 @@ margin-right: 0;">
                 {#                <img class="card-img-top" src="{% static "assets/img/image.png" %}" alt="Peru protected Areas">#}
                 <div class="card-body">
                     <h5 class="card-title">Visualize forest cover changes around protected areas</h5>
-                    <p class="card-text">{{ desc|linebreaks }}</p>
+<!--                    <p class="card-text">{{ desc|linebreaks }}</p>-->
+                    <p class="card-text">This tool serves as two comparisons; (1) Comparing annual forest coverage using the same land use/land cover dataset to determine changes in forest (2) Comparing the same annual forest coverage but between two separate datasets to demonstrate where the datasets may diverge. When viewing the differences between two different years using the same dataset, changes will appear in red to represent potential deforestation. When viewing the differences between the same year but two different datasets, changes will appear in yellow to represent divergence between datasets.</p>
                     <a href="{% url 'map' country=country %}" class="btn btn-primary">Navigate the map</a>
                 </div>
             </div>
@@ -241,10 +241,7 @@ margin-right: 0;">
         </div>
     </div>
 </section>
-<script>
-    var lc_colors = {{colors|safe}};
-    console.log(lc_colors);
-</script>
+
 <section class="page-section" id="EmissionsChart">
     <div class="container">
         <div class="card" style="width: 100%">
@@ -254,11 +251,7 @@ margin-right: 0;">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
                 emissions</h5>
             <p class="card-text" style="margin-left: 10px">
-                The chart below shows how the data from different sources compare to each other. These
-                combinations represent the range of
-                estimations for the entire country. The chart can be used to explore the differences between the
-                data sources and to understand
-                the uncertainty in the estimations.
+                This tool provides a large array of carbon emission estimations by displaying combinations of activity data (found by taking the difference between two annual forest cover maps) and above ground biomass measurements. Depending on the estimated hectares of activity data along with the associated biomass of the deforested land, users can compare across the ensemble of estimates to explore data trends across time and space.
             </p>
             <a href="{% url "contribute-data" %}" class="btn btn-primary w-25" style="margin-left: 10px">Combine with your own data</a>
 
@@ -323,9 +316,7 @@ margin-right: 0;">
         <div class="card" style="width: 100%">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover</h5>
             <p class="card-text" style="margin-left: 10px">
-                The chart below shows how the forest cover change data from different sources compare to each other.
-                These chart
-                lines represent the forest gain and forest loss for the entire country.
+                This tool better demonstrates how estimates of forest cover change datasets, alone, differ by quantifying trends identified in the above data visualization tool. Interested in how well a region is trending towards net zero carbon emissions? Pay attention to trends in both the forest gain and forest loss.
             </p>
             <a href="{% url "aoi_page" aoi=1218 %}" target="_blank" class="btn btn-primary w-25"
                style="margin-left: 10px">Explore
@@ -538,6 +529,12 @@ margin-right: 0;">
         </div>
     </div>
 </div>
+
+
+                 <script src="{% static '/js/map.js' %}"></script>
+                <script>
+    var lc_colors = {{colors|safe}};
+                </script>
 <script src="{% static '/js/forestchange.js' %}"></script>
 <script src="{% static '/js/emissions.js' %}"></script>
 

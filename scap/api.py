@@ -51,6 +51,8 @@ config = json_lib.load(f)
 def test(request):
     generate_geodjango_objects_aoi()
     return HttpResponse("sucess")
+
+
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
         'wdpa_pid': 'WDPA_PID',
@@ -368,7 +370,9 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
-        chart_fc = None
+        chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
+                             xticks=[],
+                             title="Change in Forest Cover: " + aoi)
 
         return chart_fc, lcs_defor
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
@@ -594,18 +598,22 @@ def get_available_agbs(collection, generating_carbon_files=False):
         owner__in=[owner, scap_admin]))
 
     return available_agbs
+
+
 @csrf_exempt
-def update_boundary_file(request,pk):
+def update_boundary_file(request, pk):
     collection_type = request.POST.get('type')
-    if collection_type=='fc':
-        fc = ForestCoverCollection.objects.get(owner=request.user,id=pk)
+    if collection_type == 'fc':
+        fc = ForestCoverCollection.objects.get(owner=request.user, id=pk)
         fc.boundary_file = None
         fc.save()
     else:
-        agb = AGBCollection.objects.get(owner=request.user,id=pk)
+        agb = AGBCollection.objects.get(owner=request.user, id=pk)
         agb.boundary_file = None
         agb.save()
     return JsonResponse({})
+
+
 def get_available_fcs(collection, generating_carbon_files=False):
     owner = collection.owner
     scap_admin = User.objects.get(username='scap_admin')
@@ -696,18 +704,18 @@ def add_aoi_data(request):
     return JsonResponse({"error": ""})
 
 
-def add_agb_data(request,pk=None):
+def add_agb_data(request, pk=None):
     try:
         try:
             boundary_file = request.FILES['boundary_file']
         except Exception as e:
-            boundary_file=None
+            boundary_file = None
         try:
             file = request.FILES['file']
         except Exception as e:
-            file=None
-        if request.POST.get('opn')=='edit':
-            agb_coll = AGBCollection.objects.get(owner=request.user,pk=pk)
+            file = None
+        if request.POST.get('opn') == 'edit':
+            agb_coll = AGBCollection.objects.get(owner=request.user, pk=pk)
             agb_coll.description = request.POST.get('agb_desc')
             if file is not None:
                 agb_coll.source_file = file
@@ -715,7 +723,7 @@ def add_agb_data(request,pk=None):
             agb_coll.metadata_link = request.POST.get('metadata_link')
             agb_coll.doi_link = request.POST.get('doi_link')
             agb_coll.access_level = request.POST.get('access')
-            agb_coll.year=request.POST.get('year')
+            agb_coll.year = request.POST.get('year')
             agb_coll.owner = request.user
 
         else:
@@ -727,7 +735,7 @@ def add_agb_data(request,pk=None):
             agb_coll.metadata_link = request.POST.get('metadata_link')
             agb_coll.doi_link = request.POST.get('doi_link')
             agb_coll.access_level = request.POST.get('access')
-            agb_coll.year=request.POST.get('year')
+            agb_coll.year = request.POST.get('year')
             agb_coll.owner = request.user
         # agb_coll.processing_status = "Staged"
         agb_coll.save()

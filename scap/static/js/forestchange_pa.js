@@ -1,6 +1,5 @@
 var index_fc = $("#container_fcpa").data('highchartsChart');
 var chart1 = Highcharts.charts[index_fc];
-
 var series = chart1.series;
 var newseries = series;
 
@@ -11,7 +10,6 @@ function get_name(elem) {
     const xhr = ajax_call("get-series-name1", {'ds_lc': elem[1], 'ds_agb': ""});
     xhr.done(function (result) {
         result1 = result.name;
-        // console.log(result1);
     });
 }
 

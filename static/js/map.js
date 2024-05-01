@@ -278,7 +278,6 @@ function redraw_map_layers() {
         onEachFeature: onEachFeature,
         pane: 'right'
     });
-    console.log("after right")
 
     aoi_layer_left.on('add', (e) => {
         document.getElementById("loading_spinner_map").style.display = "none";
@@ -425,7 +424,7 @@ function init_map() {
         "OpenTopo": OpenTopoMap,
         "Streets": streets,
         "Dark Map": osm1,
-        "Keep Default": terrainLayer
+        "Keep Default": satellite
 
     };
 
@@ -567,7 +566,7 @@ $(function () {
         $('#country_selection_modal').modal('show');
     } else {
         try {
-            map.setView(lat_long, zoom_level);
+            map.setView([document.getElementById('lat_from_db').innerHTML,document.getElementById("lon_from_db").innerHTML], document.getElementById("zoom_from_db").innerHTML);
 
         } catch (e) {
             console.log(e)

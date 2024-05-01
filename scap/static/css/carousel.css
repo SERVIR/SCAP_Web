@@ -37,7 +37,8 @@ section {
     text-align: left;
     position: relative;
     margin-bottom: 22px;
-    
+    padding-bottom: 6rem;
+
     > input {
         clip: rect(1px, 1px, 1px, 1px);
         clip-path: inset(50%);

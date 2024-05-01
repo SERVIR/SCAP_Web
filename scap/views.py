@@ -50,20 +50,17 @@ def map(request, country=0):
 
     try:
         aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
-        aoi_arr=[]
+        aoi_arr = []
         for aoi in aois:
-            aoi_geojson=json.loads(aoi.geom.geojson)
-            aoi_geojson['properties']={'name':aoi.name,'ISO3':aoi.iso3,'desig_eng':aoi.desig_eng}
+            aoi_geojson = json.loads(aoi.geom.geojson)
+            aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
             aoi_arr.append(aoi_geojson)
-        # vec = gpd.read_file(os.path.join(config['DATA_DIR'], 'aois/peru/peru_pa.shp'))
-        # print(type(vec))
-        # from django.core.serializers import serialize
         json_obj["data_pa"] = aoi_arr
-        # print(type(  json_obj["data_pa"]  ))
     except Exception as e:
         print(e)
-        json_obj["data_pa"] = ""
+        json_obj["data_pa"] = []
     return render(request, 'scap/map.html', context={'shp_obj': json_obj, 'pilot_countries': pilot_countries,
+                                                     'latitude': lat_long[0], 'longitude': lat_long[1],
                                                      'zoom_level': zoom_level, 'lat_long': lat_long})
 
 
@@ -116,6 +113,7 @@ def protected_aois(request, aoi):
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
                            'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
                            'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                           'latitude': pc.latitude, 'longitude': pc.longitude, 'zoom_level': pc.zoom_level,
                            'country_name': pc_name, 'shp_obj': json_obj})
 
 
