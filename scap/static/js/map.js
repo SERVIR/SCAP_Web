@@ -98,44 +98,48 @@ window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
 }
 
 function onEachFeature(feature, layer) {
-    //bind click
-    layer.on({
-        click: whenClicked
-    });
 
-    layer.on('mouseover', function (e) {
-        console.log(e.target)
-        console.log(e.target.feature.geometry.properties)
-
-        var name = e.target.feature.geometry.properties.name;
-        var popupText = name
-        var tooltipText = "";
-        layer.bindPopup(popupText, {
-            closeButton: false
+        //bind click
+        layer.on({
+            click: whenClicked
         });
-        layer.bindTooltip(tooltipText);
-        layer.openPopup();
-        this.getTooltip().setOpacity(0);
-        layer.setStyle({
-            weight: 2,
-            opacity: 1,
-            color: 'yellow',  //Outline color
-            fillOpacity: 0.4,
-        })
 
-        layer.on('mouseover', function () {
-            this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+        layer.on('mouseover', function (e) {
+
+
+                 var name = e.target.feature.geometry.properties.name;
+
+
+            var popupText = name;
+            var tooltipText = "";
+            layer.bindPopup(popupText, {
+                closeButton: false
+            });
+            layer.bindTooltip(tooltipText);
+            layer.openPopup();
+            this.getTooltip().setOpacity(0);
+            layer.setStyle({
+                weight: 2,
+                opacity: 1,
+                color: 'yellow',  //Outline color
+                fillOpacity: 0.4,
+            })
+
+            layer.on('mouseover', function () {
+                this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+            });
+
         });
-    });
-    layer.on('mouseout', function (e) {
-        layer.closePopup();
-        layer.setStyle({
-            weight: 2,
-            opacity: 1,
-            color: 'cyan',  //Outline color
-            fillOpacity: 0.4,
-        })
-    });
+        layer.on('mouseout', function (e) {
+            layer.closePopup();
+            layer.setStyle({
+                weight: 2,
+                opacity: 1,
+                color: 'cyan',  //Outline color
+                fillOpacity: 0.4,
+            })
+        });
+
 }
 function  redraw_based_on_year() {
     document.getElementById("loading_spinner_map").style.display = "block";
@@ -265,7 +269,7 @@ function redraw_map_layers() {
             color: 'cyan',  //Outline color
             fillOpacity: 0.4,
         },
-        onEachFeature: onEachFeature,
+         onEachFeature: onEachFeature,
         pane: 'left'
     });
     aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
@@ -423,8 +427,8 @@ function init_map() {
         "Gray": darkGrayLayer,
         "OpenTopo": OpenTopoMap,
         "Streets": streets,
-        "Dark Map": osm1,
-        "Keep Default": satellite
+        "Satellite": satellite,
+        "Keep Default": darkmap
 
     };
 
@@ -443,7 +447,7 @@ map.createPane('left');
     map.createPane('right');
 
     map.zoomControl.setPosition('topleft');
-    satellite.addTo(map);
+    darkmap.addTo(map);
 
     var layerControl = L.control.layers(baseMaps, null, {position: 'bottomleft'}).addTo(map);
 

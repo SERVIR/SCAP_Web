@@ -65,6 +65,7 @@
 <script>
    var shp_obj = {{ shp_obj|safe }};
 
+
 </script>
 <label id="lat_from_db" hidden>{{ latitude }}</label>
 <label id="lon_from_db" hidden>{{ longitude }}</label>
@@ -82,12 +83,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="../#callstoaction">Actions</a></li>
-                <li class="nav-item"><a class="nav-link" href="../#pilotcountry">Pilot Countries</a></li>
-                <li class="nav-item"><a class="nav-link" href="../#services">Datasets</a></li>
-                <li class="nav-item"><a class="nav-link" href="../#about">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="../#team">Team</a></li>
-                <li class="nav-item"><a class="nav-link" href="../#contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#pilotcountry">Pilot Countries</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#services">Datasets</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#team">Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="../../#contact">Contact</a></li>
                 {% if user.is_authenticated %}
 
                     <li class="nav-item dropdown">

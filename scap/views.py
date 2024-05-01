@@ -39,8 +39,8 @@ def home(request):
 def map(request, country=0):
     json_obj = {}
     aoi_arr = []
-    zoom_level = 8
-    lat_long = [-9.19, -75.0152]
+    zoom_level = 3
+    lat_long = [44, 10]
     pc = PilotCountry.objects.filter(id=country).values()
     for pilot in pc:
         zoom_level = pilot['zoom_level']
@@ -49,41 +49,47 @@ def map(request, country=0):
     pilot_countries = PilotCountry.objects.all().order_by('country_name')
 
     try:
-        aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
-        aoi_arr = []
-        for aoi in aois:
-            aoi_geojson = json.loads(aoi.geom.geojson)
-            aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
-            aoi_arr.append(aoi_geojson)
-        json_obj["data_pa"] = aoi_arr
+        if len(pc) > 0:
+            aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
+            aoi_arr = []
+            for aoi in aois:
+                aoi_geojson = json.loads(aoi.geom.geojson)
+                aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
+                aoi_arr.append(aoi_geojson)
+            json_obj["data_pa"] = aoi_arr
+        else:
+            json_obj["data_pa"] = []
     except Exception as e:
         print(e)
         json_obj["data_pa"] = []
     return render(request, 'scap/map.html', context={'shp_obj': json_obj, 'pilot_countries': pilot_countries,
                                                      'latitude': lat_long[0], 'longitude': lat_long[1],
-                                                     'zoom_level': zoom_level, 'lat_long': lat_long})
+                                                     'zoom_level': zoom_level, 'lat_long': lat_long,'region':''})
 
 
 def add_new_collection(request):
     return render(request, 'scap/add_new_collection.html')
 
 
-def pilot_country(request, country=1):
+def pilot_country(request, country=0):
     json_obj = {}
     try:
         pc = PilotCountry.objects.filter(aoi_polygon__id=country).values()
-        aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
-        aoi_arr = []
-        for aoi in aois:
-            aoi_geojson = json.loads(aoi.geom.geojson)
-            aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
-            aoi_arr.append(aoi_geojson)
-        json_obj["data_pa"] = aoi_arr
+        if len(pc) > 0:
+            aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
+            aoi_arr = []
+            for aoi in aois:
+                aoi_geojson = json.loads(aoi.geom.geojson)
+                aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
+                aoi_arr.append(aoi_geojson)
+            json_obj["data_pa"] = aoi_arr
+        else:
+            json_obj["data_pa"] = []
     except:
-        json_obj = {}
-    pa = PilotCountry.objects.get(aoi_polygon__id=country)
+        json_obj["data_pa"] = []
 
     try:
+        pa = PilotCountry.objects.get(aoi_polygon__id=country)
         pa_name = pa.country_name
     except:
         pa_name = "Peru"
@@ -95,13 +101,24 @@ def pilot_country(request, country=1):
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
-                           'shp_obj': json_obj,'country':country})
+                           'shp_obj': json_obj, 'country': pa.id,'region':''})
 
 
 def protected_aois(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
+    df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
+    df["lon"] = df["geometry"].centroid.x
+    df["lat"] = df["geometry"].centroid.y
+    try:
+        aoi_geojson = json.loads(pa.geom.geojson)
+        aoi_geojson['properties'] = {'name': pa_name, 'ISO3': pa.iso3, 'desig_eng': pa.desig_eng}
+
+        json_obj["data_pa"] = [aoi_geojson]
+    except:
+        json_obj["data_pa"] = []
+
     pc = PilotCountry.objects.get(country_code=pa.iso3)
     pc_name = pc.country_name
     country_id = pc.aoi_polygon.id
@@ -113,8 +130,9 @@ def protected_aois(request, aoi):
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
                            'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
                            'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
-                           'latitude': pc.latitude, 'longitude': pc.longitude, 'zoom_level': pc.zoom_level,
-                           'country_name': pc_name, 'shp_obj': json_obj})
+                           'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
+                           'zoom_level': 10,
+                           'country_name': pc_name, 'shp_obj': json_obj,'region':pa_name})
 
 
 def updateColl(request, coll_name):
@@ -327,7 +345,7 @@ class EditForestCoverCollection(UpdateView):
         context = super(EditForestCoverCollection, self).get_context_data(**kwargs)
 
         if self.request.POST:
-            context['form'] = ForestCoverCollectionForm(self.request.POST,self.request.FILES, instance=self.object)
+            context['form'] = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
             context['owner'] = User.objects.get(username=self.request.user).id
 
             # filename = self.request.FILES['boundary_file'].name
@@ -343,7 +361,7 @@ class EditForestCoverCollection(UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = ForestCoverCollectionForm(self.request.POST,self.request.FILES, instance=self.object)
+        form = ForestCoverCollectionForm(self.request.POST, self.request.FILES, instance=self.object)
         form.instance.owner = User.objects.get(username=self.request.user)
         if form.is_valid():
             return self.form_valid(form)
@@ -377,7 +395,7 @@ class EditAGBCollection(UpdateView):
 
             filename = self.request.FILES['boundary_file'].name
             context['boundary_file'] = filename.split('/')[-1]
-            source_filename=self.request.FILES['source_file'].name
+            source_filename = self.request.FILES['source_file'].name
             context['source_file'] = source_filename.split('/')[-1]
         else:
             context['form'] = AGBCollectionForm(instance=self.object)
