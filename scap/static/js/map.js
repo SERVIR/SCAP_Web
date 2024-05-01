@@ -431,7 +431,9 @@ function init_map() {
         "Keep Default": darkmap
 
     };
-
+var overlays = {
+    'Watermask': watermaskLayer
+};
      if(document.getElementById("lat_from_db")){
         pilot_center = [parseFloat(document.getElementById("lat_from_db").innerHTML), parseFloat(document.getElementById("lon_from_db").innerHTML)];
     }
@@ -448,8 +450,9 @@ map.createPane('left');
 
     map.zoomControl.setPosition('topleft');
     darkmap.addTo(map);
+    watermaskLayer.addTo(map);
 
-    var layerControl = L.control.layers(baseMaps, null, {position: 'bottomleft'}).addTo(map);
+    var layerControl = L.control.layers(baseMaps, overlays, {position: 'bottomleft'}).addTo(map);
 
     var editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
@@ -493,12 +496,6 @@ map.createPane('left');
     }, 'Info').addTo(map);
 
 
-    //add watermask layer on  basemap
-    var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
-        layers: 's-cap:watermask_2',
-        format: 'image/png',
-        transparent: true
-    }).addTo(map);
 
     // Add the Search Control to the map
     map.addControl(new GeoSearch.GeoSearchControl({
@@ -557,6 +554,7 @@ function add_basemap(map_name) {
 //clicked on modal to select country
 function zoomtoArea(id){
     if (id!==0) {
+        console.log(id)
         window.location = window.location.origin + "/map/" + id + "/";
         $('#country_selection_modal').modal('hide');
     }

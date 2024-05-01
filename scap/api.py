@@ -318,10 +318,11 @@ def fetch_carbon_charts(pa_name, owner, container):
     lcs = []
     agbs = []
     try:
-        df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
+        df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
         lcs = df_lc.to_dict('records')
-        df_agb = pd.DataFrame((AGBCollection.objects.filter(owner=owner).values()))  # Get the AGB dataset data
+        df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
         agbs = df_agb.to_dict('records')
+
         df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
         if df.empty:
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
@@ -345,10 +346,12 @@ def fetch_carbon_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts(pa_name, owner, container):
     df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
-    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
+    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.all().values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
-        chart_fc = None
+        chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
+                             xticks=[],
+                             title='Change in Forest Cover: ' + pa_name, )
 
         return chart_fc, lcs_defor
 
@@ -367,7 +370,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
 def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
-    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
+    df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.all().values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
@@ -377,8 +380,8 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
         return chart_fc, lcs_defor
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
     # df_defor["TotalArea"] = df_defor["initial_forest_area"] + df_defor["NFC"]
-    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
-    # df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
+    # df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
+    df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
     # print(df_defor)
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor1 = pd.pivot_table(df_defor, values='NFC', columns=['fc_index'],

@@ -100,6 +100,11 @@ var darkmap = L.tileLayer(' http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.
     maxZoom: 19,
     attribution: '© OpenStreetMap'
 });
+   var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
+        layers: 's-cap:watermask_2',
+        format: 'image/png',
+        transparent: true,
+    });
 
 
     // L.tileLayer('https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer');

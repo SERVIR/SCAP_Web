@@ -74,7 +74,7 @@ def add_new_collection(request):
 def pilot_country(request, country=0):
     json_obj = {}
     try:
-        pc = PilotCountry.objects.filter(aoi_polygon__id=country).values()
+        pc = PilotCountry.objects.filter(id=country).values()
         if len(pc) > 0:
             aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
             aoi_arr = []
@@ -88,14 +88,13 @@ def pilot_country(request, country=0):
     except:
         json_obj["data_pa"] = []
 
-    try:
-        pa = PilotCountry.objects.get(aoi_polygon__id=country)
-        pa_name = pa.country_name
-    except:
-        pa_name = "Peru"
+
+    pa = PilotCountry.objects.get(id=country)
+    aoi= AOIFeature.objects.get(id=pa.aoi_polygon.id)
+    pa_name = aoi.name
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
-    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user.id, 'container')
+    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user.id, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
@@ -121,10 +120,10 @@ def protected_aois(request, aoi):
 
     pc = PilotCountry.objects.get(country_code=pa.iso3)
     pc_name = pc.country_name
-    country_id = pc.aoi_polygon.id
+    country_id = pc.id
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
-    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user.id, 'emissions_chart_pa')
+    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user.id, 'container_fcpa')
     return render(request, 'scap/protected_area.html',
                   context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
