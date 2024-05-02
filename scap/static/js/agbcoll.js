@@ -94,6 +94,7 @@ function check_progress_agb(){
            },
            success: function (data) {
                if (data.error.length === 0) {
+                   stage_for_processing();
                    location.href = window.location.protocol + "//" + location.host + '/agb-collections/';
                    console.log("complete")
                } else {

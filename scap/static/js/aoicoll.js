@@ -65,8 +65,9 @@ function check_progress_aoi(){
            },
            success: function (data) {
                if (data.error.length === 0) {
+                   stage_for_processing();
                    location.href = window.location.protocol + "//" + location.host + '/aoi-collections/';
-                   console.log("complete")
+
                } else {
                    alert(data.error)
                }

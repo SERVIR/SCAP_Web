@@ -93,14 +93,14 @@ def pilot_country(request, country=0):
     aoi= AOIFeature.objects.get(id=pa.aoi_polygon.id)
     pa_name = aoi.name
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user.id, 'container')
-    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user.id, 'container1')
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
+    chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
-                           'shp_obj': json_obj, 'country': pa.id,'region':''})
+                           'shp_obj': json_obj, 'country': pa.id,'region':'','global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
 
 
 def protected_aois(request, aoi):
@@ -122,8 +122,8 @@ def protected_aois(request, aoi):
     pc_name = pc.country_name
     country_id = pc.id
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user.id, 'emissions_chart_pa')
-    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user.id, 'container_fcpa')
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
+    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     return render(request, 'scap/protected_area.html',
                   context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,
@@ -131,7 +131,7 @@ def protected_aois(request, aoi):
                            'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10,
-                           'country_name': pc_name, 'shp_obj': json_obj,'region':pa_name})
+                           'country_name': pc_name, 'shp_obj': json_obj,'region':pa_name,'global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
 
 
 def updateColl(request, coll_name):

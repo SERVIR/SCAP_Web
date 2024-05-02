@@ -7,14 +7,40 @@ let comparison_control;
 let aoi_layer_left;
 let aoi_layer_right;
 let pilot_center=[-8.60436, -74.73243];
-
+let map_modal_action="deforestation_targets";
 function add_option_by_id(selector, value, label) {
     let opt = document.createElement('option');
     opt.value = value;
     opt.innerHTML = label;
     selector.appendChild(opt);
 }
+function getAllSiblings(elem, filter) {
+    var sibs = [];
+    elem = elem.parentNode.firstChild;
+    do {
+        if (elem.nodeType === 3) continue; // text node
+        if (!filter || filter(elem)) sibs.push(elem);
+    } while (elem = elem.nextSibling)
+    return sibs;
+}
+function exampleFilter(elem) {
+    switch (elem.nodeName.toUpperCase()) {
+        case 'DIV':
+            return true;
+        default:
+            return false;
+    }
+}
+function set_map_action(anchor,text) {
+    var div = anchor.parentNode;
+    siblings = getAllSiblings(div, exampleFilter);
+    for (var i = 0; i < siblings.length; i++) {
 
+        siblings[i].classList.remove(('map-modal-action'));
+    }
+    div.classList.add('map-modal-action');
+    map_modal_action=text;
+}
 
 function fill_years_selector(years) {
     let select = document.getElementById('selected_year');
@@ -423,35 +449,39 @@ function get_available_years() {
 }
 
 function init_map() {
+    // list of basemaps
     var baseMaps = {
         "Gray": darkGrayLayer,
         "OpenTopo": OpenTopoMap,
         "Streets": streets,
         "Satellite": satellite,
         "Keep Default": darkmap
-
     };
-var overlays = {
-    'Watermask': watermaskLayer
-};
-     if(document.getElementById("lat_from_db")){
+
+    // list of overlays
+    var overlays = {
+        'Watermask': watermaskLayer
+    };
+    //get lat, lon and zoom from PilotCountry db object
+    if (document.getElementById("lat_from_db")) {
         pilot_center = [parseFloat(document.getElementById("lat_from_db").innerHTML), parseFloat(document.getElementById("lon_from_db").innerHTML)];
     }
-    var zoom=10;
-   if(document.getElementById("zoom_from_db")){
-       zoom = parseFloat(document.getElementById("zoom_from_db").innerHTML);
-   }
+    var zoom = 10;
+    if (document.getElementById("zoom_from_db")) {
+        zoom = parseFloat(document.getElementById("zoom_from_db").innerHTML);
+    }
+    // load the leaflet map
     map = L.map('map_chart', {
         fullscreenControl: true, center: pilot_center, zoom: zoom
     });
-        //basemap
-map.createPane('left');
+    //creates panes with labels
+    map.createPane('left');
     map.createPane('right');
-
     map.zoomControl.setPosition('topleft');
+    //add the default layers to show
     darkmap.addTo(map);
     watermaskLayer.addTo(map);
-
+    //add tje
     var layerControl = L.control.layers(baseMaps, overlays, {position: 'bottomleft'}).addTo(map);
 
     var editableLayers = new L.FeatureGroup();
@@ -494,7 +524,6 @@ map.createPane('left');
     L.easyButton('fa-info', function (btn, map) {
         $('#info_modal').modal('show');
     }, 'Info').addTo(map);
-
 
 
     // Add the Search Control to the map
@@ -560,15 +589,16 @@ function zoomtoArea(id){
     }
 }
 
+// Starts here
 $(function () {
     init_map();
     var id = window.location.pathname.split('/')[2];
-    // if a country is selected, zoom to that country on loading the map
+    // if action and country are selected, zoom to that country and load the map layers
     if (id <= 0) {
         $('#country_selection_modal').modal('show');
     } else {
         try {
-            map.setView([document.getElementById('lat_from_db').innerHTML,document.getElementById("lon_from_db").innerHTML], document.getElementById("zoom_from_db").innerHTML);
+            map.setView([document.getElementById('lat_from_db').innerHTML, document.getElementById("lon_from_db").innerHTML], document.getElementById("zoom_from_db").innerHTML);
 
         } catch (e) {
             console.log(e)

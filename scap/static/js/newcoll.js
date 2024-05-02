@@ -217,11 +217,14 @@ function storeTiffs() {
                         if(percentComplete===100.00){
                             document.getElementById("fc_progress_parent").style.display="none";
                             document.getElementById("stage_processing").classList.remove("disabled");
+                            document.getElementById("go_to_list").classList.remove("disabled");
 
                         }
                         else{
                             document.getElementById("fc_progress_parent").style.display="flex";
                             document.getElementById("stage_processing").classList.add("disabled");
+
+                                                        document.getElementById("go_to_list").classList.add("disabled");
 
                         }
                         // You can update a progress bar or do anything else with the progress information here
@@ -496,19 +499,18 @@ function addFields(user,opn) {
                 var td3 = document.createElement('td');
                 var td4 = document.createElement('td');
                 var td5 = document.createElement('td');
-     var td6 = document.createElement('td');
-                    var td7 = document.createElement('td');
+                var td6 = document.createElement('td');
+                var td7 = document.createElement('td');
                 var text2 = document.createTextNode($('#tiff_year').val());
                 var text3 = document.createTextNode($("#tiff_new_file").prop('files')[0].name);
-                text3.id='fc_'+user+'_'+$('#current_coll').html()+'_'+year+'_1ha';
+                text3.id = 'fc_' + user + '_' + $('#current_coll').html() + '_' + year + '_1ha';
                 console.log(data.error);
-                   if(data.error!==undefined) {
-                       doi_url = $('#tiff_doi').val();
-                       td4.appendChild(document.createTextNode(doi_url));
-                   }
-                else {
+                if (data.error !== undefined) {
+                    doi_url = $('#tiff_doi').val();
+                    td4.appendChild(document.createTextNode(doi_url));
+                } else {
                     console.log("in else")
-                    if(data.url.length>0) {
+                    if (data.url.length > 0) {
                         doi_url = data.url;
                         var doi = document.createElement('a');
                         var link = document.createTextNode('Link');
@@ -517,11 +519,10 @@ function addFields(user,opn) {
                         doi.target = "_blank";
                         doi.appendChild(link);
                         td4.appendChild(doi);
-                    }
-                    else{
+                    } else {
                         td4.appendChild(document.createTextNode(''));
                     }
-                   }
+                }
 
 
                 if (metadata_link.length > 0) {
@@ -533,53 +534,51 @@ function addFields(user,opn) {
                     td5.appendChild(metadata);
 
                 } else {
-                    td5.appendChild( document.createTextNode(''));
+                    td5.appendChild(document.createTextNode(''));
 
                 }
                 td2.appendChild(text2);
 
                 td3.appendChild(text3);
-                    var editButton = document.createElement('button');
-editButton.textContent = 'Edit';
-editButton.type="button";
-editButton.classList="btn btn-primary";
-editButton.onclick=function (){
-    var row=this.parentElement.parentElement;
+                var editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.type = "button";
+                editButton.classList = "btn btn-primary";
+                editButton.onclick = function () {
+                    var row = this.parentElement.parentElement;
 
 
-populateTiffForm(row);
-};
-                    var deleteButton = document.createElement('button');
-deleteButton.textContent = 'Delete';
-deleteButton.type="button";
-deleteButton.classList="btn btn-danger";
-td6.appendChild(editButton);
-td7.appendChild(deleteButton);
-deleteButton.onclick=function (){
-    var row=this.parentElement.parentElement;
+                    populateTiffForm(row);
+                };
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.type = "button";
+                deleteButton.classList = "btn btn-danger";
+                td6.appendChild(editButton);
+                td7.appendChild(deleteButton);
+                deleteButton.onclick = function () {
+                    var row = this.parentElement.parentElement;
 
-var id=parseInt(window.location.pathname.split('/')[3]);
-deleteTiffFile(id,row);
+                    var id = parseInt(window.location.pathname.split('/')[3]);
+                    deleteTiffFile(id, row);
 
-};
+                };
 
                 tr.appendChild(td2);
                 tr.appendChild(td3);
                 tr.appendChild(td4);
                 tr.appendChild(td5);
-       tr.appendChild(td6);
-                    tr.appendChild(td7);
-                    // if (tiff_doi) {
+                tr.appendChild(td6);
+                tr.appendChild(td7);
+                // if (tiff_doi) {
 
-                      storeTiffs();
+                storeTiffs();
 
-                             tiff_table.appendChild(tr);
-                                                      clear_fields();
-
-
-                    // }
+                tiff_table.appendChild(tr);
+                clear_fields();
 
 
+                // }
 
 
                 if (tbodyRowCount > 0) {
@@ -602,11 +601,10 @@ deleteTiffFile(id,row);
                 document.getElementById("no-records").remove();
             document.getElementById("stage_processing").classList.remove("disabled");
 
+
         } else {
             $("#tifffTableBody").html('<tr id="no-records" class="text-center"><td colspan="6">No tiff files added yet.</td></tr>');
             document.getElementById("stage_processing").classList.add("disabled");
         }
     }
-
-
 }
