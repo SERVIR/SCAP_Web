@@ -89,7 +89,7 @@ section {
     vertical-align: top;
     box-sizing: border-box;
     white-space: normal;
-    
+
     figure {
         display: flex;
         margin: 0;
@@ -104,6 +104,7 @@ section {
         display: block;
         flex: 1 1 auto;
         object-fit: cover;
+
     }
     
   figcaption {
@@ -130,7 +131,7 @@ section {
     padding: 0;
     margin: 0;
     display: flex;
-    
+
     margin: 0 -10px;
     
     .carousel__slides + & {
@@ -142,6 +143,8 @@ section {
         max-width: calc((100% / 6) - 20px);  
         margin: 0 10px;
         transition: all 300ms ease-in-out;
+                border-radius: 50%;
+
     }
     
     label {
@@ -156,6 +159,8 @@ section {
             img {
                 box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.25);
                 transition: all 300ms ease-in-out;
+                    border-radius: 50%;
+
             }
         }
     }
@@ -165,5 +170,7 @@ section {
         width: 100%;
         height: 100%;
         object-fit: cover;
+                border-radius: 50%;
+
     }
 }
