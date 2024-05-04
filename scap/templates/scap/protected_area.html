@@ -80,7 +80,8 @@
         var lc_colors = {{colors|safe}};
 
      var shp_obj = {{ shp_obj|safe }};
-
+   var fc_colls={{fc_colls|safe}};
+   var agb_colls=undefined;
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -189,6 +190,9 @@
                         </select>
                     </div>
                 </div>
+                  <select name="selected_region" id="selected_agb" class="form-control"
+                        style="display: none">
+                </select>
             </div>
 
             <div id="comparison_table">

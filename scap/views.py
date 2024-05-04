@@ -16,7 +16,7 @@ from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_
                       get_available_colors, generate_geodjango_objects_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
 from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
-                         PilotCountry, AOIFeature, CurrentTask)
+                         PilotCountry, AOIFeature, CurrentTask,ForestCoverStatistic)
 
 from scap.async_tasks import process_updated_collection
 import geopandas as gpd
@@ -38,9 +38,22 @@ def home(request):
 
 def map(request, country=0):
     json_obj = {}
-    aoi_arr = []
-    zoom_level = 3
-    lat_long = [44, 10]
+    fc_arr = []
+    cs_arr=[]
+    fc_colls=[]
+    agb_colls=[]
+    zoom_level = 3 #global extent center
+    lat_long = [44, 10] #global extent center
+    fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
+    for fc in fc_collection:
+        fc_files=ForestCoverFile.objects.filter(collection=fc).values('year')
+        fc_years=[]
+        for fc_yr in fc_files:
+            fc_years.append(fc_yr['year'])
+        fc_colls.append({'name':str(fc),'years':fc_years})
+    agb_collection = AGBCollection.objects.filter(access_level='Public').values()
+    for agb in agb_collection:
+        agb_colls.append({'name':agb['name'],'years':[agb['year']]})
     pc = PilotCountry.objects.filter(id=country).values()
     for pilot in pc:
         zoom_level = pilot['zoom_level']
@@ -64,7 +77,8 @@ def map(request, country=0):
         json_obj["data_pa"] = []
     return render(request, 'scap/map.html', context={'shp_obj': json_obj, 'pilot_countries': pilot_countries,
                                                      'latitude': lat_long[0], 'longitude': lat_long[1],
-                                                     'zoom_level': zoom_level, 'lat_long': lat_long,'region':''})
+                                                     'zoom_level': zoom_level, 'lat_long': lat_long,'region':'',
+                                                    'fc_colls':fc_colls,'agb_colls':agb_colls})
 
 
 def add_new_collection(request):
@@ -74,6 +88,15 @@ def add_new_collection(request):
 def pilot_country(request, country=0):
     json_obj = {}
     try:
+        fc_colls=[]
+        fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
+
+        for fc in fc_collection:
+            fc_files = ForestCoverFile.objects.filter(collection=fc).values('year')
+            fc_years = []
+            for fc_yr in fc_files:
+                fc_years.append(fc_yr['year'])
+            fc_colls.append({'name': str(fc), 'years': fc_years})
         pc = PilotCountry.objects.filter(id=country).values()
         if len(pc) > 0:
             aois = AOIFeature.objects.filter(iso3=pc[0]['country_code'])
@@ -100,7 +123,7 @@ def pilot_country(request, country=0):
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
-                           'shp_obj': json_obj, 'country': pa.id,'region':'','global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
+                           'shp_obj': json_obj, 'country': pa.id,'region':'', 'fc_colls':fc_colls,'global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
 
 
 def protected_aois(request, aoi):
@@ -110,7 +133,17 @@ def protected_aois(request, aoi):
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
     df["lon"] = df["geometry"].centroid.x
     df["lat"] = df["geometry"].centroid.y
+    fc_colls = []
+    fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
+
+    for fc in fc_collection:
+        fc_files = ForestCoverFile.objects.filter(collection=fc).values('year')
+        fc_years = []
+        for fc_yr in fc_files:
+            fc_years.append(fc_yr['year'])
+        fc_colls.append({'name': str(fc), 'years': fc_years})
     try:
+
         aoi_geojson = json.loads(pa.geom.geojson)
         aoi_geojson['properties'] = {'name': pa_name, 'ISO3': pa.iso3, 'desig_eng': pa.desig_eng}
 
@@ -131,7 +164,7 @@ def protected_aois(request, aoi):
                            'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10,
-                           'country_name': pc_name, 'shp_obj': json_obj,'region':pa_name,'global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
+                           'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls':fc_colls,'region':pa_name,'global_list':['CCI','ESRI','JAXA','MODIS','WorldCover','GFW']})
 
 
 def updateColl(request, coll_name):

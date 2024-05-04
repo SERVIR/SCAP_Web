@@ -8,9 +8,13 @@ let aoi_layer_left;
 let aoi_layer_right;
 let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
-function add_option_by_id(selector, value, label) {
+function add_option_by_id(selector, value, label,defalt) {
     let opt = document.createElement('option');
     opt.value = value;
+    if (value==defalt)
+    {
+        opt.selected=true;
+    }
     opt.innerHTML = label;
     selector.appendChild(opt);
 }
@@ -39,15 +43,48 @@ function set_map_action(anchor,text) {
         siblings[i].classList.remove(('map-modal-action'));
     }
     div.classList.add('map-modal-action');
+    localStorage.setItem('map_modal_action', text);
     map_modal_action=text;
 }
+function fill_dataset_selector(fc_data,agb_data) {
+    let select = document.getElementById('selected_region');
+    select.innerHTML = "";
+    for (let i = 0; i < fc_data.length; i++) {
+        let ds = fc_data[i];
+        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'nlcms');
+    }
+    if (agb_data != null) {
+        select = document.getElementById('selected_agb');
+        select.innerHTML = "";
+        for (let i = 0; i < agb_data.length; i++) {
+            let ds = agb_data[i];
+            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'spawn-2010');
+        }
+    }
+}
 
+function fill_comparison_dataset_selector(fc_data,agb_data){
+  let select = document.getElementById('comparing_region');
+    select.innerHTML = "";
+    for (let i = 0; i < fc_data.length; i++) {
+        let ds = fc_data[i];
+        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds,'nlcms');
+    }
+    if(agb_data!=null) {
+        select = document.getElementById('comparing_agb');
+        select.innerHTML = "";
+        for (let i = 0; i < agb_data.length; i++) {
+            let ds = agb_data[i];
+            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'spawn-2010');
+        }
+    }
+}
 function fill_years_selector(years) {
     let select = document.getElementById('selected_year');
     select.innerHTML = "";
     for (let i = 0; i < years.length; i++) {
         let year = years[i];
-        add_option_by_id(select, year, year);
+        add_option_by_id(select, year, year,years[0]);
     }
 }
 
@@ -57,7 +94,7 @@ function fill_comparison_years_selector(years) {
     select.innerHTML = "";
     for (let i = 0; i < years.length; i++) {
         let year = years[i];
-        add_option_by_id(select, year, year);
+        add_option_by_id(select, year, year,years[years.length-1]);
     }
 }
 
@@ -170,6 +207,20 @@ function onEachFeature(feature, layer) {
 function  redraw_based_on_year() {
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
+    var thredds_dir="fc";
+   map_modal_action=localStorage.getItem('map_modal_action');
+
+    if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
+        thredds_dir="fc";
+
+    }
+    //carbon stock or emissions
+    else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions') {
+        thredds_dir = map_modal_action;
+
+
+    }
+
     aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
         style: {
             weight: 2,
@@ -190,73 +241,107 @@ function  redraw_based_on_year() {
         onEachFeature: onEachFeature,
         pane: 'right'
     });
+    var hide_spinner_aoi=false;
+    var hide_spinner_l1, hide_spinner_l1, hide_spinner_l1 =false;
 
     aoi_layer_left.on('add', (e) => {
-        document.getElementById("loading_spinner_map").style.display = "none";
+        // document.getElementById("loading_spinner_map").style.display = "none";
+        hide_spinner_aoi=true;
     });
     aoi_layer_right.on('add', (e) => {
-        document.getElementById("loading_spinner_map").style.display = "none";
+        // document.getElementById("loading_spinner_map").style.display = "none";
+        hide_spinner_aoi=true;
     });
     let selected_year = document.getElementById('selected_year').value;
     let comparison_year = document.getElementById('comparison_year').value;
     let selected_dataset_left = document.getElementById('selected_region').value;
     let selected_dataset_right = document.getElementById('comparing_region').value;
-    primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            transparent: true,
-            styles: 'boxfill/crimsonbluegreen',
-            pane: 'left'
-        });
-
-    primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            transparent: true,
-            styles: 'boxfill/cwg',
-            pane: 'left'
-        })
-
-    secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            styles: 'boxfill/cwg',
-            transparent: true,
-            pane: 'right'
-        })
-    var style = 'boxfill/maize';
-    if (selected_dataset_left === selected_dataset_right) {
-        style = 'boxfill/redblue';
+    let selected_dataset_left_agb ="";
+    let selected_dataset_right_agb="";
+    if(agb_colls!=undefined) {
+         selected_dataset_left_agb = document.getElementById('selected_agb').value;
+         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
     }
-    secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
-        {
-            layers: ["forest_cover"],
-            format: "image/png",
-            colorscalerange: "0.5,1",
-            abovemaxcolor: 'transparent',
-            belowmincolor: 'transparent',
-            styles: style,
-            transparent: true,
-            pane: 'right'
-        });
-    // primary_underlay_layer.addTo(map);
-    primary_overlay_layer.addTo(map);
-    secondary_underlay_layer.addTo(map);
-    secondary_overlay_layer.addTo(map);
+      var base_thredds="https://thredds.servirglobal.net/thredds/wms/scap/public/"+thredds_dir+"/1";
+        var layer_name=(thredds_dir=="fc")?
+            "forest_cover":thredds_dir;
+
+        primary_overlay_url=(thredds_dir=="fc")?
+            `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
+            :
+                        `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`
+
+        primary_overlay_layer = L.tileLayer.wms(primary_overlay_url,
+            {
+                layers: [layer_name],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/crimsonbluegreen',
+                pane: 'left'
+            });
+        primary_underlay_url=(thredds_dir=="fc")?
+            `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
+            :
+                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`
+
+        primary_underlay_layer = L.tileLayer.wms(primary_underlay_url,
+            {
+                layers: [layer_name],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                transparent: true,
+                styles: 'boxfill/cwg',
+                pane: 'left'
+            })
+        secondary_overlay_url=(thredds_dir=="fc")?
+            `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
+            :
+                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`
+
+        secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
+            {
+                layers: [layer_name],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: 'boxfill/cwg',
+                transparent: true,
+                pane: 'right'
+            })
+        var style = 'boxfill/maize';
+        if (selected_dataset_left === selected_dataset_right) {
+            style = 'boxfill/redblue';
+        }
+             var  secondary_underlay_url=(thredds_dir=="fc")?
+            `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
+            :
+                        `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`
+
+        secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
+            {
+                layers: [layer_name],
+                format: "image/png",
+                colorscalerange: "0.5,1",
+                abovemaxcolor: 'transparent',
+                belowmincolor: 'transparent',
+                styles: style,
+                transparent: true,
+                pane: 'right'
+            })
+        // primary_underlay_layer.addTo(map);
+        primary_overlay_layer.addTo(map);
+        secondary_underlay_layer.addTo(map);
+        secondary_overlay_layer.addTo(map);
     aoi_layer_left.addTo(map);
     aoi_layer_right.addTo(map);
+          document.getElementById("loading_spinner_map").style.display = "none";
+
     comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
@@ -278,16 +363,7 @@ function  redraw_based_on_year() {
     });
 }
 
-function redraw_map_layers() {
-
-    document.getElementById("loading_spinner_map").style.display = "block";
-    clear_map_layers();
-
-    let years = get_years(document.getElementById('selected_region').value);
-    fill_years_selector(get_years_range(years[0], years[1]));
-    let c_years = get_years(document.getElementById('comparing_region').value);
-    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
-
+function add_aoi_polygons(shp_obj){
     aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
         style: {
             weight: 2,
@@ -308,28 +384,56 @@ function redraw_map_layers() {
         onEachFeature: onEachFeature,
         pane: 'right'
     });
-
-    aoi_layer_left.on('add', (e) => {
-        document.getElementById("loading_spinner_map").style.display = "none";
-    });
-
-    aoi_layer_right.on('add', (e) => {
-        document.getElementById("loading_spinner_map").style.display = "none";
-    });
     aoi_layer_left.addTo(map);
     aoi_layer_right.addTo(map);
-    // years and datasets
+}
+
+function add_thredds_wms_layers() {
+    var thredds_dir = "fc";
+    var layer_name = "forest_cover";
+    var base_thredds = "";
+    var primary_overlay_url = "";
+    var primary_underlay_url = "";
+    var secondary_overlay_url = "";
+    var secondary_underlay_url = "";
+    // years and datasets from dropdowns
     let selected_year = document.getElementById('selected_year').value;
     let comparison_year = document.getElementById('comparison_year').value;
     let selected_dataset_left = document.getElementById('selected_region').value;
     let selected_dataset_right = document.getElementById('comparing_region').value;
+    let selected_dataset_left_agb ="";
+    let selected_dataset_right_agb="";
+    if(agb_colls!=undefined) {
+         selected_dataset_left_agb = document.getElementById('selected_agb').value;
+         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
+    }
+    if (map_modal_action == 'deforestation_targets' || map_modal_action == 'deforestation_netzero') {
+        thredds_dir = "fc";
+        layer_name = "forest_cover";
+        base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
 
-    //thredds forest cover data layers
+        primary_overlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
+        primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
+        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
+        secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
+    }
+    //carbon stock or emissions
+    else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {
+        thredds_dir = map_modal_action;
+        layer_name = thredds_dir;
+        base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
 
+        primary_overlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
+        primary_underlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`;
+        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`;
+
+        secondary_underlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
+    }
     try {
-        primary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+
+        primary_overlay_layer = L.tileLayer.wms(primary_overlay_url,
             {
-                layers: ["forest_cover"],
+                layers: [layer_name],
                 format: "image/png",
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
@@ -338,10 +442,9 @@ function redraw_map_layers() {
                 styles: 'boxfill/crimsonbluegreen',
                 pane: 'left'
             });
-
-        primary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        primary_underlay_layer = L.tileLayer.wms(primary_underlay_url,
             {
-                layers: ["forest_cover"],
+                layers: [layer_name],
                 format: "image/png",
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
@@ -350,10 +453,9 @@ function redraw_map_layers() {
                 styles: 'boxfill/cwg',
                 pane: 'left'
             })
-
-        secondary_overlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_right}/${selected_dataset_right}.${comparison_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+        secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
             {
-                layers: ["forest_cover"],
+                layers: [layer_name],
                 format: "image/png",
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
@@ -366,9 +468,10 @@ function redraw_map_layers() {
         if (selected_dataset_left === selected_dataset_right) {
             style = 'boxfill/redblue';
         }
-        secondary_underlay_layer = L.tileLayer.wms(`https://thredds.servirglobal.net/thredds/wms/scap/public/fc/${selected_dataset_left}/${selected_dataset_left}.${selected_year}0101T000000Z.global.1ha.yearly.nc4?service=WMS`,
+
+        secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
             {
-                layers: ["forest_cover"],
+                layers: [layer_name],
                 format: "image/png",
                 colorscalerange: "0.5,1",
                 abovemaxcolor: 'transparent',
@@ -382,16 +485,35 @@ function redraw_map_layers() {
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
         comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-
-    }
-    catch(e)
-    {
+    } catch (e) {
         console.log(e)
     }
+}
+    // aoi_layer_left.on('add', (e) => {
+    //     document.getElementById("loading_spinner_map").style.display = "none";
+    // });
+    //
+    // aoi_layer_right.on('add', (e) => {
+    //     document.getElementById("loading_spinner_map").style.display = "none";
+    // });
+function redraw_map_layers(map_modal_action) {
+    document.getElementById("loading_spinner_map").style.display = "block";
+    clear_map_layers();
 
+    let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+
+    fill_years_selector(years);
+    let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(c_years);
+
+
+    document.getElementById('selected_year').value = years[0];
+    document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+
+    add_aoi_polygons(shp_obj);
+    add_thredds_wms_layers();
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
-
     // display protected areas based on zoom level
     map.on("zoomend", function () {
         var zoomlevel = map.getZoom();
@@ -408,44 +530,84 @@ function redraw_map_layers() {
         }
         console.log("Current Zoom Level = " + zoomlevel);
     });
+    document.getElementById("loading_spinner_map").style.display = "none";
 }
-
-function get_years(ds) {
-    var json_obj = [{'ds': 'mapbiomas', 'start': 2000, 'end': 2021},
-        {'ds': 'cci', 'start': 2000, 'end': 2020},
-        {'ds': 'esri', 'start': 2017, 'end': 2021},
-        {'ds': 'jaxa', 'start': 2007, 'end': 2016},
-        {'ds': 'modis', 'start': 2001, 'end': 2022},
-        {'ds': 'worldcover', 'start': 2020, 'end': 2021},
-    ]
-    for (var i = 0; i < json_obj.length; i++) {
-        if (json_obj[i].ds === ds) {
-            return [json_obj[i].start, json_obj[i].end];
+function get_names_from_obj(obj){
+        if(obj===undefined)
+        return null;
+    let names=[];
+    for(var i=0;i<obj.length;i++){
+        names.push(obj[i].name);
+    }
+    return names;
+}
+function get_years_for_name(obj,name) {
+    let years = [];
+    var temp=[]
+    if (document.getElementById('selected_agb').style.display != 'none') {
+        years=[]
+        for (var i = 0; i < obj.length; i++) {
+            if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase()) {
+                temp = obj[i].years;
+                break;
+            }
+        }
+        for (var i = 0; i < agb_colls.length; i++) {
+            name=document.getElementById('selected_agb').value;
+            if (name.toLowerCase() === agb_colls[i].name.split(' ').join('-').toLowerCase()) {
+                agb_year=agb_colls[i].years[0];
+                break;
+            }
+        }
+        for (var x = 0; x < temp.length; x++) {
+            if (temp[x] < agb_year) {
+                continue;
+            } else {
+                years.push(temp[x]);
+            }
+        }
+    } else {
+        years = [];
+        for (var i = 0; i < obj.length; i++) {
+            if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase())
+                return obj[i].years.sort();
         }
     }
-}
 
-function get_years_range(start, end) {
-    var list = [];
-    for (var i = start; i <= end; i++) {
-        list.push(i);
+    return years.sort();
+}
+//first populate data in dropdowns
+function get_available_years(map_modal_action) {
+    //land cover
+    console.log(map_modal_action);
+    if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
+            fill_dataset_selector(get_names_from_obj(fc_colls), get_names_from_obj(agb_colls));
+            let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+            fill_years_selector(years);
+            fill_comparison_dataset_selector(get_names_from_obj(fc_colls), get_names_from_obj(agb_colls));
+            let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+            fill_comparison_years_selector(c_years);
+
+
+        document.getElementById('selected_year').value = years[0];
+        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
     }
-    return list
-}
+    //carbon stock or emissions
+    else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions'){
+        fill_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
+        let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+        fill_years_selector(years);
 
-function get_available_years() {
-    //left drop down
-    let years = get_years(document.getElementById('selected_region').value);
-    fill_years_selector(get_years_range(years[0], years[1]));
+        fill_comparison_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
+        let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+        fill_comparison_years_selector(c_years);
 
-    //right drop down
-    let c_years = get_years(document.getElementById('comparing_region').value);
-    fill_comparison_years_selector(get_years_range(c_years[0], c_years[1]));
+        document.getElementById('selected_year').value = years[0];
+        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+    }
 
-    document.getElementById('selected_year').value = years[0];
-    document.getElementById('comparison_year').value = c_years[1];
 
-    redraw_map_layers();
+     redraw_map_layers(map_modal_action);
 }
 
 function init_map() {
@@ -533,8 +695,8 @@ function init_map() {
         showPopup: false,
         autoClose: true
     }));
-
-    get_available_years();
+    map_modal_action=localStorage.getItem('map_modal_action');
+    get_available_years(map_modal_action);
 }
 
 
@@ -583,7 +745,6 @@ function add_basemap(map_name) {
 //clicked on modal to select country
 function zoomtoArea(id){
     if (id!==0) {
-        console.log(id)
         window.location = window.location.origin + "/map/" + id + "/";
         $('#country_selection_modal').modal('hide');
     }

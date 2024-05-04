@@ -84,6 +84,8 @@
 <body id="page-top">
 <script>
       var shp_obj = {{ shp_obj|safe }};
+         var fc_colls={{fc_colls|safe}};
+var agb_colls=undefined;
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -196,6 +198,7 @@ margin-right: 0;">
                         </select>
                     </div>
                 </div>
+                <select id="selected_agb" style="display: none"></select>
             </div>
 
             <div id="comparison_table">
