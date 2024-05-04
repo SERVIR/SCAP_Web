@@ -99,10 +99,10 @@ var agb_colls=undefined;
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#callstoaction">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url "home" %}#pilotcountry">Pilot Countries</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url "home" %}#services">Datasets</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "home" %}#about">History</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url "home" %}#team">Team</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url "home" %}#contact">Contact</a></li>
                 {% if user.is_authenticated %}
@@ -321,7 +321,7 @@ margin-right: 0;">
             <p class="card-text" style="margin-left: 10px">
                 This tool better demonstrates how estimates of forest cover change datasets, alone, differ by quantifying trends identified in the above data visualization tool. Interested in how well a region is trending towards net zero carbon emissions? Pay attention to trends in both the forest gain and forest loss.
             </p>
-            <a href="{% url "aoi_page" aoi=1218 %}" target="_blank" class="btn btn-primary w-25"
+            <a href="#" target="_blank" class="btn btn-primary w-25"
                style="margin-left: 10px">Explore
                 the protected areas inside the country</a>
 
@@ -360,16 +360,16 @@ margin-right: 0;">
 <!-- Clients-->
 <div class="py-5">
     <div class="logo-container">
-        <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
+            <div>
+            <a href="https://www.usaid.gov/"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
                               aria-label="USAID Logo"/></a>
         </div>
         <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
+            <a href="https://www.nasa.gov/"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
                               aria-label="NASA Logo"/></a>
         </div>
         <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
+            <a href="https://servirglobal.net/"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
                               aria-label="SERVIR Logo"/></a>
         </div>
         <!--

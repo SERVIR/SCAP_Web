@@ -36,10 +36,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#callstoaction">Actions</a></li>
+                <li class="nav-item"><a class="nav-link" href="#callstoaction">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pilotcountry">Pilot Countries</a></li>
                 <li class="nav-item"><a class="nav-link" href="#services">Datasets</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">History</a></li>
                 <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 {% if user.is_authenticated %}
@@ -73,8 +73,8 @@
     <div class="container">
         <div class="masthead-subheading">Quickly and Easily Estimate Carbon Emissions</div>
         <div class="masthead-heading text-uppercase">SERVIR Carbon Pilot</div>
-        <a class="btn btn-primary btn-xl text-uppercase m-3" href="#services">Show me the data!</a>
-        <a class="btn btn-primary btn-xl text-uppercase m-3" href="/map/0/">Explore the map!</a>
+        <a class="btn btn-primary btn-xl text-uppercase m-3" href="#services">Show me the data</a>
+        <a class="btn btn-primary btn-xl text-uppercase m-3" href="/map/0/">Explore the map</a>
     </div>
 </header>
 
@@ -82,8 +82,7 @@
 <section class="page-section" id="callstoaction">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">Start Here</h2>
-            <h3 class="section-subheading text-muted">With S-CAP you can:</h3>
+            <h2 class="section-heading text-uppercase">With S-CAP you can:</h2>
         </div>
         <div class="row text-center">
             <div class="col-md-4">
@@ -95,7 +94,7 @@
                         </span>
                     </div>
                 </a>
-                <h4 class="my-3">Monitor progress toward deforestation targets</h4>
+                <h4 class="my-3">Monitor deforestation</h4>
                 <p class="text-muted">Parties implementing REDD+ activities have set deforestation target’s within their region’s Forest Reference Emission Level Submissions. Through this tool, users can monitor progress towards these targets and determine the impact local decision making have on deforestation trends.</p>
             </div>
             <div class="col-md-4">
@@ -107,7 +106,7 @@
                         </span>
                     </div>
                 </a>
-                <h4 class="my-3">Monitor progress towards Net Zero deforestation</h4>
+                <h4 class="my-3">Monitor progress towards net-zero deforestation</h4>
                 <p class="text-muted">As committed through the UNFCCC, countries pledged their part to secure global net zero by mid-century. Users can track both deforestation and afforestation trends using various land cover change datasets to monitor the regions progress of net zero.</p>
             </div>
             <div class="col-md-4">
@@ -225,7 +224,7 @@
 <section class="page-section" id="about">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase pt-4">About S-CAP</h2>
+            <h2 class="section-heading text-uppercase pt-4">The History of S-CAP</h2>
             <h3 class="section-subheading text-muted mb-2">Service Development Timeline</h3>
         </div>
           <div class="carousel">
@@ -245,6 +244,9 @@
                         <figcaption>
                             <h3>2021</h3>
                             <label>Conceptual Framework and Theory of Change</label>
+                            <p>
+                                <img class="img-fluid" src="{% static "assets/img/concept.png" %}"  alt=""/>
+                            </p>
                         </figcaption>
                     </figure>
                 </li>
@@ -257,7 +259,10 @@
                             <h3>2021-2022</h3>
                             <label>Initial Analysis</label>
                             <p class="scroll-container">
-                                <b>E. Cherrington et al.</b> "One forest carbon model to rule them all? Utilizing ensembles of forest cover and biomass datasets to determine carbon budgets of the world’s forest ecosystems". In BioGeosciences: (Submitted April 2024) C. Evans et al. “Evaluating Global and National datasets in an Ensemble Approach to Estimating Carbon Emissions as part of SERVIR’s Carbon Pilot."
+                                <b>E. Cherrington et al.</b>
+                                “One forest carbon model to rule them all? Utilizing ensembles of forest cover and biomass datasets to determine carbon budgets of the world’s forest ecosystems”. In BioGeosciences: (Submitted April 2024) (- A global analysis that demonstrates convergence and divergence in coverage and estimates related to forest cover, forest cover change, and above ground biomass stocks, which are the main inputs for estimating forest carbon stocks and greenhouse gas emissions from land cover change.  &
+                                <b>C. Evans et al. 2024 </b>
+                                “Evaluating Global and National datasets in an Ensemble Approach to Estimating Carbon Emissions as part of SERVIR’s Carbon Pilot.” (In progress) This more nationally scaled focus on greenhouse gas emission estimation focuses on the added detail when including more locally tuned datasets when monitoring forest coverage change and biomass measurements.
                             </p>
                         </figcaption>
                     </figure>
@@ -269,10 +274,9 @@
                         </div>
                         <figcaption>
                             <h3>2022</h3>
-                            <label>FRL Comparisons</label>
+                            <label>National Forest Reference Level Comparisons</label>
                             <p class="scroll-container">
-                                Initial results from S-CAP were compared against each pilot country’s most recent submission to the UNFCCC effort to reduce emissions from deforestation and forest degradation in developing countries (REDD+) platform. This provided better understanding and alignment with country specific definitions of forest cover and deforestation. Values of biomass, activity data, and emission estimates were included in S-CAP reporting.
-                            </p>
+Initial results from S-CAP were compared against each pilot country’s most recent submission to the UNFCCC effort to reduce emissions from deforestation and forest degradation in developing countries (REDD+) platform. This provided better understanding and alignment with country specific definitions of forest cover and deforestation. Values of biomass, activity data, and emission estimates were included in S-CAP reporting.                            </p>
                         </figcaption>
                     </figure>
                 </li>
@@ -310,7 +314,7 @@
                         </div>
                         <figcaption>
                             <h3>2023-2024</h3>
-                            <label>Webpage Application Development</label>
+                            <label>Website Application Development</label>
                         </figcaption>
                     </figure>
                 </li>
@@ -321,7 +325,10 @@
                         </div>
                         <figcaption>
                             <h3>June 2024</h3>
-							Webpage Launch
+							Website Launch
+                            <p>
+                                Beta launch of S-CAP website. Data sets pre-loaded and immediately available for use consists of five global and seven regional/national land cover datasets along with twenty-two biomass datasets
+                            </p>
                         </figcaption>
                     </figure>
                 </li>
@@ -333,6 +340,9 @@
                         <figcaption>
                             <h3>Moving Forward</h3>
 							Annual Updates & Connection to Hub Services
+                            <p>
+                                Updates to the datasets and coverage will be updated annually to ensure availability of the most up to date information in regards to land cover, land cover change, and aboveground biomass.
+                            </p>
                         </figcaption>
                     </figure>
                 </li>
@@ -484,33 +494,23 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet,
-                consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam
-                corporis ea, alias ut unde.</p></div>
-        </div>
     </div>
 </section>
 <!-- Clients-->
 <div class="py-5">
     <div class="logo-container">
         <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
+            <a href="https://www.usaid.gov/"><img class="logo-img" src="{% static "assets/img/logos/USAID_padded.png" %}" alt="USAID"
                               aria-label="USAID Logo"/></a>
         </div>
         <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
+            <a href="https://www.nasa.gov/"><img class="logo-img" src="{% static "assets/img/logos/NASA_padded.png" %}" alt="NASA"
                               aria-label="NASA Logo"/></a>
         </div>
         <div>
-            <a href="#!"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
+            <a href="https://servirglobal.net/"><img class="logo-img" src="{% static "assets/img/logos/SERVIR_padded.png" %}" alt="..."
                               aria-label="SERVIR Logo"/></a>
         </div>
-        <!--
-        <div class="col-md-3 col-sm-6 my-3">
-            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="assets/img/logos/ibm.svg" alt="..." aria-label="IBM Logo" /></a>
-        </div>
-        -->
     </div>
 </div>
 <!-- Contact-->
