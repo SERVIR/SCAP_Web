@@ -579,6 +579,9 @@ function get_years_for_name(obj,name) {
 //first populate data in dropdowns
 function get_available_years(map_modal_action) {
     //land cover
+    if (map_modal_action===null){
+        map_modal_action='deforestation_targets';
+    }
     console.log(map_modal_action);
     if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
             fill_dataset_selector(get_names_from_obj(fc_colls), get_names_from_obj(agb_colls));
