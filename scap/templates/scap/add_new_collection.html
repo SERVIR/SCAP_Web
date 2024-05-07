@@ -92,9 +92,9 @@
 <br/>
 <br/>
 {% if user.is_authenticated %}
-    <section class="page-section">
-        <div class="container-fluid">
-                <div class="row" style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
+    <section class="page-section bg-light">
+        <div class="container">
+                <div class="row" style="padding:30px 150px 30px 150px;">
                   <div class="col" style="display:flex;">
                     <a class="pilotcountry-link" data-bs-toggle="modal" href="#LandCoverModal" style="display: inline">
                         <div class="pilotcountry-hover">
@@ -112,12 +112,16 @@
 </p>
                       <p>When adding a forest cover collection, please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                         <a href="{% url 'forest-cover-collections' %}" class="btn btn-primary mt-auto float-end">
-                            + Add Your Own</a>
+                            Add Your Own</a>
                   </div>
 
                   </div>
 
                 </div>
+        </div>
+    </section>
+<section class="page-section">
+       <div class="container">
                 <div class="row"  style="padding:30px 150px 30px 150px;">
                    <div class="col" style="display:flex;">
                     <a class="pilotcountry-link" data-bs-toggle="modal" href="#AGBModal" style="display:inline;">
@@ -136,12 +140,16 @@
 </p>
                       <p>Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The system also requires a boundary file, showing the extent of your dataset. The boundary file can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                           <a href="{% url 'agb-collections' %}" class="btn btn-primary mt-auto  float-end">
-                            + Add Your Own</a>
+                            Add Your Own</a>
                   </div>
 
                   </div>
                 </div>
-                <div class="row"  style="padding:30px 150px 30px 150px;background-color: #e1e1e1">
+       </div>
+</section>
+  <section class="page-section bg-light">
+        <div class="container">
+                <div class="row"  style="padding:30px 150px 30px 150px;">
                     <div class="col" style="display: flex">
                         <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal" style="display:inline;">
                             <div class="pilotcountry-hover">
@@ -160,7 +168,7 @@
                             <p>You can upload your Areas of Interest, to facilitate the extraction of forest change, carbon stock and emissions derived from all public (and your private) Forest Cover and AGB data for your specific AOI.</p>
 <p>Please provide reference information such as a comprehensive description, digital object identifiers (DOIs), and metadata links if available. The AOI can be a shapefile in geographic coordinates (WGS84, EPSG: 4326) or a geoJson file.</p>
                          <a href="{% url 'aoi-collections' %}" class="btn btn-primary mt-auto float-end">
-                            + Add Your Own</a></div>
+                            Add Your Own</a></div>
                     </div>
                 </div>
 
