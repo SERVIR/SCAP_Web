@@ -80,6 +80,7 @@
         var lc_colors = {{colors|safe}};
 
      var shp_obj = {{ shp_obj|safe }};
+     var country_id={{country_id|safe}};
    var fc_colls={{fc_colls|safe}};
    var agb_colls=undefined;
 </script>
@@ -305,7 +306,9 @@
             <p class="card-text" style="margin-left: 10px">
      This tool better demonstrates how estimates of forest cover change datasets, alone, differ by quantifying trends identified in the above data visualization tool. Interested in how well a region is trending towards net zero carbon emissions? Pay attention to trends in both the forest gain and forest loss.
             </p>
-
+   <a href="{% url "contribute-data" %}" target="_blank" class="btn btn-primary w-25"
+               style="margin-left: 10px">Explore
+                the protected areas inside the country</a>
             <div class="card-body">
                 <div class="row h-100 ">
                     <div class="col-3 m-auto">

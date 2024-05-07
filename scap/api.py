@@ -295,9 +295,13 @@ def delete_AOI(request):
 
 @csrf_exempt
 def get_aoi_id(request, country=0):
-    aoi = AOIFeature.objects.get(name=request.POST['aoi'], iso3=request.POST['iso3'],
-                                 desig_eng=request.POST['desig_eng'])
-    return JsonResponse({"id": aoi.id})
+    if request.POST['desig_eng']=='COUNTRY':
+        pc=PilotCountry.objects.filter(country_name=request.POST['aoi'], country_code=request.POST['iso3']).first()
+        return JsonResponse({"id": pc.id,"country_or_aoi":"country"})
+    else:
+        aoi = AOIFeature.objects.filter(name=request.POST['aoi'], iso3=request.POST['iso3'],
+                                     desig_eng=request.POST['desig_eng']).first()
+        return JsonResponse({"id": aoi.id,"country_or_aoi":"aoi"})
 
 
 @csrf_exempt
@@ -364,10 +368,11 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
         return chart_fc, lcs_defor
 
-    df_defor['fc_index'] = 'LC' + df_defor['fc_index'].apply(str)
+    df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[['fc_index_id'] + df_defor.columns.tolist()]
+    df_defor["fc_index_id"] = "LC" + df_defor["fc_index_id"].apply(str)
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year_index'].unique())
-    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index'],
+    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index_id'],
                                        index='year_index', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
                          xticks=years_defor,

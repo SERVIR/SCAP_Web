@@ -5,7 +5,9 @@ let primary_underlay_layer;
 let secondary_underlay_layer;
 let comparison_control;
 let aoi_layer_left;
-let aoi_layer_right;
+let aoi_layer_right;let aoi_layer;
+let country_layer;
+
 let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
 function add_option_by_id(selector, value, label,defalt) {
@@ -113,12 +115,12 @@ function clear_map_layers() {
     if (secondary_overlay_layer != undefined) {
         map.removeLayer(secondary_underlay_layer);
     }
-    if (aoi_layer_left != undefined) {
-        map.removeLayer(aoi_layer_left)
-    }
-    if (aoi_layer_right != undefined) {
-        map.removeLayer(aoi_layer_right)
-    }
+    // if (aoi_layer_left != undefined) {
+    //     map.removeLayer(aoi_layer_left)
+    // }
+    // if (aoi_layer_right != undefined) {
+    //     map.removeLayer(aoi_layer_right)
+    // }
     if (comparison_control != undefined) {
         document.getElementsByClassName('leaflet-sbs-range')[0].value = 1;
         let clipX = comparison_control._range.value;
@@ -149,8 +151,15 @@ function whenClicked(e) {
 
             pa_selected_name = data.id;
             var zoomlevel = map.getZoom();
+            if(data.country_or_aoi==="country"){
+                             window.location = window.location.origin + '/pilot/' + pa_selected_name + '/';
 
-window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+            }
+            else{
+                window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+
+            }
+
             // if (zoomlevel >= 7) {
             //     window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
             // } else {
@@ -221,37 +230,37 @@ function  redraw_based_on_year() {
 
     }
 
-    aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
-        style: {
-            weight: 2,
-            opacity: 1,
-            color: 'cyan',  //Outline color
-            fillOpacity: 0.4,
-        },
-        onEachFeature: onEachFeature,
-        pane: 'left'
-    });
-    aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
-        style: {
-            weight: 2,
-            opacity: 1,
-            color: 'cyan',  //Outline color
-            fillOpacity: 0.4,
-        },
-        onEachFeature: onEachFeature,
-        pane: 'right'
-    });
+    // aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
+    //     style: {
+    //         weight: 2,
+    //         opacity: 1,
+    //         color: 'cyan',  //Outline color
+    //         fillOpacity: 0.4,
+    //     },
+    //     onEachFeature: onEachFeature,
+    //     pane: 'left'
+    // });
+    // aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
+    //     style: {
+    //         weight: 2,
+    //         opacity: 1,
+    //         color: 'cyan',  //Outline color
+    //         fillOpacity: 0.4,
+    //     },
+    //     onEachFeature: onEachFeature,
+    //     pane: 'right'
+    // });
     var hide_spinner_aoi=false;
     var hide_spinner_l1, hide_spinner_l1, hide_spinner_l1 =false;
 
-    aoi_layer_left.on('add', (e) => {
-        // document.getElementById("loading_spinner_map").style.display = "none";
-        hide_spinner_aoi=true;
-    });
-    aoi_layer_right.on('add', (e) => {
-        // document.getElementById("loading_spinner_map").style.display = "none";
-        hide_spinner_aoi=true;
-    });
+    // aoi_layer_left.on('add', (e) => {
+    //     // document.getElementById("loading_spinner_map").style.display = "none";
+    //     hide_spinner_aoi=true;
+    // });
+    // aoi_layer_right.on('add', (e) => {
+    //     // document.getElementById("loading_spinner_map").style.display = "none";
+    //     hide_spinner_aoi=true;
+    // });
     let selected_year = document.getElementById('selected_year').value;
     let comparison_year = document.getElementById('comparison_year').value;
     let selected_dataset_left = document.getElementById('selected_region').value;
@@ -338,27 +347,27 @@ function  redraw_based_on_year() {
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
-    aoi_layer_left.addTo(map);
-    aoi_layer_right.addTo(map);
+    // aoi_layer_left.addTo(map);
+    // aoi_layer_right.addTo(map);
           document.getElementById("loading_spinner_map").style.display = "none";
 
-    comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+    comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
     map.on("zoomend", function () {
         var zoomlevel = map.getZoom();
 
-        if (zoomlevel < 7) {
-            if (map.hasLayer(aoi_layer_left)) {
-                map.removeLayer(aoi_layer_left);
-            }
-            if (map.hasLayer(aoi_layer_right)) {
-                map.removeLayer(aoi_layer_right);
-            }
-        } else {
-            map.addLayer(aoi_layer_left);
-            map.addLayer(aoi_layer_right);
-        }
+        // if (zoomlevel < 7) {
+        //     if (map.hasLayer(aoi_layer_left)) {
+        //         map.removeLayer(aoi_layer_left);
+        //     }
+        //     if (map.hasLayer(aoi_layer_right)) {
+        //         map.removeLayer(aoi_layer_right);
+        //     }
+        // } else {
+        //     map.addLayer(aoi_layer_left);
+        //     map.addLayer(aoi_layer_right);
+        // }
         console.log("Current Zoom Level = " + zoomlevel);
     });
 }
@@ -384,8 +393,8 @@ function add_aoi_polygons(shp_obj){
         onEachFeature: onEachFeature,
         pane: 'right'
     });
-    aoi_layer_left.addTo(map);
-    aoi_layer_right.addTo(map);
+    // aoi_layer_left.addTo(map);
+    // aoi_layer_right.addTo(map);
 }
 
 function add_thredds_wms_layers() {
@@ -484,7 +493,7 @@ function add_thredds_wms_layers() {
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
-        comparison_control = L.control.sideBySide([aoi_layer_left, primary_overlay_layer], [aoi_layer_right, secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+        comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     } catch (e) {
         console.log(e)
     }
@@ -517,17 +526,17 @@ function redraw_map_layers(map_modal_action) {
     // display protected areas based on zoom level
     map.on("zoomend", function () {
         var zoomlevel = map.getZoom();
-        if (zoomlevel < 5) {
-            if (map.hasLayer(aoi_layer_left)) {
-                map.removeLayer(aoi_layer_left);
-            }
-            if (map.hasLayer(aoi_layer_right)) {
-                map.removeLayer(aoi_layer_right);
-            }
-        } else {
-            map.addLayer(aoi_layer_left);
-            map.addLayer(aoi_layer_right);
-        }
+        // if (zoomlevel < 5) {
+        //     if (map.hasLayer(aoi_layer_left)) {
+        //         map.removeLayer(aoi_layer_left);
+        //     }
+        //     if (map.hasLayer(aoi_layer_right)) {
+        //         map.removeLayer(aoi_layer_right);
+        //     }
+        // } else {
+        //     map.addLayer(aoi_layer_left);
+        //     map.addLayer(aoi_layer_right);
+        // }
         console.log("Current Zoom Level = " + zoomlevel);
     });
     document.getElementById("loading_spinner_map").style.display = "none";
@@ -621,10 +630,84 @@ function init_map() {
         "Keep Default": darkmap
     };
 
-    // list of overlays
-    var overlays = {
-        'Watermask': watermaskLayer
-    };
+
+            var overlays ;
+            console.log(country_id)
+        if(country_id===0) {
+            overlays = {
+                'Watermask': watermaskLayer,
+
+
+            };
+        }
+        else   if (window.location.href.indexOf("/pilot/") > -1) {
+             country_layer = L.geoJSON(shp_obj['data_country'], {
+                style: {
+                    weight: 2,
+                    opacity: 1,
+                    color: 'cyan',  //Outline color
+                    fillOpacity: 0.5,
+                },
+                onEachFeature: onEachFeature,
+            });
+                   // list of overlays
+            overlays = {
+                'Watermask': watermaskLayer,
+                'Country Outline': country_layer,
+
+
+            };
+
+        }
+        else   if (window.location.href.indexOf("/aoi/") > -1) {
+            aoi_layer = L.geoJSON(shp_obj['data_pa'], {
+                style: {
+                    weight: 2,
+                    opacity: 1,
+                    color: 'cyan',  //Outline color
+                    fillOpacity: 0.4,
+                },
+                onEachFeature: onEachFeature,
+            });
+                  // list of overlays
+            overlays = {
+                'Watermask': watermaskLayer,
+                'Protected Areas': aoi_layer,
+
+
+            };
+        }
+        else {
+            aoi_layer = L.geoJSON(shp_obj['data_pa'], {
+                style: {
+                    weight: 2,
+                    opacity: 1,
+                    color: 'cyan',  //Outline color
+                    fillOpacity: 0.4,
+                },
+                onEachFeature: onEachFeature,
+            });
+            country_layer = L.geoJSON(shp_obj['data_country'], {
+                style: {
+                    weight: 2,
+                    opacity: 1,
+                    color: '#F9BD7C',  //Outline color
+                    fillOpacity: 0.5,
+                },
+                onEachFeature: onEachFeature,
+            });
+
+            // list of overlays
+            overlays = {
+                'Watermask': watermaskLayer,
+                'Protected Areas': aoi_layer,
+                'Country Outline': country_layer,
+
+
+            };
+        }
+
+
     //get lat, lon and zoom from PilotCountry db object
     if (document.getElementById("lat_from_db")) {
         pilot_center = [parseFloat(document.getElementById("lat_from_db").innerHTML), parseFloat(document.getElementById("lon_from_db").innerHTML)];
@@ -676,6 +759,14 @@ function init_map() {
     var drawControl = new L.Control.Draw(drawPluginOptions);
     // draw polygon control
     map.addControl(drawControl);
+   if(country_layer!=undefined){
+        country_layer.addTo(map);
+    }
+    if (aoi_layer!=undefined) {
+        aoi_layer.addTo(map);
+
+    }
+
     map.on('draw:created', function (e) {
         var type = e.layerType,
             layer = e.layer;
