@@ -772,7 +772,14 @@ function init_map() {
    if(country_layer!=undefined && window.location.href.indexOf("/pilot/") > -1){
         country_layer.addTo(map);
     }
-    if (aoi_layer!=undefined) {
+     if(country_layer!=undefined && window.location.href.indexOf("/map/") > -1){
+        country_layer.addTo(map);
+    }
+    if (aoi_layer!=undefined && window.location.href.indexOf("/aoi/") > -1) {
+        aoi_layer.addTo(map);
+
+    }
+    if (aoi_layer!=undefined && window.location.href.indexOf("/map/") > -1) {
         aoi_layer.addTo(map);
 
     }
