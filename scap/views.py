@@ -120,8 +120,10 @@ def pilot_country(request, country=0):
             json_obj["data_country"] = [country_geojson]
         else:
             json_obj["data_pa"] = []
+            json_obj["data_country"]=[]
     except:
         json_obj["data_pa"] = []
+        json_obj["data_country"]=[]
 
     pa = PilotCountry.objects.get(id=country)
     aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)

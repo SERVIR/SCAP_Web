@@ -645,14 +645,24 @@ function init_map() {
                 style: {
                     weight: 2,
                     opacity: 1,
-                    color: 'cyan',  //Outline color
+                    color: '#F9BD7C',  //Outline color
                     fillOpacity: 0.5,
+                },
+                onEachFeature: onEachFeature,
+            });
+               aoi_layer = L.geoJSON(shp_obj['data_pa'], {
+                style: {
+                    weight: 2,
+                    opacity: 1,
+                    color: 'cyan',  //Outline color
+                    fillOpacity: 0.4,
                 },
                 onEachFeature: onEachFeature,
             });
                    // list of overlays
             overlays = {
                 'Watermask': watermaskLayer,
+                'Protected Areas': aoi_layer,
                 'Country Outline': country_layer,
 
 
@@ -759,7 +769,7 @@ function init_map() {
     var drawControl = new L.Control.Draw(drawPluginOptions);
     // draw polygon control
     map.addControl(drawControl);
-   if(country_layer!=undefined){
+   if(country_layer!=undefined && window.location.href.indexOf("/pilot/") > -1){
         country_layer.addTo(map);
     }
     if (aoi_layer!=undefined) {
