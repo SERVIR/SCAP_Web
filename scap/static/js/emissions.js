@@ -184,7 +184,7 @@ chart.update({
         },
       legend: {
     itemDistance: 50,
-    maxHeight: 70
+    maxHeight: 100
     /* floating: true,
     y: 75 */
   },
