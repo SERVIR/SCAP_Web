@@ -619,6 +619,44 @@ function get_available_years(map_modal_action) {
 
      redraw_map_layers(map_modal_action);
 }
+function get_checked_lcs() {
+    var lcs = [];
+    $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
+
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        // console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
+    });
+    return lcs;
+}
+
+function get_checked_agbs() {
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
+}
+function send_to_backend(){
+    var lcss = get_checked_lcs();
+var agbss = get_checked_agbs();
+if(lcss.length>0 && agbss.length>0) {
+    $.ajax({
+        type: 'POST',
+        url: 'get-dataset-list/',
+        data: {'lcs': lcss, 'agbs': agbss},
+        success: function (data) {
+            console.log("done");
+            $('#drawing_modal').modal('hide');
+
+        }
+    });
+}
+else{
+    alert("Please select atleast one Land Cover and one Above Ground Biomass dataset");
+}
+}
 
 function init_map() {
     // list of basemaps
@@ -788,6 +826,9 @@ function init_map() {
         var type = e.layerType,
             layer = e.layer;
         editableLayers.addLayer(layer);
+        var json = editableLayers.toGeoJSON();
+        $('#drawing_modal').modal('show');
+        console.log(json)
     });
 
 

@@ -190,7 +190,7 @@ chart.update({
 
         plotOptions: {
             series: {
-                connectNulls: true,
+                connectNulls: false,
                 marker: {
                     enabled: false,
                     states: {
@@ -212,6 +212,12 @@ chart.update({
                 }
             }
         },
+          legend: {
+    itemDistance: 50,
+    maxHeight: 70
+    /* floating: true,
+    y: 75 */
+  },
         lang: {
             noData: "No data found. Please select LC/AGB from the list."
         },

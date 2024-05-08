@@ -321,6 +321,66 @@
         </div>
     </div>
 </div>
+<div class="pilotcountry-modal modal fade" id="drawing_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content"  style="width: 65%;margin:auto;padding-bottom: 10px;padding-top: 10px">
+            <div class="container-fluid">
+                <div class="row">
+                        <div class="modal-body" >
+                            <h4 class="text-uppercase">select the datasets</h4>
+                            <div class="container-fluid">
+                                  <div class="row h-100" id="checkbox_selection">
+
+                        <div class="LC_checkboxlist col-6">
+                            <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
+                            <ul class="lc_list chart-list-scroll text-right list-inline" id="map_select_ds">
+                                {% for lc in lcs %}
+                                    <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
+
+                                    <li class="" style="float: left;margin-left:10px;">
+                                        <input type="checkbox"  class="lc_list-item-checkbox LC_cb yellow-checkbox"
+
+                                               value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
+                                                                                     style="padding-left: 2px;font-family: Helvetica, Arial, sans-serif;">
+                                        {% if lc.name  in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
+                                        &nbsp;{{ lc.name }}</label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="AGB_checkboxlist col-6">
+                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                            <ul class="agb_list chart-list-scroll">
+                                {% csrf_token %}
+                                {% for agb in agbs %}
+                                    <li class="" style="float: left;margin-left:10px;">
+                                        <input type="checkbox"  class="agb_list-item-checkbox AGB_cb yellow-checkbox"
+
+                                               value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
+                                                                                           style="padding-left: 5px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}
+                                       </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                    </div>
+
+
+                                </div>
+                                   <button class="btn btn-primary text-uppercase mb-2 ml-2"  type="button" onclick="send_to_backend()">
+                                    Submit
+                                    </button>
+                                  <button class="btn btn-primary text-uppercase mb-2 ml-2" data-bs-dismiss="modal" type="button">
+                                    Cancel
+                                    </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->

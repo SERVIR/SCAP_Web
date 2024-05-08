@@ -51,7 +51,11 @@ config = json_lib.load(f)
 def test(request):
     generate_geodjango_objects_aoi()
     return HttpResponse("sucess")
-
+@csrf_exempt
+def get_dataset_list(request,country):
+    lcs = request.POST.getlist('lcs[]')
+    agbs = request.POST.getlist('agbs[]')
+    return JsonResponse({})
 
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
@@ -423,6 +427,12 @@ def get_agg_check(request, country=0):
         max_arr = []
         avg_arr = []
         if pa_name > 0:
+            try:
+                pa = PilotCountry.objects.get(id=country)
+                aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)
+                pa_name=aoi.id
+            except:
+                pass
             data1 = list(
                 CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
                     'year_index').annotate(

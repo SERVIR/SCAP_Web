@@ -26,7 +26,7 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test)
+                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test,get_dataset_list)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -57,6 +57,8 @@ urlpatterns = [
       path('pilot/<int:country>/get-series-name/', get_series_name, name='get_series_name'),
 
       path('map/get-aoi/', get_AOI, name='get-aoi'),
+      path('map/<int:country>/get-dataset-list/', get_dataset_list, name='get-dataset-list'),
+
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
       path('map/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
       path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),

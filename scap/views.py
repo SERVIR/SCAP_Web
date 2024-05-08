@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+import pandas as pd
 
 from django.contrib.auth.models import User
 import shapely
@@ -78,11 +79,24 @@ def map(request, country=0):
         else:
             json_obj["data_pa"] = []
             json_obj["data_country"] = []
+        lcs = []
+        agbs = []
+        if request.user.is_authenticated:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=request.user).values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(owner=request.user).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+        else:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(
+                AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
     except Exception as e:
         print(e)
         json_obj["data_pa"] = []
         json_obj["data_country"] = []
-    return render(request, 'scap/map.html', context={'shp_obj': json_obj,'country_id':country,'pilot_countries': pilot_countries,
+    return render(request, 'scap/map.html', context={'shp_obj': json_obj,'country_id':country,'lcs': lcs, 'agbs': agbs,'pilot_countries': pilot_countries,
                                                      'latitude': lat_long[0], 'longitude': lat_long[1],
                                                      'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '',
                                                      'fc_colls': fc_colls, 'agb_colls': agb_colls})
@@ -174,6 +188,7 @@ def protected_aois(request, aoi):
     pc_name = pc.country_name
     country_id = pc.id
     colors = get_available_colors()
+
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     return render(request, 'scap/protected_area.html',
