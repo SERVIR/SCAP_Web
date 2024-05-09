@@ -323,7 +323,7 @@
 </div>
 <div class="pilotcountry-modal modal fade" id="drawing_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content"  style="width: 65%;margin:auto;padding-bottom: 10px;padding-top: 10px">
+        <div class="modal-content"  style="width: 55%;height:60%;margin:auto;padding-bottom: 10px;padding-top: 10px">
             <div class="container-fluid">
                 <div class="row">
                         <div class="modal-body" >
@@ -337,7 +337,7 @@
                                 {% for lc in lcs %}
 
 
-                                    <li class="" style="float: left;margin-left:10px;">
+                                    <li class="text-start justify-content-start" style="display: flex">
                                              <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
                                         <input type="checkbox"  class="lc_list-item-checkbox LC_cb yellow-checkbox"
 
@@ -354,7 +354,7 @@
                             <ul class="agb_list chart-list-scroll">
                                 {% csrf_token %}
                                 {% for agb in agbs %}
-                                    <li class="" style="float: left;margin-left:10px;">
+                                    <li class="text-start justify-content-start" style="display: flex">
                                         <input type="checkbox"  class="agb_list-item-checkbox AGB_cb yellow-checkbox"
 
                                                value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
