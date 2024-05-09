@@ -390,11 +390,11 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
     df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[
         ['fc_index_id'] + df_defor.columns.tolist()]
-    df_defor["fc_index_id"] = "LC" + df_defor["fc_index_id"].apply(str)
+    df_defor["fc_index_id"] = "LC" + df_defor["fc_index"].apply(str)
 
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year_index'].unique())
-    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index_id'],
+    pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index'],
                                        index='year_index', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
                          xticks=years_defor,
