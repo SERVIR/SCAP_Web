@@ -335,9 +335,10 @@
                             <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
                             <ul class="lc_list chart-list-scroll text-right list-inline" id="map_select_ds">
                                 {% for lc in lcs %}
-                                    <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
+
 
                                     <li class="" style="float: left;margin-left:10px;">
+                                             <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
                                         <input type="checkbox"  class="lc_list-item-checkbox LC_cb yellow-checkbox"
 
                                                value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"

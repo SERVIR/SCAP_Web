@@ -207,8 +207,8 @@ function onEachFeature(feature, layer) {
             layer.setStyle({
                 weight: 2,
                 opacity: 1,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.4,
+                color: '#F9BD7C',  //Outline color
+                fillOpacity: 0.5,
             })
         });
 
