@@ -4,6 +4,7 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
+import numpy
 
 import doi
 import requests
@@ -326,18 +327,21 @@ def fetch_carbon_charts(pa_name, owner, container):
     lcs = []
     agbs = []
     try:
-        if owner.is_authenticated:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
-            lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(owner=owner).values())  # Get the AGB dataset data
-            agbs = df_agb.to_dict('records')
-        else:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
-            lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
-            agbs = df_agb.to_dict('records')
+
 
         df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
+        lc_ids=numpy.array(df['fc_index_id'].unique()).tolist()
+        agb_ids=numpy.array(df['agb_index_id'].unique()).tolist()
+        if owner.is_authenticated:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,id__in=lc_ids).values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(owner=owner,id__in=agb_ids).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+        else:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',id__in=lc_ids).values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public',id__in=agb_ids).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
         if df.empty:
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                               title='CarbonStatistics: ' + pa_name)
@@ -360,10 +364,11 @@ def fetch_carbon_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts(pa_name, owner, container):
     df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
+    lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
     else:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
@@ -374,6 +379,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
     df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[['fc_index_id'] + df_defor.columns.tolist()]
     df_defor["fc_index_id"] = "LC" + df_defor["fc_index_id"].apply(str)
+
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index_id'],
@@ -388,10 +394,11 @@ def fetch_forest_change_charts(pa_name, owner, container):
 def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
+    lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner).values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
     else:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
