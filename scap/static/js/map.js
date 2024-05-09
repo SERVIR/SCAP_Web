@@ -570,9 +570,13 @@ if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestatio
     fill_comparison_years_selector(c_years);
      document.getElementById('selected_year').value = years[0];
     document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+     if ( document.getElementById('selected_agb')!=null)
     document.getElementById('selected_agb').style.display='none';
+    if ( document.getElementById('comparing_agb')!=null)
      document.getElementById('comparing_agb').style.display='none';
+     if ( document.getElementById('comparing_agb_label')!=null)
              document.getElementById('comparing_agb_label').style.display='none';
+         if ( document.getElementById('selected_agb_label')!=null)
              document.getElementById('selected_agb_label').style.display='none';
 
 }
@@ -584,9 +588,17 @@ else{
     fill_comparison_years_selector(c_years);
      document.getElementById('selected_year').value = years[0];
     document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+             if ( document.getElementById('selected_agb')!=null)
+
         document.getElementById('selected_agb').style.display='block';
+                 if ( document.getElementById('comparing_agb')!=null)
+
              document.getElementById('comparing_agb').style.display='block';
+                      if ( document.getElementById('comparing_agb_label')!=null)
+
                           document.getElementById('comparing_agb_label').style.display='block';
+                               if ( document.getElementById('selected_agb_label')!=null)
+
              document.getElementById('selected_agb_label').style.display='block';
 
 
@@ -636,7 +648,7 @@ function get_years_for_name_no_agb(obj,name){
 function get_years_for_name(obj,name) {
     let years = [];
     var temp=[]
-    if (document.getElementById('selected_agb').style.display != 'none') {
+    if (document.getElementById('selected_agb')!=null&&document.getElementById('selected_agb').style.display != 'none') {
         years=[]
         for (var i = 0; i < obj.length; i++) {
             if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase()) {
