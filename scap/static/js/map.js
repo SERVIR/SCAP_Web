@@ -197,9 +197,16 @@ function onEachFeature(feature, layer) {
                 fillOpacity: 0.4,
             })
 
-            layer.on('mouseover', function () {
+
+            if (window.location.href.indexOf("/aoi/") > -1){
+                console.log("isaoi")
+ layer.closePopup();
+            }
+            else{
+                  layer.on('mouseover', function () {
                 this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
             });
+            }
 
         });
         layer.on('mouseout', function (e) {

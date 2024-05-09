@@ -52,11 +52,14 @@ config = json_lib.load(f)
 def test(request):
     generate_geodjango_objects_aoi()
     return HttpResponse("sucess")
+
+
 @csrf_exempt
-def get_dataset_list(request,country):
+def get_dataset_list(request, country):
     lcs = request.POST.getlist('lcs[]')
     agbs = request.POST.getlist('agbs[]')
     return JsonResponse({})
+
 
 def generate_geodjango_objects_aoi(verbose=True):
     aoi_mapping = {
@@ -300,13 +303,13 @@ def delete_AOI(request):
 
 @csrf_exempt
 def get_aoi_id(request, country=0):
-    if request.POST['desig_eng']=='COUNTRY':
-        pc=PilotCountry.objects.filter(country_name=request.POST['aoi'], country_code=request.POST['iso3']).first()
-        return JsonResponse({"id": pc.id,"country_or_aoi":"country"})
+    if request.POST['desig_eng'] == 'COUNTRY':
+        pc = PilotCountry.objects.filter(country_name=request.POST['aoi'], country_code=request.POST['iso3']).first()
+        return JsonResponse({"id": pc.id, "country_or_aoi": "country"})
     else:
         aoi = AOIFeature.objects.filter(name=request.POST['aoi'], iso3=request.POST['iso3'],
-                                     desig_eng=request.POST['desig_eng']).first()
-        return JsonResponse({"id": aoi.id,"country_or_aoi":"aoi"})
+                                        desig_eng=request.POST['desig_eng']).first()
+        return JsonResponse({"id": aoi.id, "country_or_aoi": "aoi"})
 
 
 @csrf_exempt
@@ -327,20 +330,25 @@ def fetch_carbon_charts(pa_name, owner, container):
     lcs = []
     agbs = []
     try:
-
-
+        lc_ids=[]
+        agb_ids=[]
         df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
-        lc_ids=numpy.array(df['fc_index_id'].unique()).tolist()
-        agb_ids=numpy.array(df['agb_index_id'].unique()).tolist()
+        if not df.empty:
+            lc_ids = numpy.array(df['fc_index_id'].unique()).tolist()
+            agb_ids = numpy.array(df['agb_index_id'].unique()).tolist()
+            lc_ids.sort()
+            agb_ids.sort()
         if owner.is_authenticated:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,id__in=lc_ids).values())
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values())
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(owner=owner,id__in=agb_ids).values())  # Get the AGB dataset data
+            df_agb = pd.DataFrame(
+                AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
         else:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',id__in=lc_ids).values())
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values())
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public',id__in=agb_ids).values())  # Get the AGB dataset data
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public',
+                                                               id__in=agb_ids).values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
         if df.empty:
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
@@ -364,13 +372,14 @@ def fetch_carbon_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts(pa_name, owner, container):
     df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
-    lc_names=[]
+    lc_names = []
     if not df_defor.empty:
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values())
     else:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values())
+        df_lc_defor = pd.DataFrame(
+            ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
@@ -379,7 +388,8 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
         return chart_fc, lcs_defor
 
-    df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[['fc_index_id'] + df_defor.columns.tolist()]
+    df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[
+        ['fc_index_id'] + df_defor.columns.tolist()]
     df_defor["fc_index_id"] = "LC" + df_defor["fc_index_id"].apply(str)
 
     df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
@@ -395,14 +405,15 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
-    lc_names=[]
+    lc_names = []
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
     if not df_defor.empty:
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
+        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values())
     else:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values())
+        df_lc_defor = pd.DataFrame(
+            ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
@@ -441,7 +452,7 @@ def get_agg_check(request, country=0):
             try:
                 pa = PilotCountry.objects.get(id=country)
                 aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)
-                pa_name=aoi.id
+                pa_name = aoi.id
             except:
                 pass
             data1 = list(
