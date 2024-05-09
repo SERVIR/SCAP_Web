@@ -48,6 +48,7 @@ function set_map_action(anchor,text) {
     localStorage.setItem('map_modal_action', text);
     map_modal_action=text;
 }
+
 function fill_dataset_selector(fc_data,agb_data) {
     let select = document.getElementById('selected_region');
     select.innerHTML = "";
@@ -561,15 +562,38 @@ function redraw_map_layers(map_modal_action) {
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
 
+if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
+    let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
+
+    fill_years_selector(years);
+    let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(c_years);
+     document.getElementById('selected_year').value = years[0];
+    document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+    document.getElementById('selected_agb').style.display='none';
+     document.getElementById('comparing_agb').style.display='none';
+             document.getElementById('comparing_agb_label').style.display='none';
+             document.getElementById('selected_agb_label').style.display='none';
+
+}
+else{
     let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
 
     fill_years_selector(years);
     let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
     fill_comparison_years_selector(c_years);
-
-
-    document.getElementById('selected_year').value = years[0];
+     document.getElementById('selected_year').value = years[0];
     document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+        document.getElementById('selected_agb').style.display='block';
+             document.getElementById('comparing_agb').style.display='block';
+                          document.getElementById('comparing_agb_label').style.display='block';
+             document.getElementById('selected_agb_label').style.display='block';
+
+
+
+}
+
+
 
     add_aoi_polygons(shp_obj);
     add_thredds_wms_layers();
@@ -601,6 +625,13 @@ function get_names_from_obj(obj){
         names.push(obj[i].name);
     }
     return names;
+}
+function get_years_for_name_no_agb(obj,name){
+     let years = [];
+        for (var i = 0; i < obj.length; i++) {
+            if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase())
+                return obj[i].years.sort();
+        }
 }
 function get_years_for_name(obj,name) {
     let years = [];
@@ -644,10 +675,10 @@ function get_available_years(map_modal_action) {
     console.log(map_modal_action);
     if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
             fill_dataset_selector(get_names_from_obj(fc_colls), get_names_from_obj(agb_colls));
-            let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+            let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
             fill_years_selector(years);
             fill_comparison_dataset_selector(get_names_from_obj(fc_colls), get_names_from_obj(agb_colls));
-            let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+            let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
             fill_comparison_years_selector(c_years);
 
 
