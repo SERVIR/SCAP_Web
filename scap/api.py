@@ -364,7 +364,9 @@ def fetch_carbon_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts(pa_name, owner, container):
     df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
-    lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
+    lc_names=[]
+    if not df_defor.empty:
+        lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
         df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
     else:
@@ -393,8 +395,10 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
 def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
+    lc_names=[]
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
-    lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
+    if not df_defor.empty:
+        lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
         df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner,name__in=lc_names).values())
     else:
