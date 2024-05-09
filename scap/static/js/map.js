@@ -169,55 +169,100 @@ function whenClicked(e) {
     });
 }
 
-function onEachFeature(feature, layer) {
+function onEachFeature_aoi(feature, layer) {
 
-        //bind click
-        layer.on({
-            click: whenClicked
+    //bind click
+    layer.on({
+        click: whenClicked
+    });
+
+    layer.on('mouseover', function (e) {
+
+
+        var name = e.target.feature.geometry.properties.name;
+
+
+        var popupText = name;
+        var tooltipText = "";
+        layer.bindPopup(popupText, {
+            closeButton: false
+        });
+        layer.bindTooltip(tooltipText);
+        layer.openPopup();
+        this.getTooltip().setOpacity(0);
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: 'yellow',  //Outline color
+            fillOpacity: 0.4,
+        })
+
+
+        layer.on('mouseover', function () {
+
+            this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
         });
 
-        layer.on('mouseover', function (e) {
 
-
-                 var name = e.target.feature.geometry.properties.name;
-
-
-            var popupText = name;
-            var tooltipText = "";
-            layer.bindPopup(popupText, {
-                closeButton: false
-            });
-            layer.bindTooltip(tooltipText);
-            layer.openPopup();
-            this.getTooltip().setOpacity(0);
-            layer.setStyle({
-                weight: 2,
-                opacity: 1,
-                color: 'yellow',  //Outline color
-                fillOpacity: 0.4,
-            })
-
-
-            if (window.location.href.indexOf("/aoi/") > -1){
-                console.log("isaoi")
- layer.closePopup();
-            }
-            else{
-                  layer.on('mouseover', function () {
-                this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
-            });
-            }
-
+    });
+    layer.on('mouseout', function (e) {
+        layer.closePopup();
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: 'cyan',  //Outline color
+            fillOpacity: 0.5,
         });
-        layer.on('mouseout', function (e) {
-            layer.closePopup();
-            layer.setStyle({
-                weight: 2,
-                opacity: 1,
-                color: '#F9BD7C',  //Outline color
-                fillOpacity: 0.5,
-            })
+
+    });
+
+}
+function onEachFeature_country(feature, layer) {
+
+    //bind click
+    layer.on({
+        click: whenClicked
+    });
+
+    layer.on('mouseover', function (e) {
+
+
+        var name = e.target.feature.geometry.properties.name;
+
+
+        var popupText = name;
+        var tooltipText = "";
+        layer.bindPopup(popupText, {
+            closeButton: false
         });
+        layer.bindTooltip(tooltipText);
+        layer.openPopup();
+        this.getTooltip().setOpacity(0);
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: 'yellow',  //Outline color
+            fillOpacity: 0.4,
+        })
+
+
+        layer.on('mouseover', function () {
+
+            this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+        });
+
+
+    });
+    layer.on('mouseout', function (e) {
+        layer.closePopup();
+        layer.setStyle({
+            weight: 2,
+            opacity: 1,
+            color: '#F9BD7C',  //Outline color
+            fillOpacity: 0.5,
+        });
+
+    });
 
 }
 function  redraw_based_on_year() {
@@ -380,26 +425,26 @@ function  redraw_based_on_year() {
 }
 
 function add_aoi_polygons(shp_obj){
-    aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
-        style: {
-            weight: 2,
-            opacity: 1,
-            color: 'cyan',  //Outline color
-            fillOpacity: 0.4,
-        },
-         onEachFeature: onEachFeature,
-        pane: 'left'
-    });
-    aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
-        style: {
-            weight: 2,
-            opacity: 1,
-            color: 'cyan',  //Outline color
-            fillOpacity: 0.4,
-        },
-        onEachFeature: onEachFeature,
-        pane: 'right'
-    });
+    // aoi_layer_left = L.geoJSON(shp_obj['data_pa'], {
+    //     style: {
+    //         weight: 2,
+    //         opacity: 1,
+    //         color: 'cyan',  //Outline color
+    //         fillOpacity: 0.4,
+    //     },
+    //      onEachFeature: onEachFeature,
+    //     pane: 'left'
+    // });
+    // aoi_layer_right = L.geoJSON(shp_obj['data_pa'], {
+    //     style: {
+    //         weight: 2,
+    //         opacity: 1,
+    //         color: 'cyan',  //Outline color
+    //         fillOpacity: 0.4,
+    //     },
+    //     onEachFeature: onEachFeature,
+    //     pane: 'right'
+    // });
     // aoi_layer_left.addTo(map);
     // aoi_layer_right.addTo(map);
 }
@@ -693,7 +738,7 @@ function init_map() {
                     color: '#F9BD7C',  //Outline color
                     fillOpacity: 0.5,
                 },
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeature_country,
             });
                aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
@@ -702,7 +747,7 @@ function init_map() {
                     color: 'cyan',  //Outline color
                     fillOpacity: 0.4,
                 },
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeature_aoi,
             });
                    // list of overlays
             overlays = {
@@ -722,7 +767,7 @@ function init_map() {
                     color: 'cyan',  //Outline color
                     fillOpacity: 0.4,
                 },
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeature_aoi,
             });
                   // list of overlays
             overlays = {
@@ -740,7 +785,7 @@ function init_map() {
                     color: 'cyan',  //Outline color
                     fillOpacity: 0.4,
                 },
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeature_aoi,
             });
             country_layer = L.geoJSON(shp_obj['data_country'], {
                 style: {
@@ -749,7 +794,7 @@ function init_map() {
                     color: '#F9BD7C',  //Outline color
                     fillOpacity: 0.5,
                 },
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeature_country,
             });
 
             // list of overlays
