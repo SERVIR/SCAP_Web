@@ -2,7 +2,7 @@
 <html lang="en">
 
 {% load socialaccount %}
-
+{% load auth_extras %}
 {% load static %}
 
 <head>
@@ -211,7 +211,8 @@
             </div>
         </div>
     </div>
- {% if user.is_authenticated %}
+{% if user.is_authenticated and user|has_group:"scap_contributors" %}
+
                     <div class="text-center m-4 p-3">
                         <a href="{% url 'contribute-data' %}">
                             <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
