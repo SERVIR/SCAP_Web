@@ -339,7 +339,10 @@ def fetch_carbon_charts(pa_name, owner, container):
             lc_ids.sort()
             agb_ids.sort()
         if owner.is_authenticated:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values())
+            df_lc_owner = ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values()
+            df_lc_public = ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values()
+            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+
             lcs = df_lc.to_dict('records')
             df_agb = pd.DataFrame(
                 AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values())  # Get the AGB dataset data
@@ -376,7 +379,9 @@ def fetch_forest_change_charts(pa_name, owner, container):
     if not df_defor.empty:
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values())
+        df_lc_defor_owner = ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values()
+        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values()
+        df_lc_defor = pd.DataFrame((df_lc_defor_owner.union(df_lc_defor_public).values()))
     else:
         df_lc_defor = pd.DataFrame(
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
@@ -410,7 +415,9 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     if not df_defor.empty:
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
-        df_lc_defor = pd.DataFrame(ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values())
+        df_lc_defor_owner = ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values()
+        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values()
+        df_lc_defor = pd.DataFrame((df_lc_defor_owner.union(df_lc_defor_public).values()))
     else:
         df_lc_defor = pd.DataFrame(
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
