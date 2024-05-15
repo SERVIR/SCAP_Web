@@ -344,8 +344,9 @@ def fetch_carbon_charts(pa_name, owner, container):
             df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
 
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(
-                AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values())  # Get the AGB dataset data
+            df_agb_owner = AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values()
+            df_agb_public = AGBCollection.objects.filter(access_level='Public', id__in=agb_ids).values()
+            df_agb = pd.DataFrame(df_agb_owner.union(df_agb_public).values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
         else:
             df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values())
