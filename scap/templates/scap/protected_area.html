@@ -263,6 +263,12 @@
                                     </li>
                                 {% endfor %}
                             </ul>
+                                  <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_lcs_pa()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_lcs_pa()">Clear All
+                        </button>
                         </div>
                         <hr width="50%">
                         <div class="AGB_checkboxlist">
@@ -281,10 +287,10 @@
                             </ul>
                         </div>
                         <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
-                                onclick="reset_emissions()">Select All
+                                onclick="reset_agbs_pa()">Select All
                         </button>
                         <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
-                                onclick="clear_emissions()">Clear
+                                onclick="clear_agbs_pa()">Clear All
                         </button>
                     </div>
                     <div class="col-9" id="emissions_chart_pa" style="height: 500px">
@@ -326,6 +332,12 @@
 
                             {% endfor %}
                         </ul>
+                              <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_lcs_fc_pa()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_lcs_fc_pa()">Clear All
+                        </button>
                     </div>
                     <div class="col-9" id="container_fcpa" style="height: 90%">
                         <script type="text/javascript">

@@ -411,14 +411,8 @@ function get_checked_agbs() {
     return agbs;
 }
 
-function reset_emissions() {
-    var uncheck = document.getElementsByClassName('AGB_cb');
-    for (var i = 0; i < uncheck.length; i++) {
+function reset_lcs() {
 
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'AGB');
-    }
     var uncheck = document.getElementsByClassName('LC_cb');
     for (var i = 0; i < uncheck.length; i++) {
 
@@ -435,7 +429,81 @@ function reset_emissions() {
 
 }
 
-function clear_emissions() {
+function reset_fc_lcs() {
+
+    var uncheck = document.getElementsByClassName('LC_cb_cf');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container1").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].show();
+    }
+
+}
+function get_checked_agbs() {
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
+}
+
+function reset_agbs() {
+    var uncheck = document.getElementsByClassName('AGB_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'AGB');
+    }
+
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].show();
+    }
+
+}
+
+function clear_lcs() {
+    var uncheck = document.getElementsByClassName('LC_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].hide();
+    }
+
+}
+function clear_fc_lcs() {
+    var uncheck = document.getElementsByClassName('LC_cb_cf');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container1").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+        chart.series[i].hide();
+    }
+
+}
+function clear_agbs() {
 
     var uncheck = document.getElementsByClassName('AGB_cb');
     for (var i = 0; i < uncheck.length; i++) {
@@ -444,12 +512,7 @@ function clear_emissions() {
         // access_lines(uncheck[i],'AGB');
 
     }
-    var uncheck = document.getElementsByClassName('LC_cb');
-    for (var i = 0; i < uncheck.length; i++) {
 
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'LC');
-    }
     var index = $("#container").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
