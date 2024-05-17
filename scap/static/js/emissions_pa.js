@@ -204,9 +204,10 @@ chart.update({
                 events: {
                     checkboxClick: function (event) {
                         if (this.visible) {
-                            this.hide();
+                            this.setVisible(false,false);
+
                         } else {
-                            this.show();
+                            this.setVisible(true,false);
                         }
                     }
                 }
@@ -240,7 +241,8 @@ function hide_line(elem) {
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
         if (newseries[i].name.includes(elem)) {
-            chart.series[i].hide();
+                         chart.series[i].setVisible(false,false);
+
         }
     }
 }
@@ -253,7 +255,8 @@ function show_line(elem) {
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
         if (newseries[i].name.includes(elem)) {
-            chart.series[i].show();
+                         chart.series[i].setVisible(true,false);
+
         }
     }
     // var checked1 = document.querySelectorAll('input.LC_cb_pa:checked');
@@ -458,7 +461,8 @@ function reset_lcs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].show();
+                    chart.series[i].setVisible(true,false);
+
     }
 
 }
@@ -474,7 +478,8 @@ function reset_agbs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].show();
+                    chart.series[i].setVisible(true,false);
+
     }
 
 }
@@ -490,7 +495,8 @@ function reset_lcs_fc_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].show();
+                    chart.series[i].setVisible(true,false);
+
     }
 
 }
@@ -506,7 +512,8 @@ function clear_lcs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].hide();
+                     chart.series[i].setVisible(false,false);
+
     }
 
 }
@@ -521,7 +528,8 @@ function clear_agbs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].hide();
+                    chart.series[i].setVisible(false,false);
+
     }
 
 }
@@ -536,7 +544,7 @@ function clear_lcs_fc_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-        chart.series[i].hide();
+             chart.series[i].setVisible(false,false);
     }
 
 }
