@@ -82,15 +82,19 @@ def map(request, country=0):
         lcs = []
         agbs = []
         if request.user.is_authenticated:
-            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(owner=request.user).values())
+            df_lc_owner = ForestCoverCollection.objects.filter(owner=request.user).values()
+            df_lc_public = ForestCoverCollection.objects.filter(access_level='Public').values()
+            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(owner=request.user).values())  # Get the AGB dataset data
+            df_agb_owner = AGBCollection.objects.filter(owner=request.user).values()
+            df_agb_public = AGBCollection.objects.filter(access_level='Public').values()
+            df_agb = pd.DataFrame(df_agb_owner.union(df_agb_public).values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
         else:
             df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(
-                AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
     except Exception as e:
         print(e)
