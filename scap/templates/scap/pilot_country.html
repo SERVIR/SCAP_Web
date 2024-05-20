@@ -255,7 +255,7 @@ margin-right: 0;">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore how different sources estimate
                 emissions</h5>
             <p class="card-text" style="margin-left: 10px">
-                This tool provides a large array of carbon emission estimations by displaying combinations of activity data (found by taking the difference between two annual forest cover maps) and above ground biomass measurements. Depending on the estimated hectares of activity data along with the associated biomass of the deforested land, users can compare across the ensemble of estimates to explore data trends across time and space.
+                This tool provides a large array of carbon emission estimations by displaying combinations of activity data (found by taking the difference between two annual forest cover maps) and above ground biomass measurements. Depending on the estimated hectares of activity data along with the associated biomass of the deforested land, users can compare across the ensemble of estimates to explore data trends across time and space. As not all forest cover datasets have full temporal coverage from 2000 - 2020, this chart will contain gaps in the trends lines to avoid false estimations in emissions.
             </p>
             <a href="{% url "contribute-data" %}" class="btn btn-primary w-25" style="margin-left: 10px">Combine with your own data</a>
 
@@ -324,9 +324,9 @@ margin-right: 0;">
 <section id="NetForestChangeChart">
     <div class="container">
         <div class="card" style="width: 100%">
-            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore the Change in Forest Cover</h5>
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore Changes in Forest Cover</h5>
             <p class="card-text" style="margin-left: 10px">
-                This tool better demonstrates how estimates of forest cover change datasets, alone, differ by quantifying trends identified in the above data visualization tool. Interested in how well a region is trending towards net zero carbon emissions? Pay attention to trends in both the forest gain and forest loss.
+This data helps to quantify and visualize the differences in forest cover datasets. Interested in how a region’s carbon emission trends align with net-zero emission goals? Pay attention to trends in both forest gain and forest loss.
             </p>
             <a href="{% url "contribute-data" %}" target="_blank" class="btn btn-primary w-25"
                style="margin-left: 10px">Explore

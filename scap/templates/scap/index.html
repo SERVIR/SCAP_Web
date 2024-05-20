@@ -106,7 +106,9 @@
                     </div>
                 </a>
                 <h4 class="my-3">Monitor deforestation</h4>
-                <p class="text-muted">Parties implementing REDD+ activities have set deforestation target’s within their region’s Forest Reference Emission Level Submissions. Through this tool, users can monitor progress towards these targets and determine the impact local decision making have on deforestation trends.</p>
+                <p class="text-muted">
+                REDD+ implementers have set deforestation reduction targets through their region’s Forest Reference Emission Level Submissions. With S-CAP, users can monitor progress towards deforestation reduction targets to determine the impact of local decision-making on deforestation trends.
+                </p>
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta2">
@@ -118,7 +120,9 @@
                     </div>
                 </a>
                 <h4 class="my-3">Monitor progress towards net-zero deforestation</h4>
-                <p class="text-muted">As committed through the UNFCCC, countries pledged their part to secure global net zero by mid-century. Users can track both deforestation and afforestation trends using various land cover change datasets to monitor the regions progress of net zero.</p>
+                <p class="text-muted">
+As part of the United Nations Framework Convention on Climate Change (UNFCCC), countries pledged to contribute to global net zero deforestation by 2050. Users can track their region’s progress towards this goal using various land cover change datasets.
+                </p>
             </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#cta3">
@@ -129,9 +133,10 @@
                         </span>
                     </div>
                 </a>
-                <h4 class="my-3">See emission estimations</h4>
-                <p class="text-muted">USAID missions have a responsibility to track greenhouse gas (GHG) emissions as part of monitoring environmental dynamics in their respective regions. Users can estimate GHG emissions generated using various dataset combinations to better understand local trends.</p>
-            </div>
+                <h4 class="my-3">Estimate emissions</h4>
+                <p class="text-muted">
+USAID missions have a responsibility to track greenhouse gas (GHG) emissions in their respective regions. Users can combine datasets to estimate GHG emissions on local or regional scales.
+                </p></div>
         </div>
     </div>
 </section>
@@ -142,7 +147,7 @@
     <div class="container">
         <div class="text-center">
             <h2 class="section-heading text-uppercase">Pilot Countries</h2>
-            <h3 class="section-subheading text-muted">The SERVIR CArbon Pilot work is engaged with these pilot countries</h3>
+            <h3 class="section-subheading text-muted">S-CAP is piloting its work in the following countries</h3>
         </div>
         <div class="row">
             {% for pilot in pilot_countries %}
@@ -186,8 +191,10 @@
                     </div>
                 </a>
                 <h4 class="my-3">Forest Cover & Forest Cover Loss</h4>
-                <p class="text-muted">To characterize the carbon stocks contained within a region’s forest, one must understand an area’s historic and current forest coverage. Taking the difference in forest coverage between years provides the first half of variables needed to estimate emissions: activity data/area of deforestation.</p>
-{#                {% if user.is_authenticated %}#}
+                <p class="text-muted">
+Historic and current forest cover data are used to measure a region’s forest carbon stocks. Changes in forest cover over time help to determine areas of deforestation, a key variable in estimating carbon emissions.
+                    </p>
+                {#                {% if user.is_authenticated %}#}
 {#                    <div class="text-center">#}
 {#                        <a href="{% url 'userData' %}">#}
 {#                            <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>#}
@@ -206,8 +213,8 @@
                     </div>
                 </a>
                 <h4 class="my-3">Forest Above Ground Biomass</h4>
-                <p class="text-muted">Different carbon pools (living biomass, litter and debris, soil) serve various purposes in terms of measuring and monitoring an area’s carbon stock. For estimating carbon emissions from deforestation, the S-CAP methodology focuses on the change in aboveground biomass (AGB) as it makes up the majority of a tree’s biomass in tropical forests.</p>
-            </div>
+                <p class="text-muted">
+Different carbon pools (living biomass, litter and debris, and soil) serve various purposes in terms of measuring and monitoring an area’s carbon stock. For example, S-CAP can estimate carbon emissions from deforestation based on the change in aboveground biomass (AGB), which stores the majority of the carbon found within a tropical forest.            </div>
             <div class="col-md-4">
                 <a class="pilotcountry-link" data-bs-toggle="modal" href="#AOIModal">
                     <div class="pilotcountry-hover">
@@ -218,7 +225,8 @@
                     </div>
                 </a>
                 <h4 class="my-3">Area of Interest</h4>
-                <p class="text-muted">The boundary provided to constrain the analyses for determining forest cover loss and biomass. This platform allows for full country boundaries,  protected areas, or user defined regions.</p>
+                <p class="text-muted">
+                    The area of analysis for determining forest cover loss and biomass. This platform allows users to analyze data within a country, a protected area, or a user-defined region.</p>
             </div>
         </div>
     </div>
@@ -299,7 +307,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>2023-2024</h3>
-                            <label>Hub Roadshow | Partner Consultation | Capacity Building</label>
+                            <label>Partner Consultation | Capacity Building</label>
                             <p class="scroll-container">
                                 <b>SERVIR CA (Guatemala City, Guatemala) - Feb. 2023:</b> Technical professionals from government, education and private institutions responsible for forest carbon accounting and deforestation monitoring.  Focused on fundamental theory, applications, and code for forest change detection methods and carbon emission estimation with practical exercises applied in participants’ areas of interest.
                                 <br>
@@ -327,8 +335,13 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         <figcaption>
                             <h3>2023-2024</h3>
                             <label>Website Application Development</label>
+                                <p>
+                            A joint effort between the science team and GIT team at the SERVIR Science Coordination Office, the web app reflects priorities expressed by SERVIR hubs and their stakeholders to best suit the needs of the hubs and USAID missions. S-CAP is also poised to contribute to broader GHG monitoring initiatives, namely through its coordination with the U.S. Greenhouse Gas (GHG) Monitoring Center, which leverages IMPACT’s <a href="https://www.earthdata.nasa.gov/learn/blog/veda-open-science-platform">VEDA</a> platform for its data and information system.
+                        </p>
                         </figcaption>
+
                     </figure>
+
                 </li>
                 <li class="carousel__slide">
                     <figure>
@@ -351,7 +364,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>Moving Forward</h3>
-							Annual Updates & Connection to Hub Services
+							Annual Updates & Connection with existing SERVIR Global services
                             <p>
                                 Updates to the datasets and coverage will be updated annually to ensure availability of the most up to date information in regards to land cover, land cover change, and aboveground biomass.
                             </p>
