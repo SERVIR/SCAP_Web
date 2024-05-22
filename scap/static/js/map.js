@@ -778,10 +778,10 @@ function init_map() {
                 style: {
                     weight: 2,
                     opacity: 1,
-                    color: '#F9BD7C',  //Outline color
-                    fillOpacity: 0.5,
+                    color: '#D3D3D3',  //Outline color
+                    fillOpacity: 0.05,
                 },
-                onEachFeature: onEachFeature_country,
+                // onEachFeature: onEachFeature_country,
             });
                aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
@@ -834,10 +834,10 @@ function init_map() {
                 style: {
                     weight: 2,
                     opacity: 1,
-                    color: '#F9BD7C',  //Outline color
-                    fillOpacity: 0.5,
+                    color: '#D3D3D3',  //Outline color
+                    fillOpacity: 0.05,
                 },
-                onEachFeature: onEachFeature_country,
+                // onEachFeature: onEachFeature_country,
             });
 
             // list of overlays

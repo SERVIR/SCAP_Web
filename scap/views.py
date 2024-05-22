@@ -69,13 +69,18 @@ def map(request, country=0):
             for aoi in aois:
                 aoi_geojson = json.loads(aoi.geom.geojson)
                 aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
+
                 aoi_arr.append(aoi_geojson)
             country_shp = AOIFeature.objects.filter(iso3=pc[0]['country_code'], desig_eng='COUNTRY').last()
             country_geojson = json.loads(country_shp.geom.geojson)
             country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
+            country_geojson['coordinates'] = [
+                [ [[-90,-180],   [90,180]]  ] + country_geojson['coordinates'][0]]
             json_obj["data_country"] = [country_geojson]
+
+
         else:
             json_obj["data_pa"] = []
             json_obj["data_country"] = []
@@ -84,7 +89,7 @@ def map(request, country=0):
         if request.user.is_authenticated:
             df_lc_owner = ForestCoverCollection.objects.filter(owner=request.user).values()
             df_lc_public = ForestCoverCollection.objects.filter(access_level='Public').values()
-            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+            df_lc = pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
 
             lcs = df_lc.to_dict('records')
             df_agb_owner = AGBCollection.objects.filter(owner=request.user).values()
@@ -94,16 +99,19 @@ def map(request, country=0):
         else:
             df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
             lcs = df_lc.to_dict('records')
-            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
+            df_agb = pd.DataFrame(
+                AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
     except Exception as e:
         print(e)
         json_obj["data_pa"] = []
         json_obj["data_country"] = []
-    return render(request, 'scap/map.html', context={'shp_obj': json_obj,'country_id':country,'lcs': lcs, 'agbs': agbs,'pilot_countries': pilot_countries,
-                                                     'latitude': lat_long[0], 'longitude': lat_long[1],
-                                                     'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '',
-                                                     'fc_colls': fc_colls, 'agb_colls': agb_colls})
+    return render(request, 'scap/map.html',
+                  context={'shp_obj': json_obj, 'country_id': country, 'lcs': lcs, 'agbs': agbs,
+                           'pilot_countries': pilot_countries,
+                           'latitude': lat_long[0], 'longitude': lat_long[1],
+                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '',
+                           'fc_colls': fc_colls, 'agb_colls': agb_colls})
 
 
 def add_new_collection(request):
@@ -135,13 +143,15 @@ def pilot_country(request, country=0):
             country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
-            json_obj["data_country"] = [country_geojson]
+            # json_obj["data_country"] = [country_geojson]
+            country_geojson['coordinates']=[[ [[-90,-180],   [90,180]]  ]+country_geojson['coordinates'][0]]
+            json_obj["data_country"] =  [country_geojson]
         else:
             json_obj["data_pa"] = []
-            json_obj["data_country"]=[]
+            json_obj["data_country"] = []
     except:
         json_obj["data_pa"] = []
-        json_obj["data_country"]=[]
+        json_obj["data_country"] = []
 
     pa = PilotCountry.objects.get(id=country)
     aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)

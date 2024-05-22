@@ -82,7 +82,7 @@
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
-        <div class="masthead-subheading">Quickly and Easily Estimate Carbon Emissions</div>
+        <div class="masthead-subheading">Quickly and easily estimate carbon emissions</div>
         <div class="masthead-heading text-uppercase">SERVIR Carbon Pilot</div>
         <a class="btn btn-primary btn-xl text-uppercase m-3" href="#services">Show me the data</a>
         <a class="btn btn-primary btn-xl text-uppercase m-3" href="/map/0/">Explore the map</a>
@@ -247,7 +247,7 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
             <h2 class="section-heading text-uppercase pt-4">The History of S-CAP</h2>
             <h3 class="section-subheading text-muted mb-2">Service Development Timeline</h3>
         </div>
-          <div class="carousel">
+          <div class="carousel" id="myCarousel">
             <input type="radio" name="slides" checked="checked" id="slide-1">
             <input type="radio" name="slides" id="slide-2">
             <input type="radio" name="slides" id="slide-3">
@@ -255,8 +255,12 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
             <input type="radio" name="slides" id="slide-5">
             <input type="radio" name="slides" id="slide-6">
 			<input type="radio" name="slides" id="slide-7">
-            <ul class="carousel__slides">
-                <li class="carousel__slide">
+             <!-- Controls -->
+
+        <ul class="carousel__slides">
+
+                <li class="carousel__slide" style="display:table;">
+
                     <figure>
                         <div>
                             <img src="{% static "assets/img/carousel_images/forest.jpg" %}" alt="">
@@ -264,12 +268,12 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
                         <figcaption>
                             <h3>2021</h3>
                             <label>Conceptual Framework and Theory of Change</label>
-                            <p>
+                            <p class="scroll-container">
                                 While the SERVIR network has a number of services focused on land cover monitoring, and tracking tropical deforestation in particular, one element that has been missing is translating such changes into estimates of changes in carbon stock or even emissions of greenhouse gases like carbon dioxide. With USAID regional and bilateral missions contributing Sustainable Landscapes (SL) funding to SERVIR hubs, those USAID missions have a responsibility to track greenhouse gas (GHG) emissions as part of monitoring environmental dynamics in their respective regions. In addition to developing a scientific framework and accompanying ~global / pan-tropical service for monitoring carbon emissions, S-CAP has a significant capacity development component.
                             </p>
                         </figcaption>
                     </figure>
-                </li>
+                                </li>
                 <li class="carousel__slide">
                     <figure>
                         <div>
@@ -372,7 +376,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                     </figure>
                 </li>
             </ul>
-            <ul class="carousel__thumbnails">
+    <ul class="carousel__thumbnails">
                 <li>
                     <label for="slide-1"><img src="{% static "assets/img/carousel_images/forest_thumb.jpg" %}" alt=""></label>
                 </li>
@@ -395,7 +399,8 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                     <label for="slide-7"><img src="{% static "assets/img/carousel_images/planning_thumb.jpg" %}" alt=""></label>
                 </li>
             </ul>
-        </div>
+
+
 <!--        <ul class="timeline">-->
 <!--            <li>-->
 <!--                <div class="timeline-image"><img class="rounded-circle img-fluid"-->
@@ -462,6 +467,8 @@ Initial results from S-CAP were compared against each pilot country’s most rec
 <!--            </li>-->
 <!--        </ul>-->
     </div>
+    </div>
+
 </section>
 <!-- Team-->
 <section class="page-section bg-light" id="team">
