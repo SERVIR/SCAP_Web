@@ -77,7 +77,11 @@ def map(request, country=0):
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
             country_geojson['coordinates'] = [
-                [ [[-90,-180],   [90,180]]  ] + country_geojson['coordinates'][0]]
+                [ [[-179,70],
+            [-179,-70],
+            [179,-70],
+            [179,70],
+            [-179,70]]  ] + country_geojson['coordinates'][0]]
             json_obj["data_country"] = [country_geojson]
 
 
@@ -144,7 +148,11 @@ def pilot_country(request, country=0):
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
             # json_obj["data_country"] = [country_geojson]
-            country_geojson['coordinates']=[[ [[-90,-180],   [90,180]]  ]+country_geojson['coordinates'][0]]
+            country_geojson['coordinates']=[[ [[-179,70],
+            [-179,-70],
+            [179,-70],
+            [179,70],
+            [-179,70]]  ]+country_geojson['coordinates'][0]]
             json_obj["data_country"] =  [country_geojson]
         else:
             json_obj["data_pa"] = []

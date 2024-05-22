@@ -779,7 +779,8 @@ function init_map() {
                     weight: 2,
                     opacity: 1,
                     color: '#D3D3D3',  //Outline color
-                    fillOpacity: 0.05,
+                    fillOpacity: 0.2,
+                     strokeWidth: 0,
                 },
                 // onEachFeature: onEachFeature_country,
             });
@@ -827,6 +828,7 @@ function init_map() {
                     opacity: 1,
                     color: 'cyan',  //Outline color
                     fillOpacity: 0.4,
+
                 },
                 onEachFeature: onEachFeature_aoi,
             });
@@ -835,7 +837,8 @@ function init_map() {
                     weight: 2,
                     opacity: 1,
                     color: '#D3D3D3',  //Outline color
-                    fillOpacity: 0.05,
+                    fillOpacity: 0.2,
+                     strokeWidth: 0,
                 },
                 // onEachFeature: onEachFeature_country,
             });
