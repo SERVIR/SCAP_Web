@@ -57,15 +57,17 @@ class ForestCoverCollection(models.Model):
     access_level = models.CharField(max_length=10, default="Select", help_text="Access Level", choices=ACCESS_CHOICES)
 
     owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
-    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
-    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status", choices=SOURCE_FILE_STATES)
+    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status",
+                                         choices=PROCESSING_STATES)
+    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status",
+                                          choices=SOURCE_FILE_STATES)
 
-    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
+                                        on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
-        unique_together='name','owner'
-
+        unique_together = 'name', 'owner'
 
     def __str__(self):
         return self.name
@@ -73,7 +75,7 @@ class ForestCoverCollection(models.Model):
 
 class ForestCoverFile(models.Model):
     file = models.FileField(upload_to=fc_upload_path)
-    year = models.IntegerField(help_text="Year",default=0,)
+    year = models.IntegerField(help_text="Year", default=0, )
     collection = models.ForeignKey(ForestCoverCollection, on_delete=models.CASCADE, related_name='yearly_files')
     doi_link = models.CharField(max_length=100, default="", blank=True)
     metadata_link = models.URLField(max_length=100, default="", blank=True)
@@ -83,7 +85,8 @@ class ForestCoverFile(models.Model):
 
     class Meta:
         verbose_name_plural = "Forest Cover Files"
-        unique_together='year','collection'
+        unique_together = 'year', 'collection'
+
 
 class AOICollection(models.Model):
     ACCESS_CHOICES = (
@@ -110,14 +113,15 @@ class AOICollection(models.Model):
     owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
 
     access_level = models.CharField(max_length=10, default="Private", help_text="Access Level", choices=ACCESS_CHOICES)
-    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
+    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status",
+                                         choices=PROCESSING_STATES)
 
-    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
+                                        on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "AOI Collections"
         unique_together = 'name', 'owner'
-
 
     def __str__(self):
         return self.name
@@ -176,23 +180,27 @@ class AGBCollection(models.Model):
     owner = models.ForeignKey(User, verbose_name="Uploaded By", on_delete=models.CASCADE)
 
     access_level = models.CharField(max_length=10, default="Private", help_text="Access Level", choices=ACCESS_CHOICES)
-    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status", choices=PROCESSING_STATES)
-    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status", choices=SOURCE_FILE_STATES)
+    processing_status = models.CharField(max_length=100, default="Not Processed", help_text="Processing Status",
+                                         choices=PROCESSING_STATES)
+    source_file_status = models.CharField(max_length=100, default="Unavailable", help_text="SCAP Source File Status",
+                                          choices=SOURCE_FILE_STATES)
 
-    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True, on_delete=models.SET_NULL)
+    processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
+                                        on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = "AGB Collections"
         unique_together = 'name', 'owner'
 
-
     def __str__(self):
         return self.name
-        
+
+
 class CarbonStatistic(models.Model):
     fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
     agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
-    aoi_index = models.ForeignKey(AOIFeature, default=1, help_text="AOI the calculation was made for", on_delete=models.CASCADE)
+    aoi_index = models.ForeignKey(AOIFeature, default=1, help_text="AOI the calculation was made for",
+                                  on_delete=models.CASCADE)
     year_index = models.IntegerField(help_text="Year")
 
     final_carbon_stock = models.FloatField(help_text="Carbon Stock")
@@ -209,7 +217,8 @@ class CarbonStatistic(models.Model):
 
 class ForestCoverStatistic(models.Model):
     fc_index = models.CharField(max_length=100, default="", help_text="FC File")
-    aoi_index = models.ForeignKey(AOIFeature, default=1, help_text="AOI the calculation was made for", on_delete=models.CASCADE)
+    aoi_index = models.ForeignKey(AOIFeature, default=1, help_text="AOI the calculation was made for",
+                                  on_delete=models.CASCADE)
     year_index = models.IntegerField(help_text="Calculation Year")
 
     final_forest_area = models.FloatField(help_text="Final Forest Area")
@@ -240,7 +249,9 @@ class PilotCountry(models.Model):
     latitude = models.FloatField(default=0, help_text="Latitude")
     longitude = models.FloatField(default=0, help_text="Longitude")
     zoom_level = models.IntegerField(default=0, help_text="Default Zoom level")
-    forest_cover_collection = models.ForeignKey(ForestCoverCollection, help_text="Default Forest Cover Collection to show on map",blank=True,null=True,on_delete=models.CASCADE)
+    forest_cover_collection = models.ForeignKey(ForestCoverCollection,
+                                                help_text="Default Forest Cover Collection to show on map", blank=True,
+                                                null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.country_name
@@ -250,3 +261,15 @@ class PilotCountry(models.Model):
 
     class Meta:
         verbose_name_plural = "Pilot Countries"
+
+
+class UserMessage(models.Model):
+    name = models.CharField(max_length=100, default="", help_text="Name")
+    organization = models.CharField(max_length=100, default="", help_text="Organization")
+    role = models.CharField(max_length=100, default="", help_text="Role")
+    email = models.CharField(max_length=100, default="", help_text="Email")
+    message = models.TextField(default="", help_text="")
+    created_date = models.DateTimeField(auto_now_add=True, help_text="Date")
+    response = models.TextField(default="", help_text="")
+    response_given_by = models.CharField(max_length=100, default="", help_text="")
+    responded_on = models.DateTimeField(help_text="")

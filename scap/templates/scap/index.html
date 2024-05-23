@@ -16,6 +16,37 @@
 
   gtag('config', 'G-XB4PH586BT');
 </script>
+       <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+     <script src="{% static 'js/utils.js' %}" rel="stylesheet"></script>
+    <script>
+        function sendMessageToScap(obj) {
+            var email=obj.elements['email'].value;
+            var name=obj.elements['name'].value;
+            var organization=obj.elements['organization'].value;
+            var role=obj.elements['role'].value;
+            var message=obj.elements['message'].value;
+            $.ajax({
+                type: 'POST',
+                url: 'send-message-scap/',
+                data: {
+                    'name': name,
+                    'email': email,
+                    'organization':organization,
+                    'role':role,
+                    'message':message
+                },
+                success: function (res) {
+                    if(res.result==='success')
+                        document.getElementById('submitSuccessMessage').style.display='block';
+                    else if(res.result==='error')
+                        document.getElementById('submitErrorMessage').style.display='block';
+
+
+                }
+
+            });
+        }
+    </script>
 <!-- End Google Tag Manager -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -559,7 +590,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
         <!-- To make this form functional, sign up at-->
         <!-- https://startbootstrap.com/solution/contact-forms-->
         <!-- to get an API token!-->
-        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+        <form id="contactForm" action="javascript:;" onsubmit=" sendMessageToScap( this ) ">
             <div class="row align-items-stretch mb-5">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -606,10 +637,10 @@ Initial results from S-CAP were compared against each pilot country’s most rec
             <!-- has successfully submitted-->
             <div class="d-none" id="submitSuccessMessage">
                 <div class="text-center text-white mb-3">
-                    <div class="fw-bolder">Form submission successful!</div>
-                    To activate this form, sign up at
-                    <br/>
-                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                    <div class="fw-bolder">Message Sent!</div>
+<!--                    To activate this form, sign up at-->
+<!--                    <br/>-->
+<!--                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>-->
                 </div>
             </div>
             <!-- Submit error message-->
@@ -621,7 +652,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
             </div>
             <!-- Submit Button-->
             <div class="text-center">
-                <button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send
+                <button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit">Send
                     Message
                 </button>
             </div>
@@ -864,6 +895,6 @@ Initial results from S-CAP were compared against each pilot country’s most rec
 <!-- * *                               SB Forms JS                               * *-->
 <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<!--<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>-->
 </body>
 </html>

@@ -801,3 +801,18 @@ def add_agb_data(request, pk=None):
     except Exception as e:
         return JsonResponse({"error": str(e)})
     return JsonResponse({"error": ""})
+
+@csrf_exempt
+def send_message_scap(request):
+    from django.core.mail import send_mail
+    name = request.POST.get('name')
+    organization = request.POST.get('organization')
+    email= request.POST.get('email')
+    role= request.POST.get('role')
+    message = request.POST.get('message')
+    approvers_emails = ['githika.cs@gmail.com']
+    try:
+        send_mail('Message from SCAP User', message, email, approvers_emails)
+    except Exception as e:
+        return JsonResponse({'result': 'error'})
+    return JsonResponse({'result':'success'})
