@@ -130,14 +130,14 @@ class AOICollection(models.Model):
 class AOIFeature(models.Model):
     collection = models.ForeignKey(AOICollection, null=True, on_delete=models.CASCADE, related_name='features')
 
-    wdpa_pid = models.CharField(max_length=52)
-    name = models.CharField(max_length=254)
-    orig_name = models.CharField(max_length=254)
+    wdpa_pid = models.CharField(max_length=52, null=True)
+    name = models.CharField(max_length=254, null=True)
+    orig_name = models.CharField(max_length=254, null=True)
     desig_eng = models.CharField(max_length=254, null=True)
     desig_type = models.CharField(max_length=20, null=True)
-    rep_area = models.FloatField()
-    gis_area = models.FloatField()
-    iso3 = models.CharField(max_length=50)
+    rep_area = models.FloatField(null=True)
+    gis_area = models.FloatField(null=True)
+    iso3 = models.CharField(max_length=50, null=True)
     geom = models.MultiPolygonField(srid=4326)
 
     def __str__(self):
@@ -167,7 +167,7 @@ class AGBCollection(models.Model):
     )
 
     name = models.CharField(max_length=100, default="", help_text="Collection Name")
-    description = models.CharField(max_length=100, default="", help_text="Collection Description")
+    description = models.CharField(default="", help_text="Collection Description")
 
     doi_link = models.CharField(max_length=200, default="", blank=True)
     metadata_link = models.URLField(max_length=200, default="", blank=True)

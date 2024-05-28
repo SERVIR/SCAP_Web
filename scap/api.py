@@ -5,20 +5,26 @@ import tempfile
 import time
 from pathlib import Path
 import numpy
+import logging
 
 import doi
 import requests
 import pandas as pd
+from itertools import product
+from datetime import datetime
 from django.http import JsonResponse
 from pandas_highcharts.core import serialize
 from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
+from django.contrib.gis.geos import GEOSGeometry
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 
 from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
                          AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry)
+
+from scap.processing import calculate_zonal_statistics, generate_aoi_file
 
 from scap.async_tasks import process_updated_collection
 import geopandas as gpd
@@ -28,6 +34,8 @@ from django.db.models import Count, Max, Min, Avg
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json_lib.load(f)
+
+logger = logging.getLogger("django")
 
 
 # This method is used to generate geodjango objects for AOI or Boundary Data Source
@@ -55,10 +63,36 @@ def test(request):
 
 
 @csrf_exempt
-def get_dataset_list(request, country):
+def upload_drawn_aoi(request,country):
     lcs = request.POST.getlist('lcs[]')
     agbs = request.POST.getlist('agbs[]')
-    return JsonResponse({})
+    feature = request.POST.get('geometry')
+
+    feat  = json_lib.loads(feature)
+    geom = feat['features'][0]['geometry']
+    coll = AOICollection.objects.get(name='User Drawn AOIs')
+    current_time = datetime.now()
+    if geom['type'] == 'Polygon':
+        geom['type'] = 'MultiPolygon'
+        geom['coordinates'] = [geom['coordinates']]
+
+    uploaded_feature = AOIFeature(geom=GEOSGeometry(json_lib.dumps(geom)), collection=AOICollection.objects.get(name='User Drawn AOIs'))
+    uploaded_feature.name = 'user-drawn-' + current_time.strftime("%Y%m%dT%H%M%S")
+    uploaded_feature.iso3 = 'NPL'
+    uploaded_feature.desig_eng = 'DRAWN'
+    uploaded_feature.save()
+
+    generate_aoi_file(uploaded_feature, coll, coll.processing_task, 0, 100)
+
+    aoi_collections = [coll]
+    agb_collections = list(AGBCollection.objects.filter(id__in=agbs))
+    fc_collections = list(ForestCoverCollection.objects.filter(id__in=lcs))
+    
+    available_sets = list(product(fc_collections, agb_collections, aoi_collections))
+    for fc, agb, aoi in available_sets:
+        calculate_zonal_statistics(fc, agb, aoi, True) 
+
+    return JsonResponse({"aoi_id": uploaded_feature.id})
 
 
 def generate_geodjango_objects_aoi(verbose=True):
@@ -375,7 +409,7 @@ def fetch_carbon_charts(pa_name, owner, container):
 
 
 def fetch_forest_change_charts(pa_name, owner, container):
-    df_defor = pd.DataFrame(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values())
+    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values()))
     lc_names = []
     if not df_defor.empty:
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
@@ -475,13 +509,6 @@ def get_agg_check(request, country=0):
                     min=Min('emissions'), max=Max('emissions'), avg=Avg('emissions')))
         if len(data1) == 0:
             return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
-        if len(data1) < 25:
-
-            for y in years:
-                if not any(d['year_index'] == y for d in data1):
-                    data1.append({'year': y, 'min': None, 'max': None, 'avg': None})
-                else:
-                    pass
         data1.sort(key=lambda x: x['year_index'])
 
         for x in range(len(data1)):
@@ -756,8 +783,9 @@ def add_aoi_data(request):
         aoi_coll.doi_link = request.POST.get('doi_link')
         aoi_coll.access_level = request.POST.get('access')
         aoi_coll.owner = request.user
-        # aoi_coll.processing_status = "Staged"
+        aoi_coll.processing_status = "Staged"
         aoi_coll.save()
+        process_updated_collection.delay(aoi_coll.id, 'aoi')
     except Exception as e:
         return JsonResponse({"error": str(e)})
     return JsonResponse({"error": ""})
@@ -765,6 +793,7 @@ def add_aoi_data(request):
 
 def add_agb_data(request, pk=None):
     try:
+        logger.info(str(request))
         try:
             boundary_file = request.FILES['boundary_file']
         except Exception as e:
@@ -796,8 +825,9 @@ def add_agb_data(request, pk=None):
             agb_coll.access_level = request.POST.get('access')
             agb_coll.year = request.POST.get('year')
             agb_coll.owner = request.user
-        # agb_coll.processing_status = "Staged"
+        agb_coll.processing_status = "Staged"
         agb_coll.save()
+        process_updated_collection.delay(agb_coll.id, 'agb')
     except Exception as e:
         return JsonResponse({"error": str(e)})
     return JsonResponse({"error": ""})

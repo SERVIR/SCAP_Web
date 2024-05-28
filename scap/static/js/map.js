@@ -7,6 +7,7 @@ let comparison_control;
 let aoi_layer_left;
 let aoi_layer_right;let aoi_layer;
 let country_layer;
+let drawn_aoi;
 
 let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
@@ -274,11 +275,13 @@ function  redraw_based_on_year() {
 
     if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
         thredds_dir="fc";
+        scale_range = "0.5,1"
 
     }
     //carbon stock or emissions
     else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions') {
         thredds_dir = map_modal_action;
+        scale_range = "0,50000"
 
 
     }
@@ -337,7 +340,7 @@ function  redraw_based_on_year() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -347,13 +350,13 @@ function  redraw_based_on_year() {
         primary_underlay_url=(thredds_dir=="fc")?
             `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
             :
-                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`
+                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`
 
         primary_underlay_layer = L.tileLayer.wms(primary_underlay_url,
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -363,13 +366,13 @@ function  redraw_based_on_year() {
         secondary_overlay_url=(thredds_dir=="fc")?
             `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
             :
-                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`
+                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`
 
         secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: 'boxfill/cwg',
@@ -389,7 +392,7 @@ function  redraw_based_on_year() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: style,
@@ -478,6 +481,7 @@ function add_thredds_wms_layers() {
         primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
+        scale_range = "0.5,1"
     }
     //carbon stock or emissions
     else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {
@@ -486,10 +490,12 @@ function add_thredds_wms_layers() {
         base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
 
         primary_overlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
-        primary_underlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`;
-        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${selected_year}.nc4?service=WMS`;
+        primary_underlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`;
+        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`;
 
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
+        scale_range = "0,50000"
+
     }
     try {
 
@@ -497,7 +503,7 @@ function add_thredds_wms_layers() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -508,7 +514,7 @@ function add_thredds_wms_layers() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -519,7 +525,7 @@ function add_thredds_wms_layers() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: 'boxfill/cwg',
@@ -535,7 +541,7 @@ function add_thredds_wms_layers() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: "0.5,1",
+                colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: style,
@@ -735,22 +741,20 @@ function get_checked_agbs() {
 }
 function send_to_backend(){
     var lcss = get_checked_lcs();
-var agbss = get_checked_agbs();
-if(lcss.length>0 && agbss.length>0) {
-    $.ajax({
-        type: 'POST',
-        url: 'get-dataset-list/',
-        data: {'lcs': lcss, 'agbs': agbss},
-        success: function (data) {
-            console.log("done");
-            $('#drawing_modal').modal('hide');
-
-        }
-    });
-}
-else{
-    alert("Please select atleast one Land Cover and one Above Ground Biomass dataset");
-}
+    var agbss = get_checked_agbs();
+    if(lcss.length>0 && agbss.length>0) {
+        $.ajax({
+            type: 'POST',
+            url: 'upload-drawn-aoi/',
+            data: {'lcs': lcss, 'agbs': agbss, 'geometry': JSON.stringify(drawn_aoi)},
+            success: function (data) {
+                window.location = window.location.origin + '/aoi/' + data.aoi_id + '/';
+            }
+        });
+    }
+    else{
+        alert("Please select atleast one Land Cover and one Above Ground Biomass dataset");
+    }
 }
 
 function init_map() {
@@ -926,7 +930,7 @@ function init_map() {
         editableLayers.addLayer(layer);
         var json = editableLayers.toGeoJSON();
         $('#drawing_modal').modal('show');
-        console.log(json)
+        drawn_aoi = json;
     });
 
 

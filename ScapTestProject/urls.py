@@ -58,7 +58,7 @@ urlpatterns = [
       path('pilot/<int:country>/get-series-name/', get_series_name, name='get_series_name'),
 
       path('map/get-aoi/', get_AOI, name='get-aoi'),
-      path('map/<int:country>/get-dataset-list/', get_dataset_list, name='get-dataset-list'),
+      path('map/<int:country>/upload-drawn-aoi/', upload_drawn_aoi, name='upload-drawn-aoi'),
 
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
       path('map/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id'),

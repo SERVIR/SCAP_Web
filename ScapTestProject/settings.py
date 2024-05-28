@@ -20,17 +20,29 @@ data = json.load(f)
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename":data["PATH_TO_LOG"] ,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s, %(asctime)s, %(module)s, %(process)d, %(thread)d, %(message)s',
+            'datefmt': "%d/%b/%Y %H:%M:%S"
         },
+        'simple': {
+            'format': '%(levelname)s, %(message)s'
+        },
+    },
+    "handlers": {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': data['PATH_TO_LOG'],
+            'when': 'midnight',
+            'backupCount': 10,
+            'formatter': 'verbose'
+        }
     },
     "loggers": {
         "django": {
             "handlers": ["file"],
-            "level": "DEBUG",
+            "level": "INFO",
             "propagate": True,
         },
     },
@@ -207,4 +219,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 CELERY_BROKER_URL = data["CELERY_BROKER_URL"]
 CELERY_RESULT_BACKEND = data["CELERY_RESULT_BACKEND"]
-
