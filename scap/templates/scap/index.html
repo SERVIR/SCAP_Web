@@ -36,10 +36,11 @@
                     'message':message
                 },
                 success: function (res) {
+                    console.log(res.result==='error')
                     if(res.result==='success')
-                        document.getElementById('submitSuccessMessage').style.display='block';
+                        document.getElementById('submitSuccessMessage').classList.remove('d-none');
                     else if(res.result==='error')
-                        document.getElementById('submitErrorMessage').style.display='block';
+                        document.getElementById('submitErrorMessage').classList.remove('d-none');
 
 
                 }

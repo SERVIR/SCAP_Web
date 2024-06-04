@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 
 from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
-                         AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry)
+                         AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry, UserMessage)
 
 from scap.async_tasks import process_updated_collection
 import geopandas as gpd
@@ -803,6 +803,17 @@ def add_agb_data(request, pk=None):
     return JsonResponse({"error": ""})
 
 @csrf_exempt
+def save_message_to_db(name,organization,email, role, message):
+    message_object=UserMessage()
+    message_object.name=name
+    message_object.organization=organization
+    message_object.email=email
+    message_object.role=role
+
+    message_object.message=message
+    message_object.save()
+
+@csrf_exempt
 def send_message_scap(request):
     from django.core.mail import send_mail
     name = request.POST.get('name')
@@ -813,6 +824,7 @@ def send_message_scap(request):
     approvers_emails = ['githika.cs@gmail.com']
     try:
         send_mail('Message from SCAP User', message, email, approvers_emails)
+        save_message_to_db(name,organization,email, role, message)
     except Exception as e:
         return JsonResponse({'result': 'error'})
     return JsonResponse({'result':'success'})
