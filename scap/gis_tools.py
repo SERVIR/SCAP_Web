@@ -234,7 +234,7 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path, prog
                 curr_block_data = curr_raster.read(1, window=window)
 
                 # Apply mask to AGB block
-                change_block_data = np.multiply(np.logical_xor((curr_block_data > 0), (base_block_data > 0)), curr_block_data)
+                change_block_data = np.add(curr_block_data > base_block_data, np.multiply(-1, base_block_data > curr_block_data))
 
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
@@ -266,7 +266,7 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
 
     if agb_year > fc_year:
         logger.info("Skipping {} gtiff generation for FC year {} and AGB year {}".format(carbon_type, fc_year, agb_year))
-        return
+        return None
 
     with rio.open(fc_source) as fc_raster, rio.open(agb_source) as agb_raster:
         # Create output TIF with matching profile
@@ -300,7 +300,40 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
 
                 if block_counter % 25000 == 0:
                     progress_callback(float(block_counter) / total_blocks)
+    return output_path
 
+
+def check_overlap(raster1, raster2):
+    # Open the TIFF files
+    ds1 = gdal.Open(raster1)
+    ds2 = gdal.Open(raster2)
+
+    if ds1 is None or ds2 is None:
+        return False
+
+    # Get the affine matrix and image size for each TIFF
+    gt1 = ds1.GetGeoTransform()
+    cols1, rows1 = ds1.RasterXSize, ds1.RasterYSize
+    gt2 = ds2.GetGeoTransform()
+    cols2, rows2 = ds2.RasterXSize, ds2.RasterYSize
+
+    # Calculate the top-left and bottom-right corners for each image
+    x_min1, _, _, y_max1, _, y_min1 = gt1
+    x_max1 = x_min1 + cols1 * gt1[1]
+    y_min2 = y_max1 + rows1 * gt1[5]
+    x_min2, _, _, y_max2, _, y_min2 = gt2
+    x_max2 = x_min2 + cols2 * gt2[1]
+    y_min2 = y_max2 + rows2 * gt2[5]
+
+    # Check for overlap
+    overlap = (x_min1 <= x_max2 and x_max1 >= x_min2) and \
+              (y_min1 <= y_max2 and y_max1 >= y_min2)
+
+    # Close the datasets
+    ds1 = None
+    ds2 = None
+
+    return overlap
 
 def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
     row_offset, col_offset = get_raster_offset(aoi, data_raster)
