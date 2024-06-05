@@ -1,0 +1,472 @@
+INFO, 05/Jun/2024 15:22:15, autoreload, 11001, 140563482359616, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 15:22:15, autoreload, 12064, 139627311552320, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 15:22:51, basehttp, 12064, 139626500060928, "GET /forest-cover-collections/ HTTP/1.1" 200 3997
+INFO, 05/Jun/2024 15:22:51, basehttp, 12064, 139626500060928, "GET /static/js/scripts.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:22:51, basehttp, 12064, 139626500060928, "GET /static/css/styles.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:22:51, basehttp, 12064, 139626489571072, "GET /static/assets/img/SERVIR_flat_white2.png HTTP/1.1" 200 36700
+INFO, 05/Jun/2024 15:22:52, basehttp, 12064, 139626500060928, "GET /forest-cover-collections/add/ HTTP/1.1" 200 11400
+INFO, 05/Jun/2024 15:22:52, basehttp, 12064, 139626500060928, "GET /static/js/newcoll.js HTTP/1.1" 200 22628
+INFO, 05/Jun/2024 15:23:00, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/add/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 15:23:00, basehttp, 12064, 139626500060928, "GET /forest-cover-collections/edit/1/ HTTP/1.1" 200 11951
+INFO, 05/Jun/2024 15:23:00, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/get-tiff-data/ HTTP/1.1" 200 12
+INFO, 05/Jun/2024 15:23:22, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/doi/ HTTP/1.1" 200 11
+INFO, 05/Jun/2024 15:23:23, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/add-tiff-record/ HTTP/1.1" 200 33
+INFO, 05/Jun/2024 15:23:30, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/doi/ HTTP/1.1" 200 11
+INFO, 05/Jun/2024 15:23:30, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/add-tiff-record/ HTTP/1.1" 200 33
+INFO, 05/Jun/2024 15:23:36, basehttp, 12064, 139626500060928, "POST /forest-cover-collections/edit/1/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 15:23:36, basehttp, 12064, 139626500060928, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 15:25:32, autoreload, 12064, 139627311552320, /home/agoberna/PycharmProjects/SCAP_Web/scap/async_tasks.py changed, reloading.
+INFO, 05/Jun/2024 15:25:33, autoreload, 12327, 140191397103424, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190585751296, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190585751296, "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190585751296, "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190570018560, "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190561625856, "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190570018560, "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190561625856, "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190349784832, "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190349784832, "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190332999424, "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190332999424, "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190341392128, "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190341392128, "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190585751296, "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190349784832, "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190570018560, "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:53, basehttp, 12327, 140190561625856, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190585751296, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 33615
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190570018560, "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190349784832, "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190341392128, "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190332999424, "GET /static/admin/js/inlines.js HTTP/1.1" 200 15592
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190561625856, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190332999424, "GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 667
+INFO, 05/Jun/2024 15:25:54, basehttp, 12327, 140190561625856, "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO, 05/Jun/2024 15:25:59, basehttp, 12327, 140190585751296, "POST /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 15:25:59, basehttp, 12327, 140190585751296, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14748
+INFO, 05/Jun/2024 15:25:59, basehttp, 12327, 140190332999424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 15:26:01, basehttp, 12327, 140190585751296, "GET /forest-cover-collections/ HTTP/1.1" 200 5012
+INFO, 05/Jun/2024 15:26:05, basehttp, 12327, 140190585751296, "GET /forest-cover-collections/edit/1/ HTTP/1.1" 200 11951
+INFO, 05/Jun/2024 15:26:06, basehttp, 12327, 140190332999424, "POST /forest-cover-collections/edit/1/get-tiff-data/ HTTP/1.1" 200 248
+INFO, 05/Jun/2024 15:26:10, basehttp, 12327, 140190585751296, "POST /forest-cover-collections/edit/1/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 15:26:10, basehttp, 12327, 140190585751296, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 15:29:04, basehttp, 12327, 140190585751296, "GET /admin/scap/forestcoverfile/ HTTP/1.1" 200 14813
+INFO, 05/Jun/2024 15:29:04, basehttp, 12327, 140190585751296, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 15:29:36, autoreload, 12327, 140191397103424, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 15:29:36, autoreload, 12570, 139754521663296, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 15:29:49, basehttp, 12570, 139753710311168, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 15:29:49, basehttp, 12570, 139753710311168, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 33738
+INFO, 05/Jun/2024 15:29:53, basehttp, 12570, 139753710311168, "POST /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 15:29:53, basehttp, 12570, 139753710311168, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14748
+INFO, 05/Jun/2024 15:29:53, basehttp, 12570, 139753710311168, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 15:29:54, basehttp, 12570, 139753710311168, "GET /forest-cover-collections/ HTTP/1.1" 200 5012
+INFO, 05/Jun/2024 15:29:56, basehttp, 12570, 139753710311168, "GET /forest-cover-collections/edit/1/ HTTP/1.1" 200 11951
+INFO, 05/Jun/2024 15:29:56, basehttp, 12570, 139753690384128, "POST /forest-cover-collections/edit/1/get-tiff-data/ HTTP/1.1" 200 248
+INFO, 05/Jun/2024 15:29:59, basehttp, 12570, 139753710311168, "POST /forest-cover-collections/edit/1/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 15:29:59, basehttp, 12570, 139753710311168, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 18:17:44, autoreload, 12570, 139754521663296, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 18:17:44, autoreload, 14239, 140455642933056, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 18:18:12, basehttp, 14239, 140454831576832, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 18:18:13, basehttp, 14239, 140454831576832, "GET /forest-cover-collections/add/ HTTP/1.1" 200 11400
+WARNING, 05/Jun/2024 18:18:15, log, 14239, 140454831576832, Not Found: /favicon.ico
+INFO, 05/Jun/2024 18:18:26, basehttp, 14239, 140454831576832, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 33861
+INFO, 05/Jun/2024 18:18:26, basehttp, 14239, 140454831576832, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:18:31, basehttp, 14239, 140454831576832, "POST /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 18:18:31, basehttp, 14239, 140454831576832, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14748
+INFO, 05/Jun/2024 18:18:31, basehttp, 14239, 140454831576832, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:18:31, basehttp, 14239, 140454778078976, "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO, 05/Jun/2024 18:18:35, basehttp, 14239, 140454831576832, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 18:18:35, basehttp, 14239, 140454786471680, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:18:37, basehttp, 14239, 140454831576832, "GET /admin/scap/agbcollection/1/change/ HTTP/1.1" 200 27886
+INFO, 05/Jun/2024 18:18:37, basehttp, 14239, 140454786471680, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:18:44, basehttp, 14239, 140454831576832, "POST /admin/scap/agbcollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 18:18:44, basehttp, 14239, 140454831576832, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14446
+INFO, 05/Jun/2024 18:18:44, basehttp, 14239, 140454786471680, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:18:48, basehttp, 14239, 140454831576832, "GET /forest-cover-collections/ HTTP/1.1" 200 5012
+INFO, 05/Jun/2024 18:18:52, basehttp, 14239, 140454831576832, "GET /forest-cover-collections/edit/1/ HTTP/1.1" 200 11951
+INFO, 05/Jun/2024 18:18:53, basehttp, 14239, 140454786471680, "POST /forest-cover-collections/edit/1/get-tiff-data/ HTTP/1.1" 200 248
+INFO, 05/Jun/2024 18:18:58, basehttp, 14239, 140454831576832, "POST /forest-cover-collections/edit/1/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 18:18:58, basehttp, 14239, 140454831576832, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 18:19:03, basehttp, 14239, 140454831576832, "GET /agb-collections/ HTTP/1.1" 200 4930
+INFO, 05/Jun/2024 18:19:05, basehttp, 14239, 140454831576832, "GET /agb-collections/edit/1/ HTTP/1.1" 200 10002
+INFO, 05/Jun/2024 18:19:08, api, 14239, 140454831576832, <WSGIRequest: POST '/agb-collections/edit/1/store-agb-for-processing/'>
+INFO, 05/Jun/2024 18:19:08, basehttp, 14239, 140454831576832, "POST /agb-collections/edit/1/store-agb-for-processing/ HTTP/1.1" 200 13
+INFO, 05/Jun/2024 18:19:08, basehttp, 14239, 140454831576832, "GET /agb-collections/ HTTP/1.1" 200 4937
+INFO, 05/Jun/2024 18:19:17, basehttp, 14239, 140454831576832, "GET /admin/scap/agbcollection/1/change/ HTTP/1.1" 200 28132
+INFO, 05/Jun/2024 18:19:17, basehttp, 14239, 140454786471680, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:27:26, autoreload, 14239, 140455642933056, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 18:27:26, autoreload, 14671, 140540456507200, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 18:46:55, basehttp, 14671, 140539644286720, "GET /admin/scap/agbcollection/1/change/ HTTP/1.1" 200 28132
+INFO, 05/Jun/2024 18:46:55, basehttp, 14671, 140539644286720, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:46:59, basehttp, 14671, 140539644286720, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 18:47:01, basehttp, 14671, 140539644286720, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 18:47:01, basehttp, 14671, 140539644286720, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:47:02, basehttp, 14671, 140539644286720, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 34107
+INFO, 05/Jun/2024 18:47:03, basehttp, 14671, 140539623311104, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:47:07, basehttp, 14671, 140539644286720, "POST /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 18:47:07, basehttp, 14671, 140539644286720, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14748
+INFO, 05/Jun/2024 18:47:07, basehttp, 14671, 140539623311104, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:47:09, basehttp, 14671, 140539644286720, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 34107
+INFO, 05/Jun/2024 18:47:09, basehttp, 14671, 140539623311104, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 18:47:12, basehttp, 14671, 140539644286720, "GET /agb-collections/ HTTP/1.1" 200 4926
+INFO, 05/Jun/2024 18:47:17, basehttp, 14671, 140539644286720, "GET /forest-cover-collections/ HTTP/1.1" 200 5012
+INFO, 05/Jun/2024 18:47:18, basehttp, 14671, 140539644286720, "GET /forest-cover-collections/edit/1/ HTTP/1.1" 200 11951
+INFO, 05/Jun/2024 18:47:19, basehttp, 14671, 140539623311104, "POST /forest-cover-collections/edit/1/get-tiff-data/ HTTP/1.1" 200 248
+INFO, 05/Jun/2024 18:47:20, basehttp, 14671, 140539644286720, "POST /forest-cover-collections/edit/1/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 18:47:20, basehttp, 14671, 140539644286720, "GET /forest-cover-collections/ HTTP/1.1" 200 5029
+INFO, 05/Jun/2024 20:25:26, autoreload, 14671, 140540456507200, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:25:27, autoreload, 16271, 140340454291264, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:25:28, basehttp, 16271, 140339642939136, "GET /forest-cover-collections/ HTTP/1.1" 200 5008
+INFO, 05/Jun/2024 20:25:32, basehttp, 16271, 140339642939136, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 34230
+INFO, 05/Jun/2024 20:25:32, basehttp, 16271, 140339642939136, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 20:25:32, log, 16271, 140339642939136, Not Found: /favicon.ico
+INFO, 05/Jun/2024 20:25:42, basehttp, 16271, 140339642939136, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 20:25:42, basehttp, 16271, 140339625109248, "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO, 05/Jun/2024 20:25:42, basehttp, 16271, 140339642939136, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:25:44, basehttp, 16271, 140339642939136, "GET /admin/scap/agbcollection/1/change/ HTTP/1.1" 200 28255
+INFO, 05/Jun/2024 20:25:44, basehttp, 16271, 140339625109248, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:27:33, autoreload, 16271, 140340454291264, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:27:34, autoreload, 16348, 140654200612672, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:29:14, autoreload, 16348, 140654200612672, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:29:14, autoreload, 16402, 140342530824000, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:39:49, autoreload, 16402, 140342530824000, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:39:49, autoreload, 16932, 140272688793408, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:41:13, autoreload, 16932, 140272688793408, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:41:14, autoreload, 16967, 139765565507392, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:41:52, basehttp, 16967, 139764754138880, "GET /forest-cover-collections/ HTTP/1.1" 200 5008
+INFO, 05/Jun/2024 20:41:52, basehttp, 16967, 139764754138880, "GET /static/js/datatables.js HTTP/1.1" 200 243
+INFO, 05/Jun/2024 20:41:53, basehttp, 16967, 139764754138880, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 20:41:55, basehttp, 16967, 139764754138880, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 20:41:55, basehttp, 16967, 139764754138880, "GET /static/js/aoicoll.js HTTP/1.1" 200 4461
+INFO, 05/Jun/2024 20:42:30, basehttp, 16967, 139764754138880, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 20:42:30, libgdal, 16987, 139833110013760, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:42:30, libgdal, 16987, 139833110013760, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:42:30, libgdal, 16987, 139833110013760, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:42:30, libgdal, 16987, 139833110013760, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:42:30, libgdal, 16987, 139833110013760, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 20:42:30, basehttp, 16967, 139764754138880, "GET /aoi-collections/ HTTP/1.1" 200 5291
+INFO, 05/Jun/2024 20:43:18, autoreload, 16967, 139765565507392, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:43:19, autoreload, 17189, 140698939336512, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:43:46, basehttp, 17189, 140698127976192, "GET /admin/scap/aoifeature/ HTTP/1.1" 200 17585
+INFO, 05/Jun/2024 20:43:46, basehttp, 17189, 140698127976192, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:43:50, basehttp, 17189, 140698127976192, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 20:43:50, basehttp, 17189, 140698127976192, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:43:54, basehttp, 17189, 140698127976192, "GET /admin/scap/aoicollection/1/change/ HTTP/1.1" 200 25942
+INFO, 05/Jun/2024 20:43:54, basehttp, 17189, 140698109097728, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:43:58, basehttp, 17189, 140698127976192, "POST /admin/scap/aoicollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 20:43:58, basehttp, 17189, 140698127976192, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14446
+INFO, 05/Jun/2024 20:43:58, basehttp, 17189, 140698109097728, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:44:05, basehttp, 17189, 140698127976192, "GET /aoi-collections/ HTTP/1.1" 200 5290
+INFO, 05/Jun/2024 20:44:06, basehttp, 17189, 140698127976192, "GET /aoi-collections/edit/1/ HTTP/1.1" 200 8501
+INFO, 05/Jun/2024 20:47:59, basehttp, 17189, 140698127976192, "GET /aoi-collections/ HTTP/1.1" 200 5290
+INFO, 05/Jun/2024 20:48:00, basehttp, 17189, 140698127976192, "GET /aoi-collections/delete/1/ HTTP/1.1" 200 6667
+INFO, 05/Jun/2024 20:48:00, basehttp, 17189, 140698127976192, "GET /static/css/modal.css HTTP/1.1" 200 990
+INFO, 05/Jun/2024 20:48:02, basehttp, 17189, 140698127976192, "POST /aoi-collections/delete/1/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 20:48:02, basehttp, 17189, 140698127976192, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 20:48:03, basehttp, 17189, 140698127976192, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 20:48:15, basehttp, 17189, 140698127976192, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 20:48:15, libgdal, 17212, 140028751521600, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:48:15, libgdal, 17212, 140028751521600, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:48:15, libgdal, 17212, 140028751521600, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:48:15, libgdal, 17212, 140028751521600, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:48:15, libgdal, 17212, 140028751521600, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:48:15, log, 17189, 140698127976192, Internal Server Error: /aoi-collections/add/stage-for-processing/
+Traceback (most recent call last):
+  File "/opt/anaconda3/envs/SCAP/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/anaconda3/envs/SCAP/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/anaconda3/envs/SCAP/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/agoberna/PycharmProjects/SCAP_Web/scap/api.py", line 765, in stage_for_processing
+    collection = AOICollection.objects.get(name=aoi_collection_name)
+  File "/opt/anaconda3/envs/SCAP/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/opt/anaconda3/envs/SCAP/lib/python3.10/site-packages/django/db/models/query.py", line 649, in get
+    raise self.model.DoesNotExist(
+scap.models.AOICollection.DoesNotExist: AOICollection matching query does not exist.
+INFO, 05/Jun/2024 20:48:15, basehttp, 17189, 140698109097728, "GET /aoi-collections/ HTTP/1.1" 200 5291
+INFO, 05/Jun/2024 20:48:37, autoreload, 17189, 140698939336512, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 20:48:37, autoreload, 17623, 140696002910016, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 20:48:51, basehttp, 17623, 140695191557888, "GET /aoi-collections/ HTTP/1.1" 200 5291
+INFO, 05/Jun/2024 20:48:56, basehttp, 17623, 140695191557888, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12251
+INFO, 05/Jun/2024 20:48:56, basehttp, 17623, 140695191557888, "GET /static/admin/js/cancel.js HTTP/1.1" 200 886
+WARNING, 05/Jun/2024 20:48:56, log, 17623, 140695191557888, Not Found: /favicon.ico
+INFO, 05/Jun/2024 20:48:57, basehttp, 17623, 140695191557888, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 20:48:57, basehttp, 17623, 140695191557888, "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO, 05/Jun/2024 20:48:57, basehttp, 17623, 140695172679424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:49:00, basehttp, 17623, 140695172679424, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12963
+INFO, 05/Jun/2024 20:49:01, basehttp, 17623, 140695172679424, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 20:49:01, basehttp, 17623, 140695172679424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 20:49:02, basehttp, 17623, 140695172679424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 20:49:03, basehttp, 17623, 140695172679424, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 20:49:05, basehttp, 17623, 140695172679424, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 20:49:16, basehttp, 17623, 140695172679424, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 20:49:16, libgdal, 17652, 140197695428416, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:49:16, libgdal, 17652, 140197695428416, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:49:16, libgdal, 17652, 140197695428416, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:49:16, libgdal, 17652, 140197695428416, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 20:49:16, libgdal, 17652, 140197695428416, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 20:49:16, basehttp, 17623, 140695172679424, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 20:49:50, basehttp, 17623, 140695172679424, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:04:22, autoreload, 17623, 140696002910016, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:04:23, autoreload, 18241, 140262033835840, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:04:37, basehttp, 18241, 140261222467328, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:04:37, basehttp, 18241, 140261222467328, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 21:04:37, log, 18241, 140261222467328, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:04:39, basehttp, 18241, 140261222467328, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12966
+INFO, 05/Jun/2024 21:04:41, basehttp, 18241, 140261222467328, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:04:41, basehttp, 18241, 140261222467328, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:04:41, basehttp, 18241, 140261222467328, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:04:43, basehttp, 18241, 140261222467328, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:04:53, basehttp, 18241, 140261222467328, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 21:04:53, libgdal, 18261, 140512322676544, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:04:53, libgdal, 18261, 140512322676544, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:04:53, libgdal, 18261, 140512322676544, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:04:53, libgdal, 18261, 140512322676544, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:04:53, libgdal, 18261, 140512322676544, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:04:53, basehttp, 18241, 140261222467328, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:04:53, basehttp, 18241, 140261222467328, "GET /static/js/datatables.js HTTP/1.1" 200 243
+INFO, 05/Jun/2024 21:08:15, autoreload, 18241, 140262033835840, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:08:16, autoreload, 18486, 139849833125696, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:09:35, autoreload, 18486, 139849833125696, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:09:35, autoreload, 19369, 140290404616000, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:11:37, autoreload, 19369, 140290404616000, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:11:37, autoreload, 19448, 140652466145088, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:12:11, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:12:11, basehttp, 19448, 140651654018816, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 21:12:11, log, 19448, 140651654018816, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:12:14, basehttp, 19448, 140651654018816, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12966
+INFO, 05/Jun/2024 21:12:14, basehttp, 19448, 140651654018816, "GET /static/admin/js/cancel.js HTTP/1.1" 200 886
+INFO, 05/Jun/2024 21:12:15, basehttp, 19448, 140651654018816, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:12:15, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:12:15, basehttp, 19448, 140651654018816, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:12:17, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:12:17, basehttp, 19448, 140651633043200, "GET /static/js/datatables.js HTTP/1.1" 200 243
+INFO, 05/Jun/2024 21:12:19, basehttp, 19448, 140651654018816, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:12:30, basehttp, 19448, 140651654018816, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+INFO, 05/Jun/2024 21:12:30, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 5292
+ERROR, 05/Jun/2024 21:12:30, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:12:30, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:12:30, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:12:30, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:12:30, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:13:23, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 5287
+INFO, 05/Jun/2024 21:13:26, basehttp, 19448, 140651654018816, "GET /agb-collections/ HTTP/1.1" 200 4926
+INFO, 05/Jun/2024 21:13:27, basehttp, 19448, 140651654018816, "GET /agb-collections/ HTTP/1.1" 200 4926
+INFO, 05/Jun/2024 21:13:28, basehttp, 19448, 140651654018816, "GET /forest-cover-collections/ HTTP/1.1" 200 5008
+INFO, 05/Jun/2024 21:13:39, basehttp, 19448, 140651654018816, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 21:13:39, basehttp, 19448, 140651654018816, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:13:40, basehttp, 19448, 140651654018816, "GET /admin/scap/agbcollection/1/change/ HTTP/1.1" 200 28870
+INFO, 05/Jun/2024 21:13:40, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:13:45, basehttp, 19448, 140651654018816, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 21:13:48, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:13:48, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:13:50, basehttp, 19448, 140651654018816, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 21:13:50, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:13:52, basehttp, 19448, 140651654018816, "GET /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 200 34845
+INFO, 05/Jun/2024 21:13:52, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:14:57, basehttp, 19448, 140651654018816, "POST /admin/scap/forestcovercollection/1/change/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:14:57, basehttp, 19448, 140651654018816, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14748
+INFO, 05/Jun/2024 21:14:57, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:15:00, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:15:00, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:15:03, basehttp, 19448, 140651654018816, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12966
+INFO, 05/Jun/2024 21:15:04, basehttp, 19448, 140651654018816, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:15:04, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:15:04, basehttp, 19448, 140651633043200, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:18:51, basehttp, 19448, 140651654018816, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12575
+INFO, 05/Jun/2024 21:18:51, basehttp, 19448, 140651654018816, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:18:53, basehttp, 19448, 140651654018816, "GET /forest-cover-collections/ HTTP/1.1" 200 5008
+INFO, 05/Jun/2024 21:18:55, basehttp, 19448, 140651654018816, "GET /agb-collections/ HTTP/1.1" 200 4926
+INFO, 05/Jun/2024 21:18:57, basehttp, 19448, 140651654018816, "GET /agb-collections/ HTTP/1.1" 200 4926
+INFO, 05/Jun/2024 21:18:59, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:18:59, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:19:00, basehttp, 19448, 140651654018816, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:19:15, basehttp, 19448, 140651654018816, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 21:19:15, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:19:15, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:19:15, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:19:15, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:19:15, libgdal, 19471, 139921812420416, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:19:15, basehttp, 19448, 140651654018816, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:20:34, autoreload, 19448, 140652466145088, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:20:35, autoreload, 20093, 140572428805952, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:21:48, autoreload, 20093, 140572428805952, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 21:21:48, autoreload, 20121, 140098975573824, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 21:22:11, basehttp, 20121, 140098164209408, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:22:11, basehttp, 20121, 140098164209408, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 21:22:11, log, 20121, 140098041526016, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:22:19, basehttp, 20121, 140098164209408, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 21:22:19, basehttp, 20121, 140098164209408, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:22:22, basehttp, 20121, 140098164209408, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:22:22, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:22:25, basehttp, 20121, 140098164209408, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 12966
+INFO, 05/Jun/2024 21:22:26, basehttp, 20121, 140098164209408, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:22:26, basehttp, 20121, 140098164209408, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:22:26, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:22:28, basehttp, 20121, 140098164209408, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:22:29, basehttp, 20121, 140098164209408, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:22:43, basehttp, 20121, 140098164209408, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 21:22:43, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:22:43, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:22:43, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:22:43, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:22:43, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:22:43, basehttp, 20121, 140098164209408, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:23:44, basehttp, 20121, 140098164209408, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 21:23:44, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:23:46, basehttp, 20121, 140098164209408, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 18069
+INFO, 05/Jun/2024 21:23:46, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:23:59, basehttp, 20121, 140098164209408, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 18069
+INFO, 05/Jun/2024 21:23:59, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:24:01, basehttp, 20121, 140098164209408, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 18069
+INFO, 05/Jun/2024 21:24:01, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:24:06, basehttp, 20121, 140098164209408, "GET /admin/scap/forestcoverstatistic/4/change/ HTTP/1.1" 200 20246
+INFO, 05/Jun/2024 21:24:06, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:24:06, basehttp, 20121, 140098058311424, "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 587
+INFO, 05/Jun/2024 21:24:09, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 18603
+INFO, 05/Jun/2024 21:24:11, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcoverstatistic/5/change/ HTTP/1.1" 200 20244
+INFO, 05/Jun/2024 21:24:11, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:24:13, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 18603
+INFO, 05/Jun/2024 21:29:48, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:29:48, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:29:52, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 14883
+INFO, 05/Jun/2024 21:29:54, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:29:54, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:29:54, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:29:56, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12575
+INFO, 05/Jun/2024 21:29:57, basehttp, 20121, 140098049918720, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:29:59, basehttp, 20121, 140098058311424, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:29:59, basehttp, 20121, 140098049918720, "GET /static/assets/favicon.ico HTTP/1.1" 200 23462
+INFO, 05/Jun/2024 21:30:07, basehttp, 20121, 140098058311424, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+INFO, 05/Jun/2024 21:30:07, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 5287
+ERROR, 05/Jun/2024 21:30:07, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:30:07, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:30:07, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:30:07, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:30:07, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:30:11, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:37:40, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:37:40, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 21:37:40, log, 20121, 140097655658240, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:37:43, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 14901
+WARNING, 05/Jun/2024 21:37:43, log, 20121, 140097664050944, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:37:45, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:37:45, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:37:45, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:37:52, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:37:53, basehttp, 20121, 140098058311424, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:38:53, basehttp, 20121, 140098058311424, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 21:38:53, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:38:53, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:38:53, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:38:53, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 21:38:53, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 21:38:53, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 5292
+INFO, 05/Jun/2024 21:43:53, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 22471
+INFO, 05/Jun/2024 21:43:53, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:26, basehttp, 20121, 140098058311424, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 14235
+INFO, 05/Jun/2024 21:59:26, basehttp, 20121, 140097655658240, "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO, 05/Jun/2024 21:59:26, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+WARNING, 05/Jun/2024 21:59:26, log, 20121, 140098058311424, Not Found: /favicon.ico
+INFO, 05/Jun/2024 21:59:30, basehttp, 20121, 140098058311424, "POST /admin/scap/agbcollection/ HTTP/1.1" 200 13797
+INFO, 05/Jun/2024 21:59:30, basehttp, 20121, 140098058311424, "GET /static/admin/js/cancel.js HTTP/1.1" 200 886
+INFO, 05/Jun/2024 21:59:31, basehttp, 20121, 140098058311424, "POST /admin/scap/agbcollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:59:31, basehttp, 20121, 140098058311424, "GET /admin/scap/agbcollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:59:31, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:34, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 14236
+INFO, 05/Jun/2024 21:59:34, basehttp, 20121, 140097655658240, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:37, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 200 14644
+INFO, 05/Jun/2024 21:59:38, basehttp, 20121, 140098058311424, "POST /admin/scap/aoicollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:59:38, basehttp, 20121, 140098058311424, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12719
+INFO, 05/Jun/2024 21:59:38, basehttp, 20121, 140097655658240, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:41, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14520
+INFO, 05/Jun/2024 21:59:41, basehttp, 20121, 140097655658240, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:44, basehttp, 20121, 140098058311424, "POST /admin/scap/forestcovercollection/ HTTP/1.1" 200 12765
+INFO, 05/Jun/2024 21:59:45, basehttp, 20121, 140098058311424, "POST /admin/scap/forestcovercollection/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 21:59:45, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 12805
+INFO, 05/Jun/2024 21:59:45, basehttp, 20121, 140097655658240, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 21:59:47, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 4111
+INFO, 05/Jun/2024 21:59:47, basehttp, 20121, 140097655658240, "GET /static/js/datatables.js HTTP/1.1" 200 243
+INFO, 05/Jun/2024 21:59:48, basehttp, 20121, 140098058311424, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 21:59:51, basehttp, 20121, 140098058311424, "GET /forest-cover-collections/ HTTP/1.1" 200 3997
+INFO, 05/Jun/2024 21:59:52, basehttp, 20121, 140098058311424, "GET /forest-cover-collections/add/ HTTP/1.1" 200 11400
+INFO, 05/Jun/2024 22:00:02, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/add/ HTTP/1.1" 302 0
+INFO, 05/Jun/2024 22:00:02, basehttp, 20121, 140098058311424, "GET /forest-cover-collections/edit/2/ HTTP/1.1" 200 11953
+INFO, 05/Jun/2024 22:00:02, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/get-tiff-data/ HTTP/1.1" 200 12
+INFO, 05/Jun/2024 22:00:14, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/doi/ HTTP/1.1" 200 11
+INFO, 05/Jun/2024 22:00:15, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/add-tiff-record/ HTTP/1.1" 200 33
+INFO, 05/Jun/2024 22:00:21, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/doi/ HTTP/1.1" 200 11
+INFO, 05/Jun/2024 22:00:22, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/add-tiff-record/ HTTP/1.1" 200 33
+INFO, 05/Jun/2024 22:00:28, basehttp, 20121, 140098058311424, "POST /forest-cover-collections/edit/2/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 22:00:28, basehttp, 20121, 140098058311424, "GET /forest-cover-collections/ HTTP/1.1" 200 5025
+INFO, 05/Jun/2024 22:00:30, basehttp, 20121, 140098058311424, "GET /agb-collections/ HTTP/1.1" 200 3927
+INFO, 05/Jun/2024 22:00:32, basehttp, 20121, 140098058311424, "GET /agb-collections/add/ HTTP/1.1" 200 9391
+INFO, 05/Jun/2024 22:00:39, basehttp, 20121, 140098058311424, "POST /agb-collections/add/doi/ HTTP/1.1" 200 18
+INFO, 05/Jun/2024 22:01:16, basehttp, 20121, 140098049918720, "GET /admin/scap/aoicollection/ HTTP/1.1" 200 12575
+INFO, 05/Jun/2024 22:01:16, basehttp, 20121, 140097655658240, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:01:22, api, 20121, 140098058311424, <WSGIRequest: POST '/agb-collections/add/store-agb-for-processing/'>
+INFO, 05/Jun/2024 22:01:22, basehttp, 20121, 140098058311424, "POST /agb-collections/add/store-agb-for-processing/ HTTP/1.1" 200 13
+INFO, 05/Jun/2024 22:01:22, basehttp, 20121, 140098058311424, "GET /agb-collections/ HTTP/1.1" 200 4936
+INFO, 05/Jun/2024 22:01:26, basehttp, 20121, 140098058311424, "GET /aoi-collections/add/ HTTP/1.1" 200 8567
+INFO, 05/Jun/2024 22:01:27, basehttp, 20121, 140097655658240, "GET /static/assets/img/SERVIR_flat_white2.png HTTP/1.1" 200 36700
+INFO, 05/Jun/2024 22:01:44, basehttp, 20121, 140098058311424, "POST /aoi-collections/add/store-for-processing/ HTTP/1.1" 200 13
+ERROR, 05/Jun/2024 22:01:44, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 138507.203000000009 of field GIS_AREA of feature 0 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 22:01:44, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 182612.296999999991 of field GIS_AREA of feature 2 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 22:01:44, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 147292.594000000012 of field GIS_AREA of feature 3 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 22:01:44, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 515144 of field GIS_AREA of feature 4 not successfully written. Possibly due to too larger number with respect to field width'
+ERROR, 05/Jun/2024 22:01:44, libgdal, 20138, 139638795540288, GDAL_ERROR 1: b'Value 327122.593999999983 of field GIS_AREA of feature 5 not successfully written. Possibly due to too larger number with respect to field width'
+INFO, 05/Jun/2024 22:01:44, basehttp, 20121, 140098058311424, "GET /aoi-collections/ HTTP/1.1" 200 5296
+INFO, 05/Jun/2024 22:09:19, basehttp, 20121, 140098058311424, "GET /admin/ HTTP/1.1" 200 16090
+INFO, 05/Jun/2024 22:09:19, basehttp, 20121, 140098058311424, "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+WARNING, 05/Jun/2024 22:09:19, log, 20121, 140098058311424, Not Found: /favicon.ico
+INFO, 05/Jun/2024 22:09:21, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcoverstatistic/ HTTP/1.1" 200 17018
+INFO, 05/Jun/2024 22:09:21, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:19:20, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14522
+INFO, 05/Jun/2024 22:19:20, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:19:22, basehttp, 20121, 140098058311424, "GET /admin/scap/forestcovercollection/2/change/ HTTP/1.1" 200 35714
+INFO, 05/Jun/2024 22:19:22, basehttp, 20121, 140098058311424, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:24:00, autoreload, 20121, 140098975573824, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 22:24:02, autoreload, 22900, 139975494674240, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 22:24:18, basehttp, 22900, 139974683318016, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14522
+INFO, 05/Jun/2024 22:24:18, basehttp, 22900, 139974683318016, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:24:21, basehttp, 22900, 139974683318016, "POST /admin/scap/forestcovercollection/ HTTP/1.1" 200 12766
+INFO, 05/Jun/2024 22:24:24, basehttp, 22900, 139974683318016, "GET /admin/scap/forestcovercollection/ HTTP/1.1" 200 14522
+INFO, 05/Jun/2024 22:24:26, basehttp, 22900, 139974683318016, "GET /admin/scap/forestcovercollection/2/change/ HTTP/1.1" 200 35714
+INFO, 05/Jun/2024 22:24:26, basehttp, 22900, 139974683318016, "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974683318016, "GET / HTTP/1.1" 200 52088
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974683318016, "GET /static/js/utils.js HTTP/1.1" 304 0
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974683318016, "GET /static/css/carousel.css HTTP/1.1" 200 4453
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974559119104, "GET /static/assets/img/carousel_images/forest_thumb.jpg HTTP/1.1" 200 5567
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974567511808, "GET /static/assets/img/carousel_images/planning.jpg HTTP/1.1" 200 35999
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974592689920, "GET /static/assets/img/carousel_images/fieldwork.jpg HTTP/1.1" 200 48300
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974575904512, "GET /static/assets/img/carousel_images/website.jpg HTTP/1.1" 200 40812
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974584297216, "GET /static/assets/img/carousel_images/webdesign.jpg HTTP/1.1" 200 28952
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974584297216, "GET /static/assets/img/close-icon.svg HTTP/1.1" 200 363
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974592689920, "GET /static/assets/img/carousel_images/website_thumb.jpg HTTP/1.1" 200 3982
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974575904512, "GET /static/assets/img/carousel_images/planning_thumb.jpg HTTP/1.1" 200 3805
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974584297216, "GET /static/assets/img/logos/SERVIR_padded.png HTTP/1.1" 200 67544
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974567511808, "GET /static/assets/img/team/CHERRINGTON_Emil.png HTTP/1.1" 200 91020
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974683318016, "GET /static/assets/img/team/TONDAPU_Githika.jpg HTTP/1.1" 200 229369
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974567511808, "GET /static/assets/img/carousel_images/writing_thumb.jpg HTTP/1.1" 200 3771
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974575904512, "GET /static/assets/img/logos/USAID_padded.png HTTP/1.1" 200 107735
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974592689920, "GET /static/assets/img/about/forestloss-pexels-photo-2874751.jpg HTTP/1.1" 200 168253
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974584297216, "GET /static/assets/img/about/logs-free-photo-of-portret-van-omgehakte-bomen.jpg HTTP/1.1" 200 233409
+WARNING, 05/Jun/2024 22:24:35, basehttp, 22900, 139974559119104, "GET /static/assets/img/team/GOBERNA_Alex.jpg HTTP/1.1" 404 1855
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974584297216, "GET /static/assets/img/carousel_images/webdesign_thumb.jpg HTTP/1.1" 200 3529
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974592689920, "GET /static/assets/img/carousel_images/comparison2_thumb.jpg HTTP/1.1" 200 3429
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974575904512, "GET /static/assets/img/carousel_images/forest.jpg HTTP/1.1" 200 57390
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974559119104, "GET /static/assets/img/logos/NASA_padded.png HTTP/1.1" 200 244560
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974559119104, "GET /static/assets/img/pexels-2591408.jpg HTTP/1.1" 304 0
+INFO, 05/Jun/2024 22:24:35, basehttp, 22900, 139974559119104, "GET /static/assets/img/map-image.png HTTP/1.1" 304 0
+INFO, 05/Jun/2024 22:24:38, basehttp, 22900, 139974559119104, "GET /contribute-data/ HTTP/1.1" 200 10636
+INFO, 05/Jun/2024 22:24:40, basehttp, 22900, 139974559119104, "GET /forest-cover-collections/ HTTP/1.1" 200 5009
+INFO, 05/Jun/2024 22:24:41, basehttp, 22900, 139974584297216, "GET /forest-cover-collections/edit/2/ HTTP/1.1" 200 11953
+INFO, 05/Jun/2024 22:24:42, basehttp, 22900, 139974584297216, "POST /forest-cover-collections/edit/2/get-tiff-data/ HTTP/1.1" 200 248
+INFO, 05/Jun/2024 22:24:47, basehttp, 22900, 139974584297216, "POST /forest-cover-collections/edit/2/stage-for-processing/ HTTP/1.1" 200 2
+INFO, 05/Jun/2024 22:24:47, basehttp, 22900, 139974584297216, "GET /forest-cover-collections/ HTTP/1.1" 200 5030
+INFO, 05/Jun/2024 22:40:55, autoreload, 22900, 139975494674240, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 22:40:57, autoreload, 23725, 140029156611904, Watching for file changes with StatReloader
+INFO, 05/Jun/2024 23:44:03, autoreload, 23725, 140029156611904, /home/agoberna/PycharmProjects/SCAP_Web/scap/processing.py changed, reloading.
+INFO, 05/Jun/2024 23:44:03, autoreload, 24962, 140539755759424, Watching for file changes with StatReloader
