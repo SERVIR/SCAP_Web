@@ -160,7 +160,7 @@ def rasterize_aoi(aoi_feature, filepath):
     gdal.RasterizeLayer(dest, [1], layer)
 
 
-def reproject_mollweide(source, outputpath, progress_callback):
+def reproject_mollweide(source, outputpath):
     if os.path.isfile(outputpath):
         os.remove(outputpath)
 
@@ -171,11 +171,10 @@ def reproject_mollweide(source, outputpath, progress_callback):
     affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
     logger.info("Running GDAL warp (Mollweide)")
     subprocess.run("gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath), shell=True)
-
     return outputpath
 
 
-def reproject_latlon(source, outputpath, progress_callback):
+def reproject_latlon(source, outputpath):
     resampling_alg = 'sum' if '/carbon-stock' in outputpath or '/emissions' in outputpath else 'average'
 
     shutil.copyfile(str(BASE_DIR) + '/base_vis_file.tif', outputpath)
@@ -219,14 +218,12 @@ def is_latlon(raster_path):
     return srs.ExportToWkt() == wkt
 
 
-def calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback):
+def calculate_change_file(baseline_filepath, current_filepath, target_path):
     # Assumes both files are already Mollweide and snapped to SCAP grid
     with rio.open(baseline_filepath) as base_raster, rio.open(current_filepath) as curr_raster:
         profile = curr_raster.profile.copy()
         profile.update({'count': 1, 'dtype': rio.int16})
         with rio.open(target_path, 'w', **profile) as dst:
-            total_blocks = len(list(base_raster.block_windows(1)))
-            block_counter = 0
             for (_, window) in base_raster.block_windows(1):
                 # Read blocks of data
                 # Should be same transform, so no need to offset windows
@@ -234,34 +231,27 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path, prog
                 curr_block_data = curr_raster.read(1, window=window)
 
                 # Apply mask to AGB block
-                change_block_data = np.add(curr_block_data > base_block_data, np.multiply(-1, base_block_data > curr_block_data))
+                change_block_data = np.multiply(np.logical_xor((curr_block_data > 0), (base_block_data > 0)), curr_block_data)
 
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
 
-                block_counter += 1
-                if block_counter % 25000 == 0:
-                    progress_callback(float(block_counter) / total_blocks)
 
-
-def copy_mollweide(source_file, target_path, progress_callback):
+def copy_mollweide(source_file, target_path):
     if is_snapped_mollweide(source_file):
         shutil.copyfile(source_file, target_path)
     else:
-        reproject_mollweide(source_file, target_path, progress_callback)
-    progress_callback(1.0, None, None)
+        reproject_mollweide(source_file, target_path)
 
 
-def copy_latlon(source_file, target_path, progress_callback):
+def copy_latlon(source_file, target_path):
     if is_latlon(source_file):
         shutil.copyfile(source_file, target_path)
     else:
-        reproject_latlon(source_file, target_path, progress_callback)
-    progress_callback(1.0, None, None)
+        reproject_latlon(source_file, target_path)
 
 
-
-def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path, carbon_type, progress_callback):
+def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path, carbon_type):
     target_fc_value = 1 if carbon_type == 'carbon-stock' else -1
 
     if agb_year > fc_year:
@@ -297,9 +287,6 @@ def generate_carbon_gtiff(fc_source, agb_source, fc_year, agb_year, output_path,
                 dst.write(forest_carbon_total, window=window, indexes=1)
 
                 block_counter += 1
-
-                if block_counter % 25000 == 0:
-                    progress_callback(float(block_counter) / total_blocks)
     return output_path
 
 
@@ -334,6 +321,7 @@ def check_overlap(raster1, raster2):
     ds2 = None
 
     return overlap
+
 
 def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
     row_offset, col_offset = get_raster_offset(aoi, data_raster)

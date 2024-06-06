@@ -40,64 +40,17 @@ def log_memory_snapshot():
     logger.info("Total allocated size: %.1f KiB" % (total / 1024))
 
 @shared_task(bind=True)
-def process_updated_collection(self, collection, collection_type):
-    logger.info('Reached ASYNC function')
-    tracemalloc.start()
-    stage = 1
-    total_stages = 1
-    log_memory_snapshot()
+def process_updated_collection(self, collection_id, collection_type):
+    collection = processing.get_collection_by_type(collection_id, collection_type)
+    processing.assign_task(collection, self.request.id)
     match collection_type:
         case 'fc':
-            logger.info('Reached FC')
-            collection = ForestCoverCollection.objects.get(id=collection)
-            processing.assign_task(collection, self.request.id)
-            total_stages = 3
-            processing.set_stage(collection, stage, total_stages)
-
-            processing.generate_forest_cover_files(collection)
-
-            log_memory_snapshot()
-            stage += 1
-            processing.set_stage(collection, stage, total_stages)
-
-            processing.generate_stocks_and_emissions_files(collection, collection_type)
-            log_memory_snapshot()
-            stage += 1
+            processing.generate_forest_cover_files(collection_id)
         case 'agb':
-            logger.info('Reached AGB')
-            collection = AGBCollection.objects.get(id=collection)
-            processing.assign_task(collection, self.request.id)
-            total_stages = 3
-            processing.set_stage(collection, stage, total_stages)
-
-            processing.generate_agb_files(collection)
-
-            log_memory_snapshot()
-            stage += 1
-            processing.set_stage(collection, stage, total_stages)
-
-            processing.generate_stocks_and_emissions_files(collection, collection_type)
-            log_memory_snapshot()
-            stage += 1
+            processing.generate_agb_files(collection_id)
         case 'aoi':
-            logger.info('Reached AOI')
-            collection = AOICollection.objects.get(id=collection)
-            processing.assign_task(collection, self.request.id)
-            total_stages = 2
-            processing.set_stage(collection, stage, total_stages)
-
-            processing.generate_aoi_features(collection)
-
-            log_memory_snapshot()
-            stage += 1
+            processing.generate_aoi_features(collection_id)
         case _:
             # TODO Raise error
             logger.info('Error processing updated collection')
             pass
-
-    processing.mark_available(collection)
-    processing.set_stage(collection, stage, total_stages)
-    processing.generate_zonal_statistics(collection, collection_type)
-    processing.mark_complete(collection)
-    logger.info('Done processing dataset')
-    log_memory_snapshot()

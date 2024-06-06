@@ -14,6 +14,7 @@ from celery.utils.log import get_task_logger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.gis.utils import LayerMapping
 from celery.utils.log import get_task_logger
+from celery import shared_task, group, chord
 from collections import OrderedDict
 from django.conf import settings
 from itertools import product
@@ -34,6 +35,24 @@ config = json.load(f)
 logger = get_task_logger('ScapTestProject.async_tasks')
 
 
+def get_collection_by_type(collection_id, collection_type):
+    collection = None
+
+    match collection_type:
+        case 'fc':
+            collection = ForestCoverCollection.objects.get(id=collection_id)
+        case 'agb':
+            collection = AGBCollection.objects.get(id=collection_id)
+        case 'aoi':
+            collection = AOICollection.objects.get(id=collection_id)
+        case _:
+            # TODO Raise error
+            logger.info('Error finding collection')
+            pass
+
+    return collection
+
+
 def assign_task(collection, task_id):
     task = CurrentTask.objects.create(id=task_id)
     collection.processing_task = task
@@ -47,12 +66,25 @@ def set_stage(collection, current_stage, total_stages):
     task.save()
 
 
-def mark_available(collection):
+@shared_task(bind=True)
+def mark_available(self, collection_id, collection_type):
+    collection = get_collection_by_type(collection_id, collection_type)
+
     collection.processing_status = "Available"
     collection.save()
 
 
-def mark_complete(collection):
+@shared_task(bind=True)
+def mark_sources_available(self, collection_id, collection_type):
+    collection = get_collection_by_type(collection_id, collection_type)
+
+    collection.source_file_status = "Available"
+    collection.save()
+
+@shared_task(bind=True)
+def mark_complete(self, collection_id, collection_type):
+    collection = get_collection_by_type(collection_id, collection_type)
+
     task = collection.processing_task
     task.subprocess_progress = 100.0
     task.stage_progress = 'All Stages Complete'
@@ -112,7 +144,8 @@ def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifie
     return temp_filepath
 
 
-def delete_temp(filepath):
+@shared_task(bind=True)
+def delete_temp(self, filepath):
     os.remove(filepath)
 
 
@@ -142,10 +175,8 @@ def load_to_VEDA(raster_path):
     pass
 
 
-def load_for_visualization(raster_path, task_obj, current_progress, step_progress, variable_name, year):
-    def progress_callback(complete, unknown, message):
-        update_task_progress(task_obj, current_progress, round(step_progress * complete * 0.75, 2))
-
+@shared_task(bind=True)
+def load_for_visualization(self, raster_path, variable_name, year):
     final_load_path = raster_path.replace('temp/', '').replace('data/', 'public/').replace('.tif', '.nc4')
 
     logger.info('Loading {} for visualization'.format(final_load_path))
@@ -157,7 +188,7 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
     split_path = os.path.split(raster_path)
     reprojection_load_path = os.path.join(split_path[0], 'latlon_' + split_path[1])
 
-    copy_latlon(str(raster_path), str(reprojection_load_path), progress_callback)
+    copy_latlon(str(raster_path), str(reprojection_load_path))
 
     try:
         with xr.open_dataset(reprojection_load_path, engine="rasterio", chunks=dict(band=1,x=256, y=256), mask_and_scale=False) as file:
@@ -230,9 +261,9 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
         ds[variable_name].encoding = OrderedDict([('dtype', ds_dtype),
                                                   ('_FillValue', np.zeros(1,ds_dtype)[0]),
                                                   ('chunksizes', (1, 256, 256)),
-                                                  ('missing_value', np.zeros(1,ds_dtype)[0])])# TODO
-                                                  #('zlib', True),
-                                                  #('complevel', 5)
+                                                  ('missing_value', np.zeros(1,ds_dtype)[0]),
+                                                  ('zlib', True),
+                                                  ('complevel', 3)])
 
 
         dask_future = ds.to_netcdf(final_load_path, unlimited_dims='time', compute=False)
@@ -241,15 +272,11 @@ def load_for_visualization(raster_path, task_obj, current_progress, step_progres
         del ds
     except Exception as error:
         logger.info(error)
-    update_task_progress(task_obj, current_progress, step_progress)
 
-    delete_temp(reprojection_load_path)
+    delete_temp.apply_async(args=[reprojection_load_path], kwargs={}, queue='files')
 
-
-def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
-    def progress_callback(complete, unknown, message):
-        update_task_progress(task_obj, current_progress, round(step_progress * complete, 2))
-
+@shared_task(bind=True)
+def load_for_statistics(self, raster_path):
     # Assumes raster is loaded to temp directory
     final_load_path = raster_path.replace('temp/', '')
     logger.info('Loading {} for statistics'.format(final_load_path))
@@ -258,18 +285,18 @@ def load_for_statistics(raster_path, task_obj, current_progress, step_progress):
     if not os.path.exists(final_dir):
         os.makedirs(final_dir)
 
-    mollweide_file = copy_mollweide(raster_path, final_load_path, progress_callback)
+    mollweide_file = copy_mollweide(raster_path, final_load_path)
 
     mask_water(mollweide_file)
 
+@shared_task(bind=True)
+def generate_forest_cover_change_file(self, fc_file_id, user_id, dataset_name):
+    fc_file = ForestCoverFile.objects.get(id=fc_file_id)
 
-def generate_forest_cover_change_file(fc_file, user_id, dataset_name, task_obj, current_progress, step_progress):
-    # Assumes fc_file and its respective baseline file to be loaded to stats directory
+    logger.info('Generating forest cover change file')
+    # Assumes fc_file and its respective baseline file are loaded to stats directory
     # Assumes fc_file is not the collection's baseline file
     logger.info('Generating forest cover change file: {} - {}'.format(dataset_name, fc_file.year))
-
-    def progress_callback(complete):
-        update_task_progress(task_obj, current_progress, round(step_progress * complete, 2))
 
     baseline_fc_file = list(ForestCoverFile.objects.filter(collection=fc_file.collection,
                                                            year__lt=fc_file.year).order_by('year'))[-1]
@@ -282,264 +309,7 @@ def generate_forest_cover_change_file(fc_file, user_id, dataset_name, task_obj, 
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 
-    calculate_change_file(baseline_filepath, current_filepath, target_path, progress_callback)
-
-
-def generate_scap_source_files(task, current_progress, progress_total, dataset_info, file, is_public,
-                               variable_name=None, year=None, filepath=None):
-    NUM_STEPS = (is_public + 1)
-    step_progress = progress_total / NUM_STEPS
-
-    if not filepath:
-        upload_path = os.path.join(settings.MEDIA_ROOT, file.file.name)
-        filepath = load_temp(upload_path, *dataset_info)
-
-    load_for_statistics(filepath, task, current_progress, step_progress)
-    progress = current_progress + step_progress
-
-    # TODO Add publicly approved check
-    if is_public:
-        load_for_visualization(filepath, task, progress, step_progress, variable_name, year)
-        progress = progress + step_progress
-
-    delete_temp(filepath)
-
-    return progress
-
-
-def generate_forest_cover_files(fc_collection):
-    fc_collection.source_file_status = 'Unavailable'
-    fc_collection.save()
-
-    task = fc_collection.processing_task
-    task.description = "Generating Forest Cover Files"
-
-    progress = update_task_progress(task, 0.0, 0.0)
-
-    is_public = fc_collection.access_level == 'Public'
-    user_id = fc_collection.owner.id
-    dataset_name = get_filesystem_dataset_name(fc_collection.name)
-    logger.info('Generating forest cover files: {}'.format(dataset_name))
-
-    # TODO Update to only modified files
-    yearly_files = fc_collection.yearly_files.all().order_by('year')
-    baseline_file = fc_collection.yearly_files.all().order_by('year')[0]
-
-    single_file_progress = 100.0 / len(yearly_files)
-    for yearly_file in yearly_files:
-        progress_scale = 2.0/3 if yearly_file != baseline_file else 1.0
-        dataset_type = 'fc'
-        dataset_info = (dataset_type, user_id, dataset_name, str(yearly_file.year))
-
-        target_filepath = None
-        yearly_filename = yearly_file.file.name
-
-        if os.path.splitext(yearly_filename)[1] == '.zip':
-            upload_path = os.path.join(settings.MEDIA_ROOT, yearly_filename)
-
-            temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-            relative_path = get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, str(yearly_file.year))
-            target_filepath = os.path.join(temp_dir, relative_path)
-
-            target_dir = os.path.dirname(target_filepath)
-            target_dir = os.path.join(target_dir, str(yearly_file.year))
-            if not os.path.exists(target_dir):
-                os.makedirs(target_dir)
-            else:
-                for file in os.listdir(target_dir):
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)
-
-            unzip(upload_path, target_dir)
-            stitch_geotiffs(target_dir, target_filepath)
-
-        progress = generate_scap_source_files(task, progress, progress_scale * single_file_progress,
-                                              dataset_info, yearly_file, is_public, 'forest_cover',
-                                              yearly_file.year, target_filepath)
-
-        if yearly_file != baseline_file:
-            generate_forest_cover_change_file(yearly_file, user_id, dataset_name,
-                                              task, progress, (1.0 - progress_scale) * single_file_progress)
-
-
-    task.description = "Done Generating Forest Cover Files"
-    update_task_progress(task, 100.0, 0.0)
-
-    fc_collection.source_file_status = 'Available'
-    fc_collection.save()
-
-
-def generate_agb_files(agb_collection):
-    agb_collection.source_file_status = 'Unavailable'
-    agb_collection.save()
-
-    task = agb_collection.processing_task
-    task.description = "Generating AGB File"
-
-    update_task_progress(task, 0.0, 0.0)
-
-    is_public = agb_collection.access_level == 'Public'
-    user_id = agb_collection.owner.id
-    dataset_name = get_filesystem_dataset_name(agb_collection.name)
-    file = agb_collection.source_file
-
-    dataset_info = ('agb', user_id, dataset_name)
-
-    generate_scap_source_files(task, 0.0, 100.0, dataset_info, file, is_public,
-                               'agb', agb_collection.year)
-
-    task.description = "Done Generating AGB File"
-    update_task_progress(task, 100.0, 0.0)
-
-    agb_collection.source_file_status = 'Available'
-    agb_collection.save()
-
-
-def generate_aoi_file(aoi_feature, collection, task, current_progress, single_feature_progress):
-    user_id = collection.owner.id
-    dataset_name = get_filesystem_dataset_name(collection.name)
-    feature_name = get_filesystem_dataset_name(aoi_feature.name)
-    is_public = False
-    file = None
-    dataset_info = None
-
-    temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name, feature_name)
-    temp_filepath = os.path.join(temp_dir, relative_path)
-
-    file_dir = os.path.dirname(temp_filepath)
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
-
-    rasterize_aoi(aoi_feature, temp_filepath)
-
-    if os.path.isfile(temp_filepath):
-        generate_scap_source_files(task, current_progress, single_feature_progress,
-                                   dataset_info, file, is_public, None, None, temp_filepath)
-
-
-def generate_aoi_features(aoi_collection):
-    task = aoi_collection.processing_task
-    task.description = "Generating AOI Features"
-
-    update_task_progress(task, 0.0, 0.0)
-
-    user_id = aoi_collection.owner.id
-    dataset_name = get_filesystem_dataset_name(aoi_collection.name)
-
-    temp_dir = os.path.join(config['DATA_DIR'], 'temp')
-    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name).replace('.tif', os.sep)
-    target_dir = os.path.join(temp_dir, relative_path)
-
-    upload_path = get_upload_path(aoi_collection.source_file)
-
-    unzip(upload_path, target_dir)
-    update_task_progress(task, 12.5, 0.0)
-    shp_file = get_shp_file(target_dir)
-    add_collection_name_field(shp_file, aoi_collection.name)
-    update_task_progress(task, 30.0, 0.0)
-
-    field_map = {
-        'collection': {'name': 'SCAPName'},
-        'wdpa_pid': 'WDPA_PID',
-        'name': 'NAME',
-        'orig_name': 'ORIG_NAME',
-        'desig_eng': 'DESIG_ENG',
-        'desig_type': 'DESIG_TYPE',
-        'rep_area': 'REP_AREA',
-        'gis_area': 'GIS_AREA',
-        'iso3': 'ISO3',
-        'geom': 'MULTIPOLYGON',
-    }
-
-    lm = LayerMapping(AOIFeature, shp_file, field_map, transform=False)
-    lm.save(strict=True)
-
-    progress = update_task_progress(task, 50.0, 0.0)
-
-
-    aoi_features = AOIFeature.objects.filter(collection=aoi_collection)
-    single_feature_progress = 50.0 / len(aoi_features)
-    for feature in aoi_features:
-        generate_aoi_file(feature, aoi_collection, task, progress, single_feature_progress)
-
-    update_task_progress(task, 100.0, 0.0)
-    task.description = "Done Generating AOI Features"
-
-
-def generate_carbon_files(fc_collection, agb_collection, user_id, carbon_type, task, current_progress, step_progress):
-    # Assumptions: All FC Files and the AGB file have been loaded for stats
-    # TODO Ensure mutual availability and lack of modification to both collections
-
-    fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
-    agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
-    carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
-
-    agb_filepath = get_full_filepath('agb', user_id, agb_dataset_name)
-
-    forest_cover_type = 'fcc' if carbon_type == 'emissions' else 'fc'
-
-    publish = fc_collection.access_level == 'Public' and  agb_collection.access_level == 'Public'
-
-    NUM_STEPS = (publish + 1)
-    step_progress = step_progress / NUM_STEPS
-
-    yearly_fc_files = fc_collection.yearly_files.all()
-    for yearly_fc_file in yearly_fc_files:
-        def progress_callback(complete):
-            update_task_progress(task, current_progress, round(step_progress * complete, 2))
-
-        fc_filepath = get_full_filepath(forest_cover_type, user_id, fc_dataset_name, str(yearly_fc_file.year))
-        if not os.path.isfile(fc_filepath):
-            continue
-        target_filepath = get_full_filepath(carbon_type, user_id, carbon_dataset_name, str(yearly_fc_file.year))
-
-        file_dir = os.path.dirname(target_filepath)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        output = generate_carbon_gtiff(fc_filepath, agb_filepath, yearly_fc_file.year, agb_collection.year,
-                                       target_filepath, carbon_type, progress_callback)
-
-        current_progress += step_progress
-
-        if publish:
-            if output:
-                load_for_visualization(target_filepath, task, current_progress,
-                                       step_progress, carbon_type, yearly_fc_file.year)
-            current_progress += step_progress
-
-
-def generate_stocks_and_emissions_files(collection, collection_type):
-    task = collection.processing_task
-    progress = update_task_progress(task, 0.0, 0.0)
-    carbon_pairs = None
-    task.description = "Generating Stock and Emissions Files"
-    task.save()
-
-    match collection_type:
-        case 'fc':
-            carbon_pairs = list(product([ collection ],
-                                        api.get_available_agbs(collection, generating_carbon_files=True)))
-        case 'agb':
-            carbon_pairs = list(product(api.get_available_fcs(collection, generating_carbon_files=True),
-                                        [ collection ]))
-        case _:
-            print("Error generating stocks and emissions files")
-            # TODO Raise error
-            pass
-    print('Carbon Dataset Generation Pairs: {}'.format(carbon_pairs))
-    for fc, agb in carbon_pairs:
-        generate_carbon_files(fc, agb, agb.owner.id, 'emissions',
-                              task, progress, 50.0 / len(carbon_pairs))
-        generate_carbon_files(fc, agb, agb.owner.id, 'carbon-stock',
-                              task, progress, 50.0 / len(carbon_pairs))
-
-
-    task.description = "Done Generating Stock and Emissions Files"
-    task.save()
+    calculate_change_file(baseline_filepath, current_filepath, target_path)
 
 
 def calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath):
@@ -577,22 +347,34 @@ def calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepat
     return final_carbon_stock, emissions, agb_value, processing_time
 
 
-def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, generate_fc=False):
+@shared_task(bind=True)
+def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_collection_id):
     # Assumptions: All FC Files, the AGB file, and all AOI Features have been loaded for stats
     # TODO Ensure mutual availability and lack of modification to all collections
-    # TODO Add filters for aoi feature, specific fc years for user drawn aois (api.py) 
+    # TODO Add filters for aoi feature, specific fc years for user drawn aois (api.py)
+
+    logger.info('Generating zonal stats')
+
+    fc_collection = get_collection_by_type(fc_collection_id, 'fc')
+    if agb_collection_id:
+        agb_collection = get_collection_by_type(agb_collection_id, 'agb')
+    else:
+        agb_collection = None
+    aoi_collection = get_collection_by_type(aoi_collection_id, 'aoi')
 
     fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
-    agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
     aoi_dataset_name = get_filesystem_dataset_name(aoi_collection.name)
-    carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
+    yearly_fc_files = fc_collection.yearly_files.all()
 
-    agb_filepath = get_full_filepath('agb', agb_collection.owner.id, agb_dataset_name)
-    agb_calibration_year = agb_collection.year
+    agb_filepath = None
+    carbon_dataset_name = None
+    if agb_collection:
+        agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
+        carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
 
-    if generate_fc:
-        yearly_fc_files = fc_collection.yearly_files.all()
-    else:
+        agb_filepath = get_full_filepath('agb', agb_collection.owner.id, agb_dataset_name)
+        agb_calibration_year = agb_collection.year
+
         yearly_fc_files = fc_collection.yearly_files.filter(year__gte=agb_calibration_year)
 
     aoi_features = aoi_collection.features.all()
@@ -605,19 +387,45 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, ge
                                         fc_dataset_name, str(yearly_fc_file.year))
         fcc_filepath = get_full_filepath('fcc', fc_collection.owner.id,
                                          fc_dataset_name, str(yearly_fc_file.year))
-        carbon_filepath = get_full_filepath('carbon-stock', agb_collection.owner.id,
-                                            carbon_dataset_name, str(yearly_fc_file.year))
-        emissions_filepath = get_full_filepath('emissions', agb_collection.owner.id,
-                                               carbon_dataset_name, str(yearly_fc_file.year))
         aoi_filepath = get_full_filepath('aoi', aoi_collection.owner.id,
                                          aoi_dataset_name, feature_name)
 
-        if generate_fc:
+        if agb_collection:
+            carbon_filepath = get_full_filepath('carbon-stock', agb_collection.owner.id,
+                                                carbon_dataset_name, str(yearly_fc_file.year))
+            emissions_filepath = get_full_filepath('emissions', agb_collection.owner.id,
+                                                   carbon_dataset_name, str(yearly_fc_file.year))
             try:
-               (fc_area,
-                fc_gain_area,
-                fc_loss_area,
-                processing_time) = calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath)
+                (final_carbon_stock,
+                 emissions,
+                 agb_value,
+                 processing_time) = calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepath,
+                                                                aoi_filepath)
+            except:
+                logger.info("Error generating carbon statistics for files: \n{} \n{} \n{}".format(carbon_filepath,
+                                                                                                  emissions_filepath,
+                                                                                                  aoi_filepath))
+                continue
+
+            statistic = CarbonStatistic()
+
+            statistic.fc_index = fc_collection
+            statistic.aoi_index = aoi_feature
+            statistic.agb_index = agb_collection
+            statistic.year_index = yearly_fc_file.year
+            statistic.final_carbon_stock = final_carbon_stock
+            statistic.emissions = emissions
+            statistic.agb_value = agb_value
+            statistic.processing_time = processing_time
+
+            statistic.save()
+
+        else:
+            try:
+                (fc_area,
+                 fc_gain_area,
+                 fc_loss_area,
+                 processing_time) = calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath)
             except:
                 logger.info('Error generating FC statistics for files: {} {}'.format(aoi_filepath, fc_filepath))
                 continue
@@ -634,82 +442,307 @@ def calculate_zonal_statistics(fc_collection, agb_collection, aoi_collection, ge
 
             statistic.save()
 
-        if not generate_fc or agb_calibration_year <= yearly_fc_file.year:
-            try:
-                (final_carbon_stock,
-                 emissions,
-                 agb_value,
-                 processing_time) = calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepath, aoi_filepath)
-            except:
-                logger.info("Error generating carbon statistics for files: \n{} \n{} \n{}".format(carbon_filepath, emissions_filepath, aoi_filepath))
-                continue
 
-
-            statistic = CarbonStatistic()
-
-            statistic.fc_index = fc_collection
-            statistic.aoi_index = aoi_feature
-            statistic.agb_index = agb_collection
-            statistic.year_index = yearly_fc_file.year
-            statistic.final_carbon_stock = final_carbon_stock
-            statistic.emissions = emissions
-            statistic.agb_value = agb_value
-            statistic.processing_time = processing_time
-
-            statistic.save()
-        else:
-            if not agb_calibration_year <= yearly_fc_file.year and not generate_fc:
-                logger.info("Error, forest cover files are improperly filtered")
-            logger.info("Skipping invalid year {}, \nFC: {}, \nAGB: {}".format(yearly_fc_file.year, fc_collection.name, agb_collection.name))
-
-
-
-def generate_zonal_statistics(collection, collection_type):
+@shared_task(bind=True)
+def generate_zonal_statistics(self, collection_id, collection_type):
     fc_collections = None
     agb_collections = None
     aoi_collections = None
-    task = collection.processing_task
-    generate_fc = None
-    always_generate = False
 
+    collection = get_collection_by_type(collection_id, collection_type)
     match collection_type:
         case 'fc':
-            fc_collections = [ collection ]
+            fc_collections = [collection]
             agb_collections = api.get_available_agbs(collection)
             aoi_collections = api.get_available_aois(collection)
-            generate_fc = True
         case 'agb':
             fc_collections = api.get_available_fcs(collection)
-            agb_collections = [ collection ]
+            agb_collections = [collection]
             aoi_collections = api.get_available_aois(collection)
-            generate_fc = False
         case 'aoi':
             fc_collections = api.get_available_fcs(collection)
             agb_collections = api.get_available_agbs(collection)
-            aoi_collections = [ collection ]
-            always_generate = True
-            generate_fc = True
+            aoi_collections = [collection]
         case _:
             # TODO Raise error
             pass
 
-    available_sets = list(product(fc_collections, agb_collections, aoi_collections))
-    print('Zonal Stats Sets: {}'.format(available_sets))
+    available_carbon_sets = list(product(fc_collections, agb_collections, aoi_collections))
+    logger.info('Zonal Stats Sets: {}'.format(available_carbon_sets))
+
+    if collection_type == 'fc' or collection_type == 'aoi':
+        available_fc_sets = list(product(fc_collections, aoi_collections))
+        for fc, aoi in available_fc_sets:
+            calculate_zonal_statistics.apply_async(args=[fc.id, None, aoi.id], kwargs={}, queue='stats')
+
+    for fc, agb, aoi in available_carbon_sets:
+        calculate_zonal_statistics.apply_async(args=[fc.id, agb.id, aoi.id], kwargs={}, queue='stats')
 
 
-    progress = 0.0
-    for fc, agb, aoi in available_sets:
-        task.description = "Calculating Zonal Statistics {} x {} x {}".format(fc.name,
-                                                                              agb.name,
-                                                                              aoi.name)
-        task.save()
+def generate_scap_source_files(dataset_info, file, is_public, variable_name=None, year=None, filepath=None):
+    if not filepath:
+        upload_path = os.path.join(settings.MEDIA_ROOT, file.file.name)
+        filepath = load_temp(upload_path, *dataset_info)
 
-        calculate_zonal_statistics(fc, agb, aoi, generate_fc)
-        progress = update_task_progress(task, progress, 100.0 / len(available_sets))
-    
-        if generate_fc and not always_generate:
-            generate_fc = False
+    stats_task = load_for_statistics.si(filepath).set(queue='files')
+    logger.info('Created task (load_for_statistics)')
+
+    vis_task = None
+    # TODO Add publicly approved check
+    if is_public:
+        vis_task = load_for_visualization.si(filepath, variable_name, year).set(queue='files')
+
+        logger.info('Created task (load_for_visualization)')
+
+    delete_task = delete_temp.si(filepath).set(queue='management')
+
+    return stats_task, vis_task, delete_task
 
 
-    task.description = "Done Calculating Zonal Statistics"
-    task.save()
+@shared_task(bind=True)
+def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, carbon_type):
+    # Assumptions: All FC Files and the AGB file have been loaded for stats
+    # TODO Ensure mutual availability and lack of modification to both collections
+
+    logger.info('Generating {} file'.format(carbon_type))
+
+    fc_collection = get_collection_by_type(fc_collection_id, 'fc')
+    agb_collection = get_collection_by_type(agb_collection_id, 'agb')
+
+    fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
+    agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
+    carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
+
+    agb_filepath = get_full_filepath('agb', user_id, agb_dataset_name)
+
+    forest_cover_type = 'fcc' if carbon_type == 'emissions' else 'fc'
+
+    publish = fc_collection.access_level == 'Public' and  agb_collection.access_level == 'Public'
+
+    yearly_fc_files = fc_collection.yearly_files.all()
+    for yearly_fc_file in yearly_fc_files:
+        fc_filepath = get_full_filepath(forest_cover_type, user_id, fc_dataset_name, str(yearly_fc_file.year))
+        if not os.path.isfile(fc_filepath):
+            continue
+        target_filepath = get_full_filepath(carbon_type, user_id, carbon_dataset_name, str(yearly_fc_file.year))
+
+        file_dir = os.path.dirname(target_filepath)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        output = generate_carbon_gtiff(fc_filepath, agb_filepath, yearly_fc_file.year, agb_collection.year,
+                                       target_filepath, carbon_type)
+
+        if publish:
+            if output:
+                load_for_visualization.apply_async(args=[target_filepath, carbon_type, yearly_fc_file.year],
+                                                   kwargs={}, queue='files')
+
+@shared_task(bind=True)
+def generate_stocks_and_emissions_files(self, collection_id, collection_type):
+    carbon_pairs = None
+    collection = get_collection_by_type(collection_id, collection_type)
+
+    match collection_type:
+        case 'fc':
+            carbon_pairs = list(product([ collection ],
+                                        api.get_available_agbs(collection, generating_carbon_files=True)))
+        case 'agb':
+            carbon_pairs = list(product(api.get_available_fcs(collection, generating_carbon_files=True),
+                                        [ collection ]))
+        case _:
+            logger.info("Error generating stocks and emissions files")
+            # TODO Raise error
+            pass
+
+    logger.info('Carbon Dataset Generation Pairs: {}'.format(carbon_pairs))
+
+    carbon_tasks = []
+    for fc, agb in carbon_pairs:
+        carbon_tasks.append(generate_carbon_files.si(fc.id, agb.id, agb.owner.id, 'emissions').set(queue='files'))
+        carbon_tasks.append(generate_carbon_files.si(fc.id, agb.id, agb.owner.id, 'carbon-stock').set(queue='files'))
+
+    stats_generation_task = generate_zonal_statistics.si(collection.id, collection_type).set(queue='management')
+    mark_completion_task = mark_complete.si(collection.id, collection_type).set(queue='management')
+    mark_available_task = mark_available.si(collection.id, collection_type).set(queue='management')
+
+    stats_chain = (group(carbon_tasks) |
+                   mark_available_task |
+                   stats_generation_task |
+                   mark_completion_task)
+
+    stats_chain.apply_async()
+
+
+# TODO unzip, stitch in separate process
+def generate_forest_cover_files(fc_collection_id):
+    fc_collection = ForestCoverCollection.objects.get(id=fc_collection_id)
+
+    fc_collection.source_file_status = 'Unavailable'
+    fc_collection.save()
+
+    is_public = fc_collection.access_level == 'Public'
+    user_id = fc_collection.owner.id
+    dataset_name = get_filesystem_dataset_name(fc_collection.name)
+    logger.info('Generating forest cover files: {}'.format(dataset_name))
+
+    # TODO Update to only modified files
+    yearly_files = fc_collection.yearly_files.all().order_by('year')
+    baseline_file = fc_collection.yearly_files.all().order_by('year')[0]
+
+    all_stats_tasks = []
+    all_vis_tasks = []
+    all_change_tasks = []
+    all_delete_tasks = []
+
+    for yearly_file in yearly_files:
+        dataset_type = 'fc'
+        dataset_info = (dataset_type, user_id, dataset_name, str(yearly_file.year))
+
+        target_filepath = None
+        yearly_filename = yearly_file.file.name
+
+        if os.path.splitext(yearly_filename)[1] == '.zip':
+            upload_path = os.path.join(settings.MEDIA_ROOT, yearly_filename)
+
+            temp_dir = os.path.join(config['DATA_DIR'], 'temp')
+            relative_path = get_dataset_item_relative_filepath(dataset_type, user_id, dataset_name, str(yearly_file.year))
+            target_filepath = os.path.join(temp_dir, relative_path)
+
+            target_dir = os.path.dirname(target_filepath)
+            target_dir = os.path.join(target_dir, str(yearly_file.year))
+            if not os.path.exists(target_dir):
+                os.makedirs(target_dir)
+
+            unzip(upload_path, target_dir)
+            stitch_geotiffs(target_dir, target_filepath)
+
+        stats_task, vis_task, delete_task = generate_scap_source_files(dataset_info, yearly_file, is_public,
+                                                          'forest_cover', yearly_file.year, target_filepath)
+
+        change_task = None
+        if yearly_file != baseline_file:
+            change_task = generate_forest_cover_change_file.si(yearly_file.id, user_id, dataset_name).set(queue='files')
+
+        all_stats_tasks.append(stats_task)
+        all_delete_tasks.append(delete_task)
+        if vis_task:
+            all_vis_tasks.append(vis_task)
+        if change_task:
+            all_change_tasks.append(change_task)
+
+    source_file_tasks = group(all_stats_tasks + all_vis_tasks)
+    change_tasks = group(all_change_tasks)
+    delete_tasks = group(all_delete_tasks)
+    mark_source_task = mark_sources_available.si(fc_collection.id, 'fc').set(queue='management')
+    start_carbon_file_generation = generate_stocks_and_emissions_files.si(fc_collection.id, 'fc').set(queue='management')
+
+    load_chain = (source_file_tasks | change_tasks | delete_tasks | mark_source_task | start_carbon_file_generation)
+
+    load_chain.apply_async()
+
+
+def generate_agb_files(agb_collection_id):
+    agb_collection = AGBCollection.objects.get(id=agb_collection_id)
+
+    agb_collection.source_file_status = 'Unavailable'
+    agb_collection.save()
+
+    is_public = agb_collection.access_level == 'Public'
+    user_id = agb_collection.owner.id
+    dataset_name = get_filesystem_dataset_name(agb_collection.name)
+    file = agb_collection.source_file
+
+    dataset_info = ('agb', user_id, dataset_name)
+
+    stats_file_task, vis_file_task, delete_temp_task = generate_scap_source_files(dataset_info, file, is_public,
+                                                                   'agb', agb_collection.year)
+    mark_source_task = mark_sources_available.si(agb_collection.id, 'agb').set(queue='management')
+    start_carbon_file_generation = generate_stocks_and_emissions_files.si(agb_collection.id, 'agb').set(queue='management')
+
+    load_chain = (group([stats_file_task, vis_file_task]) |
+                  group([mark_source_task, delete_temp_task]) |
+                  start_carbon_file_generation)
+    load_chain.apply_async()
+
+
+# TODO rasterize in separate process
+def generate_aoi_file(aoi_feature, collection):
+    user_id = collection.owner.id
+    dataset_name = get_filesystem_dataset_name(collection.name)
+    feature_name = get_filesystem_dataset_name(aoi_feature.name)
+    is_public = False
+    file = None
+    dataset_info = None
+
+    temp_dir = os.path.join(config['DATA_DIR'], 'temp')
+    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name, feature_name)
+    temp_filepath = os.path.join(temp_dir, relative_path)
+
+    file_dir = os.path.dirname(temp_filepath)
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+
+    rasterize_aoi(aoi_feature, temp_filepath)
+
+    if os.path.isfile(temp_filepath):
+        return generate_scap_source_files(dataset_info, file, is_public, None, None, temp_filepath)
+    return None
+
+
+
+def generate_aoi_features(aoi_collection_id):
+    aoi_collection = AOICollection.objects.get(id=aoi_collection_id)
+
+    user_id = aoi_collection.owner.id
+    dataset_name = get_filesystem_dataset_name(aoi_collection.name)
+
+    temp_dir = os.path.join(config['DATA_DIR'], 'temp')
+    relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name).replace('.tif', os.sep)
+    target_dir = os.path.join(temp_dir, relative_path)
+
+    upload_path = get_upload_path(aoi_collection.source_file)
+
+    unzip(upload_path, target_dir)
+    shp_file = get_shp_file(target_dir)
+    add_collection_name_field(shp_file, aoi_collection.name)
+
+    field_map = {
+        'collection': {'name': 'SCAPName'},
+        'wdpa_pid': 'WDPA_PID',
+        'name': 'NAME',
+        'orig_name': 'ORIG_NAME',
+        'desig_eng': 'DESIG_ENG',
+        'desig_type': 'DESIG_TYPE',
+        'rep_area': 'REP_AREA',
+        'gis_area': 'GIS_AREA',
+        'iso3': 'ISO3',
+        'geom': 'MULTIPOLYGON',
+    }
+
+    lm = LayerMapping(AOIFeature, shp_file, field_map, transform=False)
+    lm.save(strict=True)
+
+    aoi_features = AOIFeature.objects.filter(collection=aoi_collection)
+    file_tasks = []
+    delete_tasks = []
+    for feature in aoi_features:
+        tasks = generate_aoi_file(feature, aoi_collection)
+        if tasks:
+            file_tasks.append(tasks[0])
+            file_tasks.append(tasks[1])
+            delete_tasks.append(tasks[2])
+
+    file_tasks = list(filter(lambda t: t is not None, file_tasks))
+    delete_tasks = list(filter(lambda t: t is not None, delete_tasks))
+
+    stats_generation_task = generate_zonal_statistics.si(aoi_collection_id, 'aoi').set(queue='management')
+    mark_completion_task = mark_complete.si(aoi_collection_id, 'aoi').set(queue='management')
+    mark_available_task = mark_available.si(aoi_collection_id, 'aoi').set(queue='management')
+    load_chain = (group(file_tasks) |
+                  mark_available_task |
+                  group(delete_tasks) |
+                  stats_generation_task |
+                  mark_completion_task)
+
+    load_chain.apply_async()

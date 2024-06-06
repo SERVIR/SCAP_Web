@@ -90,7 +90,7 @@ def upload_drawn_aoi(request,country):
     
     available_sets = list(product(fc_collections, agb_collections, aoi_collections))
     for fc, agb, aoi in available_sets:
-        calculate_zonal_statistics(fc, agb, aoi, True) 
+        calculate_zonal_statistics.apply_async(args=[fc, agb, aoi, True], kwargs={}, queue='stats')
 
     return JsonResponse({"aoi_id": uploaded_feature.id})
 
