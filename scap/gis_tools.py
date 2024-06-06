@@ -171,7 +171,6 @@ def reproject_mollweide(source, outputpath):
     affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
     logger.info("Running GDAL warp (Mollweide)")
     subprocess.run("gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath), shell=True)
-
     return outputpath
 
 
@@ -232,7 +231,7 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path):
                 curr_block_data = curr_raster.read(1, window=window)
 
                 # Apply mask to AGB block
-                change_block_data = np.add(curr_block_data > base_block_data, np.multiply(-1, base_block_data > curr_block_data))
+                change_block_data = np.multiply(np.logical_xor((curr_block_data > 0), (base_block_data > 0)), curr_block_data)
 
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
@@ -322,6 +321,7 @@ def check_overlap(raster1, raster2):
     ds2 = None
 
     return overlap
+
 
 def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
     row_offset, col_offset = get_raster_offset(aoi, data_raster)

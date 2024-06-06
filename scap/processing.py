@@ -261,9 +261,9 @@ def load_for_visualization(self, raster_path, variable_name, year):
         ds[variable_name].encoding = OrderedDict([('dtype', ds_dtype),
                                                   ('_FillValue', np.zeros(1,ds_dtype)[0]),
                                                   ('chunksizes', (1, 256, 256)),
-                                                  ('missing_value', np.zeros(1,ds_dtype)[0])])# TODO
-                                                  #('zlib', True),
-                                                  #('complevel', 5)
+                                                  ('missing_value', np.zeros(1,ds_dtype)[0]),
+                                                  ('zlib', True),
+                                                  ('complevel', 3)])
 
 
         dask_future = ds.to_netcdf(final_load_path, unlimited_dims='time', compute=False)
