@@ -17,36 +17,36 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 data = json.load(f)
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s, %(asctime)s, %(module)s, %(process)d, %(thread)d, %(message)s',
-            'datefmt': "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s, %(message)s'
-        },
-    },
-    "handlers": {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': data['PATH_TO_LOG'],
-            'when': 'midnight',
-            'backupCount': 10,
-            'formatter': 'verbose'
-        }
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s, %(asctime)s, %(module)s, %(process)d, %(thread)d, %(message)s',
+#             'datefmt': "%d/%b/%Y %H:%M:%S"
+#         },
+#         'simple': {
+#             'format': '%(levelname)s, %(message)s'
+#         },
+#     },
+#     "handlers": {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.handlers.TimedRotatingFileHandler',
+#             'filename': data['PATH_TO_LOG'],
+#             'when': 'midnight',
+#             'backupCount': 10,
+#             'formatter': 'verbose'
+#         }
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["file"],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#     },
+# }
 import os
 try:
     os.environ["PROJ_LIB"] = "/opt/anaconda3/envs/SCAP/share/proj"
@@ -59,7 +59,8 @@ except:
 SECRET_KEY = data["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = eval(data["DEBUG"])
+
 
 ALLOWED_HOSTS = data["ALLOWED_HOSTS"]
 CSRF_TRUSTED_ORIGINS = data["CSRF_TRUSTED_ORIGINS"]

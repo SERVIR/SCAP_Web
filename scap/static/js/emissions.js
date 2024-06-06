@@ -241,6 +241,9 @@ function show_line(elem) {
     redraw_mma();
 }
 
+
+// Show lines on the chart based on checkbox selection
+
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
     // var msg = all_unchecked();
@@ -264,6 +267,103 @@ function access_lines(elem, dataset) {
     var max_arr = [];
     var avg_arr = [];
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    xhr.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
+
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+
+        $.each(chart.series, function (i, s) {
+            for (var j = 0; j < lc_colors.length; j++) {
+                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                    s.color = lc_colors[j]['color'];
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
+
+                }
+
+
+            }
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+            }
+        });
+
+
+        // chart.update({series: ns});
+
+
+    });
+
+
+}
+
+function access_lines_cs(elem, dataset) {
+    // var msg = all_unchecked();
+
+    // if (msg.length == 0) {
+    if (elem.checked) {
+        show_line_cs(dataset + elem.value);
+
+    } else {
+        hide_line_cs(dataset + elem.value);
+    }
+    // }
+    // } else {
+    //     alert(msg);
+    //     elem.checked = true;
+    // }
+    var ns = [];
+    var lcss = get_checked_lcs_cs();
+    var agbss = get_checked_agbs_cs();
+    var min_arr = [];
+    var max_arr = [];
+    var avg_arr = [];
+    const xhr = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
@@ -403,10 +503,28 @@ function get_checked_lcs() {
     });
     return lcs;
 }
+function get_checked_lcs_cs() {
+    var lcs = [];
+    $('.LC_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        // console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
+    });
+    return lcs;
+}
 
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
+}
+function get_checked_agbs_cs() {
+    var agbs = [];
+    $('.AGB_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
         var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
         agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
     });
@@ -492,6 +610,7 @@ function redraw_mma(){
 
 });
 }
+
 function reset_lcs() {
 
     var uncheck = document.getElementsByClassName('LC_cb');
@@ -526,6 +645,22 @@ function reset_fc_lcs() {
          chart.series[i].setVisible(true,false);
     }
 }
+function reset_cs_lcs() {
+
+    var uncheck = document.getElementsByClassName('LC_cb_cs');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
+    }
+    var index = $("#cs_container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+         chart.series[i].setVisible(true,false);
+    }
+}
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
@@ -545,6 +680,23 @@ function reset_agbs() {
     }
 
     var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+               chart.series[i].setVisible(true,false);
+    }
+redraw_mma();
+}
+function reset_cs_agbs() {
+    var uncheck = document.getElementsByClassName('AGB_cb_cs');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'AGB');
+    }
+
+    var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
@@ -583,6 +735,40 @@ function clear_fc_lcs() {
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
                 chart.series[i].setVisible(false,false);
+
+    }
+
+}
+function clear_cs_lcs() {
+    var uncheck = document.getElementsByClassName('LC_cb_cs');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#cs_container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+                chart.series[i].setVisible(false,false);
+
+    }
+
+}
+function clear_cs_agbs() {
+    var uncheck = document.getElementsByClassName('AGB_cb_cs');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'AGB');
+
+    }
+
+    var index = $("#cs_container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+               chart.series[i].setVisible(false,false);
 
     }
 

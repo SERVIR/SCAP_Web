@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from datetime import datetime
+from datetime import datetime,date,timedelta
 from pathlib import Path
 
 from django.contrib import messages
@@ -32,12 +32,16 @@ logger = logging.getLogger("django")
 
 def home(request):
     pilot_countries = []
+    new_user_list=None
     try:
         pilot_countries = PilotCountry.objects.all().order_by('country_name')
+        today = date.today()
+        seven_day_before = today - timedelta(days=30)
+        new_user_list = User.objects.filter(date_joined__gte=seven_day_before)
     except:
         pass
 
-    return render(request, 'scap/index.html', context={'pilot_countries': pilot_countries})
+    return render(request, 'scap/index.html', context={'pilot_countries': pilot_countries,'new_user_list': new_user_list})
 
 
 def map(request, country=0):
@@ -168,10 +172,10 @@ def pilot_country(request, country=0):
     aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)
     pa_name = aoi.name
     colors = get_available_colors()
-    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
+    chart, lcs, agbs, chart_cs = fetch_carbon_charts(pa_name, request.user, 'container')
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
     return render(request, 'scap/pilot_country.html',
-                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
+                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,'chart_cs': chart_cs,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,

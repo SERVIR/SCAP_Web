@@ -66,9 +66,30 @@
     <link href="{% static "css/styles.css" %}" rel="stylesheet"/>
      <link href="{% static "css/carousel.css" %}" rel="stylesheet"/>
 </head>
+
 <body id="page-top">
+
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div style="position: fixed;top:0;width:100%;z-index:1000">
+        {% if request.user.groups.all.0.name == "scap_sysadmins" %}
+         <div class="alert alert-warning alert-dismissible fade show" role="alert">
+             {% if new_user_list %}
+             <p>
+                <strong> The following users have registered in the last 30 days</strong>
+             </p>
+  <p id="user_list">
+      {% for user in new_user_list %}
+      <a href="{% url 'admin:auth_user_change' user.id %}"><i class="fas fa-pencil fa-fw fa-1x"></i></a>&nbsp;<span>{{ user.get_full_name }} ({{user.username}})</span><br>
+{% endfor %}
+  </p>
+             {% else %}
+    No users joined in last 30 days.
+{% endif %}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+        {% endif %}
+    </div>
     <div class="container-fluid">
         <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img
                 src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
@@ -77,6 +98,7 @@
             Menu
             <i class="fas fa-bars ms-1"></i>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                 <li class="nav-item"><a class="nav-link" href="#callstoaction">About</a></li>
@@ -87,7 +109,7 @@
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 {% if user.is_authenticated %}
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" style="z-index:900">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
                                 class="caret"></span></a>
@@ -111,6 +133,7 @@
         </div>
     </div>
 </nav>
+
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
@@ -299,7 +322,7 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
                         </div>
                         <figcaption>
                             <h3>2021</h3>
-                            <label>Conceptual Framework and Theory of Change</label>
+                            <label><strong>Conceptual Framework and Theory of Change</strong></label>
                             <p class="scroll-container">
                                 While the SERVIR network has a number of services focused on land cover monitoring, and tracking tropical deforestation in particular, one element that has been missing is translating such changes into estimates of changes in carbon stock or even emissions of greenhouse gases like carbon dioxide. With USAID regional and bilateral missions contributing Sustainable Landscapes (SL) funding to SERVIR hubs, those USAID missions have a responsibility to track greenhouse gas (GHG) emissions as part of monitoring environmental dynamics in their respective regions. In addition to developing a scientific framework and accompanying ~global / pan-tropical service for monitoring carbon emissions, S-CAP has a significant capacity development component.
                             </p>
@@ -313,7 +336,7 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
                         </div>
                         <figcaption>
                             <h3>2021-2022</h3>
-                            <label>Initial Analysis</label>
+                            <label><strong>Initial Analysis</strong></label>
                             <p class="scroll-container">
                                 <b>E. Cherrington et al.</b>
                                 “One forest carbon model to rule them all? Utilizing ensembles of forest cover and biomass datasets to determine carbon budgets of the world’s forest ecosystems”. In BioGeosciences: (Submitted April 2024) (- A global analysis that demonstrates convergence and divergence in coverage and estimates related to forest cover, forest cover change, and above ground biomass stocks, which are the main inputs for estimating forest carbon stocks and greenhouse gas emissions from land cover change.  &
@@ -330,7 +353,7 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
                         </div>
                         <figcaption>
                             <h3>2022</h3>
-                            <label>National Forest Reference Level Comparisons</label>
+                            <label><strong>National Forest Reference Level Comparisons</strong></label>
                             <p class="scroll-container">
 Initial results from S-CAP were compared against each pilot country’s most recent submission to the UNFCCC effort to reduce emissions from deforestation and forest degradation in developing countries (REDD+) platform. This provided better understanding and alignment with country specific definitions of forest cover and deforestation. Values of biomass, activity data, and emission estimates were included in S-CAP reporting.                            </p>
                         </figcaption>
@@ -343,7 +366,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>2023-2024</h3>
-                            <label>Partner Consultation | Capacity Building</label>
+                            <label><strong>Partner Consultation | Capacity Building</strong></label>
                             <p class="scroll-container">
                                 <b>SERVIR CA (Guatemala City, Guatemala) - Feb. 2023:</b> Technical professionals from government, education and private institutions responsible for forest carbon accounting and deforestation monitoring.  Focused on fundamental theory, applications, and code for forest change detection methods and carbon emission estimation with practical exercises applied in participants’ areas of interest.
                                 <br>
@@ -370,7 +393,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>2023-2024</h3>
-                            <label>Website Application Development</label>
+                            <label><strong>Website Application Development</strong></label>
                                 <p>
                             A joint effort between the science team and GIT team at the SERVIR Science Coordination Office, the web app reflects priorities expressed by SERVIR hubs and their stakeholders to best suit the needs of the hubs and USAID missions. S-CAP is also poised to contribute to broader GHG monitoring initiatives, namely through its coordination with the U.S. Greenhouse Gas (GHG) Monitoring Center, which leverages IMPACT’s <a href="https://www.earthdata.nasa.gov/learn/blog/veda-open-science-platform">VEDA</a> platform for its data and information system.
                         </p>
@@ -386,7 +409,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>June 2024</h3>
-							Website Launch
+                            <strong>Website Launch</strong>
                             <p>
                                 Beta launch of S-CAP website. Data sets pre-loaded and immediately available for use consists of five global and seven regional/national land cover datasets along with twenty-two biomass datasets
                             </p>
@@ -400,7 +423,7 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                         </div>
                         <figcaption>
                             <h3>Moving Forward</h3>
-							Annual Updates & Connection with existing SERVIR Global services
+							<strong>Annual Updates & Connection with existing SERVIR Global services</strong>
                             <p>
                                 Updates to the datasets and coverage will be updated annually to ensure availability of the most up to date information in regards to land cover, land cover change, and aboveground biomass.
                             </p>

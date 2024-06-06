@@ -395,12 +395,19 @@ def fetch_carbon_charts(pa_name, owner, container):
         df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
         df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])['emissions'].sum().reset_index()
+        grouped_data_cs = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])[
+             'final_carbon_stock'].sum().reset_index()
         pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index_id', 'agb_index_id'],
+                                     index='year_index',
+                                     fill_value=None)
+        pivot_table_cs = pd.pivot_table(grouped_data_cs, values='final_carbon_stock', columns=['fc_index_id', 'agb_index_id'],
                                      index='year_index',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
                           title='Carbon Statistics: ' + pa_name)
-        return chart, lcs, agbs
+        chart_cs = serialize(pivot_table_cs, render_to='cs_container', output_type='json', type='spline',
+                          title='Carbon Stock: ' + pa_name)
+        return chart, lcs, agbs, chart_cs
     except Exception as e:
         error_msg = "Could not generate chart data for emissions"
         print(str(e))
@@ -507,6 +514,47 @@ def get_agg_check(request, country=0):
                 CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
                     'year_index').annotate(
                     min=Min('emissions'), max=Max('emissions'), avg=Avg('emissions')))
+        if len(data1) == 0:
+            return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
+        data1.sort(key=lambda x: x['year_index'])
+
+        for x in range(len(data1)):
+            min_arr.append([data1[x]['year_index'], data1[x]['min']])
+            max_arr.append([data1[x]['year_index'], data1[x]['max']])
+            avg_arr.append([data1[x]['year_index'], data1[x]['avg']])
+
+    return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
+
+def get_agg_check_cs(request, country=0):
+    result = CarbonStatistic.objects.all().order_by('year_index')
+    data = list(result.values_list('year_index').distinct())
+    years = []
+    for x in range(len(data)):
+        years.append(data[x][0])
+    if request.method == 'POST':
+        lcs = request.POST.getlist('lcs[]')
+        agbs = request.POST.getlist('agbs[]')
+        pa_name = country
+        min_arr = []
+        max_arr = []
+        avg_arr = []
+        if pa_name > 0:
+            try:
+                pa = PilotCountry.objects.get(id=country)
+                aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)
+                pa_name = aoi.id
+            except:
+                pass
+            data1 = list(
+                CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
+                    'year_index').annotate(
+                    min=Min('final_carbon_stock'), max=Max('final_carbon_stock'), avg=Avg('final_carbon_stock')))
+        else:
+            pa_name = country
+            data1 = list(
+                CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
+                    'year_index').annotate(
+                    min=Min('final_carbon_stock'), max=Max('final_carbon_stock'), avg=Avg('final_carbon_stock')))
         if len(data1) == 0:
             return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
         data1.sort(key=lambda x: x['year_index'])
