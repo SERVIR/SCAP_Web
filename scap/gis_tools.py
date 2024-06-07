@@ -170,7 +170,13 @@ def reproject_mollweide(source, outputpath):
     # gdal.ReprojectImage(source_obj, dest, src_proj, match_proj, gdalconst.GRA_Bilinear, callback=progress_callback)
     affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
     logger.info("Running GDAL warp (Mollweide)")
-    subprocess.run("gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath), shell=True)
+    logger.info("gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath))
+    result = subprocess.run("/opt/anaconda3/envs/SCAP/bin/gdalwarp -t_srs ESRI:54009 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r bilinear {} {}".format(affine_str, source, outputpath), shell=True, stdout = subprocess.PIPE,
+    stderr = subprocess.PIPE)
+
+        
+    logger.info(result.stdout)
+    logger.info(result.stderr)
     return outputpath
 
 
@@ -183,7 +189,7 @@ def reproject_latlon(source, outputpath):
     affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
     logger.info("Running GDAL warp (EPSG:4326)")
 
-    subprocess.run("gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r {} {} {}".format(affine_str, resampling_alg, source, outputpath), shell=True)
+    subprocess.run("/opt/anaconda3/envs/SCAP/bin/gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r {} {} {}".format(affine_str, resampling_alg, source, outputpath), shell=True)
     return outputpath
 
 
