@@ -112,9 +112,9 @@ chart1.update({
                 events: {
                     checkboxClick: function (event) {
                         if (this.visible) {
-                            this.hide();
+                             this.setVisible(false,false);
                         } else {
-                            this.show();
+                             this.setVisible(true,false);
                         }
                     }
                 }
@@ -130,7 +130,8 @@ function hide_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        console.log(newseries[i].name)
+        if (newseries[i].name === document.getElementById(elem).innerText) {
             chart.series[i].hide();
         }
     }
@@ -143,7 +144,7 @@ function show_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        if (newseries[i].name===document.getElementById(elem).innerText) {
             chart.series[i].show();
         }
     }
