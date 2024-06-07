@@ -1,0 +1,3 @@
+ERROR, 07/Jun/2024 00:05:07, libgdal, 2747468, 140297215682368, GDAL_ERROR 1: b'TIFFAppendToStrip:Maximum TIFF file size exceeded. Use BIGTIFF=YES creation option.'
+ERROR, 07/Jun/2024 00:16:09, libgdal, 2747468, 140297215682368, GDAL_ERROR 1: b'/mnt/scap/media/uploads/scap_admin/fc/ESRI/ESRI_2018_I2Zg5Zk.tif, band 1: An error occurred while writing a dirty block from GDALRasterBand::RasterIO'
+ERROR, 07/Jun/2024 00:28:49, libgdal, 2747468, 140297215682368, GDAL_ERROR 1: b'TIFFAppendToStrip:Maximum TIFF file size exceeded. Use BIGTIFF=YES creation option.'
