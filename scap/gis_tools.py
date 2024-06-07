@@ -237,7 +237,7 @@ def calculate_change_file(baseline_filepath, current_filepath, target_path):
                 curr_block_data = curr_raster.read(1, window=window)
 
                 # Apply mask to AGB block
-                change_block_data = np.multiply(np.logical_xor((curr_block_data > 0), (base_block_data > 0)), curr_block_data)
+                change_block_data = np.add(curr_block_data > base_block_data, np.multiply(-1, base_block_data > curr_block_data))
 
                 # Write masked block to output TIF
                 dst.write(change_block_data, window=window, indexes=1)
