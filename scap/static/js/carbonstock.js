@@ -272,6 +272,102 @@ function show_line_cs(elem) {
     }
     redraw_mma_cs();
 }
+function access_lines_cs(elem, dataset) {
+    // var msg = all_unchecked();
+
+    // if (msg.length == 0) {
+    if (elem.checked) {
+        show_line_cs(dataset + elem.value);
+
+    } else {
+        hide_line_cs(dataset + elem.value);
+    }
+    // }
+    // } else {
+    //     alert(msg);
+    //     elem.checked = true;
+    // }
+    var ns = [];
+    var lcss = get_checked_lcs_cs();
+    var agbss = get_checked_agbs_cs();
+    var min_arr = [];
+    var max_arr = [];
+    var avg_arr = [];
+    const xhr = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
+    xhr.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
+
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+
+        $.each(chart_cs_obj.series, function (i, s) {
+            for (var j = 0; j < lc_colors.length; j++) {
+                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                    s.color = lc_colors[j]['color'];
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
+
+                }
+
+
+            }
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+            }
+        });
+
+
+        // chart.update({series: ns});
+
+
+    });
+
+
+}
 function hide_line_cs(elem) {
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];

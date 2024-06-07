@@ -387,7 +387,7 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                         <b>Land Cover Datasets:</b><br>
                         <ul class="lcf_list_cs chart-list-scroll">
                             {% csrf_token %}
-                            {% for lc in lcs %}
+                            {% for lc in lcs_cs %}
                                 <li class="lc_list-item">
                                     <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cs yellow-checkbox"
                                            value="{{ lc.id }}" onchange="access_lines_cs(this,'LC')" name="lc"/>
@@ -413,7 +413,7 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                             <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
                             <ul class="agb_list chart-list-scroll">
                                 {% csrf_token %}
-                                {% for agb in agbs %}
+                                {% for agb in agbs_cs %}
                                     <li class="agb_list-item">
                                         <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb_cs yellow-checkbox"
                                                onchange="access_lines_cs(this,'AGB')"

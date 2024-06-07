@@ -395,24 +395,68 @@ def fetch_carbon_charts(pa_name, owner, container):
         df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
         df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
         grouped_data = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])['emissions'].sum().reset_index()
-        grouped_data_cs = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])[
-             'final_carbon_stock'].sum().reset_index()
         pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index_id', 'agb_index_id'],
-                                     index='year_index',
-                                     fill_value=None)
-        pivot_table_cs = pd.pivot_table(grouped_data_cs, values='final_carbon_stock', columns=['fc_index_id', 'agb_index_id'],
                                      index='year_index',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
                           title='Carbon Statistics: ' + pa_name)
-        chart_cs = serialize(pivot_table_cs, render_to='cs_container', output_type='json', type='spline',
-                          title='Carbon Stock: ' + pa_name)
-        return chart, lcs, agbs, chart_cs
+        return chart, lcs, agbs
     except Exception as e:
         error_msg = "Could not generate chart data for emissions"
         print(str(e))
 
     return chart, lcs, agbs
+
+
+def fetch_carbon_stock_charts(pa_name, owner, container):
+    # TODO Add charts for carbon stock and AGB in addition to emissions
+    chart_cs = None
+    lcs = []
+    agbs = []
+    try:
+        lc_ids=[]
+        agb_ids=[]
+        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
+        if not df.empty:
+            lc_ids = numpy.array(df['fc_index_id'].unique()).tolist()
+            agb_ids = numpy.array(df['agb_index_id'].unique()).tolist()
+            lc_ids.sort()
+            agb_ids.sort()
+        if owner.is_authenticated:
+            df_lc_owner = ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values()
+            df_lc_public = ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values()
+            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+
+            lcs = df_lc.to_dict('records')
+            df_agb_owner = AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values()
+            df_agb_public = AGBCollection.objects.filter(access_level='Public', id__in=agb_ids).values()
+            df_agb = pd.DataFrame(df_agb_owner.union(df_agb_public).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+        else:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(AGBCollection.objects.filter(access_level='Public',
+                                                               id__in=agb_ids).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+        if df.empty:
+            chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
+                              title='CarbonStatistics: ' + pa_name)
+            return chart, lcs, agbs
+        df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
+        df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
+        grouped_data_cs = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])[
+             'final_carbon_stock'].sum().reset_index()
+        pivot_table_cs = pd.pivot_table(grouped_data_cs, values='final_carbon_stock', columns=['fc_index_id', 'agb_index_id'],
+                                     index='year_index',
+                                     fill_value=None)
+        chart_cs = serialize(pivot_table_cs, render_to='cs_container', output_type='json', type='spline',
+                          title='Carbon Stock: ' + pa_name)
+        return chart_cs, lcs, agbs
+    except Exception as e:
+        error_msg = "Could not generate chart data for carbon stock"
+        print(str(e))
+
+    return chart_cs, lcs, agbs
 
 
 def fetch_forest_change_charts(pa_name, owner, container):
