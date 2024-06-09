@@ -322,7 +322,7 @@
                             {% for lc in lc_data %}
                                 <li class="lc_list-item">
                                     <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cf_pa yellow-checkbox"
-                                               onchange="access_lines(this,'LC')"
+                                               onchange="access_lines_fc(this,'LC')"
                                                value="{{ lc.id }}" name="lc"/><label id="{{ lc.name }}"
                                                                                      style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
                                         {% if lc.name in global_list %}<i class="fa-solid fa-globe"  title="Indicates a Global dataset"></i>{% endif %}
@@ -349,6 +349,79 @@
             </div>
         </div>
     </div>
+</section>
+<section id="CarbonStockChart_PA">
+    <div class="container">
+        <div class="card" style="width: 100%">
+            <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore Carbon Stock from different sources</h5>
+            <p class="card-text" style="margin-left: 10px">
+This tool helps to quantify and visualize trends from different carbon stock sources. To estimate global stocks of forest biomass, we need estimates of (i) forest area, and (ii) AGB stocks. On the left, select the forest area source in combination with biomass source to estimate annual carbon stock.
+            </p>
+            <a href="{% url "contribute-data" %}" target="_blank" class="btn btn-primary w-25"
+               style="margin-left: 10px">Explore
+                the protected areas inside the country</a>
+
+            <div class="card-body">
+                <div class="row h-100 ">
+                    <div class="col-3 m-auto">
+                         <div class="LC_checkboxlist_cs">
+                        <b>Land Cover Datasets:</b><br>
+                        <ul class="lcf_list_cs_pa chart-list-scroll">
+                            {% csrf_token %}
+                            {% for lc in lcs_cs %}
+                                <li class="lc_list-item">
+                                    <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cs_pa yellow-checkbox"
+                                           value="{{ lc.id }}" onchange="access_lines_cs(this,'LC')" name="lc"/>
+                                    <label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
+                                    {% if lc.name in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
+                                    &nbsp;{{ lc.name }}
+                                        <span class="badge bg-light text-dark">(LC{{ lc.id }})</span>
+                                    </label>
+                                </li>
+                                <p style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</p>
+
+                            {% endfor %}
+                        </ul>
+                          <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_cs_lcs()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_cs_lcs()">Clear All
+                        </button>
+                         </div>
+                     <hr width="50%">
+                        <div class="AGB_checkboxlist_cs">
+                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                            <ul class="agb_list chart-list-scroll">
+                                {% csrf_token %}
+                                {% for agb in agbs_cs %}
+                                    <li class="agb_list-item">
+                                        <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb_cs_pa yellow-checkbox"
+                                               onchange="access_lines_cs(this,'AGB')"
+                                               value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
+                                                                                           style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}
+                                        <span class="badge bg-light text-dark">(AGB{{ agb.id }})</span></label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="reset_cs_agbs()">Select All
+                        </button>
+                        <button class="btn btn-dark btn-sm" style="font-family: Helvetica, Arial, sans-serif;"
+                                onclick="clear_cs_agbs()">Clear All
+                        </button>
+                            </div>
+
+                    <div class="col-9" id="cs_container_fcpa" style="height: 500px">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_cs_pa|safe}});
+                        </script>
+                    </div>
+                      </div>
+                </div>
+            </div>
+        </div>
 </section>
 <div class="pilotcountry-modal modal fade" id="info_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -401,8 +474,10 @@
         </div>
     </div>
 </div>
-<script src="{% static '/js/forestchange_pa.js' %}"></script>
+
 <script src="{% static '/js/emissions_pa.js' %}"></script>
+<script src="{% static '/js/forestchange_pa.js' %}"></script>
+<script src="{% static '/js/carbonstock_pa.js' %}"></script>
 <script src="{% static '/js/utils.js' %}"></script>
 <script src="{% static '/js/leaflet-side-by-side.js' %}"></script>
 

@@ -125,7 +125,7 @@ function hide_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        if (document.getElementById(elem).innerText.includes(newseries[i].name)) {
             chart.series[i].hide();
         }
     }
@@ -138,7 +138,7 @@ function show_line_fc(elem) {
     var series = chart.series;
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name === elem) {
+        if (document.getElementById(elem).innerText.includes(newseries[i].name)) {
             chart.series[i].show();
         }
     }
@@ -146,7 +146,6 @@ function show_line_fc(elem) {
 
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines_fc(elem, dataset) {
-    console.log(elem.checked);
     // var msg = all_unchecked_fc();
     // if (msg.length == 0) {
     if (elem.checked) {
@@ -160,6 +159,8 @@ function access_lines_fc(elem, dataset) {
     //     elem.checked = true;
     // }
 }
+
+
 
 // Show alert if all checkboxes are unchecked
 function all_unchecked_fc() {
@@ -175,3 +176,4 @@ function all_unchecked_fc() {
     }
     return msg;
 }
+

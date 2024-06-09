@@ -449,6 +449,25 @@ function get_checked_agbs() {
     return agbs;
 }
 
+function get_checked_lcs_cs() {
+    var lcs = [];
+    $('.LC_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        // console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
+    });
+    return lcs;
+}
+
+function get_checked_agbs_cs() {
+    var agbs = [];
+    $('.AGB_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
+}
 function reset_lcs_pa() {
     var uncheck = document.getElementsByClassName('LC_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {

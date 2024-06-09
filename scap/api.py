@@ -63,12 +63,12 @@ def test(request):
 
 
 @csrf_exempt
-def upload_drawn_aoi(request,country):
+def upload_drawn_aoi(request, country):
     lcs = request.POST.getlist('lcs[]')
     agbs = request.POST.getlist('agbs[]')
     feature = request.POST.get('geometry')
 
-    feat  = json_lib.loads(feature)
+    feat = json_lib.loads(feature)
     geom = feat['features'][0]['geometry']
     coll = AOICollection.objects.get(name='User Drawn AOIs')
     current_time = datetime.now()
@@ -76,7 +76,8 @@ def upload_drawn_aoi(request,country):
         geom['type'] = 'MultiPolygon'
         geom['coordinates'] = [geom['coordinates']]
 
-    uploaded_feature = AOIFeature(geom=GEOSGeometry(json_lib.dumps(geom)), collection=AOICollection.objects.get(name='User Drawn AOIs'))
+    uploaded_feature = AOIFeature(geom=GEOSGeometry(json_lib.dumps(geom)),
+                                  collection=AOICollection.objects.get(name='User Drawn AOIs'))
     uploaded_feature.name = 'user-drawn-' + current_time.strftime("%Y%m%dT%H%M%S")
     uploaded_feature.iso3 = 'NPL'
     uploaded_feature.desig_eng = 'DRAWN'
@@ -87,7 +88,7 @@ def upload_drawn_aoi(request,country):
     aoi_collections = [coll]
     agb_collections = list(AGBCollection.objects.filter(id__in=agbs))
     fc_collections = list(ForestCoverCollection.objects.filter(id__in=lcs))
-    
+
     available_sets = list(product(fc_collections, agb_collections, aoi_collections))
     for fc, agb, aoi in available_sets:
         calculate_zonal_statistics.apply_async(args=[fc, agb, aoi, True], kwargs={}, queue='stats')
@@ -364,9 +365,13 @@ def fetch_carbon_charts(pa_name, owner, container):
     lcs = []
     agbs = []
     try:
-        lc_ids=[]
-        agb_ids=[]
-        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
+        lc_ids = []
+        agb_ids = []
+        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values('emissions', 'aoi_index',
+                                                                                              'year_index',
+                                                                                              'fc_index_id',
+                                                                                              'agb_index_id').distinct()))
+        print(df)
         if not df.empty:
             lc_ids = numpy.array(df['fc_index_id'].unique()).tolist()
             agb_ids = numpy.array(df['agb_index_id'].unique()).tolist()
@@ -375,7 +380,7 @@ def fetch_carbon_charts(pa_name, owner, container):
         if owner.is_authenticated:
             df_lc_owner = ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values()
             df_lc_public = ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values()
-            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+            df_lc = pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
 
             lcs = df_lc.to_dict('records')
             df_agb_owner = AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values()
@@ -414,9 +419,12 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
     lcs = []
     agbs = []
     try:
-        lc_ids=[]
-        agb_ids=[]
-        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values()))
+        lc_ids = []
+        agb_ids = []
+        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values('final_carbon_stock', 'aoi_index',
+                                                                                              'year_index',
+                                                                                              'fc_index_id',
+                                                                                              'agb_index_id').distinct()))
         if not df.empty:
             lc_ids = numpy.array(df['fc_index_id'].unique()).tolist()
             agb_ids = numpy.array(df['agb_index_id'].unique()).tolist()
@@ -425,7 +433,7 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
         if owner.is_authenticated:
             df_lc_owner = ForestCoverCollection.objects.filter(owner=owner, id__in=lc_ids).values()
             df_lc_public = ForestCoverCollection.objects.filter(access_level='Public', id__in=lc_ids).values()
-            df_lc=pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+            df_lc = pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
 
             lcs = df_lc.to_dict('records')
             df_agb_owner = AGBCollection.objects.filter(owner=owner, id__in=agb_ids).values()
@@ -445,12 +453,13 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
         df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
         df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
         grouped_data_cs = df.groupby(['year_index', 'fc_index_id', 'agb_index_id'])[
-             'final_carbon_stock'].sum().reset_index()
-        pivot_table_cs = pd.pivot_table(grouped_data_cs, values='final_carbon_stock', columns=['fc_index_id', 'agb_index_id'],
-                                     index='year_index',
-                                     fill_value=None)
-        chart_cs = serialize(pivot_table_cs, render_to='cs_container', output_type='json', type='spline',
-                          title='Carbon Stock: ' + pa_name)
+            'final_carbon_stock'].sum().reset_index()
+        pivot_table_cs = pd.pivot_table(grouped_data_cs, values='final_carbon_stock',
+                                        columns=['fc_index_id', 'agb_index_id'],
+                                        index='year_index',
+                                        fill_value=None)
+        chart_cs = serialize(pivot_table_cs, render_to=container, output_type='json', type='spline',
+                             title='Carbon Stock: ' + pa_name)
         return chart_cs, lcs, agbs
     except Exception as e:
         error_msg = "Could not generate chart data for carbon stock"
@@ -502,7 +511,7 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
         lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
     if owner.is_authenticated:
         df_lc_defor_owner = ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values()
-        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public',name__in=lc_names).values()
+        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values()
         df_lc_defor = pd.DataFrame((df_lc_defor_owner.union(df_lc_defor_public).values()))
     else:
         df_lc_defor = pd.DataFrame(
@@ -569,6 +578,7 @@ def get_agg_check(request, country=0):
 
     return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
 
+
 def get_agg_check_cs(request, country=0):
     result = CarbonStatistic.objects.all().order_by('year_index')
     data = list(result.values_list('year_index').distinct())
@@ -599,6 +609,35 @@ def get_agg_check_cs(request, country=0):
                 CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
                     'year_index').annotate(
                     min=Min('final_carbon_stock'), max=Max('final_carbon_stock'), avg=Avg('final_carbon_stock')))
+        if len(data1) == 0:
+            return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
+        data1.sort(key=lambda x: x['year_index'])
+
+        for x in range(len(data1)):
+            min_arr.append([data1[x]['year_index'], data1[x]['min']])
+            max_arr.append([data1[x]['year_index'], data1[x]['max']])
+            avg_arr.append([data1[x]['year_index'], data1[x]['avg']])
+
+    return JsonResponse({"min": min_arr, "max": max_arr, "avg": avg_arr}, safe=False)
+
+
+def get_agg_check_cs_pa(request, country=0):
+    result = CarbonStatistic.objects.all().order_by('year_index')
+    data = list(result.values_list('year_index').distinct())
+    years = []
+    for x in range(len(data)):
+        years.append(data[x][0])
+    if request.method == 'POST':
+        lcs = request.POST.getlist('lcs[]')
+        agbs = request.POST.getlist('agbs[]')
+        pa_id = country
+        min_arr = []
+        max_arr = []
+        avg_arr = []
+        data1 = list(
+            CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_id).values(
+                'year_index').annotate(
+                min=Min('final_carbon_stock'), max=Max('final_carbon_stock'), avg=Avg('final_carbon_stock')))
         if len(data1) == 0:
             return JsonResponse({"min": [], "max": [], "avg": []}, safe=False)
         data1.sort(key=lambda x: x['year_index'])
@@ -924,29 +963,31 @@ def add_agb_data(request, pk=None):
         return JsonResponse({"error": str(e)})
     return JsonResponse({"error": ""})
 
-@csrf_exempt
-def save_message_to_db(name,organization,email, role, message):
-    message_object=UserMessage()
-    message_object.name=name
-    message_object.organization=organization
-    message_object.email=email
-    message_object.role=role
 
-    message_object.message=message
+@csrf_exempt
+def save_message_to_db(name, organization, email, role, message):
+    message_object = UserMessage()
+    message_object.name = name
+    message_object.organization = organization
+    message_object.email = email
+    message_object.role = role
+
+    message_object.message = message
     message_object.save()
+
 
 @csrf_exempt
 def send_message_scap(request):
     from django.core.mail import send_mail
     name = request.POST.get('name')
     organization = request.POST.get('organization')
-    email= request.POST.get('email')
-    role= request.POST.get('role')
+    email = request.POST.get('email')
+    role = request.POST.get('role')
     message = request.POST.get('message')
     approvers_emails = ['githika.cs@gmail.com']
     try:
         send_mail('Message from SCAP User', message, email, approvers_emails)
-        save_message_to_db(name,organization,email, role, message)
+        save_message_to_db(name, organization, email, role, message)
     except Exception as e:
         return JsonResponse({'result': 'error'})
-    return JsonResponse({'result':'success'})
+    return JsonResponse({'result': 'success'})
