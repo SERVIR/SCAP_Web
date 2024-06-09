@@ -177,6 +177,7 @@ def reproject_mollweide(source, outputpath):
         
     logger.info(result.stdout)
     logger.info(result.stderr)
+
     return outputpath
 
 
@@ -187,9 +188,9 @@ def reproject_latlon(source, outputpath):
     gt = gdal.Open(outputpath).GetGeoTransform()
 
     affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
-    logger.info("Running GDAL warp (EPSG:4326)")
 
     subprocess.run("/opt/anaconda3/envs/SCAP/bin/gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r {} {} {}".format(affine_str, resampling_alg, source, outputpath), shell=True)
+
     return outputpath
 
 

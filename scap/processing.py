@@ -60,6 +60,14 @@ def assign_task(collection, task_id):
     collection.save()
 
 
+def ensure_ownership(task_id):
+    try:
+        task = CurrentTask.objects.create(id=task_id)
+        return True
+    except:
+        return False
+
+
 def set_stage(collection, current_stage, total_stages):
     task = collection.processing_task
     task.stage_progress = "Stage {} of {}".format(current_stage, total_stages)
@@ -146,6 +154,8 @@ def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifie
 
 @shared_task(bind=True)
 def delete_temp(self, filepath):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     os.remove(filepath)
 
 
@@ -177,6 +187,8 @@ def load_to_VEDA(raster_path):
 
 @shared_task(bind=True)
 def load_for_visualization(self, raster_path, variable_name, year):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     final_load_path = raster_path.replace('temp/', '').replace('data/', 'public/').replace('.tif', '.nc4')
 
     logger.info('Loading {} for visualization'.format(final_load_path))
@@ -277,6 +289,8 @@ def load_for_visualization(self, raster_path, variable_name, year):
 
 @shared_task(bind=True)
 def load_for_statistics(self, raster_path):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     # Assumes raster is loaded to temp directory
     final_load_path = raster_path.replace('temp/', '')
     logger.info('Loading {} for statistics'.format(final_load_path))
@@ -291,6 +305,8 @@ def load_for_statistics(self, raster_path):
 
 @shared_task(bind=True)
 def generate_forest_cover_change_file(self, fc_file_id, user_id, dataset_name):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     fc_file = ForestCoverFile.objects.get(id=fc_file_id)
 
     logger.info('Generating forest cover change file')
@@ -349,6 +365,8 @@ def calculate_carbon_statistics(carbon_filepath, emissions_filepath, agb_filepat
 
 @shared_task(bind=True)
 def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_collection_id):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     # Assumptions: All FC Files, the AGB file, and all AOI Features have been loaded for stats
     # TODO Ensure mutual availability and lack of modification to all collections
     # TODO Add filters for aoi feature, specific fc years for user drawn aois (api.py)
@@ -445,6 +463,8 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
 
 @shared_task(bind=True)
 def generate_zonal_statistics(self, collection_id, collection_type):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     fc_collections = None
     agb_collections = None
     aoi_collections = None
@@ -501,6 +521,8 @@ def generate_scap_source_files(dataset_info, file, is_public, variable_name=None
 
 @shared_task(bind=True)
 def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, carbon_type):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     # Assumptions: All FC Files and the AGB file have been loaded for stats
     # TODO Ensure mutual availability and lack of modification to both collections
 
@@ -540,6 +562,8 @@ def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, ca
 
 @shared_task(bind=True)
 def generate_stocks_and_emissions_files(self, collection_id, collection_type):
+    if not ensure_ownership(self.request.id):
+        return 'Duped'
     carbon_pairs = None
     collection = get_collection_by_type(collection_id, collection_type)
 
