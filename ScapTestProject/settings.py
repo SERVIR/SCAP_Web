@@ -17,36 +17,36 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 data = json.load(f)
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s, %(asctime)s, %(module)s, %(process)d, %(thread)d, %(message)s',
-            'datefmt': "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s, %(message)s'
-        },
-    },
-    "handlers": {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': data['PATH_TO_LOG'],
-            'when': 'midnight',
-            'backupCount': 10,
-            'formatter': 'verbose'
-        }
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s, %(asctime)s, %(module)s, %(process)d, %(thread)d, %(message)s',
+#             'datefmt': "%d/%b/%Y %H:%M:%S"
+#         },
+#         'simple': {
+#             'format': '%(levelname)s, %(message)s'
+#         },
+#     },
+#     "handlers": {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.handlers.TimedRotatingFileHandler',
+#             'filename': data['PATH_TO_LOG'],
+#             'when': 'midnight',
+#             'backupCount': 10,
+#             'formatter': 'verbose'
+#         }
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["file"],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#     },
+# }
 import os
 try:
     os.environ["PROJ_LIB"] = "/opt/anaconda3/envs/SCAP/share/proj"
@@ -182,7 +182,7 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = data['SITE_ID']
 
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
 
 # Additional configuration settings
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = data["HTTP_HTTPS"]

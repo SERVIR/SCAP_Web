@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
-
 from ScapTestProject import settings
 from scap.validation import doi_valid
 
@@ -32,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -107,8 +106,7 @@ urlpatterns = [
       path('forest-cover-collections/edit/<int:pk>/get-tiff-id/', get_tiff_id, name='get-tiff-id'),
       path('forest-cover-collections/edit/<int:pk>/add-tiff-record/', add_tiff_record, name='add-tiff-record'),
       path('forest-cover-collections/edit/<int:pk>/update-tiff-record/', update_tiff_record, name='update-tiff-record'),
-
-
+      path('logout/',logout_view,name="logout"),
                     # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
       path('test/', test, name='test'),

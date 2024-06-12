@@ -3,6 +3,7 @@ import json
 import logging
 from datetime import datetime,date,timedelta
 from pathlib import Path
+from django.contrib import auth
 
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -254,6 +255,10 @@ def updateColl(request, coll_name):
 def page_not_found_view(request, exception):
     return render(request, 'scap/404.html', status=404)
 
+def logout_view(request):
+    """This is for logging out a user"""
+    auth.logout(request)
+    return redirect("/")
 
 class ManageForestCoverCollections(ListView):
     model = ForestCoverCollection
