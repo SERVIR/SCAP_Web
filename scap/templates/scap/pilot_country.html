@@ -88,6 +88,23 @@
          var fc_colls={{fc_colls|safe}};
 var agb_colls=undefined;
 </script>
+<script>
+    let checkboxElement = document.getElementsByClassName('LC_cb_cs');
+
+window.onload = function() {
+    let myValue = 'MODIS';
+
+    for (var i = 0; i < checkboxElement.length; i++) {
+
+        if (document.getElementById('LC' + checkboxElement[i].value).innerHTML === myValue) {
+            checkboxElement[i].checked = true;
+        } else {
+            checkboxElement[i].checked = false;
+        }
+    }
+
+}
+</script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
     <div class="container-fluid">
@@ -389,7 +406,7 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                             {% csrf_token %}
                             {% for lc in lcs_cs %}
                                 <li class="lc_list-item">
-                                    <input type="checkbox" checked class="lc_list-item-checkbox LC_cb_cs yellow-checkbox"
+                                    <input type="checkbox" class="lc_list-item-checkbox LC_cb_cs yellow-checkbox"
                                            value="{{ lc.id }}" onchange="access_lines_cs(this,'LC')" name="lc"/>
                                     <label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
                                     {% if lc.name in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
