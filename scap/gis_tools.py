@@ -216,6 +216,7 @@ def is_snapped_mollweide(source):
 
 def is_latlon(raster_path):
     # TODO also return false if raster is EPSG:4326 but at too high resolution
+    # return False
     srs = osr.SpatialReference()
     srs.ImportFromEPSG(4326)
 

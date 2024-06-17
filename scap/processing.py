@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.gis.utils import LayerMapping
 from celery.utils.log import get_task_logger
 from celery import shared_task, group, chord
+from celery.exceptions import Ignore
 from collections import OrderedDict
 from django.conf import settings
 from itertools import product
@@ -65,6 +66,9 @@ def ensure_ownership(task_id):
         task = CurrentTask.objects.create(id=task_id)
         return True
     except:
+        logger.info('Ignoring duplicate task')
+        raise Ignore
+        logger.info('Error exiting task')
         return False
 
 
@@ -195,7 +199,11 @@ def load_for_visualization(self, raster_path, variable_name, year):
 
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
-        os.makedirs(final_dir)
+        try:
+            os.makedirs(final_dir)
+        except:
+            # Log multiple tasks creating directory
+            pass
 
     split_path = os.path.split(raster_path)
     reprojection_load_path = os.path.join(split_path[0], 'latlon_' + split_path[1])
@@ -514,7 +522,7 @@ def generate_scap_source_files(dataset_info, file, is_public, variable_name=None
 
         logger.info('Created task (load_for_visualization)')
 
-    delete_task = delete_temp.si(filepath).set(queue='management')
+    delete_task = delete_temp.si(filepath).set(queue='files')
 
     return stats_task, vis_task, delete_task
 
@@ -561,6 +569,17 @@ def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, ca
                                                    kwargs={}, queue='files')
 
 @shared_task(bind=True)
+def task_scheduler(self, task_list):
+    if not len(task_list):
+        return
+    if type(task_list[0]) is list:
+        task = group(task_list[0])
+    else:
+        task = task_list[0]
+    chord(task)(task_scheduler.si(task_list[1:]))
+
+
+@shared_task(bind=True)
 def generate_stocks_and_emissions_files(self, collection_id, collection_type):
     if not ensure_ownership(self.request.id):
         return 'Duped'
@@ -590,12 +609,9 @@ def generate_stocks_and_emissions_files(self, collection_id, collection_type):
     mark_completion_task = mark_complete.si(collection.id, collection_type).set(queue='management')
     mark_available_task = mark_available.si(collection.id, collection_type).set(queue='management')
 
-    stats_chain = (group(carbon_tasks) |
-                   mark_available_task |
-                   stats_generation_task |
-                   mark_completion_task)
-
-    stats_chain.apply_async()
+    # Will execute in order after primary task completes
+    task_list = [mark_available_task, stats_generation_task, mark_completion_task]
+    chord(group(carbon_tasks))(task_scheduler.si(task_list))
 
 
 # TODO unzip, stitch in separate process
@@ -656,14 +672,14 @@ def generate_forest_cover_files(fc_collection_id):
             all_change_tasks.append(change_task)
 
     source_file_tasks = group(all_stats_tasks + all_vis_tasks)
-    change_tasks = group(all_change_tasks)
-    delete_tasks = group(all_delete_tasks)
+    change_tasks = all_change_tasks
+    delete_tasks = all_delete_tasks
     mark_source_task = mark_sources_available.si(fc_collection.id, 'fc').set(queue='management')
     start_carbon_file_generation = generate_stocks_and_emissions_files.si(fc_collection.id, 'fc').set(queue='management')
 
-    load_chain = (source_file_tasks | change_tasks | delete_tasks | mark_source_task | start_carbon_file_generation)
-
-    load_chain.apply_async()
+    # Will execute in order after primary task completes
+    task_list = [change_tasks, delete_tasks, mark_source_task, start_carbon_file_generation]
+    chord(source_file_tasks)(task_scheduler.si(task_list))
 
 
 def generate_agb_files(agb_collection_id):
@@ -684,10 +700,12 @@ def generate_agb_files(agb_collection_id):
     mark_source_task = mark_sources_available.si(agb_collection.id, 'agb').set(queue='management')
     start_carbon_file_generation = generate_stocks_and_emissions_files.si(agb_collection.id, 'agb').set(queue='management')
 
-    load_chain = (group([stats_file_task, vis_file_task]) |
-                  group([mark_source_task, delete_temp_task]) |
-                  start_carbon_file_generation)
-    load_chain.apply_async()
+    source_file_tasks = group([stats_file_task, vis_file_task])
+    logistics_task = group([mark_source_task, delete_temp_task])
+
+    # Will execute in order after primary task completes
+    task_list = [logistics_task, start_carbon_file_generation]
+    chord(source_file_tasks)(task_scheduler.si(task_list))
 
 
 # TODO rasterize in separate process
@@ -763,10 +781,8 @@ def generate_aoi_features(aoi_collection_id):
     stats_generation_task = generate_zonal_statistics.si(aoi_collection_id, 'aoi').set(queue='management')
     mark_completion_task = mark_complete.si(aoi_collection_id, 'aoi').set(queue='management')
     mark_available_task = mark_available.si(aoi_collection_id, 'aoi').set(queue='management')
-    load_chain = (group(file_tasks) |
-                  mark_available_task |
-                  group(delete_tasks) |
-                  stats_generation_task |
-                  mark_completion_task)
+        
+    # Will execute in order after primary task completes
+    task_list = [mark_available_task, delete_tasks, stats_generation_task, mark_completion_task]
+    chord(group(file_tasks))(task_scheduler.si(task_list))
 
-    load_chain.apply_async()
