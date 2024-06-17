@@ -572,6 +572,8 @@ if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestatio
     let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
 
     fill_years_selector(years);
+    document.getElementById('selected_agb').style.display='none';
+    document.getElementById('comparing_agb').style.display='none';
     let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
     fill_comparison_years_selector(c_years);
      document.getElementById('selected_year').value = years[0];
@@ -876,7 +878,7 @@ function init_map() {
     map.zoomControl.setPosition('topleft');
     //add the default layers to show
     darkmap.addTo(map);
-    watermaskLayer.addTo(map);
+    // watermaskLayer.addTo(map);
     //add tje
     var layerControl = L.control.layers(baseMaps, overlays, {position: 'bottomleft'}).addTo(map);
 

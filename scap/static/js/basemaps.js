@@ -101,7 +101,7 @@ var darkmap = L.tileLayer(' https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}
     attribution: '© OpenStreetMap'
 });
    var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
-        layers: 's-cap:watermask_2',
+        layers: 's-cap:global_wmsk_cci_2022_300m',
         format: 'image/png',
         transparent: true,
     });

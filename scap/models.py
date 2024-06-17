@@ -252,6 +252,7 @@ class PilotCountry(models.Model):
     forest_cover_collection = models.ForeignKey(ForestCoverCollection,
                                                 help_text="Default Forest Cover Collection to show on map", blank=True,
                                                 null=True, on_delete=models.CASCADE)
+    agb_collection=models.ForeignKey(AGBCollection, help_text="Default AGB Collection to show on map", blank=True,null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.country_name
