@@ -199,7 +199,11 @@ def load_for_visualization(self, raster_path, variable_name, year):
 
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
-        os.makedirs(final_dir)
+        try:
+            os.makedirs(final_dir)
+        except:
+            # Log multiple tasks creating directory
+            pass
 
     split_path = os.path.split(raster_path)
     reprojection_load_path = os.path.join(split_path[0], 'latlon_' + split_path[1])
@@ -572,10 +576,7 @@ def task_scheduler(self, task_list):
         task = group(task_list[0])
     else:
         task = task_list[0]
-    if(len(task_list) > 1):
-        chord(task)(task_scheduler.si(task_list[1:]))
-    else:
-        task.apply_async()
+    chord(task)(task_scheduler.si(task_list[1:]))
 
 
 @shared_task(bind=True)
