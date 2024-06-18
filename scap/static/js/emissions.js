@@ -550,22 +550,7 @@ function reset_fc_lcs() {
          chart.series[i].setVisible(true,false);
     }
 }
-function reset_cs_lcs() {
 
-    var uncheck = document.getElementsByClassName('LC_cb_cs');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'LC');
-    }
-    var index = $("#cs_container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-         chart.series[i].setVisible(true,false);
-    }
-}
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
@@ -592,23 +577,7 @@ function reset_agbs() {
     }
 redraw_mma();
 }
-function reset_cs_agbs() {
-    var uncheck = document.getElementsByClassName('AGB_cb_cs');
-    for (var i = 0; i < uncheck.length; i++) {
 
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'AGB');
-    }
-
-    var index = $("#cs_container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(true,false);
-    }
-redraw_mma();
-}
 
 function clear_lcs() {
     var uncheck = document.getElementsByClassName('LC_cb');
@@ -644,40 +613,7 @@ function clear_fc_lcs() {
     }
 
 }
-function clear_cs_lcs() {
-    var uncheck = document.getElementsByClassName('LC_cb_cs');
-    for (var i = 0; i < uncheck.length; i++) {
 
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'LC');
-    }
-    var index = $("#cs_container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-                chart.series[i].setVisible(false,false);
-
-    }
-
-}
-function clear_cs_agbs() {
-    var uncheck = document.getElementsByClassName('AGB_cb_cs');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'AGB');
-
-    }
-
-    var index = $("#cs_container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(false,false);
-
-    }
-
-}
 function clear_agbs() {
 
     var uncheck = document.getElementsByClassName('AGB_cb');

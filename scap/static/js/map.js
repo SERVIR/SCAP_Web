@@ -481,7 +481,15 @@ function add_thredds_wms_layers() {
         primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
-        scale_range = "0.5,1"
+        scale_range = "0.5,1";
+                 if ( document.getElementById('selected_agb')!=null)
+    document.getElementById('selected_agb').style.display='none';
+    if ( document.getElementById('comparing_agb')!=null)
+     document.getElementById('comparing_agb').style.display='none';
+     if ( document.getElementById('comparing_agb_label')!=null)
+             document.getElementById('comparing_agb_label').style.display='none';
+         if ( document.getElementById('selected_agb_label')!=null)
+             document.getElementById('selected_agb_label').style.display='none';
     }
     //carbon stock or emissions
     else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {
@@ -569,14 +577,7 @@ function redraw_map_layers(map_modal_action) {
     clear_map_layers();
 
 if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
-    let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
-
-    fill_years_selector(years);
-    let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
-    fill_comparison_years_selector(c_years);
-     document.getElementById('selected_year').value = years[0];
-    document.getElementById('comparison_year').value = c_years[c_years.length - 1];
-     if ( document.getElementById('selected_agb')!=null)
+        if ( document.getElementById('selected_agb')!=null)
     document.getElementById('selected_agb').style.display='none';
     if ( document.getElementById('comparing_agb')!=null)
      document.getElementById('comparing_agb').style.display='none';
@@ -584,6 +585,13 @@ if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestatio
              document.getElementById('comparing_agb_label').style.display='none';
          if ( document.getElementById('selected_agb_label')!=null)
              document.getElementById('selected_agb_label').style.display='none';
+    let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
+    fill_years_selector(years);
+    let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
+    fill_comparison_years_selector(c_years);
+     document.getElementById('selected_year').value = years[0];
+    document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+
 
 }
 else{
@@ -612,11 +620,10 @@ else{
 }
 
 
-
     add_aoi_polygons(shp_obj);
     add_thredds_wms_layers();
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
+    // document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
+    // document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
     // display protected areas based on zoom level
     map.on("zoomend", function () {
         var zoomlevel = map.getZoom();
