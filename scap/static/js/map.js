@@ -190,7 +190,7 @@ function onEachFeature_aoi(feature, layer) {
             closeButton: false
         });
         layer.bindTooltip(tooltipText);
-        layer.openPopup();
+        layer.openPopup(e.latlng);
         this.getTooltip().setOpacity(0);
         layer.setStyle({
             weight: 2,
