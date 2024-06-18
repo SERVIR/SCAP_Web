@@ -226,6 +226,7 @@ function redraw_mma_cs(chart_cs_obj) {
             legendIndex: -3,
             dashStyle: 'shortdash'
         };
+        var flag=0;
         if (chart_cs_obj!=undefined) {
             $.each(chart_cs_obj.series, function (i, s) {
 
@@ -247,28 +248,40 @@ function redraw_mma_cs(chart_cs_obj) {
 
 
                 }
-                if (s.name === 'Min') {
-                    s.update({
-                        data: min_arr.data
-                    }, true);
 
-                }
-                if (s.name === 'Max') {
-                    s.update({
-                        data: max_arr.data
-                    }, true);
-                }
-                if (s.name === 'Avg') {
-                    s.update({
-                        data: avg_arr.data
-                    }, true);
-
-                }
             });
             chart_cs_obj.update({series: ns});
+            $.each(chart_cs_obj.series, function (i, s) {
+                 if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+                  s.setVisible(true,false);
+
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+                  s.setVisible(true,false);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+                s.setVisible(true,false);
+
+            }
+            });
+                // chart_cs_obj.addSeries(min_arr);
+                // chart_cs_obj.addSeries(max_arr);
+                // chart_cs_obj.addSeries(avg_arr);
+
+
 
         }
         else {
+            console.log("chart object does not exist")
 
         }
     });
@@ -295,7 +308,7 @@ function show_line_cs(elem) {
              chart.series[i].setVisible(true,false);
         }
     }
-    redraw_mma_cs();
+    redraw_mma_cs(chart_cs_obj);
 }
 function access_lines_cs(elem, dataset) {
     // var msg = all_unchecked();
@@ -404,7 +417,7 @@ function hide_line_cs(elem) {
              chart.series[i].setVisible(false,false);
         }
     }
-    redraw_mma_cs();
+    redraw_mma_cs(chart_cs_obj);
 }
 
 function reset_cs_lcs() {
@@ -430,7 +443,7 @@ function reset_cs_lcs() {
     for (var i = 0; i < checked2.length; i++) {
         AGB_arr.push('AGB' + checked2[i].value);
     }
-    for (var i = 0; i < series.length; i++) {
+    for (var i = 0; i < chart_cs_obj.series.length; i++) {
           if (AGB_arr.includes(series[i].name[1])) {
               chart_cs_obj.series[i].setVisible(true, false);
           }
@@ -439,21 +452,34 @@ function reset_cs_lcs() {
 }
 
 function reset_cs_agbs() {
+       var checked1 = document.querySelectorAll('input.LC_cb_cs:checked');
+    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
+
     var uncheck = document.getElementsByClassName('AGB_cb_cs');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = true;
         // show_line(uncheck[i]);
-// access_lines(uncheck[i],'AGB');
+// access_lines(uncheck[i],'LC');
     }
-
     var index = $("#cs_container").data('highchartsChart');
     var chart_cs = Highcharts.charts[index];
     var series = chart_cs.series;
-    for (var i = 0; i < series.length; i++) {
-               chart_cs.series[i].setVisible(true,false);
+      var LC_arr = [];
+    for (var i = 0; i < checked1.length; i++) {
+        LC_arr.push('LC' + checked1[i].value);
     }
-redraw_mma_cs();
+    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
+    var AGB_arr = [];
+    for (var i = 0; i < checked2.length; i++) {
+        AGB_arr.push('AGB' + checked2[i].value);
+    }
+    for (var i = 0; i < chart_cs_obj.series.length; i++) {
+          if (LC_arr.includes(series[i].name[0])) {
+              chart_cs_obj.series[i].setVisible(true, false);
+          }
+    }
+    redraw_mma_cs(chart_cs_obj);
 }
 function clear_cs_lcs() {
     var uncheck = document.getElementsByClassName('LC_cb_cs');
@@ -464,25 +490,21 @@ function clear_cs_lcs() {
     }
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
-     for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(false,false);
-chart.tooltip.hide();
+     for (var i = 0; i < chart_cs_obj.series.length; i++) {
+               chart_cs_obj.series[i].setVisible(false,false);
     }
 }
 function clear_cs_agbs() {
-    var uncheck = document.getElementsByClassName('AGB_cb_cs');
+     var uncheck = document.getElementsByClassName('AGB_cb_cs');
     for (var i = 0; i < uncheck.length; i++) {
 
         uncheck[i].checked = false;
-        // access_lines(uncheck[i],'AGB');
-
+        // access_lines(uncheck[i],'LC');
     }
-
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
- for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(false,false);
-
+     for (var i = 0; i < chart_cs_obj.series.length; i++) {
+               chart_cs_obj.series[i].setVisible(false,false);
     }
 
 }
