@@ -771,8 +771,7 @@ def get_available_colors():
     colors = []
     try:
         # generating list of colors from  the text file
-        with open(r'C:\Users\gtondapu\PycharmProjects\SCAP_Web\scap\static\data\palette.txt') as f:
-        # with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
+        with open(settings.STATIC_ROOT + '/data/palette.txt') as f:
             for line in f:
                 row = line.strip()
                 temp = {}
