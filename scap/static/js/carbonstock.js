@@ -187,66 +187,92 @@ chart_cs_obj.update({
     }
 );
 
-function redraw_mma_cs() {
-   var ns = [];
-var lcss = get_checked_lcs_cs();
-var agbss = get_checked_agbs_cs();
-var min_arr = [];
-var res_mmm = [];
-var max_arr = [];
-var avg_arr = [];
-const xhr_cs = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
-xhr_cs.done(function (result2) {
-    min_arr = {
-        "name": "Min",
-        "data": result2.min,
-        "color": 'green',
-        "visible": true,
-        legendIndex: -1,
-        lineWidth: 5,
-        dashStyle: 'shortdash'
-    };
-    max_arr = {
-        "name": "Max",
-        "data": result2.max,
-        "color": 'red',
-        "visible": true,
-        lineWidth: 5,
-        legendIndex: -2,
+function redraw_mma_cs(chart_cs_obj) {
 
-        dashStyle: 'shortdash'
-    };
-    avg_arr = {
-        "name": "Avg",
-        "data": result2.avg,
-        "color": 'orange',
-        "visible": true,
-        lineWidth: 5,
-        legendIndex: -3,
-        dashStyle: 'shortdash'
-    };
-    $.each(chart_cs_obj.series, function (i, s) {
+    var ns = [];
+    var lcss = get_checked_lcs_cs();
+    var agbss = get_checked_agbs_cs();
+    var min_arr = [];
+    var res_mmm = [];
+    var max_arr = [];
+    var avg_arr = [];
+    const xhr_cs = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
+    xhr_cs.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
 
-        for (var j = 0; j < lc_colors.length; j++) {
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+        if (chart_cs_obj!=undefined) {
+            $.each(chart_cs_obj.series, function (i, s) {
 
-            if (('LC' + lc_colors[j]['LC'] === s.name[0])&& ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                s.color = lc_colors[j]['color'];
-                ns.push({
-                    name: s.name,
-                    data: s.data,
-                    color: s.color,
-                    visible: true,
-                    lineWidth: 2,
-                    legendIndex: null,
-                    dashStyle: ''
-                });
+                for (var j = 0; j < lc_colors.length; j++) {
 
-            }
+                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                        s.color = lc_colors[j]['color'];
+                        ns.push({
+                            name: s.name,
+                            data: s.data,
+                            color: s.color,
+                            visible: true,
+                            lineWidth: 2,
+                            legendIndex: null,
+                            dashStyle: ''
+                        });
 
+                    }
+
+
+                }
+                if (s.name === 'Min') {
+                    s.update({
+                        data: min_arr.data
+                    }, true);
+
+                }
+                if (s.name === 'Max') {
+                    s.update({
+                        data: max_arr.data
+                    }, true);
+                }
+                if (s.name === 'Avg') {
+                    s.update({
+                        data: avg_arr.data
+                    }, true);
+
+                }
+            });
+            chart_cs_obj.update({series: ns});
+
+        }
+        else {
 
         }
     });
-});
+
 }
 
 function show_line_cs(elem) {
@@ -382,6 +408,8 @@ function hide_line_cs(elem) {
 }
 
 function reset_cs_lcs() {
+    var checked1 = document.querySelectorAll('input.LC_cb_cs:checked');
+    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
 
     var uncheck = document.getElementsByClassName('LC_cb_cs');
     for (var i = 0; i < uncheck.length; i++) {
@@ -393,10 +421,21 @@ function reset_cs_lcs() {
     var index = $("#cs_container").data('highchartsChart');
     var chart_cs = Highcharts.charts[index];
     var series = chart_cs.series;
-    for (var i = 0; i < series.length; i++) {
-         chart_cs.series[i].setVisible(true,false);
+      var LC_arr = [];
+    for (var i = 0; i < checked1.length; i++) {
+        LC_arr.push('LC' + checked1[i].value);
     }
-redraw_mma_cs();
+    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
+    var AGB_arr = [];
+    for (var i = 0; i < checked2.length; i++) {
+        AGB_arr.push('AGB' + checked2[i].value);
+    }
+    for (var i = 0; i < series.length; i++) {
+          if (AGB_arr.includes(series[i].name[1])) {
+              chart_cs_obj.series[i].setVisible(true, false);
+          }
+    }
+    redraw_mma_cs(chart_cs_obj);
 }
 
 function reset_cs_agbs() {

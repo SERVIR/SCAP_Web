@@ -622,8 +622,8 @@ else{
 
     add_aoi_polygons(shp_obj);
     add_thredds_wms_layers();
-    // document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
-    // document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
     // display protected areas based on zoom level
     map.on("zoomend", function () {
         var zoomlevel = map.getZoom();
