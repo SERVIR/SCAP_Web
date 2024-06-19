@@ -11,5 +11,6 @@ logfile
 db.sqlite3
 base_vis_file.tif
 base_stats_file.tif
+water_mask.tif
 s-cap.log
 s-cap.log.*
