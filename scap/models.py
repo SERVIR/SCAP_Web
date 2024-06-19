@@ -196,6 +196,32 @@ class AGBCollection(models.Model):
         return self.name
 
 
+class CarbonStockFile(models.Model):
+    fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
+    agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
+    year_index = models.IntegerField(help_text="Year")
+
+    min = models.FloatField(help_text="Mininum Pixel Value")
+    max = models.FloatField(help_text="Maximum Pixel Value")
+
+    class Meta:
+        verbose_name_plural = "Carbon Files"
+
+
+
+class EmissionFile(models.Model):
+    fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
+    agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
+    year_index = models.IntegerField(help_text="Year")
+
+    min = models.FloatField(help_text="Mininum Pixel Value")
+    max = models.FloatField(help_text="Maximum Pixel Value")
+
+    class Meta:
+        verbose_name_plural = "Emission Files"
+
+
+
 class CarbonStatistic(models.Model):
     fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
     agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
