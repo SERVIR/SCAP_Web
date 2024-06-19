@@ -39,15 +39,21 @@ function exampleFilter(elem) {
     }
 }
 function set_map_action(anchor,text) {
-    var div = anchor.parentNode;
-    siblings = getAllSiblings(div, exampleFilter);
-    for (var i = 0; i < siblings.length; i++) {
+    if(anchor.className.includes('dropdown')){
 
-        siblings[i].classList.remove(('map-modal-action'));
+redraw_map_layers(text);
+
+    }else {
+        var div = anchor.parentNode;
+        siblings = getAllSiblings(div, exampleFilter);
+        for (var i = 0; i < siblings.length; i++) {
+
+            siblings[i].classList.remove(('map-modal-action'));
+        }
+        div.classList.add('map-modal-action');
+        localStorage.setItem('map_modal_action', text);
+        map_modal_action = text;
     }
-    div.classList.add('map-modal-action');
-    localStorage.setItem('map_modal_action', text);
-    map_modal_action=text;
 }
 
 function fill_dataset_selector(fc_data,agb_data) {
@@ -945,7 +951,24 @@ function init_map() {
     L.easyButton('fa-info', function (btn, map) {
         $('#info_modal').modal('show');
     }, 'Info').addTo(map);
-
+var legend = L.control({position: 'bottomleft'});
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML = '<div class="btn-group dropend">\n' +
+        '  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">\n' +
+        '    Use Case\n' +
+        '  </button>\n' +
+        '  <ul class="dropdown-menu">\n' +
+        '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_targets\')">Monitor progress toward deforestation targets</a></li>\n' +
+        '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_netzero\')">Monitor progress towards Net Zero deforestation</a></li>\n' +
+        '    <li><a class="dropdown-item text-secondary" href="#"  onclick="set_map_action(this,\'emissions\')">See emission estimations</a></li>\n' +
+        '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'carbon-stock\')">Explore Carbon Stock</a></li>\n' +
+        '  </ul>\n' +
+        '</div>';
+    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+    return div;
+};
+legend.addTo(map);
 
     // Add the Search Control to the map
     map.addControl(new GeoSearch.GeoSearchControl({
