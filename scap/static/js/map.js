@@ -951,8 +951,8 @@ function init_map() {
     L.easyButton('fa-info', function (btn, map) {
         $('#info_modal').modal('show');
     }, 'Info').addTo(map);
-var legend = L.control({position: 'bottomleft'});
-legend.onAdd = function (map) {
+var usecasebutton = L.control({position: 'bottomleft'});
+usecasebutton.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
     div.innerHTML = '<div class="btn-group dropend">\n' +
         '  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">\n' +
@@ -968,8 +968,9 @@ legend.onAdd = function (map) {
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
 };
-legend.addTo(map);
-
+if(window.location.href.indexOf("/map/") > -1) {
+    usecasebutton.addTo(map);
+}
     // Add the Search Control to the map
     map.addControl(new GeoSearch.GeoSearchControl({
         provider: new GeoSearch.OpenStreetMapProvider(),
