@@ -203,6 +203,7 @@ class CarbonStockFile(models.Model):
 
     min = models.FloatField(help_text="Mininum Pixel Value")
     max = models.FloatField(help_text="Maximum Pixel Value")
+    statistics = models.TextField(help_text="GDAL Statistics as JSON string")
 
     class Meta:
         verbose_name_plural = "Carbon Files"
@@ -216,6 +217,7 @@ class EmissionFile(models.Model):
 
     min = models.FloatField(help_text="Mininum Pixel Value")
     max = models.FloatField(help_text="Maximum Pixel Value")
+    statistics = models.TextField(help_text="GDAL Statistics as JSON string")
 
     class Meta:
         verbose_name_plural = "Emission Files"

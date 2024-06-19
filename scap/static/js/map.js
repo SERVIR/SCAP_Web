@@ -40,6 +40,7 @@ function exampleFilter(elem) {
 }
 function set_map_action(anchor,text) {
     if(anchor.className.includes('dropdown')){
+        console.log(text)
 
 redraw_map_layers(text);
 
@@ -459,7 +460,7 @@ function add_aoi_polygons(shp_obj){
     // aoi_layer_right.addTo(map);
 }
 
-function add_thredds_wms_layers() {
+function add_thredds_wms_layers(map_modal_action) {
     var thredds_dir = "fc";
     var layer_name = "forest_cover";
     var base_thredds = "";
@@ -488,17 +489,12 @@ function add_thredds_wms_layers() {
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
         scale_range = "0.5,1";
-                 if ( document.getElementById('selected_agb')!=null)
-    document.getElementById('selected_agb').style.display='none';
-    if ( document.getElementById('comparing_agb')!=null)
-     document.getElementById('comparing_agb').style.display='none';
-     if ( document.getElementById('comparing_agb_label')!=null)
-             document.getElementById('comparing_agb_label').style.display='none';
-         if ( document.getElementById('selected_agb_label')!=null)
-             document.getElementById('selected_agb_label').style.display='none';
+
     }
     //carbon stock or emissions
     else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {
+        console.log(map_modal_action);
+
         thredds_dir = map_modal_action;
         layer_name = thredds_dir;
         base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
@@ -579,6 +575,7 @@ function add_thredds_wms_layers() {
     //     document.getElementById("loading_spinner_map").style.display = "none";
     // });
 function redraw_map_layers(map_modal_action) {
+    console.log(map_modal_action)
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
 
@@ -600,34 +597,31 @@ if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestatio
 
 
 }
-else{
+else {
+
+                if ( document.getElementById('selected_agb')!=null)
+    document.getElementById('selected_agb').style.display='block';
+    if ( document.getElementById('comparing_agb')!=null)
+     document.getElementById('comparing_agb').style.display='block';
+     if ( document.getElementById('comparing_agb_label')!=null)
+             document.getElementById('comparing_agb_label').style.display='block';
+         if ( document.getElementById('selected_agb_label')!=null)
+             document.getElementById('selected_agb_label').style.display='block';
+
     let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
 
     fill_years_selector(years);
     let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
     fill_comparison_years_selector(c_years);
-     document.getElementById('selected_year').value = years[0];
+    document.getElementById('selected_year').value = years[0];
     document.getElementById('comparison_year').value = c_years[c_years.length - 1];
-             if ( document.getElementById('selected_agb')!=null)
-
-        document.getElementById('selected_agb').style.display='block';
-                 if ( document.getElementById('comparing_agb')!=null)
-
-             document.getElementById('comparing_agb').style.display='block';
-                      if ( document.getElementById('comparing_agb_label')!=null)
-
-                          document.getElementById('comparing_agb_label').style.display='block';
-                               if ( document.getElementById('selected_agb_label')!=null)
-
-             document.getElementById('selected_agb_label').style.display='block';
-
 
 
 }
 
 
     add_aoi_polygons(shp_obj);
-    add_thredds_wms_layers();
+    add_thredds_wms_layers(map_modal_action);
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
     // display protected areas based on zoom level
