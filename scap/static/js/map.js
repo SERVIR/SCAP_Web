@@ -61,6 +61,7 @@ redraw_map_layers();
         div.classList.add('map-modal-action');
         localStorage.setItem('map_modal_action', text);
         map_modal_action = text;
+        redraw_map_layers();
     }
 }
 
