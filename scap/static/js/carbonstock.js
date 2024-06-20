@@ -1,23 +1,42 @@
-let checkboxElement = document.getElementsByClassName('LC_cb_cs');
-
-let myValue = 'MODIS';
-let defaultLC="";
-
-for (var i = 0; i < checkboxElement.length; i++) {
-
-    if (document.getElementById('LC' + checkboxElement[i].value).innerHTML === myValue) {
-        defaultLC='LC' + checkboxElement[i].value;
-        checkboxElement[i].checked = true;
-        show_line_cs('LC' + checkboxElement[i].value);
-    } else {
-        hide_line_cs('LC' + checkboxElement[i].value);
-        checkboxElement[i].checked = false;
-    }
-}
-
 var index = $("#cs_container").data('highchartsChart');
 var chart_cs_obj = Highcharts.charts[index];
+var chart_obj_global=chart_cs_obj;
 var series = chart_cs_obj.series;
+
+let defaultLC="";
+
+showModis();
+function showModis() {
+    var index = $("#cs_container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    var newseries = series;
+    let checkboxElement = document.getElementsByClassName('LC_cb_cs');
+    let myValue = 'MODIS';
+    for (var i = 0; i < checkboxElement.length; i++) {
+
+        if (document.getElementById('LC' + checkboxElement[i].value).innerHTML === myValue) {
+            defaultLC = 'LC' + checkboxElement[i].value;
+            checkboxElement[i].checked = true;
+        } else {
+
+            checkboxElement[i].checked = false;
+        }
+    }
+    for (var i = 0; i < newseries.length; i++) {
+        if (newseries[i].name.includes(defaultLC)) {
+            chart.series[i].setVisible(true, false);
+        } else {
+            chart.series[i].setVisible(false, false);
+        }
+    }
+
+
+}
+
+// redraw_mma_cs(chart_cs_obj);
+
+
 
 var newseries = series;
 var new_updated = series;
@@ -82,9 +101,9 @@ xhr_cs.done(function (result2) {
         }
     });
     chart_cs_obj.update({series: ns});
-    chart_cs_obj.addSeries(min_arr);
-    chart_cs_obj.addSeries(max_arr);
-    chart_cs_obj.addSeries(avg_arr);
+    // chart_cs_obj.addSeries(min_arr);
+    // chart_cs_obj.addSeries(max_arr);
+    // chart_cs_obj.addSeries(avg_arr);
 
 
 
@@ -187,7 +206,7 @@ chart_cs_obj.update({
     }
 );
 
-function redraw_mma_cs(chart_cs_obj) {
+function redraw_mma_cs(chart) {
 
     var ns = [];
     var lcss = get_checked_lcs_cs();
@@ -227,8 +246,8 @@ function redraw_mma_cs(chart_cs_obj) {
             dashStyle: 'shortdash'
         };
         var flag=0;
-        if (chart_cs_obj!=undefined) {
-            $.each(chart_cs_obj.series, function (i, s) {
+        if (chart!=undefined) {
+            $.each(chart.series, function (i, s) {
 
                 for (var j = 0; j < lc_colors.length; j++) {
 
@@ -250,8 +269,8 @@ function redraw_mma_cs(chart_cs_obj) {
                 }
 
             });
-            chart_cs_obj.update({series: ns});
-            $.each(chart_cs_obj.series, function (i, s) {
+            chart.update({series: ns});
+            $.each(chart.series, function (i, s) {
                  if (s.name === 'Min') {
                 s.update({
                     data: min_arr.data
@@ -303,12 +322,15 @@ function show_line_cs(elem) {
     for (var i = 0; i < checked2.length; i++) {
         AGB_arr.push('AGB' + checked2[i].value);
     }
-    for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+    for (var i = 0; i < newseries.length; i++){
+        console.log(newseries[i].name)
+        if (LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+            console.log("inside")
+
              chart.series[i].setVisible(true,false);
         }
     }
-    redraw_mma_cs(chart_cs_obj);
+     redraw_mma_cs(chart);
 }
 function access_lines_cs(elem, dataset) {
     // var msg = all_unchecked();
@@ -331,84 +353,83 @@ function access_lines_cs(elem, dataset) {
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
-    xhr.done(function (result2) {
-        min_arr = {
-            "name": "Min",
-            "data": result2.min,
-            "color": 'green',
-            "visible": true,
-            legendIndex: -1,
-            lineWidth: 5,
-            dashStyle: 'shortdash'
-        };
-        max_arr = {
-            "name": "Max",
-            "data": result2.max,
-            "color": 'red',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -2,
-
-            dashStyle: 'shortdash'
-        };
-        avg_arr = {
-            "name": "Avg",
-            "data": result2.avg,
-            "color": 'orange',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -3,
-            dashStyle: 'shortdash'
-        };
-
-        $.each(chart_cs_obj.series, function (i, s) {
-            for (var j = 0; j < lc_colors.length; j++) {
-                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                    s.color = lc_colors[j]['color'];
-                    ns.push({
-                        name: s.name,
-                        data: s.data,
-                        color: s.color,
-                        // visible: true,
-                        lineWidth: 2,
-                        legendIndex: null,
-                        dashStyle: ''
-                    });
-
-                }
-
-
-            }
-            console.log(s.name === 'Min')
-            if (s.name === 'Min') {
-                s.update({
-                    data: min_arr.data
-                }, true);
-            }
-            if (s.name === 'Max') {
-                s.update({
-                    data: max_arr.data
-                }, true);
-            }
-            if (s.name === 'Avg') {
-                s.update({
-                    data: avg_arr.data
-                }, true);
-            }
-        });
-
-
-        // chart.update({series: ns});
-
-
-    });
+    // const xhr = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
+    // xhr.done(function (result2) {
+    //     min_arr = {
+    //         "name": "Min",
+    //         "data": result2.min,
+    //         "color": 'green',
+    //         "visible": true,
+    //         legendIndex: -1,
+    //         lineWidth: 5,
+    //         dashStyle: 'shortdash'
+    //     };
+    //     max_arr = {
+    //         "name": "Max",
+    //         "data": result2.max,
+    //         "color": 'red',
+    //         "visible": true,
+    //         lineWidth: 5,
+    //         legendIndex: -2,
+    //
+    //         dashStyle: 'shortdash'
+    //     };
+    //     avg_arr = {
+    //         "name": "Avg",
+    //         "data": result2.avg,
+    //         "color": 'orange',
+    //         "visible": true,
+    //         lineWidth: 5,
+    //         legendIndex: -3,
+    //         dashStyle: 'shortdash'
+    //     };
+    //
+    //     $.each(chart_cs_obj.series, function (i, s) {
+    //         for (var j = 0; j < lc_colors.length; j++) {
+    //             if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+    //                 s.color = lc_colors[j]['color'];
+    //                 ns.push({
+    //                     name: s.name,
+    //                     data: s.data,
+    //                     color: s.color,
+    //                     // visible: true,
+    //                     lineWidth: 2,
+    //                     legendIndex: null,
+    //                     dashStyle: ''
+    //                 });
+    //
+    //             }
+    //
+    //
+    //         }
+    //         console.log(s.name === 'Min')
+    //         if (s.name === 'Min') {
+    //             s.update({
+    //                 data: min_arr.data
+    //             }, true);
+    //         }
+    //         if (s.name === 'Max') {
+    //             s.update({
+    //                 data: max_arr.data
+    //             }, true);
+    //         }
+    //         if (s.name === 'Avg') {
+    //             s.update({
+    //                 data: avg_arr.data
+    //             }, true);
+    //         }
+    //     });
+    //
+    //
+    //     // chart.update({series: ns});
+    //
+    //
+    // });
 
 
 }
 function hide_line_cs(elem) {
-    console.log("from here")
-    var index = $("#cs_container").data('highchartsChart');
+     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -417,7 +438,7 @@ function hide_line_cs(elem) {
              chart.series[i].setVisible(false,false);
         }
     }
-    redraw_mma_cs(chart_cs_obj);
+    // redraw_mma_cs(chart);
 }
 
 function reset_cs_lcs() {
@@ -448,7 +469,7 @@ function reset_cs_lcs() {
               chart_cs_obj.series[i].setVisible(true, false);
           }
     }
-    redraw_mma_cs(chart_cs_obj);
+    // redraw_mma_cs(chart_cs_obj);
 }
 
 function reset_cs_agbs() {
@@ -474,12 +495,12 @@ function reset_cs_agbs() {
     for (var i = 0; i < checked2.length; i++) {
         AGB_arr.push('AGB' + checked2[i].value);
     }
-    for (var i = 0; i < chart_cs_obj.series.length; i++) {
+    for (var i = 0; i < chart_cs.series.length; i++) {
           if (LC_arr.includes(series[i].name[0])) {
-              chart_cs_obj.series[i].setVisible(true, false);
+              chart_cs.series[i].setVisible(true, false);
           }
     }
-    redraw_mma_cs(chart_cs_obj);
+    // redraw_mma_cs(chart_cs);
 }
 function clear_cs_lcs() {
     var uncheck = document.getElementsByClassName('LC_cb_cs');
@@ -490,8 +511,8 @@ function clear_cs_lcs() {
     }
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
-     for (var i = 0; i < chart_cs_obj.series.length; i++) {
-               chart_cs_obj.series[i].setVisible(false,false);
+     for (var i = 0; i < chart.series.length; i++) {
+               chart.series[i].setVisible(false,false);
     }
 }
 function clear_cs_agbs() {
@@ -503,8 +524,8 @@ function clear_cs_agbs() {
     }
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
-     for (var i = 0; i < chart_cs_obj.series.length; i++) {
-               chart_cs_obj.series[i].setVisible(false,false);
+     for (var i = 0; i < chart.series.length; i++) {
+               chart.series[i].setVisible(false,false);
     }
 
 }
