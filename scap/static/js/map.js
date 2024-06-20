@@ -47,7 +47,10 @@ function exampleFilter(elem) {
 }
 function set_map_action(anchor,text) {
     if(anchor.className.includes('dropdown')){
- localStorage.setItem('map_modal_action', text);
+        if(localStorage.getItem('map_modal_action').length==0) {
+            localStorage.setItem('map_modal_action', text);
+
+        }
  document.getElementById('usecase_name').innerHTML='Displaying: '+anchor.innerHTML
 redraw_map_layers();
 
@@ -61,6 +64,18 @@ redraw_map_layers();
         div.classList.add('map-modal-action');
         localStorage.setItem('map_modal_action', text);
         map_modal_action = text;
+        if(map_modal_action=='carbon-stock') {
+                document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
+            }
+            else if (map_modal_action=='emissions'){
+  document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
+            }
+            else if(map_modal_action=='deforestation_targets'){
+  document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover change';
+            }
+            else{
+  document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover change';
+            }
         redraw_map_layers();
     }
 }
