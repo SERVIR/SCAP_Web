@@ -333,9 +333,10 @@ def check_overlap(raster1, raster2):
 
 def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
     row_offset, col_offset = get_raster_offset(aoi, data_raster)
+    water_mask = str(BASE_DIR) + '/water_mask.tif'
 
     pixel_computation_sum = 0
-    with rio.open(data_raster) as data_obj, rio.open(aoi) as aoi_obj:
+    with rio.open(data_raster) as data_obj, rio.open(aoi) as aoi_obj, rio.open(water_mask) as mask_obj:
         aoi_block = aoi_obj.read(1)
         corresponding_window = Window.from_slices((row_offset, row_offset + aoi_obj.height),
                                                   (col_offset, col_offset + aoi_obj.width))
@@ -343,9 +344,9 @@ def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
 
         if target_value:
             target_change_arr = (data_block == target_value)
-            pixel_computation_sum += compute_function((target_change_arr > 0) * (aoi_block > 0))
+            pixel_computation_sum += compute_function((target_change_arr > 0) * (aoi_block > 0) * (mask_obj > 0))
         else:
-            pixel_computation_sum += compute_function(data_block * (aoi_block > 0))
+            pixel_computation_sum += compute_function(data_block * (aoi_block > 0) * (mask_obj > 0))
 
     return pixel_computation_sum
 
