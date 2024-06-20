@@ -149,7 +149,7 @@ def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifie
 
     file_dir = os.path.dirname(temp_filepath)
     if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
+        os.makedirs(file_dir, exist_ok=True)
 
     shutil.copyfile(source_file, temp_filepath)
 
@@ -200,7 +200,7 @@ def load_for_visualization(self, raster_path, variable_name, year):
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
         try:
-            os.makedirs(final_dir)
+            os.makedirs(final_dir, exist_ok=True)
         except:
             # Log multiple tasks creating directory
             pass
@@ -305,7 +305,7 @@ def load_for_statistics(self, raster_path):
 
     final_dir = os.path.dirname(final_load_path)
     if not os.path.exists(final_dir):
-        os.makedirs(final_dir)
+        os.makedirs(final_dir, exist_ok=True)
 
     mollweide_file = copy_mollweide(raster_path, final_load_path)
 
@@ -331,7 +331,7 @@ def generate_forest_cover_change_file(self, fc_file_id, user_id, dataset_name):
 
     file_dir = os.path.dirname(target_path)
     if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
+        os.makedirs(file_dir, exist_ok=True)
 
     calculate_change_file(baseline_filepath, current_filepath, target_path)
 
@@ -558,7 +558,7 @@ def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, ca
 
         file_dir = os.path.dirname(target_filepath)
         if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
+            os.makedirs(file_dir, exist_ok=True)
 
         output = generate_carbon_gtiff(fc_filepath, agb_filepath, yearly_fc_file.year, agb_collection.year,
                                        target_filepath, carbon_type)
@@ -652,7 +652,7 @@ def generate_forest_cover_files(fc_collection_id):
             target_dir = os.path.dirname(target_filepath)
             target_dir = os.path.join(target_dir, str(yearly_file.year))
             if not os.path.exists(target_dir):
-                os.makedirs(target_dir)
+                os.makedirs(target_dir, exist_ok=True)
 
             unzip(upload_path, target_dir)
             stitch_geotiffs(target_dir, target_filepath)
@@ -723,7 +723,7 @@ def generate_aoi_file(aoi_feature, collection):
 
     file_dir = os.path.dirname(temp_filepath)
     if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
+        os.makedirs(file_dir, exists_ok=True)
 
     rasterize_aoi(aoi_feature, temp_filepath)
 
