@@ -84,6 +84,10 @@
 *::after {
     box-sizing: border-box;
 }
+.leaflet-bottom {
+    display:flex;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
     :root {
