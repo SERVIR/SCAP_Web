@@ -341,12 +341,13 @@ def compute_masked_pixels(data_raster, aoi, target_value, compute_function):
         corresponding_window = Window.from_slices((row_offset, row_offset + aoi_obj.height),
                                                   (col_offset, col_offset + aoi_obj.width))
         data_block = data_obj.read(1, window=corresponding_window)
+        mask_block = mask_obj.read(1, window=corresponding_window)
 
         if target_value:
             target_change_arr = (data_block == target_value)
-            pixel_computation_sum += compute_function((target_change_arr > 0) * (aoi_block > 0) * (mask_obj > 0))
+            pixel_computation_sum += compute_function((target_change_arr > 0) * (aoi_block > 0) * (mask_block > 0))
         else:
-            pixel_computation_sum += compute_function(data_block * (aoi_block > 0) * (mask_obj > 0))
+            pixel_computation_sum += compute_function(data_block * (aoi_block > 0) * (mask_block > 0))
 
     return pixel_computation_sum
 
