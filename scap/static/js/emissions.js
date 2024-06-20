@@ -1,8 +1,8 @@
 // Retrieve the chart from the DOM, and instantiate it
 var index = $("#container").data('highchartsChart');
-var chart = Highcharts.charts[index];
+var chart_emissions = Highcharts.charts[index];
 
-var series = chart.series;
+var series = chart_emissions.series;
 
 var newseries = series;
 var new_updated = series;
@@ -37,7 +37,7 @@ function increase_brightness(hex, percent) {
 
 var percent = 10;
 var ns = [];
-var lcss = get_checked_lcs();
+var lcss =get_checked_lcs();
 var agbss = get_checked_agbs();
 var min_arr = [];
 var res_mmm = [];
@@ -81,33 +81,33 @@ xhr.done(function (result2) {
         legendIndex: -3,
         dashStyle: 'shortdash'
     };
-    $.each(chart.series, function (i, s) {
-        for (var j = 0; j < lc_colors.length; j++) {
+    // $.each(chart_emissions.series, function (i, s) {
+    //     for (var j = 0; j < lc_colors.length; j++) {
+    //
+    //         if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+    //             s.color = lc_colors[j]['color'];
+    //             ns.push({
+    //                 name: s.name,
+    //                 data: s.data,
+    //                 color: s.color,
+    //                 visible: true,
+    //                 lineWidth: 2,
+    //                 legendIndex: null,
+    //                 dashStyle: ''
+    //             });
+    //
+    //         }
+    //
+    //
+    //     }
+    // });
 
-            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                s.color = lc_colors[j]['color'];
-                ns.push({
-                    name: s.name,
-                    data: s.data,
-                    color: s.color,
-                    visible: true,
-                    lineWidth: 2,
-                    legendIndex: null,
-                    dashStyle: ''
-                });
+    // chart_emissions.update({series: ns});
+    // chart_emissions.addSeries(min_arr);
+    // chart_emissions.addSeries(max_arr);
+    // chart_emissions.addSeries(avg_arr);
 
-            }
-
-
-        }
-    });
-
-    chart.update({series: ns});
-    chart.addSeries(min_arr);
-    chart.addSeries(max_arr);
-    chart.addSeries(avg_arr);
-
-    chart.update({
+    chart_emissions.update({
         yAxis: {
             title: {
                 text: 'Values (Tons)'
@@ -152,7 +152,7 @@ xhr.done(function (result2) {
     });
 });
 
-chart.update({
+chart_emissions.update({
         chart: {
             type: 'spline'
         },
@@ -297,7 +297,7 @@ function access_lines(elem, dataset) {
             dashStyle: 'shortdash'
         };
 
-        $.each(chart.series, function (i, s) {
+        $.each(chart_emissions.series, function (i, s) {
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];
@@ -443,7 +443,9 @@ function redraw_mma(){
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
+     console.log(lcss)
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
@@ -474,7 +476,7 @@ function redraw_mma(){
             dashStyle: 'shortdash'
         };
 
-        $.each(chart.series, function (i, s) {
+        $.each(chart_emissions.series, function (i, s) {
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];

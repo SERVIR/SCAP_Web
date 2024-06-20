@@ -538,7 +538,7 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
 
 
 def get_agg_check(request, country=0):
-    result = CarbonStatistic.objects.all().order_by('year_index')
+    result = CarbonStatistic.objects.filter(aoi_index=country).values().order_by('year_index')
     data = list(result.values_list('year_index').distinct())
     years = []
     for x in range(len(data)):
@@ -550,6 +550,7 @@ def get_agg_check(request, country=0):
         min_arr = []
         max_arr = []
         avg_arr = []
+        print(pa_name)
         if pa_name > 0:
             try:
                 pa = PilotCountry.objects.get(id=country)
@@ -557,11 +558,14 @@ def get_agg_check(request, country=0):
                 pa_name = aoi.id
             except:
                 pass
+            print(agbs)
             data1 = list(
                 CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
                     'year_index').annotate(
                     min=Min('emissions'), max=Max('emissions'), avg=Avg('emissions')))
+            print(data1)
         else:
+            print('in else')
             pa_name = country
             data1 = list(
                 CarbonStatistic.objects.filter(fc_index__in=lcs, agb_index__in=agbs, aoi_index=pa_name).values(
