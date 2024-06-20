@@ -568,10 +568,20 @@ function add_thredds_wms_layers(map_modal_action) {
                 pane: 'right'
             })
         // primary_underlay_layer.addTo(map);
-        primary_overlay_layer.addTo(map);
-        secondary_underlay_layer.addTo(map);
-        secondary_overlay_layer.addTo(map);
-        comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+         if (map_modal_action == 'deforestation_targets' || map_modal_action == 'deforestation_netzero') {
+             primary_overlay_layer.addTo(map);
+             secondary_underlay_layer.addTo(map);
+             secondary_overlay_layer.addTo(map);
+                     comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+
+         }
+         else{
+                          primary_overlay_layer.addTo(map);
+             secondary_overlay_layer.addTo(map);
+                     comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer]).addTo(map);
+
+
+         }
     } catch (e) {
         console.log(e)
     }
