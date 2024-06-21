@@ -723,7 +723,7 @@ def generate_aoi_file(aoi_feature, collection):
 
     file_dir = os.path.dirname(temp_filepath)
     if not os.path.exists(file_dir):
-        os.makedirs(file_dir, exists_ok=True)
+        os.makedirs(file_dir, exist_ok=True)
 
     rasterize_aoi(aoi_feature, temp_filepath)
 
