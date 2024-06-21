@@ -87,6 +87,8 @@
       var country_id={{country|safe}}
          var fc_colls={{fc_colls|safe}};
 var agb_colls=undefined;
+
+
 </script>
 <script>
 
@@ -297,10 +299,11 @@ margin-right: 0;">
                             <ul class="agb_list chart-list-scroll">
                                 {% csrf_token %}
                                 {% for agb in agbs %}
+                                <span style="display: none" id='AGB{{ agb.id }}'>{{ agb.name }}</span>
                                     <li class="agb_list-item">
                                         <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb yellow-checkbox"
                                                onchange="access_lines(this,'AGB')"
-                                               value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
+                                               value="{{ agb.id }}" name="agb"/><label
                                                                                            style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}
                                         <span class="badge bg-light text-dark">(AGB{{ agb.id }})</span></label>
                                     </li>
@@ -628,6 +631,8 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                  <script src="{% static '/js/map.js' %}"></script>
                 <script>
     var lc_colors = {{colors|safe}};
+    var def_lc="{{default_lc|safe}}";
+var def_agb="{{default_agb|safe}}";
                 </script>
 <script src="{% static '/js/forestchange.js' %}"></script>
 <script src="{% static '/js/emissions.js' %}"></script>

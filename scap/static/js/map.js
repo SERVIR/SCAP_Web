@@ -46,13 +46,12 @@ function exampleFilter(elem) {
     }
 }
 function set_map_action(anchor,text) {
-    if(anchor.className.includes('dropdown')){
-        if(localStorage.getItem('map_modal_action').length==0) {
+    if(anchor.className.includes('dropdown')) {
             localStorage.setItem('map_modal_action', text);
 
-        }
- document.getElementById('usecase_name').innerHTML='Displaying: '+anchor.innerHTML
-redraw_map_layers();
+
+        document.getElementById('usecase_name').innerHTML = 'Displaying: ' + anchor.innerHTML
+        redraw_map_layers();
 
     }else {
         var div = anchor.parentNode;
@@ -85,14 +84,14 @@ function fill_dataset_selector(fc_data,agb_data) {
     select.innerHTML = "";
     for (let i = 0; i < fc_data.length; i++) {
         let ds = fc_data[i];
-        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'nlcms');
+        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, def_lc.toLowerCase().split(' ').join('-'));
     }
     if (agb_data != null) {
         select = document.getElementById('selected_agb');
         select.innerHTML = "";
         for (let i = 0; i < agb_data.length; i++) {
             let ds = agb_data[i];
-            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'spawn-2010');
+            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, def_agb.toLowerCase().split(' ').join('-'));
         }
     }
 }
@@ -102,14 +101,14 @@ function fill_comparison_dataset_selector(fc_data,agb_data){
     select.innerHTML = "";
     for (let i = 0; i < fc_data.length; i++) {
         let ds = fc_data[i];
-        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds,'nlcms');
+        add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds,def_lc.toLowerCase().split(' ').join('-'));
     }
     if(agb_data!=null) {
         select = document.getElementById('comparing_agb');
         select.innerHTML = "";
         for (let i = 0; i < agb_data.length; i++) {
             let ds = agb_data[i];
-            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, 'spawn-2010');
+            add_option_by_id(select, ds.split(' ').join('-').toLowerCase(), ds, def_agb.toLowerCase().split(' ').join('-'));
         }
     }
 }
@@ -835,9 +834,9 @@ function init_map() {
                aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
                     weight: 2,
-                    opacity: 1,
+                    opacity: 1.0,
                     color: 'cyan',  //Outline color
-                    fillOpacity: 0.4,
+                    fillOpacity: 0.0,
                 },
                 onEachFeature: onEachFeature_aoi,
             });
@@ -855,9 +854,9 @@ function init_map() {
             aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
                     weight: 2,
-                    opacity: 1,
+                    opacity: 1.0,
                     color: 'cyan',  //Outline color
-                    fillOpacity: 0.4,
+                    fillOpacity: 0.0,
                 },
                 onEachFeature: onEachFeature_aoi,
             });
@@ -873,10 +872,10 @@ function init_map() {
             aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
                     weight: 2,
-                    opacity: 1,
+                    opacity: 1.0,
                     color: 'cyan',  //Outline color
-                    fillOpacity: 0.4,
-
+                    fillOpacity: 0.0,
+zIndexOffset:3000
                 },
                 onEachFeature: onEachFeature_aoi,
             });
@@ -986,6 +985,10 @@ if(window.location.href.indexOf("/map/") > -1) {
         aoi_layer.addTo(map);
 
     }
+
+
+
+
 
     map.on('draw:created', function (e) {
         var type = e.layerType,

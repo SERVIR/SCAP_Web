@@ -64,6 +64,13 @@ def map(request, country=0):
     for agb in agb_collection:
         agb_colls.append({'name': agb['name'], 'years': [agb['year']]})
     pc = PilotCountry.objects.filter(id=country).values()
+    default_lc = 'JAXA'
+    default_agb = 'Saatchi 2000'
+    if country>0:
+        pa = PilotCountry.objects.get(id=country)
+        if pa.forest_cover_collection is not None:
+            default_lc=pa.forest_cover_collection.name
+            default_agb=pa.agb_collection.name
     for pilot in pc:
         zoom_level = pilot['zoom_level']
         lat_long = [pilot['latitude'], pilot['longitude']]
@@ -122,7 +129,7 @@ def map(request, country=0):
                   context={'shp_obj': json_obj, 'country_id': country, 'lcs': lcs, 'agbs': agbs,
                            'pilot_countries': pilot_countries,
                            'latitude': lat_long[0], 'longitude': lat_long[1],
-                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '',
+                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '','default_lc': default_lc,'default_agb':default_agb,
                            'fc_colls': fc_colls, 'agb_colls': agb_colls})
 
 
@@ -132,8 +139,9 @@ def add_new_collection(request):
 
 def pilot_country(request, country=0):
     json_obj = {}
+    fc_colls = []
     try:
-        fc_colls = []
+
         fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
 
         for fc in fc_collection:
@@ -176,12 +184,18 @@ def pilot_country(request, country=0):
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container')
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
+    if pa.forest_cover_collection is None:
+        default_lc='JAXA'
+        default_agb='Saatchi 2000'
+    else:
+        default_lc=pa.forest_cover_collection.name
+        default_agb=pa.agb_collection.name
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,'chart_cs': chart_cs,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
-                           'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,
+                           'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,'default_lc': default_lc,'default_agb':default_agb,
                            'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
 
 

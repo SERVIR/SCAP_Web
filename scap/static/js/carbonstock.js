@@ -4,6 +4,7 @@ var chart_obj_global=chart_cs_obj;
 var series = chart_cs_obj.series;
 
 let defaultLC="";
+let defaultAGB="";
 
 showModis();
 function showModis() {
@@ -12,7 +13,7 @@ function showModis() {
     var series = chart.series;
     var newseries = series;
     let checkboxElement = document.getElementsByClassName('LC_cb_cs');
-    let myValue = 'MODIS';
+    let myValue = def_lc;
     for (var i = 0; i < checkboxElement.length; i++) {
 
         if (document.getElementById('LC' + checkboxElement[i].value).innerHTML === myValue) {
@@ -22,9 +23,26 @@ function showModis() {
 
             checkboxElement[i].checked = false;
         }
+
     }
+         checkboxElement = document.getElementsByClassName('AGB_cb_cs');
+     myValue = def_agb;
+    for (var i = 0; i < checkboxElement.length; i++) {
+        console.log(document.getElementById('AGB' + checkboxElement[i].value).innerHTML);
+        console.log(myValue)
+        if (document.getElementById('AGB' + checkboxElement[i].value).innerHTML.trim() === myValue) {
+            defaultAGB = 'AGB' + checkboxElement[i].value;
+            checkboxElement[i].checked = true;
+        } else {
+
+            checkboxElement[i].checked = false;
+        }
+
+    }
+    console.log(defaultAGB)
+    console.log(defaultLC)
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(defaultLC)) {
+        if (newseries[i].name[0]===defaultLC&& newseries[i].name[1]==defaultAGB) {
             chart.series[i].setVisible(true, false);
         } else {
             chart.series[i].setVisible(false, false);
