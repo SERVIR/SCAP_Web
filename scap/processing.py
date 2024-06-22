@@ -160,7 +160,10 @@ def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifie
 def delete_temp(self, filepath):
     if not ensure_ownership(self.request.id):
         return 'Duped'
-    os.remove(filepath)
+    try:
+        os.remove(filepath)
+    except:
+        pass
 
 
 def update_task_progress(task, progress, progress_change):
