@@ -4,6 +4,7 @@ import logging
 from datetime import datetime,date,timedelta
 from pathlib import Path
 from django.contrib import auth
+from django.core.mail import send_mail
 
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -13,11 +14,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 import pandas as pd
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 import shapely
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts, fetch_carbon_stock_charts,
                       get_available_colors, generate_geodjango_objects_aoi)
-from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm
+from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm,UserRoleForm
 from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
                          PilotCountry, AOIFeature, CurrentTask, ForestCoverStatistic)
 
@@ -32,11 +33,48 @@ config = json.load(f)
 logger = logging.getLogger("django")
 
 
+def user_information(request):
+    if request.method == 'POST':
+        form = UserRoleForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data['role']
+            other_explanation = form.cleaned_data.get('other_explanation', '')
+            user = request.user
+            # Fetch all users in the Approvers group
+            approver_group = Group.objects.get(name='scap_sysadmins')
+            approvers = approver_group.user_set.all()
+
+            # Construct the email content
+            subject = '[S-CAP] New User Registration'
+            message = f"""
+
+
+                       User Profile: <a href='https://s-cap.servirglobal.net/admin/auth/user/{user.id}/change/'>{user.id}</a>
+                       Name: {user.get_full_name() or user.username}
+                       Access Needed for : {role}
+                       """
+            if role == 'Other' and other_explanation:
+                message += f"Other Explanation: {other_explanation}"
+
+            # Send the email to all approvers
+            approvers_emails = [approver.email for approver in approvers if approver.email]
+            send_mail(subject, message, config['EMAIL_HOST_USER'], approvers_emails)
+
+            # Redirect to home or another page after successful submission
+            return redirect('home')
+    else:
+        form = UserRoleForm()
+
+    return render(request, 'scap/user_information.html', {'form': form})
 def test_stats(request):
     gdal_stats()
     return HttpResponse('done')
 
 def home(request):
+    is_new_user = request.session.get('is_new_user', False)
+    if is_new_user:
+        del request.session['is_new_user']
+        return HttpResponseRedirect('user_information')
     pilot_countries = []
     new_user_list=None
     try:
@@ -46,8 +84,10 @@ def home(request):
         new_user_list = User.objects.filter(date_joined__gte=seven_day_before)
     except:
         pass
-
-    return render(request, 'scap/index.html', context={'pilot_countries': pilot_countries,'new_user_list': new_user_list})
+    context={'pilot_countries': pilot_countries,'new_user_list': new_user_list}
+    if hasattr(request,'new_users'):
+        context['new_users'] = request.new_users
+    return render(request, 'scap/index.html', context=context)
 
 
 def map(request, country=0):

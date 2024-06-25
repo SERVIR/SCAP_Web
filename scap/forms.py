@@ -71,3 +71,19 @@ class AGBCollectionForm(forms.ModelForm):
             'access_level': forms.Select(choices=ACCESS_CHOICES, attrs={'class': 'form-control'}),
             'year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '2000'})
         }
+
+ROLE_CHOICES = [
+    ('Explore Map','Explore Map'),
+    ('Contribute Data','Contribute Data'),
+    ('Visualize charts', 'Visualize charts'),
+    ('Other', 'Other'),
+]
+
+
+class UserRoleForm(forms.Form):
+    role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    other_explanation = forms.CharField(required=False, widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'placeholder': 'Please explain why you are requesting access to the system',
+        'rows': 3,
+    }))

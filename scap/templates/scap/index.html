@@ -70,26 +70,30 @@
 <body id="page-top">
 
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-    <div style="position: fixed;top:0;width:100%;z-index:1000">
-        {% if request.user.groups.all.0.name == "scap_sysadmins" %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style=" background: rgb(33, 37, 41);
+    height: 90px;">
+      {% if request.user.is_authenticated and is_approver and request.extras %}
+    <div style="position: fixed;top:90px;width:100%;z-index:1000">
+
+        {% if request.extras.new_users %}
          <div class="alert alert-warning alert-dismissible fade show" role="alert">
              {% if new_user_list %}
              <p>
-                <strong> The following users have registered in the last 30 days</strong>
+                <strong> The following users have registered in the last 7 days</strong>
              </p>
   <p id="user_list">
-      {% for user in new_user_list %}
+     {% for user in request.extras.new_users.all %}
       <a href="{% url 'admin:auth_user_change' user.id %}"><i class="fas fa-pencil fa-fw fa-1x"></i></a>&nbsp;<span>{{ user.get_full_name }} ({{user.username}})</span><br>
 {% endfor %}
   </p>
-             {% else %}
-    No users joined in last 30 days.
-{% endif %}
+
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
         {% endif %}
     </div>
+    {% endif %}
+    {% endif %}
+
     <div class="container-fluid">
         <a class="navbar-brand" style="padding-left: 20px" href="#page-top"><img
                 src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
@@ -133,8 +137,32 @@
         </div>
     </div>
 </nav>
-
-<!-- Masthead-->
+<!-- {% if request.user.is_authenticated and is_approver and request.extras %}-->
+<!--        {% if request.extras.new_users %}-->
+<!--            <div class="alert alert-info accordion" role="alert" id="new_user_alert" style="top:90px">-->
+<!--        {% endif %}-->
+<!--    {% if request.extras.new_users %}-->
+<!--        <div class="accordion-item">-->
+<!--            <h2 class="accordion-header">-->
+<!--                <button class="accordion-button" type="button" data-bs-toggle="collapse"-->
+<!--                        data-bs-target="#newUsersCollapse" aria-expanded="true" aria-controls="newUsersCollapse">-->
+<!--                    New Users in the Last 7 Days-->
+<!--                </button>-->
+<!--            </h2>-->
+<!--            <div id="newUsersCollapse" class="accordion-collapse collapse show" data-bs-parent="#new_user_alert">-->
+<!--                <ul>-->
+<!--                    {% for user in request.extras.new_users.all %}-->
+<!--                        <li>-->
+<!--                            {{ user.first_name }} {{user.last_name}} ({{user.username}}) - <a href="{% url 'admin:auth_user_change' user.id %}">Edit</a>-->
+<!--                        </li>-->
+<!--                    {% endfor %}-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--            </div>-->
+<!--    {% endif %}-->
+<!--                    {% endif %}-->
+<!--&lt;!&ndash; Masthead&ndash;&gt;-->
 <header class="masthead">
     <div class="container">
         <div class="masthead-subheading">Quickly and easily estimate carbon emissions</div>

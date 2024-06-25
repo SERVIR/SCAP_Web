@@ -31,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats,user_information)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -107,6 +107,8 @@ urlpatterns = [
       path('forest-cover-collections/edit/<int:pk>/add-tiff-record/', add_tiff_record, name='add-tiff-record'),
       path('forest-cover-collections/edit/<int:pk>/update-tiff-record/', update_tiff_record, name='update-tiff-record'),
       path('logout/',logout_view,name="logout"),
+      path('user_information/', user_information, name='user_information'),
+      path('user_information', user_information, name='user_information'),
                     # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
       path('test_stats/', test_stats, name='test_stats'),
