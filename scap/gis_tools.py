@@ -392,6 +392,11 @@ def stitch_geotiffs(input_dir, target_path):
         max_x = max(max_x, geo_transform[0] + geo_transform[1] * x_size)
         min_y = min(min_y, geo_transform[3] + geo_transform[5] * y_size)
 
+    min_x -= 0.5
+    max_x += 0.5
+    min_y -= 0.5
+    max_y += 0.5
+
     # Calculate size of output GeoTIFF based on total extent
     output_x_size = int((max_x - min_x) / geo_transform[1])
     output_y_size = int((max_y - min_y) / abs(geo_transform[5]))
