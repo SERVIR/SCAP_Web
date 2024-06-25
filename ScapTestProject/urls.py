@@ -31,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -109,7 +109,7 @@ urlpatterns = [
       path('logout/',logout_view,name="logout"),
                     # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
-      path('test/', test, name='test'),
+      path('test_stats/', test_stats, name='test_stats'),
       # path('emissions/', pilot_country, name='emissions'),
       # path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
       # path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),

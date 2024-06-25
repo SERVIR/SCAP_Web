@@ -214,13 +214,13 @@ function onEachFeature_aoi(feature, layer) {
 
 
         var popupText = name;
-        var tooltipText = "";
-        layer.bindPopup(popupText, {
-            closeButton: false
-        });
+        var tooltipText = name;
+        // layer.bindPopup(popupText, {
+        //     closeButton: false
+        // });
         layer.bindTooltip(tooltipText);
-        layer.openPopup(e.latlng);
-        this.getTooltip().setOpacity(0);
+        // layer.openPopup(e.latlng);
+        this.getTooltip().setOpacity(0.9);
         layer.setStyle({
             weight: 2,
             opacity: 1,
@@ -229,10 +229,10 @@ function onEachFeature_aoi(feature, layer) {
         })
 
 
-        layer.on('mouseover', function () {
-
-            this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
-        });
+        // layer.on('mouseover', function () {
+        //
+        //     this.getTooltip().setOpacity(this.isPopupOpen() ? 0 : .9);
+        // });
 
 
     });

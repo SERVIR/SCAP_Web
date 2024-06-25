@@ -22,6 +22,7 @@ from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection
                          PilotCountry, AOIFeature, CurrentTask, ForestCoverStatistic)
 
 from scap.async_tasks import process_updated_collection
+from scap.getgdalstats import gdal_stats
 import geopandas as gpd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,6 +31,10 @@ config = json.load(f)
 
 logger = logging.getLogger("django")
 
+
+def test_stats(request):
+    gdal_stats()
+    return HttpResponse('done')
 
 def home(request):
     pilot_countries = []
