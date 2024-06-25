@@ -242,7 +242,7 @@ function onEachFeature_aoi(feature, layer) {
             weight: 2,
             opacity: 1,
             color: 'cyan',  //Outline color
-            fillOpacity: 0.5,
+            fillOpacity: 0,
         });
 
     });
@@ -434,6 +434,10 @@ function  redraw_based_on_year() {
         primary_overlay_layer.addTo(map);
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
+       map.getPane("left").style.zIndex = "360";
+              map.getPane("right").style.zIndex = "360";
+                   map.getPane("top").style.zIndex = "500";
+
     // aoi_layer_left.addTo(map);
     // aoi_layer_right.addTo(map);
           document.getElementById("loading_spinner_map").style.display = "none";
@@ -839,6 +843,7 @@ function init_map() {
                     fillOpacity: 0.0,
                 },
                 onEachFeature: onEachFeature_aoi,
+                   pane:'top'
             });
                    // list of overlays
             overlays = {
@@ -859,6 +864,7 @@ function init_map() {
                     fillOpacity: 0.0,
                 },
                 onEachFeature: onEachFeature_aoi,
+                pane:'top'
             });
                   // list of overlays
             overlays = {
@@ -878,6 +884,7 @@ function init_map() {
 zIndexOffset:3000
                 },
                 onEachFeature: onEachFeature_aoi,
+                pane: 'top'
             });
             country_layer = L.geoJSON(shp_obj['data_country'], {
                 style: {
@@ -916,6 +923,7 @@ zIndexOffset:3000
     //creates panes with labels
     map.createPane('left');
     map.createPane('right');
+    map.createPane('top');
     map.zoomControl.setPosition('topleft');
     //add the default layers to show
     darkmap.addTo(map);
@@ -976,6 +984,7 @@ if(window.location.href.indexOf("/map/") > -1) {
     }
      if(country_layer!=undefined && window.location.href.indexOf("/map/") > -1){
         country_layer.addTo(map);
+
     }
     if (aoi_layer!=undefined && window.location.href.indexOf("/aoi/") > -1) {
         aoi_layer.addTo(map);
@@ -983,7 +992,6 @@ if(window.location.href.indexOf("/map/") > -1) {
     }
     if (aoi_layer!=undefined && window.location.href.indexOf("/map/") > -1) {
         aoi_layer.addTo(map);
-
     }
 
 
