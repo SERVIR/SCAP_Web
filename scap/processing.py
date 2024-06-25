@@ -160,7 +160,10 @@ def load_temp(source_file, dataset_type, user_id, dataset_name, unique_identifie
 def delete_temp(self, filepath):
     if not ensure_ownership(self.request.id):
         return 'Duped'
-    os.remove(filepath)
+    try:
+        os.remove(filepath)
+    except:
+        pass
 
 
 def update_task_progress(task, progress, progress_change):
@@ -723,7 +726,7 @@ def generate_aoi_file(aoi_feature, collection):
 
     file_dir = os.path.dirname(temp_filepath)
     if not os.path.exists(file_dir):
-        os.makedirs(file_dir, exists_ok=True)
+        os.makedirs(file_dir, exist_ok=True)
 
     rasterize_aoi(aoi_feature, temp_filepath)
 
