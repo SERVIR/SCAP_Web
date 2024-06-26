@@ -751,59 +751,60 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                             <div>
                                 <p class="h4">Global</p>
                                 <ul class="list-inline">
-                                    <li><strong>MODIS MCD12Q1</strong>: 500m spatial resolution, Date range: 2001-2016
+                                    <li><strong>CCI:</strong>
+
+                                       ESA's Climate Change initiative (CCI) land cover product is based on SAR imagery at 300m resolution and covers 2000-2020. Classes were reclassified to forest/nonforest.
                                     </li>
-                                    <li><strong>JAXA Forest/NonForest</strong>: 30m spatial resolution, Date range:
-                                        2007-2017<br>
-                                        Masanobu Shimada, Takuya Itoh, Takeshi Motooka, Manabu Watanabe, Shiraishi
-                                        Tomohiro, Rajesh Thapa, and Richard Lucas, "New Global Forest/Non-forest Maps
-                                        from ALOS PALSAR Data (2007-2010)", Remote Sensing of Environment, 155, pp.
-                                        13-31, December 2014. doi:10.1016/j.rse.2014.04.014.
-                                    </li>
-                                    <li><strong>Global Forest Watch</strong>: 25m spatial resolution, Date range:
-                                        2000-2020<br>
-                                        Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A.
-                                        Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy,
-                                        A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. “High-Resolution
-                                        Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November):
-                                        850–53. Data available at:
-                                        https://glad.earthengine.app/view/global-forest-change.
-                                    </li>
+                                        <li><strong>ESRI:</strong>
+
+ESRI's 10m Sentinel-based land use and land cover map covering 2017-2021. The original 10-class product was reclassed to forest/nonforest.
+                                        </li>
+
+                                        <li><strong>JAXA:</strong>
+
+JAXA's 25m PALSAR-based forest map covering 2007-2020. The original 3-class product (2007-2017) and 4-class product (2017-2020) was reclassed to only forest/nonforest by masking out water. Gaps in the data are due to ALOS issues.                                     </li>
+
+                                   <li><strong>MODIS:</strong>
+
+MODIS MCD12Q1 500m land cover generated through combined imagery from Terra and Aqua satellites covers 2001-2020. The 17 classes of LC_Type1 was reclassfied to forest/non forest.
+                                   </li>
+                                   <li><strong>WorldCover:</strong>
+
+ESA Worldcover's 10m Sentinel-1 & Sentinel-2 based product provides global coverage for 2020 and 2021. The treecover classification was labeled as forest with all others as nonforest
+
+                                </li>
                                 </ul>
+
                                 <p class="h4">Regional</p>
                                 <ul class="list-inline">
-                                    <li><strong>RLCMS</strong>: 30m spatial resolution, Date range: 2000 to present&nbsp;&nbsp;
+                                    <li><strong>MAGA:</strong>Guatemala’s “Determination of Vegetated Cover and Land Use at scale 1:50,000 for the Republic of Guatemala” for year 2020 was created based on imagery from Sentinel-1A from 2020 </li>
+                                       <li><strong>MapBiomass:</strong>Collection-4 land cover maps for the Amazon Basin covering 2000-2021 at 30m Landsat resolution and reclassified to forest/nonforest
+                                       </li>
+                                       <li><strong>NLCMS:</strong>Nepal's National Land Cover Monitoring System, developed with support from SERVIR-HKH provides annual coverage of 2000-2019 at 30m resolution.
+                                       </li>
+                                       <li><strong>RCMRD:</strong>The Regional Centre for Mapping of Resources for Development (RCMRD) generated land use and land cover maps at the regional scale for Eastern and Southern Africa. These 30m resolution maps cover 2000-2017 and are reclassified to forest/nonforest.
+                                       </li>
+                                    <li><strong>RLCMS_HKH:</strong>The Regional Land Cover Monitoring System (RLCMS) for the Hindu Kush Himalaya (HKH) region provides annual land cover maps from 2000-2021 and are reclassified to forest/nonforest	The Regional Land Cover Monitoring System (RLCMS) for the Hindu Kush Himalaya (HKH) region provides annual land cover maps from 2000-2021 and are reclassified to forest/nonforest
                                     </li>
-                                    <li><strong>RCMRD CCDC</strong>: 30m spatial resolution, Date range: (Kenya:
-                                        2000/2016), Zambia (2000/2017)
+                                       <li><strong>RLCMS_SEA:</strong>The Regional Land Cover Monitoring System (RLCMS) for the Southeast Asia (SEA) region provides annual land cover maps from 2000-2018 and are reclassified to forest/nonforest
                                     </li>
-                                    <li><strong>MapBiomas</strong>: 30m spatial resolution, Date range: 2000-2019<br>
-                                        "MapBiomas Amazon Project - Collection 3 of annual land cover and land use maps
-                                        via Google Earth Engine. The MapBiomas Amazon project - is a multi-institutional
-                                        initiative to generate annual land use maps based on automatic classification
-                                        processes applied to satellite imagery. The full description of the project can
-                                        be found at http://amazonia.mapbiomas.org ".
+                                     <li><strong>USGS:</strong>A joint initiative with the US Geological Survey produced 3 land use land cover maps (1975, 2000, 2013) over West Africa at a 2-km resolution. This classification was reclassed to forest/nonforest.
                                     </li>
-                                    <li><strong>MAGA</strong>: 30m spatial resolution, Date range: 2020</li>
-                                    <li><strong>USGS</strong>: 2km spatial resolution, Date range: 2000/2013<br>
-                                        Tappan, G. G., Cushing, W.M., Cotillon, S.E., Mathis, M.L., Hutchinson, J.A.,
-                                        and Dalsted, K.J. 2016 West Africa Land Use Land Cover Time Series: U.S.
-                                        Geological Survey data release, http://dx.doi.org/10.5066/F73N21JF
-                                    </li>
+
                                 </ul>
-                                <p class="h4">Algorithm</p>
-                                <ul class="list-inline">
-                                    <li><strong>CCDC-SMA</strong>: 30m spatial resolution, Date range: 2000-2020<br>
-                                        Citation:Chen, S., Woodcock, CE., Bullock E., Arevalo, P., Torchinava, P., Peng,
-                                        S. and Olofsson P. (2021). Monitoring Temperate Forest Degradation on Google
-                                        Earth Engine Using Landsat Time Series Analysis. Remote Sensing of Environment.&nbsp;
-                                    </li>
-                                    <li><strong>Landtrendr</strong>: 100m spatial resolution, Date range: 1986-2020<br>
-                                        Citation: Kennedy, R.E., Yang, Z., Gorelick, N., Braaten, J., Cavalcante, L.,
-                                        Cohen, W.B., Healey, S. (2018). Implementation of the LandTrendr Algorithm on
-                                        Google Earth Engine. Remote Sensing. 10, 691.
-                                    </li>
-                                </ul>
+<!--                                <p class="h4">Algorithm</p>-->
+<!--                                <ul class="list-inline">-->
+<!--                                    <li><strong>CCDC-SMA</strong>: 30m spatial resolution, Date range: 2000-2020<br>-->
+<!--                                        Citation:Chen, S., Woodcock, CE., Bullock E., Arevalo, P., Torchinava, P., Peng,-->
+<!--                                        S. and Olofsson P. (2021). Monitoring Temperate Forest Degradation on Google-->
+<!--                                        Earth Engine Using Landsat Time Series Analysis. Remote Sensing of Environment.&nbsp;-->
+<!--                                    </li>-->
+<!--                                    <li><strong>Landtrendr</strong>: 100m spatial resolution, Date range: 1986-2020<br>-->
+<!--                                        Citation: Kennedy, R.E., Yang, Z., Gorelick, N., Braaten, J., Cavalcante, L.,-->
+<!--                                        Cohen, W.B., Healey, S. (2018). Implementation of the LandTrendr Algorithm on-->
+<!--                                        Google Earth Engine. Remote Sensing. 10, 691.-->
+<!--                                    </li>-->
+<!--                                </ul>-->
                             </div>
                             <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                 <i class="fas fa-xmark me-1"></i>
@@ -835,49 +836,58 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                             <div>
                                 <p class="h4">Global</p>
                                 <ul class="list-inline">
-                                    <li><strong>Avitable</strong>: 1km spatial resolution, Date 2016: harmonization of
-                                        the pan-tropical datasets published by Saatchi et al. (2011) and Baccini et al.
-                                        (2012)<br>
-                                        Citation: Avitabile, V, Herold, M, Heuvelink, GBM et al. (30 more authors)
-                                        (2016) An integrated pan-tropical biomass map using multiple reference datasets.
-                                        Global Change Biology, 22 (4). pp. 1406-1420. ISSN 1354-1013
-                                        https://doi.org/10.1111/gcb.13139&nbsp;
+                                    <li><strong>Baccini_2:</strong>Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 300m and resampled to 1ha. Dataset includes non-forest land coverage.
                                     </li>
-                                    <li><strong>Saatchi</strong>: 1km spatial resolution, Date 2011: Generated using
-                                        ground measurements and GLAS (Geoscience Laser Altimeter System) lidar
-                                        observations<br>
-                                        Citation: Saatchi, S. S., Harris, N. L., Brown, S., Lefsky, M., Mitchard, E. T.,
-                                        Salas, W., ... &amp; Morel, A. (2011). Benchmark map of forest carbon stocks in
-                                        tropical regions across three continents. Proceedings of the national academy of
-                                        sciences, 108(24), 9899-9904.
+                                    <li><strong>CCI_Biomass:</strong>
+Multi-year year global coverage of aboveground biomass (2010/2017/2018/2019/2020). Original Spatial Resolution: 100 and resampled to 1ha. Dataset includes non-forest land coverage.
                                     </li>
-                                    <li><strong>GeoCarbon 2020</strong>: 1km spatial resolution, Date: 2020: Global map
-                                        of aboveground biomass in forest, generated by combining and harmonizing the
-                                        Avitabile pan-tropical biomass map with the boreal forest biomass map by Santoro
-                                        et al. (2015).<br>
-                                        Citation: Santoro, M., Beaudoin, A., Beer, C., Cartus, O., Fransson, J.E.S.,
-                                        Hall, R.J., Pathe, C., Schmullius, C., Schepaschenko, D., Shvidenko, A.,
-                                        Thurner, M. and Wegmüller, U., 2015. Forest growing stock volume of the northern
-                                        hemisphere: Spatially explicit estimates for 2010 derived from Envisat ASAR.
-                                        Remote Sensing of Environment, 168, pp. 316-334.
+                                    <li><strong>CCI_Biomass_v4:</strong>
+Multi-year year global coverage of aboveground biomass (2010/2017/2018/2019/2020). Original Spatial Resolution: 100 and resampled to 1ha. Dataset includes non-forest land coverage.
                                     </li>
-                                    <li><strong>GEDI</strong>: 1km spatial resolution, Date: 2019-04-18-2021-08-04:&nbsp;<br>
-                                        Citation: Dubayah, R.O., J. Armston, S.P. Healey, Z. Yang, P.L. Patterson, S.
-                                        Saarela, G. Stahl, L. Duncanson, and J.R. Kellner. 2022. GEDI L4B Gridded
-                                        Aboveground Biomass Density, Version 2. ORNL DAAC, Oak Ridge, Tennessee, USA.
-                                        https://doi.org/10.3334/ORNLDAAC/2017
+                                    <li><strong>Geocarbon</strong>
+Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
+                                    </li>
+                                    <li><strong>Globiomass:</strong>
+Single year global coverage of aboveground biomass (2010). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                    <li><strong>Hu:</strong>
+Single year global coverage of aboveground biomass (2004). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
+                                    </li>
+                                    <li><strong>Kindermann:</strong>
+Single year global coverage of aboveground biomass (2005). Original Spatial Resolution: 50km and resampled to 1ha. Dataset excludes non-forest land coverage.
+                                    </li>
+                                    <li><strong>Liu:</strong>
+Multi-year global coverage of aboveground biomass (2000-2012). Original Spatial Resolution: 25km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                    <li><strong>Ruesch_Gibbs:</strong>
+Single year global coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                       <li><strong>Spawn:</strong>
+Single year global coverage of aboveground biomass (2010). Original Spatial Resolution: 300m and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                       <li><strong>Xu:</strong>
+Single year global coverage of aboveground biomass (2000/2010/2019). Original Spatial Resolution: 10km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                       <li><strong>Yang:</strong>
+Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
+                                    </li>
+                                      <li><strong>Zhang_Liang:</strong>
+Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
                                     </li>
                                 </ul>
                                 <p class="h4">Regional</p>
                                 <ul class="list-inline">
-                                    <li><strong>ICIMOD 2015</strong>:&nbsp; 5km spatial resolution, Date 2015: From the
-                                        field well distributed circular (750m2 and 500m2), 1124 field plots (0.001%
-                                        representation of forest cover) measured which were used for estimation AGB
-                                        (ton/ha) using Sharma et al. (1990) proposed equations for all tree species of
-                                        Nepal. A satisfactory linear relationship (AGB = 8.7018*Hmax-101.24, R2=0.67,
-                                        RMSE=7.2 ton/ha) achieved between maximum canopy height (Hmax) and AGB (ton/ha).<br>
-                                        Citation: ICIMOD. (2015). Above ground biomass (AGB) data in Nepal [Data set].
-                                        ICIMOD. https://doi.org/10.26066/rds.23172
+                                    <li><strong>Avitable:</strong>
+Single year tropical coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                     <li><strong>Baccini_1:</strong>
+Single year tropical coverage of aboveground biomass (2008). Original Spatial Resolution: 500m and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                     <li><strong>Gedi:</strong>
+Single year tropical coverage of aboveground biomass (2020). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    </li>
+                                     <li><strong>Saatchi:</strong>
+Single year tropical coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
                                     </li>
                                 </ul>
                             </div>
@@ -914,9 +924,9 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                                 <ul class="list-inline">
                                     <li><strong>Administrative Level</strong>: Select your Area of Interest by Country,
                                         or by Level 1/Level 2 administrative units (Boundaries are not authoritative,
-                                        source: __________)
+                                        source: Large Scale International Boundary (LSIB) dataset by the United States Office of the Geographer <a target="_blank" href='https://geonode.state.gov/layers/catalog:geonode:LSIB'>link to the source</a>)
                                     </li>
-                                    <li><strong>Protected Area</strong>: Select protected areas from the ____ collection
+                                    <li><strong>Protected Area</strong>: Select protected areas from the World Database on Protected Areas (WDPA) <a target="_blank" href='https://www.protectedplanet.net/en/thematic-areas/wdpa?tab=WDPA'>link to the source</a>
                                     </li>
                                 </ul>
                                 <p class="h4">Upload your AOI</p>
