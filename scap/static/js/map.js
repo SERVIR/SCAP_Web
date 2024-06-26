@@ -441,6 +441,8 @@ function  redraw_based_on_year() {
               map.getPane("right").style.zIndex = "360";
                    map.getPane("top").style.zIndex = "500";
 
+                                      map.getPane("topmost").style.zIndex = "600";
+
     // aoi_layer_left.addTo(map);
     // aoi_layer_right.addTo(map);
           document.getElementById("loading_spinner_map").style.display = "none";
@@ -969,6 +971,7 @@ function init_map() {
                      strokeWidth: 0,
                 },
                 // onEachFeature: onEachFeature_country,
+                 pane:'topmost'
             });
                aoi_layer = L.geoJSON(shp_obj['data_pa'], {
                 style: {
@@ -1016,7 +1019,6 @@ function init_map() {
                     opacity: 1.0,
                     color: 'cyan',  //Outline color
                     fillOpacity: 0.0,
-zIndexOffset:3000
                 },
                 onEachFeature: onEachFeature_aoi,
                 pane: 'top'
@@ -1030,6 +1032,7 @@ zIndexOffset:3000
                      strokeWidth: 0,
                 },
                 // onEachFeature: onEachFeature_country,
+                pane:'topmost'
             });
 
             // list of overlays
@@ -1059,6 +1062,7 @@ zIndexOffset:3000
     map.createPane('left');
     map.createPane('right');
     map.createPane('top');
+    map.createPane('topmost');
     map.zoomControl.setPosition('topleft');
     //add the default layers to show
     darkmap.addTo(map);

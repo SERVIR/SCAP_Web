@@ -279,6 +279,12 @@ def protected_aois(request, aoi):
     pc_name = pc.country_name
     country_id = pc.id
     colors = get_available_colors()
+    if pc.forest_cover_collection is None:
+        default_lc='JAXA'
+        default_agb='Saatchi 2000'
+    else:
+        default_lc=pc.forest_cover_collection.name
+        default_agb=pc.agb_collection.name
 
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
@@ -289,7 +295,7 @@ def protected_aois(request, aoi):
                            'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
                            'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
-                           'zoom_level': 10,
+                           'zoom_level': 10,'default_lc': default_lc,'default_agb':default_agb,
                            'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
                            'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
 

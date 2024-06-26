@@ -126,15 +126,15 @@ function getMMA(pa, data_obj) {
 
             }
             chart.setTitle(data_obj.title);
-            chart.addSeries(min_arr);
-            chart.addSeries(max_arr);
-            chart.addSeries(avg_arr);
+            // chart.addSeries(min_arr);
+            // chart.addSeries(max_arr);
+            // chart.addSeries(avg_arr);
 
         } else {
             chart.update({series: ns});
-            chart.addSeries(min_arr);
-            chart.addSeries(max_arr);
-            chart.addSeries(avg_arr);
+            // chart.addSeries(min_arr);
+            // chart.addSeries(max_arr);
+            // chart.addSeries(avg_arr);
 
         }
         chart.update({
@@ -348,22 +348,22 @@ function access_lines(elem, dataset) {
 
 
             }
-            console.log(s.name === 'Min')
-            if (s.name === 'Min') {
-                s.update({
-                    data: min_arr.data
-                }, true);
-            }
-            if (s.name === 'Max') {
-                s.update({
-                    data: max_arr.data
-                }, true);
-            }
-            if (s.name === 'Avg') {
-                s.update({
-                    data: avg_arr.data
-                }, true);
-            }
+            // console.log(s.name === 'Min')
+            // if (s.name === 'Min') {
+            //     s.update({
+            //         data: min_arr.data
+            //     }, true);
+            // }
+            // if (s.name === 'Max') {
+            //     s.update({
+            //         data: max_arr.data
+            //     }, true);
+            // }
+            // if (s.name === 'Avg') {
+            //     s.update({
+            //         data: avg_arr.data
+            //     }, true);
+            // }
         });
 
 
