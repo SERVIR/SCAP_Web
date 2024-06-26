@@ -21,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 
 from ScapTestProject import settings
-from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,
+from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,CarbonStockFile,
                          AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry, UserMessage)
 
 from scap.processing import calculate_zonal_statistics, generate_aoi_file
@@ -997,3 +997,15 @@ def send_message_scap(request):
     except Exception as e:
         return JsonResponse({'result': 'error'})
     return JsonResponse({'result': 'success'})
+
+@csrf_exempt
+def get_statistics_for_map(request,country):
+    fc_name_left= request.POST.get('fc_name_left').replace('-',' ')
+    agb_name_left=request.POST.get('agb_name_left').replace('-',' ')
+    year_left=request.POST.get('year_left')
+    cs_result_left = list(CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_left, agb_index__name__iexact=agb_name_left, year_index=year_left).values())
+    fc_name_right= request.POST.get('fc_name_right').replace('-',' ')
+    agb_name_right=request.POST.get('agb_name_right').replace('-',' ')
+    year_right=request.POST.get('year_right')
+    cs_result_right = list(CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_right, agb_index__name__iexact=agb_name_right, year_index=year_right).values())
+    return JsonResponse({'left':cs_result_left,'right':cs_result_right})

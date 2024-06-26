@@ -166,6 +166,7 @@ def map(request, country=0):
             df_agb = pd.DataFrame(
                 AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
+
     except Exception as e:
         print(e)
         json_obj["data_pa"] = []

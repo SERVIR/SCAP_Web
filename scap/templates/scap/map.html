@@ -191,43 +191,125 @@
                 <div class="row">
                     <div class="col">
                         <div class="modal-body" >
-                            <h4 class="text-uppercase">Understanding the map</h4>
+                            <h3 style="text-align: left">Understanding the map</h3>
                             <div class="container-fluid">
-                               <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="thumbnail">
-                                            <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image for red area"/>
-                                            <div class="caption">
+                                <div class="row" id="fc_usecase">
+                                                                     <h4 style="text-align: left">Forest cover analysis</h4>
+
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                 <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image for red area"/>
+                                            </div>
+                                            <div class="col">
+                                                  <div class="caption">
                                                 <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
-                                                <p style="text-align: left">The left side (A) shows the earlier year in bright green, indicating the places that were
+                                                <p style="text-align: left">The left side shows the earlier year in bright green, indicating the places that were
                                                     originally identified as forest.</p>
-                                                <p style="text-align: left">The right side (B) shows the later year in darker green, with the areas that have lost forest cover in red.
+                                                <p style="text-align: left">The right side shows the later year in darker green, with the areas that have lost forest cover in red.
                                                 </p>
                                             </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="thumbnail">
-                                            <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for yellow area"/>
-                                            <div class="caption">
+                                        <div class="row">
+                                             <div class="col-3">
+                                                          <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for yellow area"/>
+                                            </div>
+                                            <div class="col">
+                                                    <div class="caption">
                                                 <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
-                                                <p style="text-align: left">The left side (A) shows the first dataset in green, while the yellow pixels indicate
+                                                <p style="text-align: left">The left side shows the first dataset in green, while the yellow pixels indicate
                                                     locations identified as forest only in the second dataset.</p>
                                                 <p style="text-align: left">
-                                                    The right side (B) shows the second dataset in green, with yellow pixels indicating locations
+                                                    The right side shows the second dataset in green, with yellow pixels indicating locations
                                                     identified as forest only in the first dataset
                                                 </p>
                                             </div>
+                                            </div>
                                         </div>
+
                                     </div>
-                                    </div>
-                                    <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
-                                    Close
-                                    </button>
+
+
                                 </div>
+                                <div class="row" id="other_3_usecases">
+                                    <h4 id="modal_usecase_title" style="text-align: left">Above Ground Biomass Estimation Comparison</h4>
+                                    <div class="col-6" style="margin:auto;height: 100%">
+                                        <div class="thumbnail" >
+                                            <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="AGB Legend" style="display: none"/>
+                                            <img id="emissions_img" src="{% static 'assets/img/emissions.PNG' %}" width="60%" alt="AGB Legend" style="display: none"/>
+                                            <img id="agb_img" src="{% static 'assets/img/agb.PNG' %}" width="60%" alt="AGB Legend" style="display: none"/>
+
+
+                                        </div>
+
+</div>
+                                    <div class="col-6">
+
+
+                                      <div class="row" style="font-family:Helvetica, Arial, sans-serif; ">
+                                                                                  <p class="mt-3" id="text_between"></p>
+
+                                        <div class="col thumbnail" id="primary_overlay_legend">
+
+                                        </div>
+                                          <div class="col-3">
+                                              <h5 style="text-align :left">Left Pane</h5>
+                                              <p style="text-align :left">Source:&nbsp;<span id="left_source"></span>
+
+                                                  <br>
+
+                                                  Min:&nbsp;<span id="left_min"></span>
+
+                                                  <br>Max:&nbsp;<span id="left_max"></span>
+
+                                                  <br>
+                                                  DOI:&nbsp;<span id="left_doi"></span>
+
+                                              </p>
+                                          </div>
+
+                                        <div class="col thumbnail" id="secondary_overlay_legend">
+
+                                        </div>
+                                            <div class="col-3">
+                                              <h5 style="text-align :left">Right Pane</h5>
+                                               <p style="text-align :left">Source:&nbsp;<span id="right_source"></span>
+
+                                                  <br>
+
+                                                  Min:&nbsp;<span id="right_min"></span>
+
+                                                  <br>Max:&nbsp;<span id="right_max"></span>
+
+                                                  <br>
+                                                  DOI:&nbsp;<span id="right_doi"></span>
+
+                                              </p>
+                                          </div>
+                                    </div>
+</div>
+
+                                </div>
+
+
+
+                                </div>
+                            <div>
+                            <p class="text-primary" style="font-family:Helvetica, Arial, sans-serif; font-size: large">
+<i>Please note the content on this window will change depending on the type of visualization you have selected in the dropdown at the bottom of the map.</i>
+                            </p>
                             </div>
                         </div>
                     </div>
+
+
+                    </div>
+                              <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
+                                    Close
+                                    </button>
+
+
                 </div>
             </div>
         </div>

@@ -25,7 +25,7 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test,upload_drawn_aoi,send_message_scap,get_agg_check_cs,get_agg_check_cs_pa)
+                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test,upload_drawn_aoi,send_message_scap,get_agg_check_cs,get_agg_check_cs_pa,get_statistics_for_map)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -109,6 +109,7 @@ urlpatterns = [
       path('logout/',logout_view,name="logout"),
       path('user_information/', user_information, name='user_information'),
       path('user_information', user_information, name='user_information'),
+      path('map/<int:country>/get_statistics_for_map/',get_statistics_for_map,name='get_statistics_for_map'),
                     # STAGE FOR DELETION
       # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
       path('test_stats/', test_stats, name='test_stats'),
