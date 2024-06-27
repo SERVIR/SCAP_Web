@@ -127,7 +127,7 @@
     <div id="selector_table">
         <div class="d-flex">
             <div class="form-group">
-                <label>Primary Year</label>
+                <label id="selected_year_label">Primary Year</label>
                 <select name="selected_year" id="selected_year"
                         class="form-control"
                         onchange="redraw_based_on_year()">
@@ -137,7 +137,7 @@
         </div>
         <div class="d-flex">
             <div class="form-group">
-                <label>FC</label>
+                <label id="selected_region_label">FC</label>
                 <select name="selected_region" id="selected_region" class="form-control"
                         onchange="redraw_map_layers()">
                 </select>
@@ -156,7 +156,7 @@
         <div class="d-flex" id="comparison-selector">
             <div class="d-flex">
                 <div class="form-group">
-                    <label>Comparison Year</label>
+                    <label id="comparison_year_label">Comparison Year</label>
                     <select name="comparison_year" id="comparison_year"
                             class="form-control"
                             onchange="redraw_based_on_year()">
@@ -166,7 +166,7 @@
         </div>
          <div class="d-flex">
             <div class="form-group">
-                <label>FC</label>
+                <label id="comparing_region_label">FC</label>
                 <select name="comparing_region" id="comparing_region" class="form-control"
                         onchange="redraw_map_layers()">
                 </select>
@@ -236,9 +236,9 @@
                                     <h4 id="modal_usecase_title" style="text-align: left">Above Ground Biomass Estimation Comparison</h4>
                                     <div class="col-6" style="margin:auto;height: 100%">
                                         <div class="thumbnail" >
-                                            <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="map image" style="display: none"/>
-                                            <img id="emissions_img" src="{% static 'assets/img/emissions.PNG' %}" width="60%" alt="AGB Legend" style="display: none"/>
-                                            <img id="agb_img" src="{% static 'assets/img/agb.PNG' %}" width="60%" alt="AGB Legend" style="display: none"/>
+                                            <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="Carbon Stock image" style="display: none"/>
+                                            <img id="emissions_img" src="{% static 'assets/img/emissions.PNG' %}" width="60%" alt="Emissions image" style="display: none"/>
+                                            <img id="agb_img" src="{% static 'assets/img/agb.PNG' %}" width="60%" alt="AGB image" style="display: none"/>
 
 
                                         </div>
@@ -332,7 +332,7 @@
                             <h6 class="my-3 text-dark">Monitor progress toward deforestation targets</h6>
                         </div>
                         <div class="col-md-3">
-                            <a class="pilotcountry-link" href="#" onclick="set_map_action(this,'deforestation_netzero')">
+                            <a class="pilotcountry-link" href="#" onclick="set_map_action(this,'agb')">
                                 <div class="pilotcountry-hover">
                                     <span class="fa-stack fa-2x">
                                         <i class="fas fa-circle fa-stack-2x text-primary"></i>
@@ -340,7 +340,7 @@
                                     </span>
                                 </div>
                             </a>
-                            <h6 class="my-3 text-dark">Monitor progress towards Net Zero deforestation</h6>
+                            <h6 class="my-3 text-dark">Compare Above Ground Biomass (AGB)</h6>
                          </div>
                         <div class="col-md-3">
                             <a class="pilotcountry-link" href="#" onclick="set_map_action(this,'emissions')">
