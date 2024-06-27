@@ -222,6 +222,16 @@ class EmissionFile(models.Model):
     class Meta:
         verbose_name_plural = "Emission Files"
 
+class AGBFile(models.Model):
+    agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
+    year_index = models.IntegerField(help_text="Year")
+    min = models.FloatField(help_text="Mininum Pixel Value")
+    max = models.FloatField(help_text="Maximum Pixel Value")
+    statistics = models.TextField(help_text="GDAL Statistics as JSON string")
+
+    class Meta:
+        verbose_name_plural = "Emission Files"
+
 
 
 class CarbonStatistic(models.Model):
