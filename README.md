@@ -509,3 +509,33 @@ server {
     rewrite ^(.*) https://s-cap.servirglobal.net/$1 permanent;
 }
 ```
+
+## Contact
+
+- [Githika Tondapu (NASA/USRA)](https://github.com/gtondapu)
+- [Alexandre Goberna (NASA/USRA)](https://github.com/agoberna)
+- [Billy Ashmall (NASA/USRA)](https://github.com/billyz313)
+
+### Systems Engineering
+
+- Lance Gilliland (NASA/Jacobs)
+- Francisco Delgado (NASA/USRA)
+
+### Science Team
+
+- Emil Cherrington (NASA/UAH)
+- Christine Evans (NASA/UAH)
+- Eric Anderson (NASA)
+
+
+
+
+## License and Distribution
+
+{Name of your application} is distributed by SERVIR under the terms of the {type of license you choose} License. See
+[LICENSE](LICENSE) in this directory for more information.
+
+## Privacy & Terms of Use
+
+{Name of your application} abides to all of SERVIR's privacy and terms of use as described
+at [https://servirglobal.net/Privacy-Terms-of-Use](https://servirglobal.net/Privacy-Terms-of-Use).
