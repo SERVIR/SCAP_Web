@@ -326,9 +326,14 @@ function  redraw_based_on_year() {
     else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions') {
         thredds_dir = map_modal_action;
         scale_range = "0,50000"
-
-            pri_over_style='boxfill/cwg';
-            sec_over_style='boxfill/cwg';
+if (map_modal_action=='carbon-stock') {
+    pri_over_style = 'boxfill/crimsonyellowred';
+    sec_over_style = 'boxfill/crimsonyellowred';
+}
+else{
+     pri_over_style = 'boxfill/redblue';
+    sec_over_style = 'boxfill/redblue';
+}
 
     }
 
@@ -587,8 +592,14 @@ function add_thredds_wms_layers(map_modal_action) {
 
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
         scale_range = "0,50000";
-            pri_over_style='boxfill/redblue';
-            sec_over_style='boxfill/redblue';
+       if (map_modal_action=='carbon-stock') {
+    pri_over_style = 'boxfill/crimsonyellowred';
+    sec_over_style = 'boxfill/crimsonyellowred';
+}
+else{
+     pri_over_style = 'boxfill/redblue';
+    sec_over_style = 'boxfill/redblue';
+}
 
     }
     try {
