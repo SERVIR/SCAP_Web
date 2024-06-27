@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from scap.models import (AOIFeature, AOICollection, ForestCoverCollection, AGBCollection, CurrentTask,
-                         ForestCoverStatistic, CarbonStatistic, ForestCoverFile, PilotCountry, CarbonStockFile, EmissionFile)
+                         ForestCoverStatistic, CarbonStatistic, ForestCoverFile, PilotCountry, CarbonStockFile, EmissionFile,AGBFile)
 
 
 class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -45,6 +45,9 @@ class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class CarbonStocksAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'fc_index', 'agb_index', 'year_index', 'min', 'max')
     list_filter = ('fc_index', 'agb_index', 'year_index')
+class AGBAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'agb_index', 'year_index', 'min', 'max')
+    list_filter = ( 'agb_index', 'year_index')
 
 
 class EmissionsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -75,6 +78,7 @@ admin.site.register(AOIFeature, AOIFeatureAdmin)
 
 admin.site.register(CarbonStockFile, CarbonStocksAdmin)
 admin.site.register(EmissionFile, EmissionsAdmin)
+admin.site.register(AGBFile, AGBAdmin)
 
 admin.site.register(ForestCoverStatistic, ForestCoverStatisticsAdmin)
 admin.site.register(CarbonStatistic, CarbonStatisticsAdmin)
