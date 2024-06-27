@@ -422,7 +422,7 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                                 {% csrf_token %}
                                 {% for agb in agbs_cs %}
                                     <li class="agb_list-item">
-                                        <input type="checkbox" checked class="agb_list-item-checkbox AGB_cb_cs yellow-checkbox"
+                                        <input type="checkbox" class="agb_list-item-checkbox AGB_cb_cs yellow-checkbox"
                                                onchange="access_lines_cs(this,'AGB')"
                                                value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
                                                                                            style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}

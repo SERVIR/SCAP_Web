@@ -1,9 +1,7 @@
 // Retrieve the chart from the DOM, and instantiate it
 var index = $("#container").data('highchartsChart');
 var chart_emissions = Highcharts.charts[index];
-
 var series = chart_emissions.series;
-
 var newseries = series;
 var new_updated = series;
 var result1 = "";
@@ -81,31 +79,31 @@ xhr.done(function (result2) {
         legendIndex: -3,
         dashStyle: 'shortdash'
     };
-    // $.each(chart_emissions.series, function (i, s) {
-    //     for (var j = 0; j < lc_colors.length; j++) {
-    //
-    //         if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-    //             s.color = lc_colors[j]['color'];
-    //             ns.push({
-    //                 name: s.name,
-    //                 data: s.data,
-    //                 color: s.color,
-    //                 visible: true,
-    //                 lineWidth: 2,
-    //                 legendIndex: null,
-    //                 dashStyle: ''
-    //             });
-    //
-    //         }
-    //
-    //
-    //     }
-    // });
+    $.each(chart_emissions.series, function (i, s) {
+        for (var j = 0; j < lc_colors.length; j++) {
 
-    // chart_emissions.update({series: ns});
-    // chart_emissions.addSeries(min_arr);
-    // chart_emissions.addSeries(max_arr);
-    // chart_emissions.addSeries(avg_arr);
+            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                s.color = lc_colors[j]['color'];
+                ns.push({
+                    name: s.name,
+                    data: s.data,
+                    color: s.color,
+                    visible: true,
+                    lineWidth: 2,
+                    legendIndex: null,
+                    dashStyle: ''
+                });
+
+            }
+
+
+        }
+    });
+
+    chart_emissions.update({series: ns});
+    chart_emissions.addSeries(min_arr);
+    chart_emissions.addSeries(max_arr);
+    chart_emissions.addSeries(avg_arr);
 
     chart_emissions.update({
         yAxis: {
@@ -246,20 +244,12 @@ function show_line(elem) {
 
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
-    // var msg = all_unchecked();
-
-    // if (msg.length == 0) {
     if (elem.checked) {
         show_line(dataset + elem.value);
 
     } else {
         hide_line(dataset + elem.value);
     }
-    // }
-    // } else {
-    //     alert(msg);
-    //     elem.checked = true;
-    // }
     var ns = [];
     var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
@@ -320,21 +310,24 @@ function access_lines(elem, dataset) {
                 s.update({
                     data: min_arr.data
                 }, true);
+                 s.setVisible(true,false);
             }
             if (s.name === 'Max') {
                 s.update({
                     data: max_arr.data
                 }, true);
+                 s.setVisible(true,false);
             }
             if (s.name === 'Avg') {
                 s.update({
                     data: avg_arr.data
                 }, true);
+                s.setVisible(true,false);
             }
         });
 
 
-        // chart.update({series: ns});
+        chart.update({series: ns});
 
 
     });
@@ -408,28 +401,11 @@ function get_checked_lcs() {
     });
     return lcs;
 }
-function get_checked_lcs_cs() {
-    var lcs = [];
-    $('.LC_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
 
-        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        // console.log(temp.replace('L', '').replace('C', ''));
-        lcs.push(temp.replace('L', '').replace('C', ''));
-    });
-    return lcs;
-}
 
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
-        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
-    });
-    return agbs;
-}
-function get_checked_agbs_cs() {
-    var agbs = [];
-    $('.AGB_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
         var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
         agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
     });

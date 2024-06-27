@@ -7,6 +7,8 @@ let defaultLC="";
 let defaultAGB="";
 
 showModis();
+
+
 function showModis() {
     var index = $("#cs_container").data('highchartsChart');
     var chart = Highcharts.charts[index];
@@ -39,8 +41,6 @@ function showModis() {
         }
 
     }
-    console.log(defaultAGB)
-    console.log(defaultLC)
     for (var i = 0; i < newseries.length; i++) {
         if (newseries[i].name[0]===defaultLC&& newseries[i].name[1]==defaultAGB) {
             chart.series[i].setVisible(true, false);
@@ -61,13 +61,13 @@ var new_updated = series;
 
 var percent = 10;
 var ns = [];
-var lcss = get_checked_lcs_cs();
-var agbss = get_checked_agbs_cs();
+var lcss_cs = get_checked_lcs_cs();
+var agbss_cs = get_checked_agbs_cs();
 var min_arr = [];
 var res_mmm = [];
 var max_arr = [];
 var avg_arr = [];
-const xhr_cs = ajax_call("get-min-max-cs", {"lcs": lcss, "agbs": agbss});
+const xhr_cs = ajax_call("get-min-max-cs", {"lcs": lcss_cs, "agbs": agbss_cs});
 xhr_cs.done(function (result2) {
     min_arr = {
         "name": "Min",
@@ -119,9 +119,9 @@ xhr_cs.done(function (result2) {
         }
     });
     chart_cs_obj.update({series: ns});
-    // chart_cs_obj.addSeries(min_arr);
-    // chart_cs_obj.addSeries(max_arr);
-    // chart_cs_obj.addSeries(avg_arr);
+    chart_cs_obj.addSeries(min_arr);
+    chart_cs_obj.addSeries(max_arr);
+    chart_cs_obj.addSeries(avg_arr);
 
 
 
@@ -473,21 +473,17 @@ function reset_cs_lcs() {
     var index = $("#cs_container").data('highchartsChart');
     var chart_cs = Highcharts.charts[index];
     var series = chart_cs.series;
-      var LC_arr = [];
-    for (var i = 0; i < checked1.length; i++) {
-        LC_arr.push('LC' + checked1[i].value);
+    var agb = [];
+    var AGB_arr = get_checked_agbs_cs();
+    for (var i = 0; i < AGB_arr.length; i++) {
+        agb[i] = 'AGB' + AGB_arr[i];
     }
-    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
-    var AGB_arr = [];
-    for (var i = 0; i < checked2.length; i++) {
-        AGB_arr.push('AGB' + checked2[i].value);
+    for (var i = 0; i < chart_cs.series.length; i++) {
+        if (agb.includes(series[i].name[1])) {
+            chart_cs.series[i].setVisible(true, false);
+        }
     }
-    for (var i = 0; i < chart_cs_obj.series.length; i++) {
-          if (AGB_arr.includes(series[i].name[1])) {
-              chart_cs_obj.series[i].setVisible(true, false);
-          }
-    }
-    // redraw_mma_cs(chart_cs_obj);
+    redraw_mma_cs(chart_cs);
 }
 
 function reset_cs_agbs() {
@@ -504,21 +500,17 @@ function reset_cs_agbs() {
     var index = $("#cs_container").data('highchartsChart');
     var chart_cs = Highcharts.charts[index];
     var series = chart_cs.series;
-      var LC_arr = [];
-    for (var i = 0; i < checked1.length; i++) {
-        LC_arr.push('LC' + checked1[i].value);
-    }
-    var checked2 = document.querySelectorAll('input.AGB_cb_cs:checked');
-    var AGB_arr = [];
-    for (var i = 0; i < checked2.length; i++) {
-        AGB_arr.push('AGB' + checked2[i].value);
+    var LC_arr = get_checked_lcs_cs();
+    var lc = [];
+    for (var i = 0; i < LC_arr.length; i++) {
+        lc[i] = 'LC' + LC_arr[i];
     }
     for (var i = 0; i < chart_cs.series.length; i++) {
-          if (LC_arr.includes(series[i].name[0])) {
+          if (lc.includes(series[i].name[0])) {
               chart_cs.series[i].setVisible(true, false);
           }
     }
-    // redraw_mma_cs(chart_cs);
+    redraw_mma_cs(chart_cs);
 }
 function clear_cs_lcs() {
     var uncheck = document.getElementsByClassName('LC_cb_cs');
@@ -546,4 +538,24 @@ function clear_cs_agbs() {
                chart.series[i].setVisible(false,false);
     }
 
+}
+
+function get_checked_lcs_cs() {
+    var lcs = [];
+    $('.LC_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        // console.log(temp.replace('L', '').replace('C', ''));
+        lcs.push(temp.replace('L', '').replace('C', ''));
+    });
+    return lcs;
+}
+
+function get_checked_agbs_cs() {
+    var agbs = [];
+    $('.AGB_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
 }

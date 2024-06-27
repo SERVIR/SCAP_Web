@@ -546,14 +546,10 @@ def get_agg_check(request, country=0):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
-        print('after lcs andagbs')
-        print(lcs)
-        print(agbs)
         pa_name = country
         min_arr = []
         max_arr = []
         avg_arr = []
-        print(pa_name)
         if pa_name > 0:
             try:
                 pa = PilotCountry.objects.get(id=country)
@@ -594,6 +590,8 @@ def get_agg_check_cs(request, country=0):
     if request.method == 'POST':
         lcs = request.POST.getlist('lcs[]')
         agbs = request.POST.getlist('agbs[]')
+        print(lcs)
+        print(agbs)
         pa_name = country
         min_arr = []
         max_arr = []
