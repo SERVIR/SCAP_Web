@@ -304,17 +304,31 @@ function  redraw_based_on_year() {
     clear_map_layers();
     var thredds_dir="fc";
    map_modal_action=localStorage.getItem('map_modal_action');
+         var pri_over_style = '';
+    var sec_under_style = '';
+    var sec_over_style = '';
 
     if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
         thredds_dir="fc";
         scale_range = "0.5,1"
-
+ if (selected_dataset_left === selected_dataset_right) {
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/redblue';
+        }
+        else{
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/maize';
+        }
     }
     //carbon stock or emissions
     else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions') {
         thredds_dir = map_modal_action;
         scale_range = "0,50000"
 
+            pri_over_style='boxfill/cwg';
+            sec_over_style='boxfill/cwg';
 
     }
 
@@ -376,7 +390,7 @@ function  redraw_based_on_year() {
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
-                styles: 'boxfill/crimsonbluegreen',
+                styles: pri_over_style,
                 pane: 'left'
             });
 
@@ -408,14 +422,11 @@ function  redraw_based_on_year() {
                 colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: 'boxfill/cwg',
+                styles: sec_over_style,
                 transparent: true,
                 pane: 'right'
             })
-        var style = 'boxfill/maize';
-        if (selected_dataset_left === selected_dataset_right) {
-            style = 'boxfill/redblue';
-        }
+
              var  secondary_underlay_url=(thredds_dir=="fc")?
             `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
             :
@@ -428,7 +439,7 @@ function  redraw_based_on_year() {
                 colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: style,
+                styles: sec_under_style,
                 transparent: true,
                 pane: 'right'
             })
@@ -525,6 +536,20 @@ function add_thredds_wms_layers(map_modal_action) {
         selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
     }
+
+         var pri_over_style = '';
+    var sec_under_style = '';
+    var sec_over_style = '';
+        if (selected_dataset_left === selected_dataset_right) {
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/redblue';
+        }
+        else{
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/maize';
+        }
     if (map_modal_action == 'deforestation_targets' || map_modal_action == 'deforestation_netzero') {
         thredds_dir = "fc";
         layer_name = "forest_cover";
@@ -536,6 +561,16 @@ function add_thredds_wms_layers(map_modal_action) {
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
         scale_range = "0.5,1";
+         if (selected_dataset_left === selected_dataset_right) {
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/redblue';
+        }
+        else{
+            pri_over_style='boxfill/crimsonbluegreen';
+            sec_over_style='boxfill/cwg';
+            sec_under_style='boxfill/maize';
+        }
 
     }
     //carbon stock or emissions
@@ -551,7 +586,9 @@ function add_thredds_wms_layers(map_modal_action) {
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`;
 
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
-        scale_range = "0,50000"
+        scale_range = "0,50000";
+            pri_over_style='boxfill/redblue';
+            sec_over_style='boxfill/redblue';
 
     }
     try {
@@ -564,7 +601,7 @@ function add_thredds_wms_layers(map_modal_action) {
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
-                styles: 'boxfill/crimsonbluegreen',
+                styles: pri_over_style,
                 pane: 'left'
             });
 
@@ -587,15 +624,10 @@ function add_thredds_wms_layers(map_modal_action) {
                 colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: 'boxfill/cwg',
+                styles: sec_over_style,
                 transparent: true,
                 pane: 'right'
             })
-
-        var style = 'boxfill/maize';
-        if (selected_dataset_left === selected_dataset_right) {
-            style = 'boxfill/redblue';
-        }
 
         secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
             {
@@ -604,7 +636,7 @@ function add_thredds_wms_layers(map_modal_action) {
                 colorscalerange: scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
-                styles: style,
+                styles: sec_under_style,
                 transparent: true,
                 pane: 'right'
             })
