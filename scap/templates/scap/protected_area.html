@@ -372,13 +372,13 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                                 <li class="lc_list-item">
                                     <input type="checkbox" class="lc_list-item-checkbox LC_cb_cs_pa yellow-checkbox"
                                            value="{{ lc.id }}" onchange="access_lines_cs_pa(this,'LC')" name="lc"/>
-                                    <label style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
+                                    <label id="LC{{lc.id}}" style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif;">
                                     {% if lc.name in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
-                                    &nbsp;{{ lc.name }}
+                                    {{ lc.name }} </label>
                                         <span class="badge bg-light text-dark">(LC{{ lc.id }})</span>
-                                    </label>
+
                                 </li>
-                                <p style="display: none" id='csLC{{ lc.id }}'>{{ lc.name }}</p>
+                                <p style="display: none" id='csLC{{lc.id }}'>{{ lc.name }}</p>
 
                             {% endfor %}
                         </ul>
@@ -398,10 +398,11 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                                     <li class="agb_list-item">
                                         <input type="checkbox" class="agb_list-item-checkbox AGB_cb_cs_pa yellow-checkbox"
                                                onchange="access_lines_cs_pa(this,'AGB')"
-                                               value="{{ agb.id }}" name="agb"/><label id="csAGB{{ agb.id }}"
+                                               value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
                                                                                            style="padding-left: 10px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}</label>
                                         <span class="badge bg-light text-dark">(AGB{{ agb.id }})</span>
                                     </li>
+                                   <p style="display: none" id='csAGB{{agb.id }}'>{{ agb.name }}</p>
                                 {% endfor %}
                             </ul>
                         </div>

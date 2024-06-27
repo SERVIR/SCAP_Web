@@ -145,7 +145,4 @@ req.done(function (result) {
 
 
 });
-
-getMMA(pa_selected_name, "");
-$("#datasource_select")
-    .trigger('change');
+$("#datasource_select") .trigger('change');

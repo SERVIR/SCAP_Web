@@ -1,7 +1,11 @@
 // Retrieve the chart from the DOM, and instantiate it
 var index = $("#emissions_chart_pa").data('highchartsChart');
-var chart = Highcharts.charts[index];
-var series = chart.series;
+var chart_emissions_pa = Highcharts.charts[index];
+var series = chart_emissions_pa.series;
+var newseries = series;
+var new_updated = series;
+var result1 = "";
+var gname = "";
 
 function get_name(elem) {
     var result1 = "";
@@ -29,12 +33,12 @@ function increase_brightness(hex, percent) {
         ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
 }
 
-var lcss = get_checked_lcs();
-var agbss = get_checked_agbs();
-
 var percent = 10;
 var ns = [];
+var lcss =get_checked_lcs();
+var agbss = get_checked_agbs();
 var min_arr = [];
+var res_mmm = [];
 var max_arr = [];
 var avg_arr = [];
 
@@ -44,149 +48,113 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-function getMMA(pa, data_obj) {
+const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+xhr.done(function (result2) {
+    console.log((result2.min))
+    min_arr = {
+        "name": "Min",
+        "data": result2.min,
+        "color": 'green',
+        "visible": true,
+        legendIndex: -1,
+        lineWidth: 5,
+        dashStyle: 'shortdash'
+    };
+    max_arr = {
+        "name": "Max",
+        "data": result2.max,
+        "color": 'red',
+        "visible": true,
+        lineWidth: 5,
+        legendIndex: -2,
 
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
-    xhr.done(function (result2) {
-        console.log((result2.min))
-        min_arr = {
-            "name": "Min",
-            "data": result2.min,
-            "color": 'green',
-            "visible": true,
-            legendIndex: -1,
-            lineWidth: 5,
-            dashStyle: 'shortdash'
-        };
-        max_arr = {
-            "name": "Max",
-            "data": result2.max,
-            "color": 'red',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -2,
+        dashStyle: 'shortdash'
+    };
+    avg_arr = {
+        "name": "Avg",
+        "data": result2.avg,
+        "color": 'orange',
+        "visible": true,
+        lineWidth: 5,
+        legendIndex: -3,
+        dashStyle: 'shortdash'
+    };
+    $.each(chart_emissions_pa.series, function (i, s) {
+        for (var j = 0; j < lc_colors.length; j++) {
 
-            dashStyle: 'shortdash'
-        };
-        avg_arr = {
-            "name": "Avg",
-            "data": result2.avg,
-            "color": 'orange',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -3,
-            dashStyle: 'shortdash'
-        };
-        $.each(chart.series, function (i, s) {
-
-            for (var j = 0; j < lc_colors.length; j++) {
-
-                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                    s.color = lc_colors[j]['color'];
-                    ns.push({
-                        name: s.name,
-                        data: s.data,
-                        color: s.color,
-                        visible: true,
-                        lineWidth: 2,
-                        legendIndex: null,
-                        dashStyle: ''
-                    });
-
-                }
-
+            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                s.color = lc_colors[j]['color'];
+                ns.push({
+                    name: s.name,
+                    data: s.data,
+                    color: s.color,
+                    visible: true,
+                    lineWidth: 2,
+                    legendIndex: null,
+                    dashStyle: ''
+                });
 
             }
 
-        });
-        if (data_obj !== "") {
-            chart.update({series: data_obj.series});
-            for (var g = 0; g < chart.series.length; g++) {
-                if (chart.series[g].name == 'Max') {
-                    chart.series[g].remove();
-                    break;
-                }
-
-
-            }
-            for (var g = 0; g < chart.series.length; g++) {
-                if (chart.series[g].name == 'Min') {
-                    chart.series[g].remove();
-                    break;
-                }
-
-
-            }
-            for (var g = 0; g < chart.series.length; g++) {
-                if (chart.series[g].name == 'Avg') {
-                    chart.series[g].remove();
-                    break;
-                }
-
-
-            }
-            chart.setTitle(data_obj.title);
-            // chart.addSeries(min_arr);
-            // chart.addSeries(max_arr);
-            // chart.addSeries(avg_arr);
-
-        } else {
-            chart.update({series: ns});
-            // chart.addSeries(min_arr);
-            // chart.addSeries(max_arr);
-            // chart.addSeries(avg_arr);
 
         }
-        chart.update({
-            yAxis: {
-                title: {
-                    text: 'Values (Tons)'
-                }
-            },
-            tooltip: {
-                useHTML: true,
-                enabled: true,
-                backgroundColor: null,
-                borderWidth: 0,
-                shadow: false,
-                formatter: function () {
-                    const color = this.series.color;
-                    const ss = this.series.name;
-                    if (ss === "Min" || ss === "Max" || ss === "Avg") {
+    });
+
+    chart_emissions_pa.update({series: ns});
+    chart_emissions_pa.addSeries(min_arr);
+    chart_emissions_pa.addSeries(max_arr);
+    chart_emissions_pa.addSeries(avg_arr);
+
+    chart_emissions_pa.update({
+        yAxis: {
+            title: {
+                text: 'Values (Tons)'
+            }
+        },
+        tooltip: {
+            useHTML: true,
+            enabled: true,
+            backgroundColor: null,
+            borderWidth: 0,
+            shadow: false,
+            formatter: function () {
+                const color = this.series.color;
+                const ss = this.series.name;
+                if (ss === "Min" || ss === "Max" || ss === "Avg") {
 
 
-                        var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
-                            '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
-                        //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
-                        //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
-                        return value;
-                    }
-                    const lc = ss[0];
-                    const agb = ss[1];
-                    // const s_name = get_name(ss);
-                    var labellc = document.getElementById(lc).innerText;
-                    var labelagb = document.getElementById(agb).innerText;
-                    labellc = labellc.replace(/ *\([^)]*\) */g, "");
-                    labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
                     var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
-                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
-                        '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc + '<sub>' + lc + '</sub><br/> AGB: ' +
-                        labelagb + '<sub>' + agb + '</sub></span><div>';
+                        '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b></span><div>';
                     //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
                     //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
                     //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
                     return value;
                 }
+                const lc = ss[0];
+                const agb = ss[1];
+                // const s_name = get_name(ss);
+                var labellc = document.getElementById(lc).innerText;
+                var labelagb = document.getElementById(agb).innerText;
+                labellc = labellc.replace(/ *\([^)]*\) */g, "");
+                labelagb = labelagb.replace(/ *\([^)]*\) */g, "");
+                var value = '<div style="background-color:' + standardize_color(color) + "60" + ';padding:10px"><span>' +
+                    '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                    '<span style=\'padding-left:50px\'></span><br/> Forest cover: ' + labellc + '<sub>' + lc + '</sub><br/> AGB: ' +
+                    labelagb + '<sub>' + agb + '</sub></span><div>';
+                //  var value = '<div style="background-color:' + color + ';padding:10px"><span>' +
+                //     '<b>Emissions ' + this.x + ': ' + (this.y).toLocaleString('en-US') + ' Tons</b>' +
+                //     '<span style=\'padding-left:50px\'></span><br/> ' +  lc+'<br/>' + agb+'</span><div>';
+                return value;
             }
-        });
+        }
     });
-}
+});
 
-chart.update({
+chart_emissions_pa.update({
         chart: {
             type: 'spline'
         },
+
 
         plotOptions: {
             series: {
@@ -204,16 +172,15 @@ chart.update({
                 events: {
                     checkboxClick: function (event) {
                         if (this.visible) {
-                            this.setVisible(false,false);
-
+                             this.setVisible(false,false);
                         } else {
-                            this.setVisible(true,false);
+                             this.setVisible(true,false);
                         }
                     }
                 }
             }
         },
-          legend: {
+      legend: {
     itemDistance: 50,
     maxHeight: 100
     /* floating: true,
@@ -230,6 +197,7 @@ chart.update({
         },
 
 
+
     }
 );
 
@@ -241,10 +209,10 @@ function hide_line(elem) {
     var newseries = series;
     for (var i = 0; i < newseries.length; i++) {
         if (newseries[i].name.includes(elem)) {
-                         chart.series[i].setVisible(false,false);
-
+             chart.series[i].setVisible(false,false);
         }
     }
+    redraw_mma();
 }
 
 // Show lines on the chart based on checkbox selection
@@ -253,45 +221,35 @@ function show_line(elem) {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
+    var checked1 = document.querySelectorAll('input.LC_cb_pa:checked');
+    var LC_arr = [];
+    for (var i = 0; i < checked1.length; i++) {
+        LC_arr.push('LC' + checked1[i].value);
+    }
+    var checked2 = document.querySelectorAll('input.AGB_cb_pa:checked');
+    var AGB_arr = [];
+    for (var i = 0; i < checked2.length; i++) {
+        AGB_arr.push('AGB' + checked2[i].value);
+    }
     for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem)) {
-                         chart.series[i].setVisible(true,false);
-
+        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+             chart.series[i].setVisible(true,false);
         }
     }
-    // var checked1 = document.querySelectorAll('input.LC_cb_pa:checked');
-    // var LC_arr = [];
-    // for (var i = 0; i < checked1.length; i++) {
-    //     LC_arr.push('LC' + checked1[i].value);
-    // }
-    // var checked2 = document.querySelectorAll('input.AGB_cb_pa:checked');
-    // var AGB_arr = [];
-    // for (var i = 0; i < checked2.length; i++) {
-    //     AGB_arr.push('AGB' + checked2[i].value);
-    // }
-    // for (var i = 0; i < newseries.length; i++) {
-    //     if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
-    //         chart.series[i].show();
-    //     }
-    // }
+    redraw_mma();
 }
+
+
+// Show lines on the chart based on checkbox selection
 
 // Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
-    // var msg = all_unchecked();
-
-    // if (msg.length == 0) {
     if (elem.checked) {
         show_line(dataset + elem.value);
 
     } else {
         hide_line(dataset + elem.value);
     }
-    // }
-    // } else {
-    //     alert(msg);
-    //     elem.checked = true;
-    // }
     var ns = [];
     var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
@@ -299,7 +257,6 @@ function access_lines(elem, dataset) {
     var max_arr = [];
     var avg_arr = [];
     const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
-
     xhr.done(function (result2) {
         min_arr = {
             "name": "Min",
@@ -330,7 +287,7 @@ function access_lines(elem, dataset) {
             dashStyle: 'shortdash'
         };
 
-        $.each(chart.series, function (i, s) {
+        $.each(chart_emissions_pa.series, function (i, s) {
             for (var j = 0; j < lc_colors.length; j++) {
                 if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                     s.color = lc_colors[j]['color'];
@@ -348,26 +305,29 @@ function access_lines(elem, dataset) {
 
 
             }
-            // console.log(s.name === 'Min')
-            // if (s.name === 'Min') {
-            //     s.update({
-            //         data: min_arr.data
-            //     }, true);
-            // }
-            // if (s.name === 'Max') {
-            //     s.update({
-            //         data: max_arr.data
-            //     }, true);
-            // }
-            // if (s.name === 'Avg') {
-            //     s.update({
-            //         data: avg_arr.data
-            //     }, true);
-            // }
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+                 s.setVisible(true,false);
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+                 s.setVisible(true,false);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+                s.setVisible(true,false);
+            }
         });
 
 
-        // chart.update({series: ns});
+        chart_emissions_pa.update({series: ns});
 
 
     });
@@ -375,10 +335,12 @@ function access_lines(elem, dataset) {
 
 }
 
+
+
 // Show alert if all checkboxes are unchecked
 function all_unchecked() {
     var msg = "";
-    var checked1 = document.querySelectorAll('input.LC_cb:checked');
+    var checked1 = document.querySelectorAll('input.LC_cb_pa:checked');
 
     if (checked1.length === 0) {
 
@@ -387,7 +349,7 @@ function all_unchecked() {
 
         console.log(checked1.length + ' checkboxes checked');
     }
-    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+    var checked2 = document.querySelectorAll('input.AGB_cb_pa:checked');
 
     if (checked2.length === 0) {
 
@@ -440,6 +402,7 @@ function get_checked_lcs() {
     return lcs;
 }
 
+
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
@@ -449,26 +412,90 @@ function get_checked_agbs() {
     return agbs;
 }
 
-function get_checked_lcs_cs() {
-    var lcs = [];
-    $('.LC_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
+function redraw_mma(){
+      var ns = [];
+    var lcss = get_checked_lcs();
+    var agbss = get_checked_agbs();
+    var min_arr = [];
+    var max_arr = [];
+    var avg_arr = [];
+     console.log(lcss)
+    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 
-        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        // console.log(temp.replace('L', '').replace('C', ''));
-        lcs.push(temp.replace('L', '').replace('C', ''));
-    });
-    return lcs;
+    xhr.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
+
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+
+        $.each(chart_emissions_pa.series, function (i, s) {
+            for (var j = 0; j < lc_colors.length; j++) {
+                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                    s.color = lc_colors[j]['color'];
+                    ns.push({
+                        name: s.name,
+                        data: s.data,
+                        color: s.color,
+                        visible: true,
+                        lineWidth: 2,
+                        legendIndex: null,
+                        dashStyle: ''
+                    });
+
+                }
+
+
+            }
+            console.log(s.name === 'Min')
+            if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+
+            }
+
+        });
+
+});
 }
 
-function get_checked_agbs_cs() {
-    var agbs = [];
-    $('.AGB_checkboxlist_cs input[type="checkbox"]:checked').each(function () {
-        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
-    });
-    return agbs;
-}
 function reset_lcs_pa() {
+
     var uncheck = document.getElementsByClassName('LC_cb_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
@@ -480,29 +507,13 @@ function reset_lcs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-                    chart.series[i].setVisible(true,false);
-
+         chart.series[i].setVisible(true,false);
     }
-
+redraw_mma();
 }
-function reset_agbs_pa() {
-    var uncheck = document.getElementsByClassName('AGB_cb_pa');
-    for (var i = 0; i < uncheck.length; i++) {
 
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'AGB');
-    }
-    var index = $("#emissions_chart_pa").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-                    chart.series[i].setVisible(true,false);
-
-    }
-
-}
 function reset_lcs_fc_pa() {
+
     var uncheck = document.getElementsByClassName('LC_cb_cf_pa');
     for (var i = 0; i < uncheck.length; i++) {
 
@@ -514,11 +525,37 @@ function reset_lcs_fc_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-                    chart.series[i].setVisible(true,false);
+         chart.series[i].setVisible(true,false);
+    }
+}
 
+function get_checked_agbs() {
+    var agbs = [];
+    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
+        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
+        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
+    });
+    return agbs;
+}
+
+function reset_agbs_pa() {
+    var uncheck = document.getElementsByClassName('AGB_cb_pa');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'AGB');
     }
 
+    var index = $("#emissions_chart_pa").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+               chart.series[i].setVisible(true,false);
+    }
+redraw_mma();
 }
+
 
 function clear_lcs_pa() {
     var uncheck = document.getElementsByClassName('LC_cb_pa');
@@ -531,25 +568,11 @@ function clear_lcs_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-                     chart.series[i].setVisible(false,false);
-
+        chart.series[i].setVisible(false,false);
     }
 
-}
-function clear_agbs_pa() {
-    var uncheck = document.getElementsByClassName('AGB_cb_pa');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'LC');
-    }
-    var index = $("#emissions_chart_pa").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-                    chart.series[i].setVisible(false,false);
-
-    }
+    	 // $("#container").highcharts().destroy();
+         // chart.showNoData('jfjkf');
 
 }
 function clear_lcs_fc_pa() {
@@ -563,7 +586,28 @@ function clear_lcs_fc_pa() {
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-             chart.series[i].setVisible(false,false);
+                chart.series[i].setVisible(false,false);
+
+    }
+
+}
+
+function clear_agbs_pa() {
+
+    var uncheck = document.getElementsByClassName('AGB_cb_pa');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'AGB');
+
+    }
+
+    var index = $("#emissions_chart_pa").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    for (var i = 0; i < series.length; i++) {
+               chart.series[i].setVisible(false,false);
+
     }
 
 }
