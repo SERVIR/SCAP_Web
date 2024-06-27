@@ -280,30 +280,6 @@ def get_yearly_forest_cover_files(request):
 
 
 @csrf_exempt
-def save_AOI(request):
-    try:
-        aoi_path = os.path.join(config['PATH_TO_DATA'], "Private", request.user.username,
-                                "AOIs")
-        if not os.path.exists(aoi_path):
-            os.makedirs(aoi_path)
-        aois = request.FILES.getlist('aois[]')
-        aoi_names = request.POST.getlist('aoi_names[]')
-        for i in range(len(aois)):
-            with open(os.path.join(aoi_path, aoi_names[i]), "wb") as file1:
-                file1.write(aois[i].read())
-            new_aoi = AOICollection()
-            new_aoi.aoi_name = aoi_names[i]
-            new_aoi.aoi_shape_file = os.path.join(aoi_path, aoi_names[i])
-            new_aoi.path_to_aoi_file = aoi_path
-            new_aoi.username = request.user.username
-            new_aoi.save()
-            return JsonResponse({"result": "success"})
-    except Exception as e:
-        print(e, __line_no__)
-        return JsonResponse({"result": "error", "error_message": str(e)})
-
-
-@csrf_exempt
 def get_aoi_list(request):
     try:
         aois = AOICollection.objects.filter(username=request.user.username).values()
@@ -317,22 +293,6 @@ def get_aoi_list(request):
         return JsonResponse({"result": "success", "names": names, "last_accessed_on": last_accessed_on})
     except Exception as e:
         print(e, __line_no__)
-        return JsonResponse({"result": "error", "message": str(e)})
-
-
-@csrf_exempt
-def delete_AOI(request):
-    try:
-        aoi_name = request.POST['aoi_name']
-        x = ForestCoverCollection.objects.filter(username=request.user.username, aoi_name=aoi_name)
-        x.delete()
-        aoi_path = os.path.join(config['PATH_TO_DATA'], "Private", request.user.username,
-                                "AOIs")
-        shutil.rmtree(aoi_path)
-        return JsonResponse({"result": "success"})
-
-    except Exception as e:
-        print(e)
         return JsonResponse({"result": "error", "message": str(e)})
 
 

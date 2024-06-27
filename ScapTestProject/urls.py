@@ -22,7 +22,7 @@ from ScapTestProject import settings
 from scap.validation import doi_valid
 
 from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, get_forest_cover_collections,
-                      updatetomodel, get_yearly_forest_cover_files, save_AOI, get_aoi_list, delete_AOI,
+                      updatetomodel, get_yearly_forest_cover_files, get_aoi_list,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
                       get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test,upload_drawn_aoi,send_message_scap,get_agg_check_cs,get_agg_check_cs_pa,get_statistics_for_map)
@@ -65,10 +65,6 @@ urlpatterns = [
       path('map/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
       path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),
       path('pilot/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
-
-      path('delete-aoi/', delete_AOI, name='delete-aoi'),
-      path('save-aoi/', save_AOI, name='save-aoi'),
-
       path('save-forest-cover-file/', save_forest_cover_file, name='savetomodel'),
       path('get-forest-cover-collections/', get_forest_cover_collections, name='getcollections'),
       path('get-yearly-forest-cover-files/', get_yearly_forest_cover_files, name='get-yearly-forest-cover-files'),
@@ -110,17 +106,7 @@ urlpatterns = [
       path('user_information/', user_information, name='user_information'),
       path('user_information', user_information, name='user_information'),
       path('map/<int:country>/get_statistics_for_map/',get_statistics_for_map,name='get_statistics_for_map'),
-                    # STAGE FOR DELETION
-      # path('get_aoi_list/', get_aoi_list, name='get_aoi_list'),
       path('test_stats/', test_stats, name='test_stats'),
-      # path('emissions/', pilot_country, name='emissions'),
-      # path('update-coll/<str:coll_name>/', updateColl, name='update-coll'),
-      # path('aoi/<str:country>/get-updated-series/', get_updated_series, name='get-updated-series'),
-      # path('protected_areas/get-series-name/', get_series_name, name='get-series-name'),
-      # path('protected_areas/', protected_aois, name='protected_aois'),
-      # path('protected_areas/get-min-max/', get_agg_check, name='get-min-max'),
-      # path('protected_areas/<str:country>/get-series-name/', get_series_name, name='get-series-name'),
-      # path('updatetomodel/', updatetomodel, name='updatetomodel'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found_view

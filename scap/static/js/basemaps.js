@@ -96,15 +96,15 @@ let streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 //Satellite imagery layer
 let satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 
+// Dark basemap
 var darkmap = L.tileLayer(' https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
 });
-   var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
+
+// watermask layer
+var watermaskLayer = L.tileLayer.wms('https://thredds.servirglobal.net/geoserver/ows?', {
         layers: 's-cap:global_wmsk_cci_2022_300m',
         format: 'image/png',
         transparent: true,
-    });
-
-
-    // L.tileLayer('https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer');
+});
