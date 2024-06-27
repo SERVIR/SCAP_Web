@@ -433,9 +433,21 @@ function  redraw_based_on_year() {
                 pane: 'right'
             })
         // primary_underlay_layer.addTo(map);
-        primary_overlay_layer.addTo(map);
-        secondary_underlay_layer.addTo(map);
-        secondary_overlay_layer.addTo(map);
+             if (map_modal_action == 'deforestation_targets' || map_modal_action == 'deforestation_netzero') {
+            console.log(primary_overlay_layer)
+            primary_overlay_layer.addTo(map);
+            secondary_underlay_layer.addTo(map);
+            secondary_overlay_layer.addTo(map);
+
+            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+
+        } else {
+            primary_overlay_layer.addTo(map);
+            secondary_overlay_layer.addTo(map);
+            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
+
+
+        }
 
        map.getPane("left").style.zIndex = "360";
               map.getPane("right").style.zIndex = "360";
@@ -447,7 +459,6 @@ function  redraw_based_on_year() {
     // aoi_layer_right.addTo(map);
           document.getElementById("loading_spinner_map").style.display = "none";
 
-    comparison_control = L.control.sideBySide([ primary_overlay_layer], [ secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
     map.on("zoomend", function () {

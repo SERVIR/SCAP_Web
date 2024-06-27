@@ -249,6 +249,7 @@ def protected_aois(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
+    tagline='Total area is '+str(pa.rep_area *100)+' Ha'
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
     df["lon"] = df["geometry"].centroid.x
     df["lat"] = df["geometry"].centroid.y
@@ -293,7 +294,7 @@ def protected_aois(request, aoi):
                   context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
                            'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
-                           'tagline': pc.country_tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                           'tagline': tagline, 'image': pc.hero_image.url, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10,'default_lc': default_lc,'default_agb':default_agb,
                            'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
