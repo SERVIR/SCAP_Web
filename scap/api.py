@@ -18,7 +18,7 @@ from shapely.geometry import shape
 from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.geos import GEOSGeometry
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from ScapTestProject import settings
 from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,CarbonStockFile,
@@ -948,9 +948,11 @@ def send_message_scap(request):
     email = request.POST.get('email')
     role = request.POST.get('role')
     message = request.POST.get('message')
-    approvers_emails = ['githika.cs@gmail.com']
+    approver_group = Group.objects.get(name='scap_sysadmins')
+    approvers = approver_group.user_set.all()
+    approvers_emails = [approver.email for approver in approvers if approver.email]
     try:
-        send_mail('Message from SCAP User', message, email, approvers_emails)
+        send_mail('[S-CAP] - Message from user', message, email, approvers_emails)
         save_message_to_db(name, organization, email, role, message)
     except Exception as e:
         return JsonResponse({'result': 'error'})

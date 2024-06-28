@@ -154,6 +154,22 @@ chart_emissions.update({
         chart: {
             type: 'spline'
         },
+     exporting: {
+    buttons: {
+      contextButton: {
+        menuItems: ["viewFullscreen",
+                        "printChart",
+                    "separator",
+                    "downloadPNG",
+                    "downloadJPEG",
+                    "downloadPDF",
+                    "downloadSVG",
+                    "separator",
+                    "downloadCSV",
+                    "downloadXLS",]
+      }
+    }
+  },
 
 
         plotOptions: {

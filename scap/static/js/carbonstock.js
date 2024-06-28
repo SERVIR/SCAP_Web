@@ -176,6 +176,22 @@ chart_cs_obj.update({
         type: 'spline'
     },
 
+   exporting: {
+    buttons: {
+      contextButton: {
+        menuItems: ["viewFullscreen",
+                        "printChart",
+                    "separator",
+                    "downloadPNG",
+                    "downloadJPEG",
+                    "downloadPDF",
+                    "downloadSVG",
+                    "separator",
+                    "downloadCSV",
+                    "downloadXLS",]
+      }
+    }
+  },
 
     plotOptions: {
         series: {

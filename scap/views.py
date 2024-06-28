@@ -249,7 +249,9 @@ def protected_aois(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
-    tagline='Total area is '+str(pa.rep_area *100)+' Ha'
+    vall= '{:20,.1f}'.format(pa.rep_area *100)
+    tagline='Total area is '+str(vall)+' Ha'
+
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
     df["lon"] = df["geometry"].centroid.x
     df["lat"] = df["geometry"].centroid.y
