@@ -747,7 +747,9 @@ else {
         document.getElementById('comparison_year_label').style.display = 'none';
 }
 
- add_thredds_wms_layers(map_modal_action);
+    add_thredds_wms_layers(map_modal_action);
+
+
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
     // display protected areas based on zoom level
@@ -909,9 +911,12 @@ function get_stats_for_map() {
             'agb_name_left': agb_name_left,
             'agb_name_right': agb_name_right,
             'year_left': year_left,
-            'year_right': year_right
+            'year_right': year_right,
+            'map_action':map_modal_action
         },
         success: function (data) {
+            console.log(data);
+
 
             var type = "deforestation_targets";
             var thredds_url_left="";
@@ -935,15 +940,38 @@ function get_stats_for_map() {
             }
              if(map_modal_action=='emissions') {
                  type = map_modal_action;
-                 min_left = data.left[0].min;
-                 max_left = data.left[0].max;
-                 min_right = data.right[0].min;
-                 max_right = data.right[0].max;
+                   min_left = data.cs_left[0].min;
+                  max_left = data.cs_left[0].max;
+                  min_right = data.cs_right[0].min;
+                  max_right = data.cs_right[0].max;
+                  if(min_left==0 && min_right==0)
+                 {
+                     min_left=-1
+                     min_right=-1
+                 }
+                  if(max_left==0 && max_right==0){
+                      max_left=32767
+                      max_right=32767
+
+                  }
+                 // min_left = data.em_left[0].min;
+                 // max_left = data.em_left[0].max;
+                 // min_right = data.em_right[0].min;
+                 // max_right = data.em_right[0].max;
                  palette = "redblue";
                  title = "Carbon Emission Estimations";
+                  document.getElementById('modal_usecase_title').innerHTML = title;
+
+                 document.getElementById('right_doi_fc').innerHTML=data.fc_doi_right;
+                 document.getElementById('right_doi_agb').innerHTML=data.agb_doi_right;
+                 document.getElementById('left_doi_fc').innerHTML=data.fc_doi_left;
+                 document.getElementById('left_doi_agb').innerHTML=data.agb_doi_left;
+
+
+
                  document.getElementById('emissions_img').style.display = 'inline';
                  document.getElementById('cs_img').style.display = 'none';
-document.getElementById('agb_img').style.display='none';
+                 document.getElementById('agb_img').style.display='none';
 
                  text_between = "The color scales for the <strong>Carbon Emission</strong> estimations you have selected, are:";
                  thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_left + '_' + agb_name_left + "/" + type + ".1." + fc_name_left + '_' + agb_name_left + "." + year_left +
@@ -954,13 +982,30 @@ document.getElementById('agb_img').style.display='none';
              }
               if(map_modal_action=='carbon-stock') {
                   type = map_modal_action;
-                  min_left = data.left[0].min;
-                  max_left = data.left[0].max;
-                  min_right = data.right[0].min;
-                  max_right = data.right[0].max;
+                  min_left = data.cs_left[0].min;
+                  max_left = data.cs_left[0].max;
+                  min_right = data.cs_right[0].min;
+                  max_right = data.cs_right[0].max;
+                   if(min_left==0 && min_right==0)
+                 {
+                     min_left=-1
+                     min_right=-1
+                 }
+                  if(max_left==0 && max_right==0){
+                      max_left=32767
+                      max_right=32767
+
+                  }
                   palette = "crimsonyellowgreen";
                   title = "Carbon Stock Emissions";
+                   document.getElementById('modal_usecase_title').innerHTML = title;
                   text_between = "The color scales for the <strong>Carbon Stock</strong> estimations you have selected, are:";
+
+                  document.getElementById('right_doi_fc').innerHTML=data.fc_doi_right;
+                 document.getElementById('right_doi_agb').innerHTML=data.agb_doi_right;
+                 document.getElementById('left_doi_fc').innerHTML=data.fc_doi_left;
+                 document.getElementById('left_doi_agb').innerHTML=data.agb_doi_left;
+
                   document.getElementById('cs_img').style.display = 'inline';
                   document.getElementById('emissions_img').style.display = 'none';
                   document.getElementById('agb_img').style.display='none';
@@ -972,20 +1017,35 @@ document.getElementById('agb_img').style.display='none';
 
               }
                if(map_modal_action=='agb'){
+                   console.log('agb')
+
                      type=map_modal_action;
-                 // min_left=data.left[0].min;
-                 // max_left=data.left[0].max;
-                 // min_right=data.right[0].min;
-                 // max_right=data.right[0].max;
-                   min_left=1;
-                 max_left=550;
-                 min_right=1;
-                 max_right=550;
+                     min_left=data.agb_left[0].min;
+                     max_left=data.agb_left[0].max;
+                     min_right=data.agb_right[0].min;
+                     max_right=data.agb_right[0].max;
+                  if(min_left==0 && min_right==0)
+                 {
+                     min_left=1
+                     min_right=1
+                 }
+                  if(max_left==0 && max_right==0){
+                      max_left=550
+                      max_right=550
+
+                  }
                  palette="redblue";
                  title="Above Ground Biomass Estimation Comparison";
+                  document.getElementById('modal_usecase_title').innerHTML = title;
                 text_between="The color scales for the <strong>Above Ground Biomass (AGB)</strong> estimation source you have selected, are:";
-document.getElementById('agb_img').style.display='inline';
-         document.getElementById('cs_img').style.display = 'none';
+
+                 document.getElementById('right_doi_agb').innerHTML=data.agb_doi_right;
+                 document.getElementById('left_doi_agb').innerHTML=data.agb_doi_left;
+                 document.getElementById('right_doi_fc').innerHTML="";
+                 document.getElementById('left_doi_fc').innerHTML="";
+                 console.log("after fc empty")
+                document.getElementById('agb_img').style.display='inline';
+                document.getElementById('cs_img').style.display = 'none';
                   document.getElementById('emissions_img').style.display = 'none';
            thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_left + "/" + type + ".1." + agb_name_right +
                 ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_left + "," + max_left + "&PALETTE=" + palette;
@@ -994,16 +1054,17 @@ document.getElementById('agb_img').style.display='inline';
 
             }
                if (map_modal_action!='deforestation_targets') {
-                   document.getElementById('left_source').innerHTML = fc_name_left.toUpperCase().replace('-', ' ');
+
+                   document.getElementById('left_source').innerHTML = '';
                    document.getElementById('left_min').innerHTML = min_left;
                    document.getElementById('left_max').innerHTML = max_left;
                    document.getElementById('left_doi').innerHTML = '';
-                   document.getElementById('right_source').innerHTML = fc_name_right.toUpperCase().replace('-', ' ');
+                   document.getElementById('right_source').innerHTML ='';
                    document.getElementById('right_min').innerHTML = min_right;
                    document.getElementById('right_max').innerHTML = max_right;
                    document.getElementById('right_doi').innerHTML = '';
-                   document.getElementById('modal_usecase_title').innerHTML = title;
                    document.getElementById('text_between').innerHTML = text_between;
+
 
 
                    var div = document.getElementById("primary_overlay_legend");

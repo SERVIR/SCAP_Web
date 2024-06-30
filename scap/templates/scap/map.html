@@ -232,8 +232,8 @@
 
 
                                 </div>
-                                <div class="row" id="other_3_usecases">
-                                    <h4 id="modal_usecase_title" style="text-align: left">Above Ground Biomass Estimation Comparison</h4>
+                                <div class="row" id="other_3_usecases" style="display: none">
+                                    <h4 id="modal_usecase_title" style="text-align: left"></h4>
                                     <div class="col-6" style="margin:auto;height: 100%">
                                         <div class="thumbnail" >
                                             <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="Carbon Stock image" style="display: none"/>
@@ -264,7 +264,9 @@
                                                   <br>Max:&nbsp;<span id="left_max"></span>
 
                                                   <br>
-                                                  DOI:&nbsp;<span id="left_doi"></span>
+                                                  <span id="left_doi_fc"></span>
+                                                    <br>
+                                                  <span id="left_doi_agb"></span>
 
                                               </p>
                                           </div>
@@ -283,7 +285,9 @@
                                                   <br>Max:&nbsp;<span id="right_max"></span>
 
                                                   <br>
-                                                  DOI:&nbsp;<span id="right_doi"></span>
+                                                    <span id="right_doi_fc"></span>
+                                                    <br>
+                                                  <span id="right_doi_agb"></span>
 
                                               </p>
                                           </div>

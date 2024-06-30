@@ -21,7 +21,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group
 
 from ScapTestProject import settings
-from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic,CarbonStockFile,
+from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCoverStatistic, CarbonStockFile,
+                         EmissionFile, AGBFile,
                          AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry, UserMessage)
 
 from scap.processing import calculate_zonal_statistics, generate_aoi_file
@@ -381,10 +382,11 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
     try:
         lc_ids = []
         agb_ids = []
-        df = pd.DataFrame(list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values('final_carbon_stock', 'aoi_index',
-                                                                                              'year_index',
-                                                                                              'fc_index_id',
-                                                                                              'agb_index_id').distinct()))
+        df = pd.DataFrame(
+            list(CarbonStatistic.objects.filter(aoi_index__name=pa_name).values('final_carbon_stock', 'aoi_index',
+                                                                                'year_index',
+                                                                                'fc_index_id',
+                                                                                'agb_index_id').distinct()))
         if not df.empty:
             lc_ids = numpy.array(df['fc_index_id'].unique()).tolist()
             agb_ids = numpy.array(df['agb_index_id'].unique()).tolist()
@@ -958,14 +960,87 @@ def send_message_scap(request):
         return JsonResponse({'result': 'error'})
     return JsonResponse({'result': 'success'})
 
+
 @csrf_exempt
-def get_statistics_for_map(request,country):
-    fc_name_left= request.POST.get('fc_name_left').replace('-',' ')
-    agb_name_left=request.POST.get('agb_name_left').replace('-',' ')
-    year_left=request.POST.get('year_left')
-    cs_result_left = list(CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_left, agb_index__name__iexact=agb_name_left, year_index=year_left).values())
-    fc_name_right= request.POST.get('fc_name_right').replace('-',' ')
-    agb_name_right=request.POST.get('agb_name_right').replace('-',' ')
-    year_right=request.POST.get('year_right')
-    cs_result_right = list(CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_right, agb_index__name__iexact=agb_name_right, year_index=year_right).values())
-    return JsonResponse({'left':cs_result_left,'right':cs_result_right})
+def get_statistics_for_map(request, country):
+    result_obj = {}
+    cs_result_left = None
+    cs_result_right = None
+    em_result_left = None
+    em_result_right = None
+    agb_result_left = None
+    agb_result_right = None
+    fc_doi_left = ''
+    agb_doi_left = ''
+    fc_doi_right = ''
+    agb_doi_right = ''
+    year_left = request.POST.get('year_left')
+    year_right = request.POST.get('year_right')
+
+    if request.POST.get('fc_name_left'):
+        fc_name_left = request.POST.get('fc_name_left').replace('-', ' ')
+        fc_coll_left = ForestCoverCollection.objects.get(name__iexact=fc_name_left)
+        if fc_coll_left and fc_coll_left.doi_link:
+            fc_doi_left = "FC DOI: " + fc_coll_left.doi_link
+    else:
+        fc_name_left = None
+    if request.POST.get('agb_name_left'):
+        agb_name_left = request.POST.get('agb_name_left').replace('-', ' ')
+        agb_coll_left = AGBCollection.objects.get(name__iexact=agb_name_left)
+        if agb_coll_left.doi_link:
+            agb_doi_left = "AGB DOI: " + agb_coll_left.doi_link
+    else:
+        agb_name_left = None
+
+    if request.POST.get('fc_name_right'):
+        fc_name_right = request.POST.get('fc_name_right').replace('-', ' ')
+        fc_coll_right = ForestCoverCollection.objects.get(name__iexact=fc_name_right)
+        if fc_coll_right.doi_link:
+            fc_doi_right = "FC DOI: " + fc_coll_right.doi_link
+    else:
+        fc_name_right = None
+    if request.POST.get('agb_name_right'):
+        agb_name_right = request.POST.get('agb_name_right').replace('-', ' ')
+        agb_coll_right = AGBCollection.objects.get(name__iexact=agb_name_right)
+        if agb_coll_right.doi_link:
+            agb_doi_right = "AGB DOI: " + agb_coll_right.doi_link
+    else:
+        agb_name_right = None
+
+    try:
+        cs_result_right = list(
+            CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_right, agb_index__name__iexact=agb_name_right,
+                                           year_index=year_right).values())
+        cs_result_left = list(
+            CarbonStockFile.objects.filter(fc_index__name__iexact=fc_name_left, agb_index__name__iexact=agb_name_left,
+                                           year_index=year_left).values())
+    except:
+        cs_result_right = None
+        cs_result_left = None
+    try:
+        em_result_right = list(
+            EmissionFile.objects.filter(fc_index__name__iexact=fc_name_right, agb_index__name__iexact=agb_name_right,
+                                        year_index=year_right).values())
+        em_result_left = list(
+            EmissionFile.objects.filter(fc_index__name__iexact=fc_name_left, agb_index__name__iexact=agb_name_left,
+                                        year_index=year_left).values())
+    except:
+        em_result_right = None
+        em_result_left = None
+    try:
+
+        agb_result_right = list(
+            AGBFile.objects.filter(agb_index__name__iexact=agb_name_right).values())
+
+        agb_result_left = list(
+            AGBFile.objects.filter(agb_index__name__iexact=agb_name_left).values())
+    except:
+        agb_result_left = None
+        agb_result_right = None
+
+    result_obj = {'cs_left': cs_result_left, 'cs_right': cs_result_right, 'em_left': em_result_left,
+                  'em_right': em_result_right, 'agb_left': agb_result_left, 'agb_right': agb_result_right,
+                  'fc_doi_left': fc_doi_left,
+                  'agb_doi_left': agb_doi_left,
+                  'fc_doi_right': fc_doi_right, 'agb_doi_right': agb_doi_right}
+    return JsonResponse(result_obj)
