@@ -230,7 +230,7 @@ class AGBFile(models.Model):
     statistics = models.TextField(help_text="GDAL Statistics as JSON string")
 
     class Meta:
-        verbose_name_plural = "Emission Files"
+        verbose_name_plural = "AGB Files"
 
 
 
