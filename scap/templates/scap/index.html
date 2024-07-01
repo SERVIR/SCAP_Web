@@ -36,9 +36,11 @@
                     'message':message
                 },
                 success: function (res) {
-                    console.log(res.result==='error')
-                    if(res.result==='success')
+                    console.log(res.result === 'error')
+                    if (res.result === 'success'){
                         document.getElementById('submitSuccessMessage').classList.remove('d-none');
+                    $('form').get(0).reset()
+                }
                     else if(res.result==='error')
                         document.getElementById('submitErrorMessage').classList.remove('d-none');
 
@@ -687,14 +689,21 @@ Initial results from S-CAP were compared against each pilot country’s most rec
             <!-- This is what your users will see when the form-->
             <!-- has successfully submitted-->
             <div class="d-none" id="submitSuccessMessage">
-                <div class="text-center text-white mb-3">
+                <div class="text-center text-success mb-3">
                     <div class="fw-bolder">Message Sent!</div>
 <!--                    To activate this form, sign up at-->
 <!--                    <br/>-->
 <!--                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>-->
                 </div>
             </div>
-
+<div class="d-none" id="submitErrorMessage">
+                <div class="text-center text-danger mb-3">
+                    <div class="fw-bolder">Error sending message, please check the fields!</div>
+<!--                    To activate this form, sign up at-->
+<!--                    <br/>-->
+<!--                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>-->
+                </div>
+            </div>
             <!-- Submit Button-->
             <div class="text-center">
                 <button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit">Send

@@ -937,7 +937,7 @@ def save_message_to_db(name, organization, email, role, message):
     message_object.organization = organization
     message_object.email = email
     message_object.role = role
-
+    message_object.responded_on=None
     message_object.message = message
     message_object.save()
 
@@ -957,6 +957,7 @@ def send_message_scap(request):
         send_mail('[S-CAP] - Message from user', message, email, approvers_emails)
         save_message_to_db(name, organization, email, role, message)
     except Exception as e:
+        print(e)
         return JsonResponse({'result': 'error'})
     return JsonResponse({'result': 'success'})
 
