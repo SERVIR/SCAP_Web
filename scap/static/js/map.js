@@ -1058,11 +1058,9 @@ function get_stats_for_map() {
                    document.getElementById('left_source').innerHTML = '';
                    document.getElementById('left_min').innerHTML = min_left;
                    document.getElementById('left_max').innerHTML = max_left;
-                   document.getElementById('left_doi').innerHTML = '';
                    document.getElementById('right_source').innerHTML ='';
                    document.getElementById('right_min').innerHTML = min_right;
                    document.getElementById('right_max').innerHTML = max_right;
-                   document.getElementById('right_doi').innerHTML = '';
                    document.getElementById('text_between').innerHTML = text_between;
 
 
