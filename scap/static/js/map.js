@@ -940,14 +940,24 @@ function get_stats_for_map() {
             }
              if(map_modal_action=='emissions') {
                  type = map_modal_action;
-                   min_left = data.cs_left[0].min;
-                  max_left = data.cs_left[0].max;
-                  min_right = data.cs_right[0].min;
-                  max_right = data.cs_right[0].max;
+                 if(data.em_left.length>0) {
+                     min_left = data.em_left[0].min;
+                     max_left = data.em_left[0].max;
+                     min_right = data.em_right[0].min;
+                     max_right = data.em_right[0].max;
+                 }
+                 else{
+                      min_left=-1;
+                     min_right=-1;
+                           max_left=32767;
+                      max_right=32767;
+
+                 }
                   if(min_left==0 && min_right==0)
                  {
                      min_left=-1
                      min_right=-1
+
                  }
                   if(max_left==0 && max_right==0){
                       max_left=32767
@@ -982,10 +992,18 @@ function get_stats_for_map() {
              }
               if(map_modal_action=='carbon-stock') {
                   type = map_modal_action;
-                  min_left = data.cs_left[0].min;
-                  max_left = data.cs_left[0].max;
-                  min_right = data.cs_right[0].min;
-                  max_right = data.cs_right[0].max;
+                   if(data.cs_left.length>0) {
+                       min_left = data.cs_left[0].min;
+                       max_left = data.cs_left[0].max;
+                       min_right = data.cs_right[0].min;
+                       max_right = data.cs_right[0].max;
+                   }
+                   else{
+                        min_left=-1;
+                     min_right=-1;
+                      max_left=32767;
+                      max_right=32767;
+                   }
                    if(min_left==0 && min_right==0)
                  {
                      min_left=-1
@@ -1020,10 +1038,18 @@ function get_stats_for_map() {
                    console.log('agb')
 
                      type=map_modal_action;
-                     min_left=data.agb_left[0].min;
-                     max_left=data.agb_left[0].max;
-                     min_right=data.agb_right[0].min;
-                     max_right=data.agb_right[0].max;
+                    if(data.agb_left.length>0) {
+                        min_left = data.agb_left[0].min;
+                        max_left = data.agb_left[0].max;
+                        min_right = data.agb_right[0].min;
+                        max_right = data.agb_right[0].max;
+                    }
+                    else{
+                          min_left=1;
+                     min_right=1;
+                       max_left=550;
+                      max_right=550;
+                    }
                   if(min_left==0 && min_right==0)
                  {
                      min_left=1
