@@ -63,27 +63,6 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
-//CHIRPS WMS layer from Thredds server
-var chirps = L.tileLayer.wms('https://thredds.servirglobal.net/thredds/wms/Agg/ucsb-chirps_global_0.05deg_daily.nc4', {
-    layers: 'precipitation_amount',
-    transparent: 'true',
-    format: 'image/png',
-    style: 'boxfill/apcp_surface',
-    maxZoom: 21,
-    zIndex: 400,
-    opacity: 0.5
-});
-
-//ESI layer from Map server
-let esi = L.esri.dynamicMapLayer({
-    url: 'https://gis1.servirglobal.net/arcgis/rest/services/Global/ESI_4WK/MapServer',
-    transparent: 'true',
-    format: 'image/png',
-    style: 'boxfill/apcp_surface',
-    maxZoom: 21,
-    opacity: 0.5
-});
-
 //Open Street Map base layer - default
 var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -91,15 +70,22 @@ var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 });
 
 //Open Street Map base layer
-let streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+let streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+    attribution: '© OpenStreetMap'
+});
 
 //Satellite imagery layer
-let satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+let satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+             attribution:
+            'Tiles © <a href="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer">ArcGIS</a>'
+});
 
 // Dark basemap
 var darkmap = L.tileLayer(' https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap'
+    attribution:  '<a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
 });
 
 // watermask layer
