@@ -24,6 +24,7 @@ def get_gdal_stats_as_json(raster_file_obj,name):
         'maximum': stats[1],
         'statistics':actual_json
     }
+    del dataset
 
     return st
 
@@ -40,7 +41,7 @@ import requests
 
 
 def list_dir_url(url, ext=''):
-    url = 'https://thredds.servirglobal.net/thredds/catalog/scap/public/carbon-stock/1/catalog.html'
+    url = 'https://thredds.servirglobal.net/thredds/catalog/scap/public/emissions/1/catalog.html'
     ext = 'nc4'
     page = requests.get(url).text
 
@@ -87,7 +88,7 @@ def gdal_stats():
                 fc_coll=ForestCoverCollection.objects.get(name__iexact=fc)
                 agb_coll=AGBCollection.objects.get(name__iexact=agb)
                 result=get_gdal_stats_as_json(final, url_arr[-1])
-                new_carbonstock_obj=CarbonStockFile()
+                new_carbonstock_obj=EmissionFile()
                 new_carbonstock_obj.statistics=result['statistics']
                 new_carbonstock_obj.min=result['minimum']
                 new_carbonstock_obj.max=result['maximum']

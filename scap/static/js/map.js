@@ -70,7 +70,7 @@ function set_map_action(anchor,text) {
   document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
             }
             else if(map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero'){
-  document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover change';
+  document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
             }
             else{
   document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
@@ -1238,10 +1238,10 @@ usecasebutton.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
     div.innerHTML = '<div class="btn-group dropend">\n' +
         '  <button type="button" id="usecase_name" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">\n' +
-        '    Displaying: Forest cover change\n' +
+        '    Displaying: Forest cover\n' +
         '  </button>\n' +
         '  <ul class="dropdown-menu">\n' +
-        '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_targets\')">Forest cover change</a></li>\n' +
+        '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_targets\')">Forest cover</a></li>\n' +
         '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'agb\')">Above Ground Biomass (AGB)</a></li>\n' +
         '    <li><a class="dropdown-item text-secondary" href="#"  onclick="set_map_action(this,\'emissions\')">Emission estimations</a></li>\n' +
         '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'carbon-stock\')">Carbon stock</a></li>\n' +
