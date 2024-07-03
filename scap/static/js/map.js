@@ -1073,7 +1073,7 @@ function get_stats_for_map() {
                 document.getElementById('agb_img').style.display='inline';
                 document.getElementById('cs_img').style.display = 'none';
                   document.getElementById('emissions_img').style.display = 'none';
-           thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_left + "/" + type + ".1." + agb_name_right +
+           thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_left + "/" + type + ".1." + agb_name_left +
                 ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_left + "," + max_left + "&PALETTE=" + palette;
                thredds_url_right = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_right + "/" + type + ".1." + agb_name_right +
                 ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_right + "," + max_right+ "&PALETTE=" + palette;
