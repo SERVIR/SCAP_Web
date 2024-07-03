@@ -330,8 +330,8 @@ function  redraw_based_on_year() {
             pri_over_style = 'boxfill/crimsonyellowred';
             sec_over_style = 'boxfill/crimsonyellowred';
         } else {
-            pri_over_style = 'boxfill/redblue';
-            sec_over_style = 'boxfill/redblue';
+            pri_over_style = 'boxfill/scap-agb';
+            sec_over_style = 'boxfill/scap-agb';
         }
 
     }
@@ -443,8 +443,8 @@ function  redraw_based_on_year() {
 
             primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
             secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
-             pri_over_style = 'boxfill/redblue';
-            sec_over_style = 'boxfill/redblue';
+             pri_over_style = 'boxfill/scap-agb';
+            sec_over_style = 'boxfill/scap-agb';
                         comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
 
     }
@@ -543,8 +543,8 @@ function add_thredds_wms_layers(map_modal_action) {
         } else {
 
 
-            pri_over_style = 'boxfill/redblue';
-            sec_over_style = 'boxfill/redblue';
+            pri_over_style = 'boxfill/scap-agb';
+            sec_over_style = 'boxfill/scap-agb';
         }
 
     } else {
@@ -555,8 +555,8 @@ function add_thredds_wms_layers(map_modal_action) {
 
         primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
-        pri_over_style = 'boxfill/redblue';
-        sec_over_style = 'boxfill/redblue';
+        pri_over_style = 'boxfill/scap-agb';
+        sec_over_style = 'boxfill/scap-agb';
     }
 
     try {
@@ -968,7 +968,7 @@ function get_stats_for_map() {
                  // max_left = data.em_left[0].max;
                  // min_right = data.em_right[0].min;
                  // max_right = data.em_right[0].max;
-                 palette = "redblue";
+                 palette = "scap-agb";
                  title = "Carbon Emission Estimations";
                   document.getElementById('modal_usecase_title').innerHTML = title;
 
@@ -1060,7 +1060,7 @@ function get_stats_for_map() {
                       max_right=550
 
                   }
-                 palette="redblue";
+                 palette="scap-agb";
                  title="Above Ground Biomass Estimation Comparison";
                   document.getElementById('modal_usecase_title').innerHTML = title;
                 text_between="The color scales for the <strong>Above Ground Biomass (AGB)</strong> estimation source you have selected, are:";
