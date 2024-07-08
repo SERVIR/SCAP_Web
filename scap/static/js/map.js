@@ -941,6 +941,9 @@ function get_stats_for_map() {
                 document.getElementById('fc_usecase').style.display='none';
             }
              if(map_modal_action=='emissions') {
+                 document.getElementById('left_source').innerHTML = fc_name_left.split('-').join(' ').toUpperCase()+' (FC), '+agb_name_left.split('-').join(' ').toUpperCase()+' (AGB)';
+                 document.getElementById('right_source').innerHTML = fc_name_right.split('-').join(' ').toUpperCase()+' (FC), '+agb_name_right.split('-').join(' ').toUpperCase()+' (AGB)';
+
                  type = map_modal_action;
                  if(data.em_left.length>0) {
                      min_left = data.em_left[0].min;
@@ -993,6 +996,8 @@ function get_stats_for_map() {
 
              }
               if(map_modal_action=='carbon-stock') {
+                     document.getElementById('left_source').innerHTML = fc_name_left.split('-').join(' ').toUpperCase()+' (FC), '+agb_name_left.split('-').join(' ').toUpperCase()+' (AGB)';
+                     document.getElementById('right_source').innerHTML = fc_name_right.split('-').join(' ').toUpperCase()+' (FC), '+agb_name_right.split('-').join(' ').toUpperCase()+' (AGB)';
                   type = map_modal_action;
                    if(data.cs_left.length>0) {
                        min_left = data.cs_left[0].min;
@@ -1037,6 +1042,8 @@ function get_stats_for_map() {
 
               }
                if(map_modal_action=='agb'){
+                      document.getElementById('left_source').innerHTML = agb_name_left.split('-').join(' ').toUpperCase()+' (AGB)';
+                     document.getElementById('right_source').innerHTML =agb_name_right.split('-').join(' ').toUpperCase()+' (AGB)';
                    console.log('agb')
 
                      type=map_modal_action;
@@ -1083,10 +1090,10 @@ function get_stats_for_map() {
             }
                if (map_modal_action!='deforestation_targets') {
 
-                   document.getElementById('left_source').innerHTML = '';
+
                    document.getElementById('left_min').innerHTML = min_left;
                    document.getElementById('left_max').innerHTML = max_left;
-                   document.getElementById('right_source').innerHTML ='';
+
                    document.getElementById('right_min').innerHTML = min_right;
                    document.getElementById('right_max').innerHTML = max_right;
                    document.getElementById('text_between').innerHTML = text_between;
