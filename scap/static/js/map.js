@@ -307,6 +307,8 @@ function  redraw_based_on_year() {
          var pri_over_style = '';
     var sec_under_style = '';
     var sec_over_style = '';
+        let selected_dataset_left = document.getElementById('selected_region').value;
+    let selected_dataset_right = document.getElementById('comparing_region').value;
 
     if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
         thredds_dir="fc";
@@ -341,8 +343,8 @@ function  redraw_based_on_year() {
 
     let selected_year = document.getElementById('selected_year').value;
     let comparison_year = document.getElementById('comparison_year').value;
-    let selected_dataset_left = document.getElementById('selected_region').value;
-    let selected_dataset_right = document.getElementById('comparing_region').value;
+    // let selected_dataset_left = document.getElementById('selected_region').value;
+    // let selected_dataset_right = document.getElementById('comparing_region').value;
     let selected_dataset_left_agb ="";
     let selected_dataset_right_agb="";
     if(agb_colls!=undefined) {
@@ -856,7 +858,7 @@ function get_available_years(map_modal_action) {
     }
 
 
-     redraw_map_layers();
+     // redraw_map_layers();
 }
 function get_checked_lcs() {
     var lcs = [];
