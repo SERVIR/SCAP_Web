@@ -309,19 +309,28 @@ function  redraw_based_on_year() {
     var sec_over_style = '';
         let selected_dataset_left = document.getElementById('selected_region').value;
     let selected_dataset_right = document.getElementById('comparing_region').value;
+var scale_range="0.5,1";
+  var fc_scale_range_left = "0.5,1";
+       var fc_scale_range_right="0.5,1";
+if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
+        thredds_dir = "fc";
 
-    if (map_modal_action=='deforestation_targets' || map_modal_action=='deforestation_netzero') {
-        thredds_dir="fc";
-        scale_range = "0.5,1"
- if (selected_dataset_left === selected_dataset_right) {
-            pri_over_style='boxfill/crimsonbluegreen';
-            sec_over_style='boxfill/cwg';
-            sec_under_style='boxfill/redblue';
-        }
-        else{
-            pri_over_style='boxfill/crimsonbluegreen';
-            sec_over_style='boxfill/cwg';
-            sec_under_style='boxfill/maize';
+
+               if(selected_dataset_left=='esri')
+            fc_scale_range_left="0.5,2";
+        else
+            fc_scale_range_left="0.5,1";
+        if(selected_dataset_right=='esri')
+            fc_scale_range_right="0.5,2"
+        else fc_scale_range_right="0.5,1"
+        if (selected_dataset_left === selected_dataset_right) {
+            pri_over_style = 'boxfill/crimsonbluegreen';
+            sec_over_style = 'boxfill/cwg';
+            sec_under_style = 'boxfill/redblue';
+        } else {
+            pri_over_style = 'boxfill/crimsonbluegreen';
+            sec_over_style = 'boxfill/cwg';
+            sec_under_style = 'boxfill/maize';
         }
     }
     //carbon stock or emissions
@@ -364,7 +373,7 @@ function  redraw_based_on_year() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_left:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -397,7 +406,7 @@ function  redraw_based_on_year() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: sec_over_style,
@@ -414,7 +423,7 @@ function  redraw_based_on_year() {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: sec_under_style,
@@ -503,6 +512,10 @@ function add_thredds_wms_layers(map_modal_action) {
         sec_over_style = 'boxfill/cwg';
         sec_under_style = 'boxfill/maize';
     }
+     var scale_range="0.5,1";
+        var fc_scale_range_left = "0.5,1";
+
+        var fc_scale_range_right="0.5,1";
     if (map_modal_action == 'deforestation_targets' || map_modal_action == 'deforestation_netzero') {
         thredds_dir = "fc";
         layer_name = "forest_cover";
@@ -513,7 +526,15 @@ function add_thredds_wms_layers(map_modal_action) {
         primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
         secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
-        scale_range = "0.5,1";
+
+        console.log(selected_dataset_right,selected_dataset_left)
+        if(selected_dataset_left=='esri')
+            fc_scale_range_left="0.5,2";
+        else
+            fc_scale_range_left="0.5,1";
+        if(selected_dataset_right=='esri')
+            fc_scale_range_right="0.5,2";
+        else fc_scale_range_right="0.5,1";
         if (selected_dataset_left === selected_dataset_right) {
             pri_over_style = 'boxfill/crimsonbluegreen';
             sec_over_style = 'boxfill/cwg';
@@ -567,7 +588,7 @@ function add_thredds_wms_layers(map_modal_action) {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_left:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 transparent: true,
@@ -591,7 +612,7 @@ function add_thredds_wms_layers(map_modal_action) {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: sec_over_style,
@@ -603,7 +624,7 @@ function add_thredds_wms_layers(map_modal_action) {
             {
                 layers: [layer_name],
                 format: "image/png",
-                colorscalerange: scale_range,
+                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
                 abovemaxcolor: 'transparent',
                 belowmincolor: 'transparent',
                 styles: sec_under_style,
