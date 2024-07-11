@@ -10,6 +10,7 @@ import logging
 import doi
 import requests
 import pandas as pd
+from osgeo import ogr
 from itertools import product
 from datetime import datetime
 from django.http import JsonResponse
@@ -64,27 +65,46 @@ def test(request):
 
 
 @csrf_exempt
-def upload_drawn_aoi(request, country):
+def upload_drawn_aoi(request,country):
+    user = request.user.username
+    if not user:
+        return JsonResponse({'error': 'login'})
     lcs = request.POST.getlist('lcs[]')
     agbs = request.POST.getlist('agbs[]')
     feature = request.POST.get('geometry')
 
     feat = json_lib.loads(feature)
     geom = feat['features'][0]['geometry']
-    coll = AOICollection.objects.get(name='User Drawn AOIs')
+
     current_time = datetime.now()
+
+    coll_name = 'user-drawn-' + user + '.' + current_time.strftime("%Y%m%dT%H%M%S")
+
+    coll = AOICollection()
+    coll.name = coll_name
+    coll.description = 'User Drawn AOI'
+    coll.access_level = 'Private'
+    coll.owner = request.user
+    coll.save()
+
     if geom['type'] == 'Polygon':
         geom['type'] = 'MultiPolygon'
         geom['coordinates'] = [geom['coordinates']]
 
-    uploaded_feature = AOIFeature(geom=GEOSGeometry(json_lib.dumps(geom)),
-                                  collection=AOICollection.objects.get(name='User Drawn AOIs'))
-    uploaded_feature.name = 'user-drawn-' + current_time.strftime("%Y%m%dT%H%M%S")
-    uploaded_feature.iso3 = 'NPL'
+    poly = ogr.CreateGeometryFromJson(str(geom))
+    area = poly.GetArea()
+
+    uploaded_feature = AOIFeature(geom=GEOSGeometry(json_lib.dumps(geom)), collection=coll)
+    uploaded_feature.name = coll_name
+    uploaded_feature.iso3 = ''
     uploaded_feature.desig_eng = 'DRAWN'
+    uploaded_feature.rep_area = area
     uploaded_feature.save()
 
-    generate_aoi_file(uploaded_feature, coll, coll.processing_task, 0, 100)
+    stats_task, vis_task, delete_task = generate_aoi_file(uploaded_feature, coll)
+
+    stats_task.apply()
+    delete_task.apply()
 
     aoi_collections = [coll]
     agb_collections = list(AGBCollection.objects.filter(id__in=agbs))
@@ -92,7 +112,8 @@ def upload_drawn_aoi(request, country):
 
     available_sets = list(product(fc_collections, agb_collections, aoi_collections))
     for fc, agb, aoi in available_sets:
-        calculate_zonal_statistics.apply_async(args=[fc, agb, aoi, True], kwargs={}, queue='stats')
+        calculate_zonal_statistics.apply_async(args=[fc.id, agb.id, aoi.id], kwargs={}, queue='stats')
+        calculate_zonal_statistics.apply_async(args=[fc.id, None, aoi.id], kwargs={}, queue='stats')
 
     return JsonResponse({"aoi_id": uploaded_feature.id})
 
