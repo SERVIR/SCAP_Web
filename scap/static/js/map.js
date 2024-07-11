@@ -909,7 +909,12 @@ function send_to_backend(){
             url: 'upload-drawn-aoi/',
             data: {'lcs': lcss, 'agbs': agbss, 'geometry': JSON.stringify(drawn_aoi)},
             success: function (data) {
-                window.location = window.location.origin + '/aoi/' + data.aoi_id + '/';
+                if('error' in data){
+                    alert('Please login to continue')
+                }
+                else{
+                    window.location = window.location.origin + '/aoi/' + data.aoi_id + '/';
+                }
             }
         });
     }

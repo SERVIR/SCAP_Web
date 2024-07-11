@@ -274,20 +274,26 @@ def protected_aois(request, aoi):
         json_obj["data_pa"] = []
 
     pc = PilotCountry.objects.filter(country_code=pa.iso3).first()
-    country_shp = AOIFeature.objects.filter(iso3=pc.country_code, desig_eng='COUNTRY').first()
-    country_geojson = json.loads(country_shp.geom.geojson)
-    country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
-                                     'desig_eng': country_shp.desig_eng}
-    json_obj["data_country"] = country_geojson
-    pc_name = pc.country_name
-    country_id = pc.id
-    colors = get_available_colors()
-    if pc.forest_cover_collection is None:
-        default_lc='JAXA'
-        default_agb='Saatchi 2000'
+    if pc is not None:
+        country_shp = AOIFeature.objects.filter(iso3=pc.country_code, desig_eng='COUNTRY').first()
+        country_geojson = json.loads(country_shp.geom.geojson)
+        country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
+                                         'desig_eng': country_shp.desig_eng}
+        json_obj["data_country"] = country_geojson
+        pc_name = pc.country_name
+        country_id = pc.id
+        colors = get_available_colors()
+        if pc.forest_cover_collection is None:
+            default_lc = 'JAXA'
+            default_agb = 'Saatchi 2000'
+        else:
+            default_lc = pc.forest_cover_collection.name
+            default_agb = pc.agb_collection.name
     else:
-        default_lc=pc.forest_cover_collection.name
-        default_agb=pc.agb_collection.name
+        json_obj["data_country"] = json_obj["data_pa"]
+        default_lc = 'JAXA'
+        default_agb = 'Saatchi 2000'
+
 
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
