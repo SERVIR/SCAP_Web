@@ -61,267 +61,246 @@
 
 </head>
 <body id="page-top" style="background:black">
-<script>
-   var shp_obj = {{ shp_obj|safe }};
-   var country_id={{country_id|safe}};
-   var fc_colls={{fc_colls|safe}};
-   var agb_colls={{agb_colls|safe}};
+    <script>
+        // objects from map view
+       var shp_obj = {{ shp_obj|safe }}; // object that has country and protected area geojson to load on the map
+       var country_id = {{country_id|safe}}; //current country ID used to retrieve Pilot Country data
+       var fc_colls = {{fc_colls|safe}}; // JSON object containing name and years of FCs
+       var agb_colls = {{agb_colls|safe}}; // JSON object containing name and years of AGBs
+    </script>
+    <!-- Hidden Data -->
+    <label id="lat_from_db" hidden>{{ latitude }}</label>
+    <label id="lon_from_db" hidden>{{ longitude }}</label>
+    <label id="zoom_from_db" hidden>{{ zoom_level }}</label>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:90px">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="padding-left: 20px" href="{% url 'home' %}">
+            <img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars ms-1"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="../../#callstoaction">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../#pilotcountry">Pilot Countries</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../#services">Datasets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../#about">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../#team">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../#contact">Contact</a></li>
+                    {% if user.is_authenticated %}
 
-</script>
-<label id="lat_from_db" hidden>{{ latitude }}</label>
-<label id="lon_from_db" hidden>{{ longitude }}</label>
-<label id="zoom_from_db" hidden>{{ zoom_level }}</label>
-<!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:90px">
-    <div class="container-fluid">
-        <a class="navbar-brand" style="padding-left: 20px" href="{% url 'home' %}">
-        <img src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            Menu
-            <i class="fas fa-bars ms-1"></i>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                    class="caret"></span></a>
+                            <ul class="dropdown-menu bg-transparent">
+                                <li><a class="nav-link" href="/logout/">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+                            Login
+                        </a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Container -->
+    <div id="content-container">
+        <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
+        margin-left: -4em;
+
+        width: 9em;
+        height: 3em;
+        position: absolute;
+        top: 45%;
+        z-index: 999;">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="../../#callstoaction">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../#pilotcountry">Pilot Countries</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../#services">Datasets</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../#about">History</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../#team">Team</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../#contact">Contact</a></li>
-                {% if user.is_authenticated %}
-
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
-                                class="caret"></span></a>
-                        <ul class="dropdown-menu bg-transparent">
-                            <li><a class="nav-link" href="/logout/">Logout</a>
-                            </li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
-                        Login
-                    </a></li>
-                {% endif %}
-            </ul>
+        <div id="map_chart">
         </div>
-    </div>
-</nav>
-
-<div id="content-container">
-    <button class="btn btn-primary" type="button" id="loading_spinner_map" style="left: 50%;
-    margin-left: -4em;
-
-    width: 9em;
-    height: 3em;
-    position: absolute;
-    top: 45%;
-    z-index: 999;">
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Loading...
-    </button>
-    <div id="map_chart">
-    </div>
-    <div id="selector_table">
-        <div class="d-flex">
-            <div class="form-group">
-                <label id="selected_year_label">Primary Year</label>
-                <select name="selected_year" id="selected_year"
-                        class="form-control"
-                        onchange="redraw_based_on_year()">
-                    <option value="0" selected="selected">Loading...</option>
-                </select>
-            </div>
-        </div>
-        <div class="d-flex">
-            <div class="form-group">
-                <label id="selected_region_label">FC</label>
-                <select name="selected_region" id="selected_region" class="form-control"
-                        onchange="redraw_map_layers()">
-                </select>
-            </div>
-        </div>
-                <div class="d-flex">
-            <div class="form-group">
-                <label id="selected_agb_label">AGB</label>
-                <select name="selected_region" id="selected_agb" class="form-control"
-                        onchange="redraw_map_layers()">
-                </select>
-            </div>
-        </div>
-    </div>
-    <div id="comparison_table">
-        <div class="d-flex" id="comparison-selector">
+        <!-- Left Side -->
+        <div id="selector_table">
             <div class="d-flex">
                 <div class="form-group">
-                    <label id="comparison_year_label">Comparison Year</label>
-                    <select name="comparison_year" id="comparison_year"
+                    <label id="selected_year_label">Primary Year</label>
+                    <select name="selected_year" id="selected_year"
                             class="form-control"
                             onchange="redraw_based_on_year()">
+                        <option value="0" selected="selected">Loading...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="form-group">
+                    <label id="selected_region_label">FC</label>
+                    <select name="selected_region" id="selected_region" class="form-control"
+                            onchange="redraw_map_layers()">
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="form-group">
+                    <label id="selected_agb_label">AGB</label>
+                    <select name="selected_region" id="selected_agb" class="form-control"
+                            onchange="redraw_map_layers()">
                     </select>
                 </div>
             </div>
         </div>
-         <div class="d-flex">
-            <div class="form-group">
-                <label id="comparing_region_label">FC</label>
-                <select name="comparing_region" id="comparing_region" class="form-control"
-                        onchange="redraw_map_layers()">
-                </select>
-            </div>
-        </div>
-           <div class="d-flex">
-            <div class="form-group">
-                <label id="comparing_agb_label">AGB</label>
-                <select name="selected_region" id="comparing_agb" class="form-control"
-                        onchange="redraw_map_layers()">
-                </select>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="pilotcountry-modal modal fade" id="info_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content"  style="width: 85%;margin:auto;padding-bottom: 10px;padding-top: 10px">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="modal-body" >
-                            <h3 style="text-align: left">Understanding the map</h3>
-                            <div class="container-fluid">
-                                <div class="row" id="fc_usecase">
-                                                                     <h4 style="text-align: left">Forest cover analysis</h4>
-
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                 <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image FC"/>
-                                            </div>
-                                            <div class="col">
-                                                  <div class="caption">
-                                                <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
-                                                <p style="text-align: left">The left side shows the earlier year in bright green, indicating the places that were
-                                                    originally identified as forest.</p>
-                                                <p style="text-align: left">The right side shows the later year in darker green, with the areas that have lost forest cover in red.
-                                                </p>
-                                            </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                             <div class="col-3">
-                                                          <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for FC"/>
-                                            </div>
-                                            <div class="col">
-                                                    <div class="caption">
-                                                <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
-                                                <p style="text-align: left">The left side shows the first dataset in green, while the yellow pixels indicate
-                                                    locations identified as forest only in the second dataset.</p>
-                                                <p style="text-align: left">
-                                                    The right side shows the second dataset in green, with yellow pixels indicating locations
-                                                    identified as forest only in the first dataset
-                                                </p>
-                                            </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                </div>
-                                <div class="row" id="other_3_usecases" style="display: none">
-                                    <h4 id="modal_usecase_title" style="text-align: left"></h4>
-                                    <div class="col-6" style="margin:auto;height: 100%">
-                                        <div class="thumbnail" >
-                                            <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="Carbon Stock image" style="display: none"/>
-                                            <img id="emissions_img" src="{% static 'assets/img/emissions.PNG' %}" width="60%" alt="Emissions image" style="display: none"/>
-                                            <img id="agb_img" src="{% static 'assets/img/agb.PNG' %}" width="60%" alt="AGB image" style="display: none"/>
-
-
-                                        </div>
-
-</div>
-                                    <div class="col-6">
-
-
-                                      <div class="row" style="font-family:Helvetica, Arial, sans-serif; ">
-                                                                                  <p class="mt-3" id="text_between"></p>
-                                        <div class="col d-flex">
-                                        <div class=" thumbnail" id="primary_overlay_legend">
-
-                                        </div>
-                                          <div style="padding-left: 10px">
-                                              <h5 style="text-align :left">Left Pane</h5>
-                                              <p style="text-align :left;max-width: 90%;
-    overflow-wrap: break-word;">Source:&nbsp;<span id="left_source"></span>
-
-                                                  <br>
-
-                                                  Min:&nbsp;<span id="left_min"></span>
-
-                                                  <br>Max:&nbsp;<span id="left_max"></span>
-
-                                                  <br>
-                                                  <span id="left_doi_fc"></span>
-                                                    <br>
-                                                  <span id="left_doi_agb"></span>
-
-                                              </p>
-                                          </div>
-</div>
-                                          <div class="col d-flex">
-                                        <div class="thumbnail" id="secondary_overlay_legend">
-
-                                        </div>
-                                            <div style="padding-left: 10px">
-                                              <h5 style="text-align :left">Right Pane</h5>
-                                               <p style="text-align :left;max-width: 90%;
-    overflow-wrap: break-word;">Source:&nbsp;<span id="right_source"></span>
-
-                                                  <br>
-
-                                                  Min:&nbsp;<span id="right_min"></span>
-
-                                                  <br>Max:&nbsp;<span id="right_max"></span>
-
-                                                  <br>
-                                                    <span id="right_doi_fc"></span>
-                                                    <br>
-                                                  <span id="right_doi_agb"></span>
-
-                                              </p>
-                                          </div>
-                                              </div>
-                                    </div>
-</div>
-
-                                </div>
-
-
-
-                                </div>
-                            <div>
-                            <p class="text-primary" style="font-family:Helvetica, Arial, sans-serif; font-size: large">
-<i>Please note the content on this window will change depending on the type of visualization you have selected in the dropdown at the bottom of the map.</i>
-                            </p>
-                            </div>
-                        </div>
+        <!-- Right Side -->
+        <div id="comparison_table">
+            <div class="d-flex" id="comparison-selector">
+                <div class="d-flex">
+                    <div class="form-group">
+                        <label id="comparison_year_label">Comparison Year</label>
+                        <select name="comparison_year" id="comparison_year"
+                                class="form-control"
+                                onchange="redraw_based_on_year()">
+                        </select>
                     </div>
-
-
-                    </div>
-                              <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
-                                    Close
-                                    </button>
-
-
+                </div>
+            </div>
+             <div class="d-flex">
+                <div class="form-group">
+                    <label id="comparing_region_label">FC</label>
+                    <select name="comparing_region" id="comparing_region" class="form-control"
+                            onchange="redraw_map_layers()">
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="form-group">
+                    <label id="comparing_agb_label">AGB</label>
+                    <select name="selected_region" id="comparing_agb" class="form-control"
+                            onchange="redraw_map_layers()">
+                    </select>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal for Info button -->
+    <div class="pilotcountry-modal modal fade" id="info_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content"  style="width: 85%;margin:auto;padding-bottom: 10px;padding-top: 10px">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div class="modal-body" >
+                                <h3 style="text-align: left">Understanding the map</h3>
+                                <div class="container-fluid">
+                                    <div class="row" id="fc_usecase">
+                                        <h4 style="text-align: left">Forest cover analysis</h4>
+
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                     <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image FC"/>
+                                                </div>
+                                                <div class="col">
+                                                      <div class="caption">
+                                                    <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
+                                                    <p style="text-align: left">The left side shows the earlier year in bright green, indicating the places that were
+                                                        originally identified as forest.</p>
+                                                    <p style="text-align: left">The right side shows the later year in darker green, with the areas that have lost forest cover in red.
+                                                    </p>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                 <div class="col-3">
+                                                              <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for FC"/>
+                                                </div>
+                                                <div class="col">
+                                                        <div class="caption">
+                                                    <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
+                                                    <p style="text-align: left">The left side shows the first dataset in green, while the yellow pixels indicate
+                                                        locations identified as forest only in the second dataset.</p>
+                                                    <p style="text-align: left">
+                                                        The right side shows the second dataset in green, with yellow pixels indicating locations
+                                                        identified as forest only in the first dataset
+                                                    </p>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="other_3_usecases" style="display: none">
+                                        <h4 id="modal_usecase_title" style="text-align: left"></h4>
+                                        <div class="col-6" style="margin:auto;height: 100%">
+                                            <div class="thumbnail" >
+                                                <img id="cs_img" src="{% static 'assets/img/cs.PNG' %}" width="60%" alt="Carbon Stock image" style="display: none"/>
+                                                <img id="emissions_img" src="{% static 'assets/img/emissions.PNG' %}" width="60%" alt="Emissions image" style="display: none"/>
+                                                <img id="agb_img" src="{% static 'assets/img/agb.PNG' %}" width="60%" alt="AGB image" style="display: none"/>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row" style="font-family:Helvetica, Arial, sans-serif; ">
+                                                <p class="mt-3" id="text_between"></p>
+                                                <div class="col d-flex">
+                                                    <div class=" thumbnail" id="primary_overlay_legend">
+
+                                                    </div>
+                                                    <div style="padding-left: 10px">
+                                                        <h5 style="text-align :left">Left Pane</h5>
+                                                        <p style="text-align :left;max-width: 90%;
+            overflow-wrap: break-word;">Source:&nbsp;<span id="left_source"></span>
+                                                          <br>
+                                                          Min:&nbsp;<span id="left_min"></span>
+                                                          <br>Max:&nbsp;<span id="left_max"></span>
+                                                          <br>
+                                                          <span id="left_doi_fc"></span>
+                                                            <br>
+                                                          <span id="left_doi_agb"></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col d-flex">
+                                                    <div class="thumbnail" id="secondary_overlay_legend">
+
+                                                    </div>
+                                                    <div style="padding-left: 10px">
+                                                        <h5 style="text-align :left">Right Pane</h5>
+                                                        <p style="text-align :left;max-width: 90%;
+            overflow-wrap: break-word;">Source:&nbsp;<span id="right_source"></span>
+                                                          <br>
+                                                          Min:&nbsp;<span id="right_min"></span>
+                                                          <br>Max:&nbsp;<span id="right_max"></span>
+                                                          <br>
+                                                            <span id="right_doi_fc"></span>
+                                                            <br>
+                                                          <span id="right_doi_agb"></span>
+                                                        </p>
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-primary" style="font-family:Helvetica, Arial, sans-serif; font-size: large">
+                                        <i>Please note the content on this window will change depending on the type of visualization you have selected in the dropdown at the bottom of the map.</i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal to allow selection of usecase and PilotCountry -->
     <div class="pilotcountry-modal modal fade" id="country_selection_modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content"  style="width: 85%;margin:auto;padding-bottom: 10px;padding-top: 10px">
@@ -400,10 +379,11 @@
                                     </div>
 
                                     {% endfor %}
-                               </div>
-                                <button class="btn btn-primary text-uppercase mb-2" data-bs-dismiss="modal" type="button">
+                                   </div>
+                                    <button class="btn btn-primary text-uppercase mb-2" data-bs-dismiss="modal" type="button">
                                     I'll Explore a different location
-                                </button>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -411,76 +391,69 @@
             </div>
         </div>
     </div>
-</div>
-<div class="pilotcountry-modal modal fade" id="drawing_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content"  style="width: 55%;height:60%;margin:auto;padding-bottom: 10px;padding-top: 10px">
-            <div class="container-fluid">
-                <div class="row">
+    <!-- Modal to allow Forest Cover and AGB dataset selection when a user draws a polygon -->
+    <div class="pilotcountry-modal modal fade" id="drawing_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content"  style="width: 55%;height:60%;margin:auto;padding-bottom: 10px;padding-top: 10px">
+                <div class="container-fluid">
+                    <div class="row">
                         <div class="modal-body" >
                             <h4 class="text-uppercase">select the datasets</h4>
                             <div class="container-fluid">
-                                  <div class="row h-100" id="checkbox_selection">
+                                <div class="row h-100" id="checkbox_selection">
+                                    <div class="LC_checkboxlist col-6">
+                                        <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
+                                        <ul class="lc_list chart-list-scroll text-right list-inline" id="map_select_ds">
+                                            {% for lc in lcs %}
+                                                <li class="text-start justify-content-start" style="display: flex">
+                                                         <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
+                                                    <input type="checkbox"  class="lc_list-item-checkbox LC_cb yellow-checkbox"
 
-                        <div class="LC_checkboxlist col-6">
-                            <b style="font-family:Helvetica, Arial, sans-serif; ">Land Cover Datasets:</b><br>
-                            <ul class="lc_list chart-list-scroll text-right list-inline" id="map_select_ds">
-                                {% for lc in lcs %}
+                                                           value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
+                                                                                                 style="padding-left: 2px;font-family: Helvetica, Arial, sans-serif;">
+                                                    {% if lc.name  in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
+                                                    &nbsp;{{ lc.name }}</label>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="AGB_checkboxlist col-6">
+                                        <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
+                                        <ul class="agb_list chart-list-scroll">
+                                            {% csrf_token %}
+                                            {% for agb in agbs %}
+                                                <li class="text-start justify-content-start" style="display: flex">
+                                                    <input type="checkbox"  class="agb_list-item-checkbox AGB_cb yellow-checkbox"
 
-
-                                    <li class="text-start justify-content-start" style="display: flex">
-                                             <span style="display: none" id='LC{{ lc.id }}'>{{ lc.name }}</span>
-                                        <input type="checkbox"  class="lc_list-item-checkbox LC_cb yellow-checkbox"
-
-                                               value="{{ lc.id }}" name="lc"/><label id="LC{{ lc.id }}"
-                                                                                     style="padding-left: 2px;font-family: Helvetica, Arial, sans-serif;">
-                                        {% if lc.name  in global_list %}<i class="fa-solid fa-globe" title="Indicates a Global dataset"></i>{% endif %}
-                                        &nbsp;{{ lc.name }}</label>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="AGB_checkboxlist col-6">
-                            <b style="font-family: Helvetica, Arial, sans-serif;">Above Ground Biomass Datasets:</b><br>
-                            <ul class="agb_list chart-list-scroll">
-                                {% csrf_token %}
-                                {% for agb in agbs %}
-                                    <li class="text-start justify-content-start" style="display: flex">
-                                        <input type="checkbox"  class="agb_list-item-checkbox AGB_cb yellow-checkbox"
-
-                                               value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
-                                                                                           style="padding-left: 5px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}
-                                       </label>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-
-                    </div>
-
-
+                                                           value="{{ agb.id }}" name="agb"/><label id="AGB{{ agb.id }}"
+                                                                                                       style="padding-left: 5px;font-family: Helvetica, Arial, sans-serif"> {{ agb.name }}
+                                                   </label>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                       <button class="btn btn-primary text-uppercase mb-2 ml-2"  type="button" onclick="send_to_backend()">
+                                        Submit
+                                        </button>
+                                      <button class="btn btn-primary text-uppercase mb-2 ml-2" data-bs-dismiss="modal" type="button">
+                                        Cancel
+                                        </button>
                                 </div>
-                                   <button class="btn btn-primary text-uppercase mb-2 ml-2"  type="button" onclick="send_to_backend()">
-                                    Submit
-                                    </button>
-                                  <button class="btn btn-primary text-uppercase mb-2 ml-2" data-bs-dismiss="modal" type="button">
-                                    Cancel
-                                    </button>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-<!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
-<script src="{% static "js/scripts.js" %}"></script>
-<script>
-
-       var def_lc="{{default_lc|safe}}";
-var def_agb="{{default_agb|safe}}";
-</script>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="{% static "js/scripts.js" %}"></script>
+    <script>
+        //default LC and AGB values are stored here for each country
+        var def_lc="{{default_lc|safe}}";
+        var def_agb="{{default_agb|safe}}";
+    </script>
 </body>
 </html>
