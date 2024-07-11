@@ -386,7 +386,7 @@ def fetch_carbon_charts(pa_name, owner, container):
                                      index='year_index',
                                      fill_value=None)
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
-                          title='Carbon Statistics: ' + pa_name)
+                          title='Emission Statistics: ' + pa_name)
         return chart, lcs, agbs
     except Exception as e:
         error_msg = "Could not generate chart data for emissions"
@@ -431,7 +431,7 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
             agbs = df_agb.to_dict('records')
         if df.empty:
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
-                              title='CarbonStatistics: ' + pa_name)
+                              title='Carbon Stock: ' + pa_name)
             return chart, lcs, agbs
         df["fc_index_id"] = "LC" + df["fc_index_id"].apply(str)
         df["agb_index_id"] = "AGB" + df["agb_index_id"].apply(str)  # Add the prefix AGB to the AGB id column
@@ -467,7 +467,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                              xticks=[],
-                             title='Change in Forest Cover: ' + pa_name, )
+                             title='Net Forest Change: ' + pa_name, )
 
         return chart_fc, lcs_defor
 
@@ -481,7 +481,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
                                        index='year_index', fill_value=None)
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
                          xticks=years_defor,
-                         title='Change in Forest Cover: ' + pa_name, )
+                         title='Net Forest Change: ' + pa_name, )
 
     return chart_fc, lcs_defor
 
@@ -503,7 +503,7 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     if df_defor.empty:
         chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
                              xticks=[],
-                             title="Change in Forest Cover: " + aoi)
+                             title="Net Forest Change: " + aoi)
 
         return chart_fc, lcs_defor
     df_defor["NFC"] = df_defor['forest_gain'] - df_defor['forest_loss']
@@ -516,7 +516,7 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
                                         index='year_index', fill_value=None)
     chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
                           xticks=years_defor,
-                          title="Change in Forest Cover: " + aoi)
+                          title="Net Forest Change: " + aoi)
     return chart_fc1, lcs_defor
 
 
