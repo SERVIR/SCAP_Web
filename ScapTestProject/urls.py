@@ -31,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats,user_information)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats,user_information,map_cog)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -107,6 +107,7 @@ urlpatterns = [
       path('user_information', user_information, name='user_information'),
       path('map/<int:country>/get_statistics_for_map/',get_statistics_for_map,name='get_statistics_for_map'),
       path('test_stats/', test_stats, name='test_stats'),
+      path('map-cog/<int:country>/', map_cog, name='map_cog'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found_view

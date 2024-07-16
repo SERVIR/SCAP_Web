@@ -32,6 +32,94 @@ config = json.load(f)
 
 logger = logging.getLogger("django")
 
+def map_cog(request,country=0):
+    json_obj = {}
+    fc_arr = []
+    cs_arr = []
+    fc_colls = []
+    agb_colls = []
+    zoom_level = 3  # global extent center
+    lat_long = [44, 10]  # global extent center
+    fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
+    for fc in fc_collection:
+        fc_files = ForestCoverFile.objects.filter(collection=fc).values('year')
+        fc_years = []
+        for fc_yr in fc_files:
+            fc_years.append(fc_yr['year'])
+        fc_colls.append({'name': str(fc), 'years': fc_years})
+    agb_collection = AGBCollection.objects.filter(access_level='Public').values()
+    for agb in agb_collection:
+        agb_colls.append({'name': agb['name'], 'years': [agb['year']]})
+    pc = PilotCountry.objects.filter(id=country).values()
+    default_lc = 'JAXA'
+    default_agb = 'Saatchi 2000'
+    if country > 0:
+        pa = PilotCountry.objects.get(id=country)
+        if pa.forest_cover_collection is not None:
+            default_lc = pa.forest_cover_collection.name
+            default_agb = pa.agb_collection.name
+    for pilot in pc:
+        zoom_level = pilot['zoom_level']
+        lat_long = [pilot['latitude'], pilot['longitude']]
+        break
+    pilot_countries = PilotCountry.objects.all().order_by('country_name')
+
+    try:
+        if len(pc) > 0:
+            aois = AOIFeature.objects.filter(iso3=pc[0]['country_code']).exclude(desig_eng='COUNTRY')
+            aoi_arr = []
+            for aoi in aois:
+                aoi_geojson = json.loads(aoi.geom.geojson)
+                aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
+
+                aoi_arr.append(aoi_geojson)
+            country_shp = AOIFeature.objects.filter(iso3=pc[0]['country_code'], desig_eng='COUNTRY').last()
+            country_geojson = json.loads(country_shp.geom.geojson)
+            country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
+                                             'desig_eng': country_shp.desig_eng}
+            json_obj["data_pa"] = aoi_arr
+            country_geojson['coordinates'] = [
+                [[[-179, 70],
+                  [-179, -70],
+                  [179, -70],
+                  [179, 70],
+                  [-179, 70]]] + country_geojson['coordinates'][0]]
+            json_obj["data_country"] = [country_geojson]
+
+
+        else:
+            json_obj["data_pa"] = []
+            json_obj["data_country"] = []
+        lcs = []
+        agbs = []
+        if request.user.is_authenticated:
+            df_lc_owner = ForestCoverCollection.objects.filter(owner=request.user).values()
+            df_lc_public = ForestCoverCollection.objects.filter(access_level='Public').values()
+            df_lc = pd.DataFrame((df_lc_owner.union(df_lc_public).values()))
+
+            lcs = df_lc.to_dict('records')
+            df_agb_owner = AGBCollection.objects.filter(owner=request.user).values()
+            df_agb_public = AGBCollection.objects.filter(access_level='Public').values()
+            df_agb = pd.DataFrame(df_agb_owner.union(df_agb_public).values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+        else:
+            df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values())
+            lcs = df_lc.to_dict('records')
+            df_agb = pd.DataFrame(
+                AGBCollection.objects.filter(access_level='Public').values())  # Get the AGB dataset data
+            agbs = df_agb.to_dict('records')
+
+    except Exception as e:
+        print(e)
+        json_obj["data_pa"] = []
+        json_obj["data_country"] = []
+    return render(request, 'scap/map_cog.html',
+                  context={'shp_obj': json_obj, 'country_id': country, 'lcs': lcs, 'agbs': agbs,
+                           'pilot_countries': pilot_countries,
+                           'latitude': lat_long[0], 'longitude': lat_long[1],
+                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '', 'default_lc': default_lc,
+                           'default_agb': default_agb,
+                           'fc_colls': fc_colls, 'agb_colls': agb_colls})
 
 def user_information(request):
     if request.method == 'POST':
@@ -658,3 +746,4 @@ class DeleteForestCoverCollection(DeleteView):
     model = ForestCoverCollection
     template_name = "scap/delete_forest_cover_collection.html"
     success_url = reverse_lazy('forest-cover-collections')
+
