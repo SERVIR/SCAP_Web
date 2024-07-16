@@ -452,8 +452,8 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
         else:
             try:
                 (fc_area,
-                 fc_gain_area,
                  fc_loss_area,
+                 fc_gain_area,
                  processing_time) = calculate_forest_cover_statistics(fc_filepath, fcc_filepath, aoi_filepath)
             except:
                 logger.info('Error generating FC statistics for files: {} {}'.format(aoi_filepath, fc_filepath))
