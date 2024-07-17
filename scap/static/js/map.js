@@ -18,8 +18,10 @@ function resetMapAction(){
         localStorage.clear();
         localStorage.setItem('map_modal_action', 'deforestation_targets');
     }
-            redraw_map_layers();
+            if(!$('#country_selection_modal').hasClass('show')) {
 
+            redraw_map_layers();
+}
             console.log(localStorage.getItem('map_modal_action'))
 
 }
@@ -62,7 +64,10 @@ function set_map_action(anchor,text,from_modal=false) {
     if (anchor.className.includes('dropdown')) {
         localStorage.setItem('map_modal_action', text);
         document.getElementById('usecase_name').innerHTML = 'Displaying: ' + anchor.innerHTML
-        redraw_map_layers();
+        if(!$('#country_selection_modal').hasClass('show')) {
+
+            redraw_map_layers();
+}
     } else {
         var div = anchor.parentNode;
         siblings = getAllSiblings(div, divFilter);
@@ -81,7 +86,11 @@ function set_map_action(anchor,text,from_modal=false) {
         } else {
             document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
         }
-        redraw_map_layers();
+      if(!$('#country_selection_modal').hasClass('show')) {
+
+            redraw_map_layers();
+}
+
     }
 }
 //Populate Fc/AGB in selection dropdown

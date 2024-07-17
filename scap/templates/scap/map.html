@@ -301,7 +301,7 @@
         </div>
     </div>
     <!-- Modal to allow selection of usecase and PilotCountry -->
-    <div class="pilotcountry-modal modal fade" id="country_selection_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pilotcountry-modal modal fade" id="country_selection_modal" tabindex="-1" role="dialog" aria-hidden="true"  data-bs-keyboard="false" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content"  style="width: 85%;margin:auto;padding-bottom: 10px;padding-top: 10px">
                 <div class="container-fluid">
@@ -380,7 +380,7 @@
 
                                     {% endfor %}
                                    </div>
-                                    <button class="btn btn-primary text-uppercase mb-2" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-primary text-uppercase mb-2" data-bs-dismiss="modal" type="button" onclick="redraw_map_layers()">
                                     I'll Explore a different location
                                     </button>
                                 </div>
