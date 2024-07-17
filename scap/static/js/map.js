@@ -10,13 +10,18 @@ let country_layer;
 let drawn_aoi;
 let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
+let from_map_modal=false;
 window.onload = resetMapAction;
 // reset map action to Forest Cover
 function resetMapAction(){
-    localStorage.clear();
-    localStorage.setItem('map_modal_action','deforestation_targets');
-    redraw_map_layers();
-    console.log(localStorage.getItem('map_modal_action'))
+    if(from_map_modal===false) {
+        localStorage.clear();
+        localStorage.setItem('map_modal_action', 'deforestation_targets');
+    }
+            redraw_map_layers();
+
+            console.log(localStorage.getItem('map_modal_action'))
+
 }
 //method used to add dropdown selector options
 function add_option_by_id(selector, value, label,defalt) {
@@ -49,7 +54,11 @@ function divFilter(elem) {
     }
 }
 // Method is called when a usecase is selected
-function set_map_action(anchor,text) {
+function set_map_action(anchor,text,from_modal=false) {
+    if(from_modal===true){
+        from_map_modal=true;
+    }
+    else from_map_modal=false;
     if (anchor.className.includes('dropdown')) {
         localStorage.setItem('map_modal_action', text);
         document.getElementById('usecase_name').innerHTML = 'Displaying: ' + anchor.innerHTML
