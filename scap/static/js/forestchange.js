@@ -299,12 +299,12 @@ function all_unchecked_fc() {
 }
 function populate_nr_nfc(){
     var nr_data = {
-            "Ghana": {'value': 18340.46, 'start_year': 2001, 'end_year': 2015},
-            "Kenya": {'value': 338863.00, 'start_year': 2002, 'end_year': 2018},
-            "Nepal": {'value': 2231.40, 'start_year': 2000, 'end_year': 2010},
-            "Guatemala": {'value': 106845.00, 'start_year': 2001, 'end_year': 2010},
-            "Cote d'Ivorie": {'value': 124551.68, 'start_year': 2000, 'end_year': 2015},
-            "Bhutan": {'value': 175.60, 'start_year': 2000, 'end_year': 2015},
+            "Ghana": {'value': -1475.80, 'start_year': 2001, 'end_year': 2015},
+            "Kenya": {'value': -12069, 'start_year': 2002, 'end_year': 2018},
+            "Nepal": {'value': -871.60, 'start_year': 2000, 'end_year': 2010},
+            "Guatemala": {'value': -104850.05, 'start_year': 2001, 'end_year': 2010},
+            "Cote d'Ivorie": {'value': -109411.81, 'start_year': 2000, 'end_year': 2015},
+            "Bhutan": {'value': -53.81, 'start_year': 2000, 'end_year': 2015},
         }
         var data_obj = [];
             if( nr_data[country_name]!=undefined) {
