@@ -538,6 +538,9 @@ function reset_fc_lcs() {
 // access_lines(uncheck[i],'LC');
     }
     var index = $("#container1").data('highchartsChart');
+        if(document.getElementById('container1').style.display=='none'){
+        index = $("#container_deforestation").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
@@ -599,6 +602,9 @@ function clear_fc_lcs() {
         // access_lines(uncheck[i],'LC');
     }
     var index = $("#container1").data('highchartsChart');
+     if(document.getElementById('container1').style.display=='none'){
+        index = $("#container_deforestation").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {

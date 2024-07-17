@@ -1,5 +1,8 @@
 var index_fc = $("#container_fcpa").data('highchartsChart');
 var chart1 = Highcharts.charts[index_fc];
+var index_def_pa = $("#container_deforestation_pa").data('highchartsChart');
+var chart_def_pa = Highcharts.charts[index_def_pa];
+
 var series = chart1.series;
 var newseries = series;
 
@@ -82,6 +85,37 @@ chart1.update({
     }
 });
 
+chart_def_pa.update({
+    yAxis: {
+        title: {
+            text: 'Values (Ha)',
+        }
+    }, tooltip: {
+        useHTML: true,
+        enabled: true,
+        backgroundColor: null,
+        borderWidth: 0,
+        shadow: false,
+        formatter: function () {
+            const ss = this.series.name;
+            const lc = ss;
+            const color = this.series.color;
+            //    if (ss[0]==='NFC') {
+            //     var label = "Net Forest Change";
+            // } else {
+            //     var label = "Total Forest Area";
+            // }
+            var label = "Deforestation";
+
+            var labellc = document.getElementById(lc).innerText;
+            var value = '<div style="background-color:' + standardize_color(color) + "E6" + ';padding:10px">' +
+                '<span>' + label + ' ' + this.x + '<br>  <b>' + (this.y).toLocaleString('en-US') + ' Ha</b>' +
+                '<span style=\'padding-left:50px\'></span> <br/>' + labellc + ' </span><div>';
+            return value;
+        }
+    }
+});
+
 function getFC(pa_selected_name, data_obj) {
     chart1.update({series: data_obj.series, title: data_obj.title});
 }
@@ -135,9 +169,61 @@ chart1.update({
     }
 );
 
+// Update chart options
+chart_def_pa.update({
+        chart: {
+            type: 'spline'
+        },
+       exporting: {
+    buttons: {
+      contextButton: {
+        menuItems: ["viewFullscreen",
+                        "printChart",
+                    "separator",
+                    "downloadPNG",
+                    "downloadJPEG",
+                    "downloadPDF",
+                    "downloadSVG",
+                    "separator",
+                    "downloadCSV",
+                    "downloadXLS",]
+      }
+    }
+  },
+
+        plotOptions: {
+            series: {
+                connectNulls: true,
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    }
+                }, showCheckbox: false,
+                selected: true,
+
+                events: {
+                    checkboxClick: function (event) {
+                        if (this.visible) {
+                            this.hide();
+                        } else {
+                            this.show();
+                        }
+                    }
+                }
+            }
+        }
+    }
+);
+
 //  Hide lines on the chart based on checkbox selection
 function hide_line_fc(elem) {
     var index = $("#container_fcpa").data('highchartsChart');
+    if(document.getElementById('container_fcpa').style.display=='none'){
+        index = $("#container_deforestation_pa").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -151,6 +237,9 @@ function hide_line_fc(elem) {
 // Show lines on the chart based on checkbox selection
 function show_line_fc(elem) {
     var index = $("#container_fcpa").data('highchartsChart');
+    if(document.getElementById('container_fcpa').style.display=='none'){
+        index = $("#container_deforestation_pa").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     var newseries = series;
@@ -194,3 +283,18 @@ function all_unchecked_fc() {
     return msg;
 }
 
+function checkbox_toggle(elem){
+    if (elem.checked) {
+        console.log('checked');
+        $('#toggle_label').html('Net Forest Change');
+
+        document.getElementById('container_deforestation_pa').style.display = 'none';
+        document.getElementById('container_fcpa').style.display = 'block';
+
+    }
+    else {
+        document.getElementById('container_deforestation_pa').style.display = 'block';
+        document.getElementById('container_fcpa').style.display = 'none';
+        $('#toggle_label').html('Deforestation');
+    }
+};

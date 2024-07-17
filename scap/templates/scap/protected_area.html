@@ -316,6 +316,10 @@
             <div class="card-body">
                 <div class="row h-100 ">
                     <div class="col-3 m-auto">
+                                 <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" onchange="checkbox_toggle(this)" checked title="toggle to change the chart">
+  <label class="form-check-label" for="flexSwitchCheckChecked" id="toggle_label">Net Forest Change</label>
+</div>
                         <b>Land Cover Datasets:</b><br>
                         <ul class="lcf_list_cf_pa chart-list-scroll">
                             {% csrf_token %}
@@ -342,6 +346,11 @@
                     <div class="col-9" id="container_fcpa" style="height: 90%">
                         <script type="text/javascript">
                             new Highcharts.Chart({{chart_fcpa|safe}});
+                        </script>
+                    </div>
+                     <div class="col-9" id="container_deforestation_pa" style="height: 90%;display: none">
+                        <script type="text/javascript">
+                            new Highcharts.Chart({{chart_def_pa|safe}});
                         </script>
                     </div>
 
@@ -436,37 +445,42 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                             <!-- Project details-->
                             <h4 class="text-uppercase">Understanding the map</h4>
                            <div class="container-fluid">
-                               <div class="row">
-<div class="col-md-6">
-    <div class="thumbnail">
-     <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image for red area"/>
-        <div class="caption">
-                                   <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
-                                   <p style="text-align: left">The left side (A) shows the earlier year in bright green, indicating the places that were
-                                   originally identified as forest.</p>
-                                       <p style="text-align: left">The right side (B) shows the later year in darker green, with the areas that have lost forest cover in red.
-                                       </p>
-        </div>
+                                <div class="row" id="fc_usecase">
+                                        <h4 style="text-align: left">Forest cover analysis</h4>
 
-    </div>
-</div>
-                                   <div class="col-md-6">
-    <div class="thumbnail">
-     <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for yellow area"/>
-        <div class="caption">
-                                         <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
-                                       <p style="text-align: left">The left side (A) shows the first dataset in green, while the yellow pixels indicate
-                                       locations identified as forest only in the second dataset.</p>
-                                       <p style="text-align: left">
-                                           The right side (B) shows the second dataset in green, with yellow pixels indicating locations
-                                           identified as forest only in the first dataset
-                                       </p>
-        </div>
-
-    </div>
-</div>
-
-                                   </div>
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                     <img  src="{% static "assets/img/red_image.PNG" %}" width="100%" alt="image FC"/>
+                                                </div>
+                                                <div class="col">
+                                                      <div class="caption">
+                                                    <p style="text-align: left">Comparing <b>different years for same forest cover collection</b></p>
+                                                    <p style="text-align: left">The left side shows the earlier year in bright green, indicating the places that were
+                                                        originally identified as forest.</p>
+                                                    <p style="text-align: left">The right side shows the later year in darker green, with the areas that have lost forest cover in red.
+                                                    </p>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                 <div class="col-3">
+                                                              <img  src="{% static "assets/img/yellow_image.PNG" %}" width="100%" alt="image for FC"/>
+                                                </div>
+                                                <div class="col">
+                                                        <div class="caption">
+                                                    <p style="text-align: left">Comparing <b>data from different forest cover collections</b></p>
+                                                    <p style="text-align: left">The left side shows the first dataset in green, while the yellow pixels indicate
+                                                        locations identified as forest only in the second dataset.</p>
+                                                    <p style="text-align: left">
+                                                        The right side shows the second dataset in green, with yellow pixels indicating locations
+                                                        identified as forest only in the first dataset
+                                                    </p>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                             <button class="btn btn-primary text-uppercase float-end mb-2" data-bs-dismiss="modal" type="button">
                                 Close

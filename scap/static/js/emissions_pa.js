@@ -538,7 +538,11 @@ function reset_lcs_fc_pa() {
 // access_lines(uncheck[i],'LC');
     }
     var index = $("#container_fcpa").data('highchartsChart');
+        if(document.getElementById('container_fcpa').style.display=='none'){
+        index = $("#container_deforestation_pa").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
+
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
          chart.series[i].setVisible(true,false);
@@ -599,6 +603,9 @@ function clear_lcs_fc_pa() {
         // access_lines(uncheck[i],'LC');
     }
     var index = $("#container_fcpa").data('highchartsChart');
+        if(document.getElementById('container_fcpa').style.display=='none'){
+        index = $("#container_deforestation_pa").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {

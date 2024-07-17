@@ -17,7 +17,7 @@ import pandas as pd
 from django.contrib.auth.models import User,Group
 import shapely
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts, fetch_carbon_stock_charts,
-                      get_available_colors, generate_geodjango_objects_aoi)
+                      get_available_colors, generate_geodjango_objects_aoi,fetch_deforestation_charts,fetch_deforestation_charts_by_aoi)
 from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm,UserRoleForm
 from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
                          PilotCountry, AOIFeature, CurrentTask, ForestCoverStatistic)
@@ -318,6 +318,7 @@ def pilot_country(request, country=0):
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container')
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
+    chart_def,lcs_defor=fetch_deforestation_charts(pa_name, request.user,'container_deforestation')
     if pa.forest_cover_collection is None:
         default_lc='JAXA'
         default_agb='Saatchi 2000'
@@ -325,7 +326,7 @@ def pilot_country(request, country=0):
         default_lc=pa.forest_cover_collection.name
         default_agb=pa.agb_collection.name
     return render(request, 'scap/pilot_country.html',
-                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,'chart_cs': chart_cs,
+                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,'chart_cs': chart_cs,'chart_def':chart_def,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
@@ -386,8 +387,9 @@ def protected_aois(request, aoi):
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
+    chart_def_pa,lcs_defor=fetch_deforestation_charts_by_aoi(pa_name, request.user,'container_deforestation_pa')
     return render(request, 'scap/protected_area.html',
-                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
                            'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
                            'tagline': tagline, 'image': pc.hero_image.url, 'country_id': country_id,

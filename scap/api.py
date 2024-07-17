@@ -485,6 +485,40 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
     return chart_fc, lcs_defor
 
+def fetch_deforestation_charts(pa_name, owner, container):
+    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values()))
+    lc_names = []
+    if not df_defor.empty:
+        lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
+    if owner.is_authenticated:
+        df_lc_defor_owner = ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values()
+        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values()
+        df_lc_defor = pd.DataFrame((df_lc_defor_owner.union(df_lc_defor_public).values()))
+    else:
+        df_lc_defor = pd.DataFrame(
+            ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
+    lcs_defor = df_lc_defor.to_dict('records')
+    if df_defor.empty:
+        chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
+                             xticks=[],
+                             title='Deforestation: ' + pa_name, )
+
+        return chart_fc, lcs_defor
+
+    df_defor = df_defor.assign(fc_index_id=[1 + i for i in range(len(df_defor))])[
+        ['fc_index_id'] + df_defor.columns.tolist()]
+    df_defor["fc_index_id"] = "LC" + df_defor["fc_index"].apply(str)
+
+    # df_defor["nfc"] = df_defor['forest_gain'] - df_defor['forest_loss']
+    years_defor = list(df_defor['year_index'].unique())
+    pivot_table_defor = pd.pivot_table(df_defor, values='forest_loss', columns=['fc_index'],
+                                       index='year_index', fill_value=None)
+    chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
+                         xticks=years_defor,
+                         title='Deforestation: ' + pa_name, )
+
+    return chart_fc, lcs_defor
+
 
 def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
@@ -517,6 +551,36 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
     chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
                           xticks=years_defor,
                           title="Net Forest Change: " + aoi)
+    return chart_fc1, lcs_defor
+
+def fetch_deforestation_charts_by_aoi(aoi, owner, container):
+    # generating highcharts chart object from python using pandas(forest cover change chart)
+    lc_names = []
+    df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=aoi).values()))
+    if not df_defor.empty:
+        lc_names = numpy.array(df_defor['fc_index'].unique()).tolist()
+    if owner.is_authenticated:
+        df_lc_defor_owner = ForestCoverCollection.objects.filter(owner=owner, name__in=lc_names).values()
+        df_lc_defor_public = ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values()
+        df_lc_defor = pd.DataFrame((df_lc_defor_owner.union(df_lc_defor_public).values()))
+    else:
+        df_lc_defor = pd.DataFrame(
+            ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
+    lcs_defor = df_lc_defor.to_dict('records')
+    if df_defor.empty:
+        chart_fc = serialize(pd.DataFrame(), render_to=container, output_type='json', type='spline',
+                             xticks=[],
+                             title="Deforestation: " + aoi)
+
+        return chart_fc, lcs_defor
+    df_defor['fc_index_id'] = 'LC' + df_defor['fc_index'].apply(str)
+    # print(df_defor)
+    years_defor = list(df_defor['year_index'].unique())
+    pivot_table_defor1 = pd.pivot_table(df_defor, values='forest_loss', columns=['fc_index'],
+                                        index='year_index', fill_value=None)
+    chart_fc1 = serialize(pivot_table_defor1, render_to=container, output_type='json', type='spline',
+                          xticks=years_defor,
+                          title="Deforestation: " + aoi)
     return chart_fc1, lcs_defor
 
 
