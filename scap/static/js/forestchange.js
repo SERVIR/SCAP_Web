@@ -309,9 +309,19 @@ function populate_nr_nfc(){
         var data_obj = [];
             if( nr_data[country_name]!=undefined) {
                 var current_country_value = nr_data[country_name]['value'];
-                for (var i = nr_data[country_name]['start_year']; i <= nr_data[country_name]['end_year']; i++) {
-                    data_obj.push({x: i, y: current_country_value});
-                }
+                     for (var i = 2000; i <= 2022; i++) {
+            if (i<nr_data[country_name]['start_year']){
+                            data_obj.push({x: i, y: null});
+
+            }
+            else if (i>nr_data[country_name]['end_year']){
+                    data_obj.push({x: i, y: null});
+            }
+            else{
+                data_obj.push({x: i, y: current_country_value});
+
+            }
+        }
             }
            var seriesLength = chart1.series.length;
                 for(var i = seriesLength - 1; i > -1; i--)
@@ -320,19 +330,21 @@ function populate_nr_nfc(){
                     if(chart1.series[i].name =="National Reporting")
                         chart1.series[i].remove();
                 }
-            chart1.addSeries({
-            name: "National Reporting",
-                        id:"National Reporting",
+                if (data_obj.length>0) {
+                    chart1.addSeries({
+                        name: "National Reporting",
+                        id: "National Reporting",
 
-            data: data_obj,
-            dashStyle: 'dot',
-            lineWidth: 5,
+                        data: data_obj,
+                        dashStyle: 'dot',
+                        lineWidth: 5,
 
-            color: 'grey',
-            marker: {
-                enabled: false
-            }
-        }, true);
+                        color: 'grey',
+                        marker: {
+                            enabled: false
+                        }
+                    }, true);
+                }
 }
 function  populate_nr_def(){
      var nr_data = {
@@ -348,14 +360,24 @@ function  populate_nr_def(){
             "Guatemala": {'value': 106845.00, 'start_year': 2001, 'end_year': 2010},
             "Bangladesh": {'value': 14070.00, 'start_year': 2000, 'end_year': 2015},
             "Colombia": {'value': 145943.00, 'start_year': 2000, 'end_year': 2017},
-            "Cote d'Ivorie": {'value': 124551.68, 'start_year': 2000, 'end_year': 2015},
+            "Ivory Coast": {'value': 124551.68, 'start_year': 2000, 'end_year': 2015},
             "Bhutan": {'value': 175.60, 'start_year': 2000, 'end_year': 2015},
             "Cambodia": {'value': 268803.00,'start_year': 2011, 'end_year': 2018},
         }
         var data_obj = [];
         var current_country_value = nr_data[country_name]['value'];
-        for (var i = nr_data[country_name]['start_year']; i <= nr_data[country_name]['end_year']; i++) {
-            data_obj.push({x: i, y: current_country_value});
+        for (var i = 2000; i <= 2022; i++) {
+            if (i<nr_data[country_name]['start_year']){
+                            data_obj.push({x: i, y: null});
+
+            }
+            else if (i>nr_data[country_name]['end_year']){
+                    data_obj.push({x: i, y: null});
+            }
+            else{
+                data_obj.push({x: i, y: current_country_value});
+
+            }
         }
            var seriesLength = chart_def.series.length;
                 for(var i = seriesLength - 1; i > -1; i--)
@@ -364,18 +386,19 @@ function  populate_nr_def(){
                     if(chart_def.series[i].name =="National Reporting")
                         chart_def.series[i].remove();
                 }
-        chart_def.addSeries({
-            name: "National Reporting",
-            data: data_obj,
-            dashStyle: 'dot',
-            lineWidth: 5,
+                 if (data_obj.length>0) {
+                     chart_def.addSeries({
+                         name: "National Reporting",
+                         data: data_obj,
+                         dashStyle: 'dot',
+                         lineWidth: 5,
 
-            color: 'grey',
-            marker: {
-                enabled: false
-            }
-        }, true);
-
+                         color: 'grey',
+                         marker: {
+                             enabled: false
+                         }
+                     }, true);
+                 }
 }
 function checkbox_toggle(elem){
     if (elem.checked) {

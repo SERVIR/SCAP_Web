@@ -545,7 +545,9 @@ function reset_fc_lcs() {
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
          chart.series[i].setVisible(true,false);
+
     }
+    chart.redraw();
 }
 
 function get_checked_agbs() {

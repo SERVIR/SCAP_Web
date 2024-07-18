@@ -547,6 +547,7 @@ function reset_lcs_fc_pa() {
     for (var i = 0; i < series.length; i++) {
          chart.series[i].setVisible(true,false);
     }
+        chart.redraw();
 }
 
 function get_checked_agbs() {
