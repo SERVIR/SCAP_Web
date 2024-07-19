@@ -376,6 +376,8 @@ def fetch_carbon_charts(pa_name, owner, container):
                                                                id__in=agb_ids).values())  # Get the AGB dataset data
             agbs = df_agb.to_dict('records')
         if df.empty:
+            if pa_name == 'Ivory Coast':
+                pa_name = "Côte d'Ivoire"
             chart = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                               title='CarbonStatistics: ' + pa_name)
             return chart, lcs, agbs
@@ -385,6 +387,8 @@ def fetch_carbon_charts(pa_name, owner, container):
         pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index_id', 'agb_index_id'],
                                      index='year_index',
                                      fill_value=None)
+        if pa_name=='Ivory Coast':
+            pa_name="Côte d'Ivoire"
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
                           title='Emission Statistics: ' + pa_name)
         return chart, lcs, agbs
@@ -441,6 +445,8 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
                                         columns=['fc_index_id', 'agb_index_id'],
                                         index='year_index',
                                         fill_value=None)
+        if pa_name=='Ivory Coast':
+            pa_name="Côte d'Ivoire"
         chart_cs = serialize(pivot_table_cs, render_to=container, output_type='json', type='spline',
                              title='Carbon Stock: ' + pa_name)
         return chart_cs, lcs, agbs
@@ -465,6 +471,8 @@ def fetch_forest_change_charts(pa_name, owner, container):
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
+        if pa_name=='Ivory Coast':
+            pa_name="Côte d'Ivoire"
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                              xticks=[],
                              title='Net Forest Change: ' + pa_name, )
@@ -479,7 +487,10 @@ def fetch_forest_change_charts(pa_name, owner, container):
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor = pd.pivot_table(df_defor, values='nfc', columns=['fc_index'],
                                        index='year_index', fill_value=None)
+    if pa_name == 'Ivory Coast':
+        pa_name = "Côte d'Ivoire"
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
+
                          xticks=years_defor,
                          title='Net Forest Change: ' + pa_name, )
 
@@ -499,6 +510,8 @@ def fetch_deforestation_charts(pa_name, owner, container):
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
+        if pa_name=='Ivory Coast':
+            pa_name="Côte d'Ivoire"
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                              xticks=[],
                              title='Deforestation: ' + pa_name, )
@@ -513,6 +526,8 @@ def fetch_deforestation_charts(pa_name, owner, container):
     years_defor = list(df_defor['year_index'].unique())
     pivot_table_defor = pd.pivot_table(df_defor, values='forest_loss', columns=['fc_index'],
                                        index='year_index', fill_value=None)
+    if pa_name == 'Ivory Coast':
+        pa_name = "Côte d'Ivoire"
     chart_fc = serialize(pivot_table_defor, render_to=container, output_type='json', type='spline',
                          xticks=years_defor,
                          title='Deforestation: ' + pa_name, )

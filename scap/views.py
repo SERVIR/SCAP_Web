@@ -333,6 +333,8 @@ def pilot_country(request, country=0):
     else:
         default_lc = pa.forest_cover_collection.name
         default_agb = pa.agb_collection.name
+    if pa_name == 'Ivory Coast':
+        pa_name = "Côte d'Ivoire"
     return render(request, 'scap/pilot_country.html',
                   context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
                            'chart_cs': chart_cs, 'chart_def': chart_def,
