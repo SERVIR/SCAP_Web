@@ -475,7 +475,7 @@ def protected_aois_custom(request, aoi):
                            'chart_cs_pa': chart_cs, 'chart_def_pa': chart_def_pa,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
                            'agbs_cs': agbs_cs,
-                           'region_country': pa_name, 'country_desc':"",
+                           'region_country': 'CUSTOM AOI', 'country_desc':"",
                            'tagline': tagline, 'image': "", 'country_id': 0,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
