@@ -224,10 +224,12 @@
 
 
         </div>
+        {% if country_name.length > 0 %}
         <br>
         <div>
         <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">Go to {{country_name}} country page</a>
 </div>
+        {% endif %}
     </div>
 
 </section>

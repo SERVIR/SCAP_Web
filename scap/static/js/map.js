@@ -831,7 +831,7 @@ function send_to_backend(){
                     alert('Please login to continue')
                 }
                 else{
-                    window.location = window.location.origin + '/aoi/' + data.aoi_id + '/';
+                    window.location = window.location.origin + '/aoi/' + data.aoi_id + '/custom/';
                 }
             }
         });

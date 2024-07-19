@@ -31,7 +31,7 @@ from scap.views import (home, protected_aois, map, pilot_country, updateColl, pa
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
                         CreateForestCoverCollection, CreateAGBCollection, CreateAOICollection, \
                         DeleteForestCoverCollection, DeleteAOICollection, DeleteAGBCollection,
-                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats,user_information,map_cog)
+                        EditForestCoverCollection, EditAOICollection, EditAGBCollection,logout_view,test_stats,user_information,map_cog,protected_aois_custom)
 
 urlpatterns = [
       path('', home, name='home'),
@@ -48,6 +48,7 @@ urlpatterns = [
       path('map/<int:country>/', map, name='map'),
       path('map/', map, name='map'),
       path('aoi/<int:aoi>/', protected_aois, name='aoi_page'),
+      path('aoi/<int:aoi>/custom/', protected_aois_custom, name='aoi_page_custom'),
       path('contribute-data/', add_new_collection, name='contribute-data'),
       path('send-message-scap/',send_message_scap,name='send-message-scap'),
 

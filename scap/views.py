@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from datetime import datetime,date,timedelta
+from datetime import datetime, date, timedelta
 from pathlib import Path
 from django.contrib import auth
 from django.core.mail import send_mail
@@ -14,11 +14,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 import pandas as pd
 
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User, Group
 import shapely
-from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts, fetch_carbon_stock_charts,
-                      get_available_colors, generate_geodjango_objects_aoi,fetch_deforestation_charts,fetch_deforestation_charts_by_aoi)
-from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm,UserRoleForm
+from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
+                      fetch_carbon_stock_charts,
+                      get_available_colors, generate_geodjango_objects_aoi, fetch_deforestation_charts,
+                      fetch_deforestation_charts_by_aoi)
+from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollectionForm, UserRoleForm
 from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
                          PilotCountry, AOIFeature, CurrentTask, ForestCoverStatistic)
 
@@ -32,7 +34,8 @@ config = json.load(f)
 
 logger = logging.getLogger("django")
 
-def map_cog(request,country=0):
+
+def map_cog(request, country=0):
     json_obj = {}
     fc_arr = []
     cs_arr = []
@@ -121,6 +124,7 @@ def map_cog(request,country=0):
                            'default_agb': default_agb,
                            'fc_colls': fc_colls, 'agb_colls': agb_colls})
 
+
 def user_information(request):
     if request.method == 'POST':
         form = UserRoleForm(request.POST)
@@ -154,9 +158,12 @@ def user_information(request):
         form = UserRoleForm()
 
     return render(request, 'scap/user_information.html', {'form': form})
+
+
 def test_stats(request):
     gdal_stats()
     return HttpResponse('done')
+
 
 def home(request):
     is_new_user = request.session.get('is_new_user', False)
@@ -164,7 +171,7 @@ def home(request):
         del request.session['is_new_user']
         return HttpResponseRedirect('user_information')
     pilot_countries = []
-    new_user_list=None
+    new_user_list = None
     try:
         pilot_countries = PilotCountry.objects.all().order_by('country_name')
         today = date.today()
@@ -172,8 +179,8 @@ def home(request):
         new_user_list = User.objects.filter(date_joined__gte=seven_day_before)
     except:
         pass
-    context={'pilot_countries': pilot_countries,'new_user_list': new_user_list}
-    if hasattr(request,'new_users'):
+    context = {'pilot_countries': pilot_countries, 'new_user_list': new_user_list}
+    if hasattr(request, 'new_users'):
         context['new_users'] = request.new_users
     return render(request, 'scap/index.html', context=context)
 
@@ -199,11 +206,11 @@ def map(request, country=0):
     pc = PilotCountry.objects.filter(id=country).values()
     default_lc = 'JAXA'
     default_agb = 'Saatchi 2000'
-    if country>0:
+    if country > 0:
         pa = PilotCountry.objects.get(id=country)
         if pa.forest_cover_collection is not None:
-            default_lc=pa.forest_cover_collection.name
-            default_agb=pa.agb_collection.name
+            default_lc = pa.forest_cover_collection.name
+            default_agb = pa.agb_collection.name
     for pilot in pc:
         zoom_level = pilot['zoom_level']
         lat_long = [pilot['latitude'], pilot['longitude']]
@@ -225,11 +232,11 @@ def map(request, country=0):
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
             country_geojson['coordinates'] = [
-                [ [[-179,70],
-            [-179,-70],
-            [179,-70],
-            [179,70],
-            [-179,70]]  ] + country_geojson['coordinates'][0]]
+                [[[-179, 70],
+                  [-179, -70],
+                  [179, -70],
+                  [179, 70],
+                  [-179, 70]]] + country_geojson['coordinates'][0]]
             json_obj["data_country"] = [country_geojson]
 
 
@@ -263,7 +270,8 @@ def map(request, country=0):
                   context={'shp_obj': json_obj, 'country_id': country, 'lcs': lcs, 'agbs': agbs,
                            'pilot_countries': pilot_countries,
                            'latitude': lat_long[0], 'longitude': lat_long[1],
-                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '','default_lc': default_lc,'default_agb':default_agb,
+                           'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '', 'default_lc': default_lc,
+                           'default_agb': default_agb,
                            'fc_colls': fc_colls, 'agb_colls': agb_colls})
 
 
@@ -298,12 +306,12 @@ def pilot_country(request, country=0):
                                              'desig_eng': country_shp.desig_eng}
             json_obj["data_pa"] = aoi_arr
             # json_obj["data_country"] = [country_geojson]
-            country_geojson['coordinates']=[[ [[-179,70],
-            [-179,-70],
-            [179,-70],
-            [179,70],
-            [-179,70]]  ]+country_geojson['coordinates'][0]]
-            json_obj["data_country"] =  [country_geojson]
+            country_geojson['coordinates'] = [[[[-179, 70],
+                                                [-179, -70],
+                                                [179, -70],
+                                                [179, 70],
+                                                [-179, 70]]] + country_geojson['coordinates'][0]]
+            json_obj["data_country"] = [country_geojson]
         else:
             json_obj["data_pa"] = []
             json_obj["data_country"] = []
@@ -318,19 +326,22 @@ def pilot_country(request, country=0):
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'container')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container')
     chart_fc, lcs_defor = fetch_forest_change_charts(pa_name, request.user, 'container1')
-    chart_def,lcs_defor=fetch_deforestation_charts(pa_name, request.user,'container_deforestation')
+    chart_def, lcs_defor = fetch_deforestation_charts(pa_name, request.user, 'container_deforestation')
     if pa.forest_cover_collection is None:
-        default_lc='JAXA'
-        default_agb='Saatchi 2000'
+        default_lc = 'JAXA'
+        default_agb = 'Saatchi 2000'
     else:
-        default_lc=pa.forest_cover_collection.name
-        default_agb=pa.agb_collection.name
+        default_lc = pa.forest_cover_collection.name
+        default_agb = pa.agb_collection.name
     return render(request, 'scap/pilot_country.html',
-                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,'chart_cs': chart_cs,'chart_def':chart_def,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,'name': pa_name,
+                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
+                           'chart_cs': chart_cs, 'chart_def': chart_def,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
+                           'agbs_cs': agbs_cs, 'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
-                           'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,'default_lc': default_lc,'default_agb':default_agb,
+                           'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,
+                           'default_lc': default_lc, 'default_agb': default_agb,
                            'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
 
 
@@ -338,8 +349,8 @@ def protected_aois(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
-    vall= '{:20,.1f}'.format(pa.rep_area *100)
-    tagline='Total area is '+str(vall)+' Ha'
+    vall = '{:20,.1f}'.format(pa.rep_area * 100)
+    tagline = 'Total area is ' + str(vall) + ' Ha'
 
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
     df["lon"] = df["geometry"].centroid.x
@@ -361,7 +372,7 @@ def protected_aois(request, aoi):
         json_obj["data_pa"] = [aoi_geojson]
     except:
         json_obj["data_pa"] = []
-
+    colors = get_available_colors()
     pc = PilotCountry.objects.filter(country_code=pa.iso3).first()
     if pc is not None:
         country_shp = AOIFeature.objects.filter(iso3=pc.country_code, desig_eng='COUNTRY').first()
@@ -371,7 +382,7 @@ def protected_aois(request, aoi):
         json_obj["data_country"] = country_geojson
         pc_name = pc.country_name
         country_id = pc.id
-        colors = get_available_colors()
+
         if pc.forest_cover_collection is None:
             default_lc = 'JAXA'
             default_agb = 'Saatchi 2000'
@@ -383,19 +394,92 @@ def protected_aois(request, aoi):
         default_lc = 'JAXA'
         default_agb = 'Saatchi 2000'
 
+    chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
+    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
+    chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
+    chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
+    return render(request, 'scap/protected_area.html',
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
+                           'chart_cs_pa': chart_cs, 'chart_def_pa': chart_def_pa,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
+                           'agbs_cs': agbs_cs,
+                           'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
+                           'tagline': tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                           'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
+                           'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
+                           'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
+                           'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
+
+
+def protected_aois_custom(request, aoi):
+    json_obj = {}
+    pa = AOIFeature.objects.get(id=aoi)
+    pa_name = pa.name
+    vall = '{:20,.1f}'.format(pa.rep_area * 100)
+    tagline = 'Total area is ' + str(vall) + ' Ha'
+
+    df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
+    df["lon"] = df["geometry"].centroid.x
+    df["lat"] = df["geometry"].centroid.y
+    fc_colls = []
+    fc_collection = ForestCoverCollection.objects.filter(access_level='Public')
+
+    for fc in fc_collection:
+        fc_files = ForestCoverFile.objects.filter(collection=fc).values('year')
+        fc_years = []
+        for fc_yr in fc_files:
+            fc_years.append(fc_yr['year'])
+        fc_colls.append({'name': str(fc), 'years': fc_years})
+    try:
+
+        aoi_geojson = json.loads(pa.geom.geojson)
+        aoi_geojson['properties'] = {'name': pa_name, 'ISO3': pa.iso3, 'desig_eng': pa.desig_eng}
+
+        json_obj["data_pa"] = [aoi_geojson]
+    except:
+        json_obj["data_pa"] = []
+    colors = get_available_colors()
+    pc_name=""
+    country_desc=""
+    country_id=""
+    pc = PilotCountry.objects.filter(country_code=pa.iso3).first()
+    if pc is not None:
+        country_shp = AOIFeature.objects.filter(iso3=pc.country_code, desig_eng='COUNTRY').first()
+        country_geojson = json.loads(country_shp.geom.geojson)
+        country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,
+                                         'desig_eng': country_shp.desig_eng}
+        json_obj["data_country"] = country_geojson
+        pc_name = pc.country_name
+        country_id = pc.id
+
+
+
+    else:
+        json_obj["data_country"] = json_obj["data_pa"]
 
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
-    chart_def_pa,lcs_defor=fetch_deforestation_charts_by_aoi(pa_name, request.user,'container_deforestation_pa')
+    chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
+    if len(lcs) == 0:
+        default_lc=""
+    else:
+        default_lc=lcs[0]['name']
+    if len(agbs)==0:
+        default_agb=""
+    else:
+        default_agb=agbs[0]['name']
+
     return render(request, 'scap/protected_area.html',
-                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
-                           'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
-                           'tagline': tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
+                           'chart_cs_pa': chart_cs, 'chart_def_pa': chart_def_pa,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
+                           'agbs_cs': agbs_cs,
+                           'region_country': pa_name, 'country_desc':"",
+                           'tagline': tagline, 'image': "", 'country_id': 0,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
-                           'zoom_level': 10,'default_lc': default_lc,'default_agb':default_agb,
-                           'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
+                           'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
+                           'country_name': "", 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
                            'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
 
 
@@ -420,10 +504,12 @@ def updateColl(request, coll_name):
 def page_not_found_view(request, exception):
     return render(request, 'scap/404.html', status=404)
 
+
 def logout_view(request):
     """This is for logging out a user"""
     auth.logout(request)
     return redirect("/")
+
 
 class ManageForestCoverCollections(ListView):
     model = ForestCoverCollection
@@ -748,4 +834,3 @@ class DeleteForestCoverCollection(DeleteView):
     model = ForestCoverCollection
     template_name = "scap/delete_forest_cover_collection.html"
     success_url = reverse_lazy('forest-cover-collections')
-
