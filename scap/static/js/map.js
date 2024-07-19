@@ -20,17 +20,18 @@ function resetMapAction() {
     }
     console.log(localStorage.getItem('map_modal_action'));
         map_modal_action = localStorage.getItem('map_modal_action');
-
-      if (map_modal_action == 'carbon-stock') {
-            document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
-        } else if (map_modal_action == 'emissions') {
-            document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
-        } else if (map_modal_action == 'deforestation_targets') {
-            document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
-        } else {
-            document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
-        };
-
+ if (window.location.href.indexOf("/map/") > -1) {
+     if (map_modal_action == 'carbon-stock') {
+         document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
+     } else if (map_modal_action == 'emissions') {
+         document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
+     } else if (map_modal_action == 'deforestation_targets') {
+         document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
+     } else {
+         document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
+     }
+     ;
+ }
 
     if (!$('#country_selection_modal').hasClass('show')) {
         get_available_years(map_modal_action);
@@ -1076,6 +1077,7 @@ function init_map() {
             'Protected Areas': aoi_layer,
             'Country Outline': country_layer,
         };
+        localStorage.setItem('map_modal_action','deforestation_targets')
     }
     else if (window.location.href.indexOf("/aoi/") > -1) { // if the map is loaded on protected area page
         aoi_layer = L.geoJSON(shp_obj['data_pa'], {
@@ -1094,6 +1096,8 @@ function init_map() {
             'Protected Areas': aoi_layer,
 
         };
+                localStorage.setItem('map_modal_action','deforestation_targets')
+
     }
     else { // if the map is loaded on map explorer page
         aoi_layer = L.geoJSON(shp_obj['data_pa'], {
