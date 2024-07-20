@@ -80,7 +80,11 @@
         var lc_colors = {{colors|safe}};
 
      var shp_obj = {{ shp_obj|safe }};
-     var country_id={{country_id|safe}};
+     {% if country_id %}
+         var country_id={{country_id|safe}};
+     {% else %}
+         var country_id = undefined;
+     {% endif %}
    var fc_colls={{fc_colls|safe}};
    var agb_colls=undefined;
 </script>
@@ -227,8 +231,8 @@
         {% if country_name.length > 0 %}
         <br>
         <div>
-        <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">Go to {{country_name}} country page</a>
-</div>
+            <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">Go to {{country_name}} country page</a>
+        </div>
         {% endif %}
     </div>
 

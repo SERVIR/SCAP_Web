@@ -376,6 +376,7 @@ def protected_aois(request, aoi):
         json_obj["data_pa"] = []
     colors = get_available_colors()
     pc = PilotCountry.objects.filter(country_code=pa.iso3).first()
+    colors = get_available_colors()
     if pc is not None:
         country_shp = AOIFeature.objects.filter(iso3=pc.country_code, desig_eng='COUNTRY').first()
         country_geojson = json.loads(country_shp.geom.geojson)
@@ -384,29 +385,34 @@ def protected_aois(request, aoi):
         json_obj["data_country"] = country_geojson
         pc_name = pc.country_name
         country_id = pc.id
-
         if pc.forest_cover_collection is None:
             default_lc = 'JAXA'
             default_agb = 'Saatchi 2000'
         else:
             default_lc = pc.forest_cover_collection.name
             default_agb = pc.agb_collection.name
+        region_country = pa_name + ', ' + pc_name
+        country_description = pc.country_description
+        hero_image = pc.hero_image.url
     else:
         json_obj["data_country"] = json_obj["data_pa"]
         default_lc = 'JAXA'
         default_agb = 'Saatchi 2000'
+        region_country = 'Custom AOI'
+        country_description = ""
+        country_id = None
+        pc_name = None
+        hero_image = '/static/assets/img/pexels-2591408.jpg'
 
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
     chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
     return render(request, 'scap/protected_area.html',
-                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,
-                           'chart_cs_pa': chart_cs, 'chart_def_pa': chart_def_pa,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
-                           'agbs_cs': agbs_cs,
-                           'region_country': pa_name + ', ' + pc_name, 'country_desc': pc.country_description,
-                           'tagline': tagline, 'image': pc.hero_image.url, 'country_id': country_id,
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
+                           'region_country': region_country, 'country_desc': country_description,
+                           'tagline': tagline, 'image': hero_image, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
                            'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
