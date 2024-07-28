@@ -1,46 +1,59 @@
-// Retrieve the chart from the DOM, and instantiate it
 var index = $("#container").data('highchartsChart');
-var chart_emissions = Highcharts.charts[index];
-var series = chart_emissions.series;
-var newseries = series;
-var new_updated = series;
-var result1 = "";
-var gname = "";
+var chart_em= Highcharts.charts[index];
+var chart_em_obj=chart_em;
+var series = chart_em_obj.series;
 
-function get_name(elem) {
-    var result1 = "";
-    const xhr = ajax_call("get-series-name", {'ds_lc': elem[0], 'ds_agb': elem[1]});
-    xhr.done(function (result) {
-        result1 = result.name;
-    });
-    return result1;
-}
+let defaultLC_em="";
+let defaultAGB_em="";
 
-// This function is to set the brightness of the lines on the chart
-function increase_brightness(hex, percent) {
-    hex = hex.replace(/^\s*#|\s*$/g, '');
-    // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
-    if (hex.length == 3) {
-        hex = hex.replace(/(.)/g, '$1$1');
+showDefault_em();
+
+
+function showDefault_em() {
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    var newseries = series;
+    let checkboxElement = document.getElementsByClassName('LC_cb');
+    let myValue = def_lc;
+    for (var i = 0; i < checkboxElement.length; i++) {
+
+        if (document.getElementById('LC' + checkboxElement[i].value).innerHTML === myValue) {
+            defaultLC_em = 'LC' + checkboxElement[i].value;
+            checkboxElement[i].checked = true;
+        } else {
+
+            checkboxElement[i].checked = false;
+        }
+
     }
-    var r = parseInt(hex.substr(0, 2), 16),
-        g = parseInt(hex.substr(2, 2), 16),
-        b = parseInt(hex.substr(4, 2), 16);
+         checkboxElement = document.getElementsByClassName('AGB_cb');
+     myValue = def_agb;
+    for (var i = 0; i < checkboxElement.length; i++) {
+        console.log(document.getElementById('AGB' + checkboxElement[i].value).innerHTML);
+        console.log(myValue)
+        if (document.getElementById('AGB' + checkboxElement[i].value).innerHTML.trim() === myValue) {
+            defaultAGB_em = 'AGB' + checkboxElement[i].value;
+            checkboxElement[i].checked = true;
+        } else {
 
-    return '#' +
-        ((0 | (1 << 8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
-        ((0 | (1 << 8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
-        ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+            checkboxElement[i].checked = false;
+        }
+
+    }
+    for (var i = 0; i < newseries.length; i++) {
+        if (newseries[i].name[0]===defaultLC_em&& newseries[i].name[1]==defaultAGB_em) {
+            chart.series[i].setVisible(true, false);
+        } else {
+            chart.series[i].setVisible(false, false);
+        }
+    }
+
+
 }
 
-var percent = 10;
-var ns = [];
-var lcss =get_checked_lcs();
-var agbss = get_checked_agbs();
-var min_arr = [];
-var res_mmm = [];
-var max_arr = [];
-var avg_arr = [];
+// redraw_mma_cs(chart_cs_obj);
+
 
 function standardize_color(str) {
     var ctx = document.createElement("canvas").getContext("2d");
@@ -48,9 +61,19 @@ function standardize_color(str) {
     return ctx.fillStyle;
 }
 
-const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+var newseries = series;
+var new_updated = series;
+
+var percent = 10;
+var ns = [];
+var lcss_cs = get_checked_lcs();
+var agbss_cs = get_checked_agbs();
+var min_arr = [];
+var res_mmm = [];
+var max_arr = [];
+var avg_arr = [];
+const xhr = ajax_call("get-min-max", {"lcs": lcss_cs, "agbs": agbss_cs});
 xhr.done(function (result2) {
-    console.log((result2.min))
     min_arr = {
         "name": "Min",
         "data": result2.min,
@@ -79,10 +102,11 @@ xhr.done(function (result2) {
         legendIndex: -3,
         dashStyle: 'shortdash'
     };
-    $.each(chart_emissions.series, function (i, s) {
+    $.each(chart_em_obj.series, function (i, s) {
+
         for (var j = 0; j < lc_colors.length; j++) {
 
-            if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+            if (('LC' + lc_colors[j]['LC'] === s.name[0])&& ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
                 s.color = lc_colors[j]['color'];
                 ns.push({
                     name: s.name,
@@ -99,13 +123,14 @@ xhr.done(function (result2) {
 
         }
     });
+    chart_em_obj.update({series: ns});
+    chart_em_obj.addSeries(min_arr);
+    chart_em_obj.addSeries(max_arr);
+    chart_em_obj.addSeries(avg_arr);
 
-    chart_emissions.update({series: ns});
-    chart_emissions.addSeries(min_arr);
-    chart_emissions.addSeries(max_arr);
-    chart_emissions.addSeries(avg_arr);
 
-    chart_emissions.update({
+
+    chart_em_obj.update({
         yAxis: {
             title: {
                 text: 'Values (Tons)'
@@ -150,11 +175,13 @@ xhr.done(function (result2) {
     });
 });
 
-chart_emissions.update({
-        chart: {
-            type: 'spline'
-        },
-     exporting: {
+
+chart_em_obj.update({
+    chart: {
+        type: 'spline'
+    },
+
+   exporting: {
     buttons: {
       contextButton: {
         menuItems: ["viewFullscreen",
@@ -171,67 +198,154 @@ chart_emissions.update({
     }
   },
 
-
-        plotOptions: {
-            series: {
-                connectNulls: false,
-                marker: {
-                    enabled: false,
-                    states: {
-                        hover: {
-                            enabled: false
-                        }
+    plotOptions: {
+        series: {
+            connectNulls: false,
+            marker: {
+                enabled: false,
+                states: {
+                    hover: {
+                        enabled: false
                     }
-                }, showCheckbox: false,
-                selected: true,
+                }
+            }, showCheckbox: false,
+            selected: false,
 
-                events: {
-                    checkboxClick: function (event) {
-                        if (this.visible) {
-                             this.setVisible(false,false);
-                        } else {
-                             this.setVisible(true,false);
-                        }
+            events: {
+                checkboxClick: function (event) {
+                    if (this.visible) {
+                        this.setVisible(false, false);
+                    } else {
+                        this.setVisible(true, false);
                     }
                 }
             }
-        },
-      legend: {
-    itemDistance: 50,
-    maxHeight: 100
-    /* floating: true,
-    y: 75 */
-  },
-        lang: {
-            noData: "No data found. Please select LC/AGB from the list."
-        },
-        noData: {
-            style: {
-                fontWeight: 'bold',
-                fontSize: '15px'
-            }
-        },
+        }
+    },
+    legend: {
+        itemDistance: 50,
+        maxHeight: 100
+        /* floating: true,
+        y: 75 */
+    },
+    lang: {
+        noData: "No data found. Please select LC/AGB from the list."
+    },
+    noData: {
+        style: {
+            fontWeight: 'bold',
+            fontSize: '15px'
+        }
+    },
+
+
 
 
 
     }
 );
 
-//  Hide lines on the chart based on checkbox selection
-function hide_line(elem) {
-    var index = $("#container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    var newseries = series;
-    for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem)) {
-             chart.series[i].setVisible(false,false);
+function redraw_mma(chart) {
+
+    var ns = [];
+    var lcss = get_checked_lcs();
+    var agbss = get_checked_agbs();
+    var min_arr = [];
+    var res_mmm = [];
+    var max_arr = [];
+    var avg_arr = [];
+    const xhr_cs = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
+    xhr_cs.done(function (result2) {
+        min_arr = {
+            "name": "Min",
+            "data": result2.min,
+            "color": 'green',
+            "visible": true,
+            legendIndex: -1,
+            lineWidth: 5,
+            dashStyle: 'shortdash'
+        };
+        max_arr = {
+            "name": "Max",
+            "data": result2.max,
+            "color": 'red',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -2,
+
+            dashStyle: 'shortdash'
+        };
+        avg_arr = {
+            "name": "Avg",
+            "data": result2.avg,
+            "color": 'orange',
+            "visible": true,
+            lineWidth: 5,
+            legendIndex: -3,
+            dashStyle: 'shortdash'
+        };
+        var flag=0;
+        if (chart!=undefined) {
+            $.each(chart.series, function (i, s) {
+
+                for (var j = 0; j < lc_colors.length; j++) {
+
+                    if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
+                        s.color = lc_colors[j]['color'];
+                        ns.push({
+                            name: s.name,
+                            data: s.data,
+                            color: s.color,
+                            visible: true,
+                            lineWidth: 2,
+                            legendIndex: null,
+                            dashStyle: ''
+                        });
+
+                    }
+
+
+                }
+
+            });
+            chart.update({series: ns});
+            $.each(chart.series, function (i, s) {
+                 if (s.name === 'Min') {
+                s.update({
+                    data: min_arr.data
+                }, true);
+                  s.setVisible(true,false);
+
+            }
+            if (s.name === 'Max') {
+                s.update({
+                    data: max_arr.data
+                }, true);
+                  s.setVisible(true,false);
+            }
+            if (s.name === 'Avg') {
+                s.update({
+                    data: avg_arr.data
+                }, true);
+                s.setVisible(true,false);
+
+            }
+            });
+                // chart_cs_obj.addSeries(min_arr);
+                // chart_cs_obj.addSeries(max_arr);
+                // chart_cs_obj.addSeries(avg_arr);
+
+
+
         }
-    }
-    redraw_mma();
+        else {
+            console.log("chart object does not exist")
+
+        }
+    });
+
 }
 
-// Show lines on the chart based on checkbox selection
 function show_line(elem) {
     var index = $("#container").data('highchartsChart');
     var chart = Highcharts.charts[index];
@@ -247,164 +361,131 @@ function show_line(elem) {
     for (var i = 0; i < checked2.length; i++) {
         AGB_arr.push('AGB' + checked2[i].value);
     }
-    for (var i = 0; i < newseries.length; i++) {
-        if (newseries[i].name.includes(elem) && LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+    for (var i = 0; i < newseries.length; i++){
+        console.log(newseries[i].name)
+        if (LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
+            console.log("inside")
+
              chart.series[i].setVisible(true,false);
         }
     }
-    redraw_mma();
+     redraw_mma(chart);
 }
-
-
-// Show lines on the chart based on checkbox selection
-
-// Show/Hide lines on the chart based on checkbox selection
 function access_lines(elem, dataset) {
+    // var msg = all_unchecked();
+
+    // if (msg.length == 0) {
     if (elem.checked) {
-        show_line(dataset + elem.value);
+        show_line_cs(dataset + elem.value);
 
     } else {
-        hide_line(dataset + elem.value);
+        hide_line_cs(dataset + elem.value);
     }
+    // }
+    // } else {
+    //     alert(msg);
+    //     elem.checked = true;
+    // }
     var ns = [];
     var lcss = get_checked_lcs();
     var agbss = get_checked_agbs();
     var min_arr = [];
     var max_arr = [];
     var avg_arr = [];
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
-    xhr.done(function (result2) {
-        min_arr = {
-            "name": "Min",
-            "data": result2.min,
-            "color": 'green',
-            "visible": true,
-            legendIndex: -1,
-            lineWidth: 5,
-            dashStyle: 'shortdash'
-        };
-        max_arr = {
-            "name": "Max",
-            "data": result2.max,
-            "color": 'red',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -2,
-
-            dashStyle: 'shortdash'
-        };
-        avg_arr = {
-            "name": "Avg",
-            "data": result2.avg,
-            "color": 'orange',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -3,
-            dashStyle: 'shortdash'
-        };
-
-        $.each(chart_emissions.series, function (i, s) {
-            for (var j = 0; j < lc_colors.length; j++) {
-                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                    s.color = lc_colors[j]['color'];
-                    ns.push({
-                        name: s.name,
-                        data: s.data,
-                        color: s.color,
-                        visible: true,
-                        lineWidth: 2,
-                        legendIndex: null,
-                        dashStyle: ''
-                    });
-
-                }
-
-
-            }
-            console.log(s.name === 'Min')
-            if (s.name === 'Min') {
-                s.update({
-                    data: min_arr.data
-                }, true);
-                 s.setVisible(true,false);
-            }
-            if (s.name === 'Max') {
-                s.update({
-                    data: max_arr.data
-                }, true);
-                 s.setVisible(true,false);
-            }
-            if (s.name === 'Avg') {
-                s.update({
-                    data: avg_arr.data
-                }, true);
-                s.setVisible(true,false);
-            }
-        });
-
-
-        chart.update({series: ns});
-
-
-    });
-
 
 }
-
-
-
-// Show alert if all checkboxes are unchecked
-function all_unchecked() {
-    var msg = "";
-    var checked1 = document.querySelectorAll('input.LC_cb:checked');
-
-    if (checked1.length === 0) {
-
-        msg = 'No LC checkboxes checked. Please select at least one Land Cover checkbox.';
-    } else {
-
-        console.log(checked1.length + ' checkboxes checked');
-    }
-    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
-
-    if (checked2.length === 0) {
-
-        msg = 'No AGB checkboxes checked. Please select at least one Above Ground Biomass checkbox.';
-    } else {
-
-        console.log(checked2.length + ' checkboxes checked');
-    }
-    return msg;
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+function hide_line(elem) {
+     var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+    var series = chart.series;
+    var newseries = series;
+    for (var i = 0; i < newseries.length; i++) {
+        if (newseries[i].name.includes(elem)) {
+             chart.series[i].setVisible(false,false);
         }
     }
-    return cookieValue;
+    // redraw_mma_cs(chart);
 }
 
-function ajax_call(ajax_url, ajax_data) {
-    //update database
-    return jQuery.ajax({
-        type: "POST",
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        url: ajax_url.replace(/\/?$/, '/'),
-        dataType: "json",
-        data: ajax_data
-    })
-        .fail(function (xhr, status, error) {
-            console.log(xhr.responseText);
-        });
+function reset_lcs() {
+    var checked1 = document.querySelectorAll('input.LC_cb:checked');
+    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+
+    var uncheck = document.getElementsByClassName('LC_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart_cs = Highcharts.charts[index];
+    var series = chart_cs.series;
+    var agb = [];
+    var AGB_arr = get_checked_agbs_cs();
+    for (var i = 0; i < AGB_arr.length; i++) {
+        agb[i] = 'AGB' + AGB_arr[i];
+    }
+    for (var i = 0; i < chart_cs.series.length; i++) {
+        if (agb.includes(series[i].name[1])) {
+            chart_cs.series[i].setVisible(true, false);
+        }
+    }
+    redraw_mma(chart_cs);
+}
+
+function reset_agbs() {
+       var checked1 = document.querySelectorAll('input.LC_cb:checked');
+    var checked2 = document.querySelectorAll('input.AGB_cb:checked');
+
+    var uncheck = document.getElementsByClassName('AGB_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart_cs = Highcharts.charts[index];
+    var series = chart_cs.series;
+    var LC_arr = get_checked_lcs();
+    var lc = [];
+    for (var i = 0; i < LC_arr.length; i++) {
+        lc[i] = 'LC' + LC_arr[i];
+    }
+    for (var i = 0; i < chart_cs.series.length; i++) {
+          if (lc.includes(series[i].name[0])) {
+              chart_cs.series[i].setVisible(true, false);
+          }
+    }
+    redraw_mma(chart_cs);
+}
+function clear_lcs() {
+    var uncheck = document.getElementsByClassName('LC_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+     for (var i = 0; i < chart.series.length; i++) {
+               chart.series[i].setVisible(false,false);
+    }
+}
+function clear_agbs() {
+     var uncheck = document.getElementsByClassName('AGB_cb');
+    for (var i = 0; i < uncheck.length; i++) {
+
+        uncheck[i].checked = false;
+        // access_lines(uncheck[i],'LC');
+    }
+    var index = $("#container").data('highchartsChart');
+    var chart = Highcharts.charts[index];
+     for (var i = 0; i < chart.series.length; i++) {
+               chart.series[i].setVisible(false,false);
+    }
+
 }
 
 function get_checked_lcs() {
@@ -418,7 +499,6 @@ function get_checked_lcs() {
     return lcs;
 }
 
-
 function get_checked_agbs() {
     var agbs = [];
     $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
@@ -426,175 +506,6 @@ function get_checked_agbs() {
         agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
     });
     return agbs;
-}
-
-function redraw_mma(){
-      var ns = [];
-    var lcss = get_checked_lcs();
-    var agbss = get_checked_agbs();
-    var min_arr = [];
-    var max_arr = [];
-    var avg_arr = [];
-     console.log(lcss)
-    const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
-
-    xhr.done(function (result2) {
-        min_arr = {
-            "name": "Min",
-            "data": result2.min,
-            "color": 'green',
-            "visible": true,
-            legendIndex: -1,
-            lineWidth: 5,
-            dashStyle: 'shortdash'
-        };
-        max_arr = {
-            "name": "Max",
-            "data": result2.max,
-            "color": 'red',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -2,
-
-            dashStyle: 'shortdash'
-        };
-        avg_arr = {
-            "name": "Avg",
-            "data": result2.avg,
-            "color": 'orange',
-            "visible": true,
-            lineWidth: 5,
-            legendIndex: -3,
-            dashStyle: 'shortdash'
-        };
-
-        $.each(chart_emissions.series, function (i, s) {
-            for (var j = 0; j < lc_colors.length; j++) {
-                if (('LC' + lc_colors[j]['LC'] === s.name[0]) && ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
-                    s.color = lc_colors[j]['color'];
-                    ns.push({
-                        name: s.name,
-                        data: s.data,
-                        color: s.color,
-                        visible: true,
-                        lineWidth: 2,
-                        legendIndex: null,
-                        dashStyle: ''
-                    });
-
-                }
-
-
-            }
-            console.log(s.name === 'Min')
-            if (s.name === 'Min') {
-                s.update({
-                    data: min_arr.data
-                }, true);
-
-            }
-            if (s.name === 'Max') {
-                s.update({
-                    data: max_arr.data
-                }, true);
-            }
-            if (s.name === 'Avg') {
-                s.update({
-                    data: avg_arr.data
-                }, true);
-
-            }
-
-        });
-
-});
-}
-
-function reset_lcs() {
-
-    var uncheck = document.getElementsByClassName('LC_cb');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'LC');
-    }
-    var index = $("#container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-         chart.series[i].setVisible(true,false);
-    }
-redraw_mma();
-}
-
-function reset_fc_lcs() {
-
-    var uncheck = document.getElementsByClassName('LC_cb_cf');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'LC');
-    }
-    var index = $("#container1").data('highchartsChart');
-        if(document.getElementById('container1').style.display=='none'){
-        index = $("#container_deforestation").data('highchartsChart');
-    }
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-         chart.series[i].setVisible(true,false);
-
-    }
-    chart.redraw();
-}
-
-function get_checked_agbs() {
-    var agbs = [];
-    $('.AGB_checkboxlist input[type="checkbox"]:checked').each(function () {
-        var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        agbs.push(temp.replace('A', '').replace('G', '').replace('B', ''));
-    });
-    return agbs;
-}
-
-function reset_agbs() {
-    var uncheck = document.getElementsByClassName('AGB_cb');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = true;
-        // show_line(uncheck[i]);
-// access_lines(uncheck[i],'AGB');
-    }
-
-    var index = $("#container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(true,false);
-    }
-redraw_mma();
-}
-
-
-function clear_lcs() {
-    var uncheck = document.getElementsByClassName('LC_cb');
-    for (var i = 0; i < uncheck.length; i++) {
-
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'LC');
-    }
-    var index = $("#container").data('highchartsChart');
-    var chart = Highcharts.charts[index];
-    var series = chart.series;
-    for (var i = 0; i < series.length; i++) {
-        chart.series[i].setVisible(false,false);
-    }
-
-    	 // $("#container").highcharts().destroy();
-         // chart.showNoData('jfjkf');
-
 }
 function clear_fc_lcs() {
     var uncheck = document.getElementsByClassName('LC_cb_cf');
@@ -615,23 +526,24 @@ function clear_fc_lcs() {
     }
 
 }
+function reset_fc_lcs() {
 
-function clear_agbs() {
-
-    var uncheck = document.getElementsByClassName('AGB_cb');
+    var uncheck = document.getElementsByClassName('LC_cb_cf');
     for (var i = 0; i < uncheck.length; i++) {
 
-        uncheck[i].checked = false;
-        // access_lines(uncheck[i],'AGB');
-
+        uncheck[i].checked = true;
+        // show_line(uncheck[i]);
+// access_lines(uncheck[i],'LC');
     }
-
-    var index = $("#container").data('highchartsChart');
+    var index = $("#container1").data('highchartsChart');
+        if(document.getElementById('container1').style.display=='none'){
+        index = $("#container_deforestation").data('highchartsChart');
+    }
     var chart = Highcharts.charts[index];
     var series = chart.series;
     for (var i = 0; i < series.length; i++) {
-               chart.series[i].setVisible(false,false);
+         chart.series[i].setVisible(true,false);
 
     }
-
+    chart.redraw();
 }
