@@ -480,8 +480,9 @@ label {
 
 .leaflet-sbs-range {
     background: none !important;
-    width: 60% !important;
-    margin-left: 20% !important;
+    width: calc(100% - 20px) !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
 }
 
 .vertmenu {

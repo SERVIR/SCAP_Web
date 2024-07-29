@@ -1,7 +1,6 @@
 // Ajax call to get the data using the parameters: ajax_url and ajax_data
 function ajax_call(ajax_url, ajax_data) {
     //update database
-    console.log(ajax_data);
     return $.ajax({
         type: "POST",
         headers: {'X-CSRFToken': getCookie('csrftoken')},
@@ -32,7 +31,7 @@ function ajax_call_with_progress(ajax_url, ajax_data) {
                 if (expected_len == 0) {
                     evt.currentTarget.getResponseHeader('Uncompressed-File-Size');
                 }
-                console.log('progress', evt.loaded / expected_len * 100);
+                // console.log('progress', evt.loaded / expected_len * 100);
             };
 
             // return the customized object

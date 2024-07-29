@@ -294,12 +294,12 @@ def pilot_country(request, country=0):
             fc_colls.append({'name': str(fc), 'years': fc_years})
         pc = PilotCountry.objects.filter(id=country).values()
         if len(pc) > 0:
-            aois = AOIFeature.objects.filter(iso3=pc[0]['country_code']).exclude(desig_eng='COUNTRY')
+            aois = [] # AOIFeature.objects.filter(iso3=pc[0]['country_code']).exclude(desig_eng='COUNTRY')
             aoi_arr = []
             for aoi in aois:
                 aoi_geojson = json.loads(aoi.geom.geojson)
                 aoi_geojson['properties'] = {'name': aoi.name, 'ISO3': aoi.iso3, 'desig_eng': aoi.desig_eng}
-                aoi_arr.append(aoi_geojson)
+                # aoi_arr.append(aoi_geojson)
             country_shp = AOIFeature.objects.filter(iso3=pc[0]['country_code'], desig_eng='COUNTRY').last()
             country_geojson = json.loads(country_shp.geom.geojson)
             country_geojson['properties'] = {'name': country_shp.name, 'ISO3': country_shp.iso3,

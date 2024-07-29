@@ -11,6 +11,9 @@ let drawn_aoi;
 let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
 let from_map_modal=false;
+let aoi_tooltip;
+let aoi_nav_dict={};
+
 window.onload = resetMapAction;
 // reset map action to Forest Cover
 function resetMapAction() {
@@ -18,7 +21,6 @@ function resetMapAction() {
         localStorage.clear();
         localStorage.setItem('map_modal_action', 'deforestation_targets');
     }
-    console.log(localStorage.getItem('map_modal_action'));
         map_modal_action = localStorage.getItem('map_modal_action');
  if (window.location.href.indexOf("/map/") > -1) {
      if (map_modal_action == 'carbon-stock') {
@@ -73,7 +75,6 @@ function set_map_action(anchor,text,from_modal=false) {
 
     if (from_modal === true) {
         from_map_modal = true;
-        console.log(localStorage.getItem('map_modal_action'));
     } else from_map_modal = false;
     if (anchor.className.includes('dropdown')) {
         document.getElementById('usecase_name').innerHTML = 'Displaying: ' + anchor.innerHTML
@@ -267,9 +268,6 @@ function onEachFeature_aoi(feature, layer) {
 
 // Redraw map layers when year dropdowns are changed
 function  redraw_based_on_year() {
-    console.log(map_modal_action)
-
-    console.log(localStorage.getItem('map_modal_action'))
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
     map_modal_action=localStorage.getItem('map_modal_action');
@@ -321,7 +319,7 @@ function  redraw_based_on_year() {
     }
     let selected_year = document.getElementById('selected_year').value;
     let comparison_year = document.getElementById('comparison_year').value;
-    var base_thredds="https://thredds.servirglobal.net/thredds/wms/scap/public/"+thredds_dir+"/1";
+    var base_thredds="https://scapwms.servirglobal.net/thredds/wms/scap/public/"+thredds_dir+"/1";
     var layer_name=(thredds_dir=="fc")?"forest_cover":thredds_dir;
     primary_overlay_url=(thredds_dir=="fc")?
             `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
@@ -391,7 +389,6 @@ function  redraw_based_on_year() {
             })
         // Add layers based on usecase
         if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
-            console.log(primary_overlay_layer)
             primary_overlay_layer.addTo(map);
             secondary_underlay_layer.addTo(map);
             secondary_overlay_layer.addTo(map);
@@ -404,7 +401,7 @@ function  redraw_based_on_year() {
         else{ // AGB usecase
             thredds_dir = map_modal_action;
             layer_name = thredds_dir;
-            base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
+            base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
             scale_range = "1,550";
             primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
             secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
@@ -445,7 +442,6 @@ function add_thredds_wms_layers(map_modal_action) {
     let selected_dataset_right = document.getElementById('comparing_region').value;
     let selected_dataset_left_agb = "";
     let selected_dataset_right_agb = "";
-    console.log(agb_colls)
     if (agb_colls != undefined) {
         selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
@@ -460,7 +456,7 @@ function add_thredds_wms_layers(map_modal_action) {
     if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
         thredds_dir = "fc";
         layer_name = "forest_cover";
-        base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
+        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
         //Generate the WMS URLs from available data
         primary_overlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
         primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
@@ -489,7 +485,7 @@ function add_thredds_wms_layers(map_modal_action) {
         thredds_dir = map_modal_action;
         layer_name = thredds_dir;
         //Generate the WMS URLs from available data
-        base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
+        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
           selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
         primary_overlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
@@ -511,19 +507,14 @@ function add_thredds_wms_layers(map_modal_action) {
         layer_name = thredds_dir;
         scale_range = "1,550";
         //Generate the WMS URLs from available data
-        base_thredds = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
+        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
         selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
-        console.log(selected_dataset_left_agb);
-        console.log(selected_dataset_right_agb);
         primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
         // Defining styles/palettes based on dataset selections
         pri_over_style = 'boxfill/scap-agb';
         sec_over_style = 'boxfill/scap-agb';
-        console.log(primary_overlay_url);
-        console.log(secondary_overlay_url);
-        console.log(layer_name)
     }
     // Create Leaflet WMS Urls to add to the panes on the map from the above set variables
     try {
@@ -588,6 +579,7 @@ function add_thredds_wms_layers(map_modal_action) {
             comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
         }
     } catch (e) {
+        console.log("Script error: ")
         console.log(e)
     }
 }
@@ -595,9 +587,6 @@ function add_thredds_wms_layers(map_modal_action) {
 // This method adds WMS layers when dropdown selections change
 function redraw_map_layers() {
     map_modal_action = localStorage.getItem('map_modal_action');
-
-    console.log(map_modal_action);
-        console.log(document.getElementById('usecase_name'))
 
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
@@ -769,7 +758,6 @@ function get_years_for_name(obj,name) {
 }
 //populate data in dropdowns
 function get_available_years(map_modal_action) {
-    console.log(map_modal_action);
     map_modal_action=localStorage.getItem('map_modal_action');
     // Forest Cover: Populate years and FC dropdowns
     if (map_modal_action=='deforestation_targets') {
@@ -920,9 +908,9 @@ function get_stats_for_map() {
                 document.getElementById('agb_img').style.display = 'none';
 
                 text_between = "The color scales for the <strong>Carbon Emission</strong> estimations you have selected, are:";
-                thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_left + '_' + agb_name_left + "/" + type + ".1." + fc_name_left + '_' + agb_name_left + "." + year_left +
+                thredds_url_left = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_left + '_' + agb_name_left + "/" + type + ".1." + fc_name_left + '_' + agb_name_left + "." + year_left +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_left + "," + max_left + "&PALETTE=" + palette;
-                thredds_url_right = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_right + '_' + agb_name_right + "/" + type + ".1." + fc_name_right + '_' + agb_name_right + "." + year_right +
+                thredds_url_right = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_right + '_' + agb_name_right + "/" + type + ".1." + fc_name_right + '_' + agb_name_right + "." + year_right +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_right + "," + max_right + "&PALETTE=" + palette;
 
             }
@@ -963,16 +951,15 @@ function get_stats_for_map() {
                 document.getElementById('emissions_img').style.display = 'none';
                 document.getElementById('agb_img').style.display = 'none';
 
-                thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_left + '_' + agb_name_left + "/" + type + ".1." + fc_name_left + '_' + agb_name_left + "." + year_left +
+                thredds_url_left = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_left + '_' + agb_name_left + "/" + type + ".1." + fc_name_left + '_' + agb_name_left + "." + year_left +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_left + "," + max_left + "&PALETTE=" + palette;
-                thredds_url_right = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_right + '_' + agb_name_right + "/" + type + ".1." + fc_name_right + '_' + agb_name_right + "." + year_right +
+                thredds_url_right = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + fc_name_right + '_' + agb_name_right + "/" + type + ".1." + fc_name_right + '_' + agb_name_right + "." + year_right +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_right + "," + max_right + "&PALETTE=" + palette;
 
             }
             if (map_modal_action == 'agb') {
                 document.getElementById('left_source').innerHTML = agb_name_left.split('-').join(' ').toUpperCase() + ' (AGB)';
                 document.getElementById('right_source').innerHTML = agb_name_right.split('-').join(' ').toUpperCase() + ' (AGB)';
-                console.log('agb')
 
                 type = map_modal_action;
                 if (data.agb_left.length > 0) {
@@ -1004,13 +991,12 @@ function get_stats_for_map() {
                 document.getElementById('left_doi_agb').innerHTML = data.agb_doi_left;
                 document.getElementById('right_doi_fc').innerHTML = "";
                 document.getElementById('left_doi_fc').innerHTML = "";
-                console.log("after fc empty")
                 document.getElementById('agb_img').style.display = 'inline';
                 document.getElementById('cs_img').style.display = 'none';
                 document.getElementById('emissions_img').style.display = 'none';
-                thredds_url_left = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_left + "/" + type + ".1." + agb_name_left +
+                thredds_url_left = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_left + "/" + type + ".1." + agb_name_left +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_left + "," + max_left + "&PALETTE=" + palette;
-                thredds_url_right = "https://thredds.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_right + "/" + type + ".1." + agb_name_right +
+                thredds_url_right = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + type + "/1/" + agb_name_right + "/" + type + ".1." + agb_name_right +
                     ".nc4?service=WMS?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + type + "&colorscalerange=" + min_right + "," + max_right + "&PALETTE=" + palette;
 
             }
@@ -1033,6 +1019,76 @@ function get_stats_for_map() {
         }
     });
 }
+
+
+function clickAOITag(html_id){
+    aoi_values = aoi_nav_dict[html_id]
+    $.ajax({
+        type: 'POST',
+        url: 'get-aoi-id/',
+        data: {
+            'aoi': aoi_values.NAME,
+            'iso3': aoi_values.ISO3,
+            'desig_eng': aoi_values.DESIG_ENG
+        },
+        success: function (data) {
+            pa_selected_name = data.id;
+            if (data.country_or_aoi === "country") {
+                window.location = window.location.origin + '/pilot/' + pa_selected_name + '/';
+            } else {
+                window.location = window.location.origin + '/aoi/' + pa_selected_name + '/';
+            }
+        }
+    });
+
+}
+
+
+/**
+ * getFeatureInfoUrl
+ * Builds and returns the url needed to make the feature info call
+ * for the selected admin layer
+ * @param {object} map - the map object
+ * @param {object} layer - L.tileLayer.wms
+ * @param {object} latlng - location clicked
+ * @param {object} params - special parameters
+ * @returns string url
+ */
+function getFeatureInfoUrl(map, layer, latlng, params) {
+    if(layer === undefined){ return; }
+
+    const point = map.latLngToContainerPoint(latlng, map.getZoom());
+    const size = map.getSize();
+    const bounds = map.getBounds();
+    let sw = bounds.getSouthWest();
+    let ne = bounds.getNorthEast();
+    sw = L.CRS.EPSG4326.project(new L.LatLng(sw.lat, sw.lng));
+    ne = L.CRS.EPSG4326.project(new L.LatLng(ne.lat, ne.lng));
+
+    const bb = sw.x + "," + sw.y + "," + ne.x + "," + ne.y;
+
+    const defaultParams = {
+        request: "GetFeatureInfo",
+        service: "WMS",
+        srs: "EPSG:4326",
+        styles: "",
+        version: layer._wmsVersion,
+        format: layer.options.format,
+        bbox: bb,
+        height: size.y,
+        width: size.x,
+        layers: layer.options.layers,
+        query_layers: layer.options.layers,
+        info_format: "text/html",
+        FEATURE_COUNT: 50
+    };
+
+    params = L.Util.extend(defaultParams, params || {});
+    params[params.version === "1.3.0" ? "i" : "x"] = point.x;
+    params[params.version === "1.3.0" ? "j" : "y"] = point.y;
+    return layer._url + L.Util.getParamString(params, layer._url, true);
+}
+
 
 // This method initializes the map with list of basemaps, overlays, watermask and sets default view. Also creates panes and controls.
 function init_map() {
@@ -1062,16 +1118,16 @@ function init_map() {
             },
              pane:'topmost'
         });
-           aoi_layer = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1.0,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.0,
-            },
-            onEachFeature: onEachFeature_aoi,
-               pane:'top'
-        });
+
+           aoi_layer = L.tileLayer.wms('https://esa-rdst-data.servirglobal.net/geoserver/s-cap/wms?service=WMS',
+            {
+                layers: ['s-cap:ProtectedAreas'],
+                format: "image/png",
+                styles: '',
+		transparent: true,
+                pane: 'top'
+            });
+
         overlays = {
             'Watermask': watermaskLayer,
             'Protected Areas': aoi_layer,
@@ -1210,6 +1266,44 @@ function init_map() {
         $('#drawing_modal').modal('show');
         drawn_aoi = json;
     });
+
+    map.on("click", function (e) {
+        const url = getFeatureInfoUrl(map, aoi_layer, e.latlng, {
+            info_format: "application/json",
+            propertyName: "NAME,DESIG_ENG,ISO3",
+        });
+
+        if( url === undefined ){ return; }
+
+        $.ajax({
+            type: "GET",
+            async: true,
+            url: url,
+            crossDomain: true,
+            success: function (response) {
+                if (response) {
+                    if (aoi_tooltip) {
+                        aoi_tooltip.remove()
+                    }
+                    if (aoi_nav_dict) {
+                        aoi_nav_dict = {}
+                    }
+                    if (response.features.length === 0){
+                        aoi_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>No AOIs found in specified location").openOn(map)
+                        return;
+                    }
+                    let tooltip_content = "<table>"
+                    for (const feat of response.features){
+                        aoi_nav_dict[feat.id] = feat.properties
+                        aoi_nav_dict[feat.id].NAME = decodeURIComponent(escape(aoi_nav_dict[feat.id].NAME))
+                        tooltip_content += "<tr><td id='" + feat.id + "' onClick='clickAOITag(this.id)' class='aoi_link'>" + feat.properties.NAME + "</td></tr>"
+                    }
+                    tooltip_content += "</table>"
+                    aoi_tooltip = L.popup().setLatLng(e.latlng).setContent(tooltip_content).openOn(map)
+                }
+            },
+        });
+    });    
     // add info modal control to the map
     L.easyButton('fa-info', function (btn, map) {
         $('#info_modal').modal('show');
@@ -1248,7 +1342,6 @@ function init_map() {
 
 //zoom to selected pilot country
 function zoomtoArea(id){
-        console.log(localStorage.getItem('map_modal_action'));
     if (id!==0) {
         window.location = window.location.origin + "/map/" + id + "/";
         $('#country_selection_modal').modal('hide');
@@ -1288,6 +1381,7 @@ $(function () {
         try {
             map.setView([document.getElementById('lat_from_db').innerHTML, document.getElementById("lon_from_db").innerHTML], document.getElementById("zoom_from_db").innerHTML);
         } catch (e) {
+            console.log("Script error: ")
             console.log(e)
         }
     }
