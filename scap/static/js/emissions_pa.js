@@ -65,8 +65,6 @@ var min_arr = [];
 var res_mmm = [];
 var max_arr = [];
 var avg_arr = [];
-console.log(lcss);
-console.log(agbss);
 const xhr = ajax_call("get-min-max", {"lcs": lcss, "agbs": agbss});
 xhr.done(function (result2) {
     min_arr = {
@@ -98,8 +96,6 @@ xhr.done(function (result2) {
         dashStyle: 'shortdash'
     };
     $.each(chart_em_obj_pa.series, function (i, s) {
-        console.log(s.name);
-
         for (var j = 0; j < lc_colors.length; j++) {
 
             if (('LC' + lc_colors[j]['LC'] === s.name[0])&& ('AGB' + lc_colors[j]['AGB'] === s.name[1])) {
@@ -354,8 +350,7 @@ function redraw_mma_pa(chart) {
 
         }
         else {
-            console.log("chart object does not exist")
-
+            console.log("Error: Chart object does not exist")
         }
     });
 
@@ -378,8 +373,6 @@ function show_line_pa(elem) {
     }
     for (var i = 0; i < newseries.length; i++){
         if (LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
-            console.log("inside")
-
              chart.series[i].setVisible(true,false);
         }
     }
@@ -508,7 +501,6 @@ function get_checked_lcs_pa() {
     $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
 
         var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        // console.log(temp.replace('L', '').replace('C', ''));
         lcs.push(temp.replace('L', '').replace('C', ''));
     });
     return lcs;

@@ -21,7 +21,6 @@ function resetMapAction() {
         localStorage.clear();
         localStorage.setItem('map_modal_action', 'deforestation_targets');
     }
-    console.log(localStorage.getItem('map_modal_action'));
         map_modal_action = localStorage.getItem('map_modal_action');
  if (window.location.href.indexOf("/map/") > -1) {
      if (map_modal_action == 'carbon-stock') {
@@ -76,7 +75,6 @@ function set_map_action(anchor,text,from_modal=false) {
 
     if (from_modal === true) {
         from_map_modal = true;
-        console.log(localStorage.getItem('map_modal_action'));
     } else from_map_modal = false;
     if (anchor.className.includes('dropdown')) {
         document.getElementById('usecase_name').innerHTML = 'Displaying: ' + anchor.innerHTML
@@ -270,9 +268,6 @@ function onEachFeature_aoi(feature, layer) {
 
 // Redraw map layers when year dropdowns are changed
 function  redraw_based_on_year() {
-    console.log(map_modal_action)
-
-    console.log(localStorage.getItem('map_modal_action'))
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
     map_modal_action=localStorage.getItem('map_modal_action');
@@ -394,7 +389,6 @@ function  redraw_based_on_year() {
             })
         // Add layers based on usecase
         if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
-            console.log(primary_overlay_layer)
             primary_overlay_layer.addTo(map);
             secondary_underlay_layer.addTo(map);
             secondary_overlay_layer.addTo(map);
@@ -448,7 +442,6 @@ function add_thredds_wms_layers(map_modal_action) {
     let selected_dataset_right = document.getElementById('comparing_region').value;
     let selected_dataset_left_agb = "";
     let selected_dataset_right_agb = "";
-    console.log(agb_colls)
     if (agb_colls != undefined) {
         selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
@@ -517,16 +510,11 @@ function add_thredds_wms_layers(map_modal_action) {
         base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
         selected_dataset_left_agb = document.getElementById('selected_agb').value;
         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
-        console.log(selected_dataset_left_agb);
-        console.log(selected_dataset_right_agb);
         primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
         secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
         // Defining styles/palettes based on dataset selections
         pri_over_style = 'boxfill/scap-agb';
         sec_over_style = 'boxfill/scap-agb';
-        console.log(primary_overlay_url);
-        console.log(secondary_overlay_url);
-        console.log(layer_name)
     }
     // Create Leaflet WMS Urls to add to the panes on the map from the above set variables
     try {
@@ -591,6 +579,7 @@ function add_thredds_wms_layers(map_modal_action) {
             comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
         }
     } catch (e) {
+        console.log("Script error: ")
         console.log(e)
     }
 }
@@ -598,9 +587,6 @@ function add_thredds_wms_layers(map_modal_action) {
 // This method adds WMS layers when dropdown selections change
 function redraw_map_layers() {
     map_modal_action = localStorage.getItem('map_modal_action');
-
-    console.log(map_modal_action);
-        console.log(document.getElementById('usecase_name'))
 
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
@@ -772,7 +758,6 @@ function get_years_for_name(obj,name) {
 }
 //populate data in dropdowns
 function get_available_years(map_modal_action) {
-    console.log(map_modal_action);
     map_modal_action=localStorage.getItem('map_modal_action');
     // Forest Cover: Populate years and FC dropdowns
     if (map_modal_action=='deforestation_targets') {
@@ -975,7 +960,6 @@ function get_stats_for_map() {
             if (map_modal_action == 'agb') {
                 document.getElementById('left_source').innerHTML = agb_name_left.split('-').join(' ').toUpperCase() + ' (AGB)';
                 document.getElementById('right_source').innerHTML = agb_name_right.split('-').join(' ').toUpperCase() + ' (AGB)';
-                console.log('agb')
 
                 type = map_modal_action;
                 if (data.agb_left.length > 0) {
@@ -1007,7 +991,6 @@ function get_stats_for_map() {
                 document.getElementById('left_doi_agb').innerHTML = data.agb_doi_left;
                 document.getElementById('right_doi_fc').innerHTML = "";
                 document.getElementById('left_doi_fc').innerHTML = "";
-                console.log("after fc empty")
                 document.getElementById('agb_img').style.display = 'inline';
                 document.getElementById('cs_img').style.display = 'none';
                 document.getElementById('emissions_img').style.display = 'none';
@@ -1299,7 +1282,6 @@ function init_map() {
             crossDomain: true,
             success: function (response) {
                 if (response) {
-		    console.log(response)
                     if (aoi_tooltip) {
                         aoi_tooltip.remove()
                     }
@@ -1360,7 +1342,6 @@ function init_map() {
 
 //zoom to selected pilot country
 function zoomtoArea(id){
-        console.log(localStorage.getItem('map_modal_action'));
     if (id!==0) {
         window.location = window.location.origin + "/map/" + id + "/";
         $('#country_selection_modal').modal('hide');
@@ -1400,6 +1381,7 @@ $(function () {
         try {
             map.setView([document.getElementById('lat_from_db').innerHTML, document.getElementById("lon_from_db").innerHTML], document.getElementById("zoom_from_db").innerHTML);
         } catch (e) {
+            console.log("Script error: ")
             console.log(e)
         }
     }
