@@ -13116,3 +13116,7 @@ img.leaflet-tile, img.leaflet-marker-icon, img.leaflet-marker-shadow {
 .yellow-checkbox{
     accent-color: #ffc800;
 }
+
+.aoi_link:hover{
+    text-decoration: underline;
+}
