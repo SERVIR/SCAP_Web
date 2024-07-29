@@ -13117,6 +13117,10 @@ img.leaflet-tile, img.leaflet-marker-icon, img.leaflet-marker-shadow {
     accent-color: #ffc800;
 }
 
+.aoi_link{
+    color: blue;
+}
+
 .aoi_link:hover{
     text-decoration: underline;
 }

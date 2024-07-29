@@ -12,6 +12,7 @@ let pilot_center=[-8.60436, -74.73243];
 let map_modal_action="deforestation_targets";
 let from_map_modal=false;
 let aoi_tooltip;
+let load_tooltip;
 let aoi_nav_dict={};
 
 window.onload = resetMapAction;
@@ -1268,6 +1269,8 @@ function init_map() {
     });
 
     map.on("click", function (e) {
+        load_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Loading available AOIs</p>").openOn(map)        
+
         const url = getFeatureInfoUrl(map, aoi_layer, e.latlng, {
             info_format: "application/json",
             propertyName: "NAME,DESIG_ENG,ISO3",
@@ -1281,6 +1284,7 @@ function init_map() {
             url: url,
             crossDomain: true,
             success: function (response) {
+                load_tooltip.remove()
                 if (response) {
                     if (aoi_tooltip) {
                         aoi_tooltip.remove()
@@ -1288,8 +1292,8 @@ function init_map() {
                     if (aoi_nav_dict) {
                         aoi_nav_dict = {}
                     }
-                    if (response.features.length === 0){
-                        aoi_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>No AOIs found in specified location").openOn(map)
+                    if (response.features === undefined || response.features.length === 0){
+                        aoi_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>No AOIs found in specified location</p>").openOn(map)
                         return;
                     }
                     let tooltip_content = "<table>"
@@ -1302,6 +1306,10 @@ function init_map() {
                     aoi_tooltip = L.popup().setLatLng(e.latlng).setContent(tooltip_content).openOn(map)
                 }
             },
+            fail: function(xhr, textStatus, errorThrown){
+                load_tooltip.remove()
+                aoi_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Error requesting AOIs</p>").openOn(map)
+            }
         });
     });    
     // add info modal control to the map
