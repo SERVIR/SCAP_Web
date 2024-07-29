@@ -1068,6 +1068,8 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
 
     const bb = sw.x + "," + sw.y + "," + ne.x + "," + ne.y;
 
+    if( iso3 === undefined ){ iso3 = '' };
+
     const defaultParams = {
         request: "GetFeatureInfo",
         service: "WMS",
@@ -1081,7 +1083,8 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
         layers: layer.options.layers,
         query_layers: layer.options.layers,
         info_format: "text/html",
-        FEATURE_COUNT: 50
+        FEATURE_COUNT: 50,
+        DIM_iso3: iso3
     };
 
     params = L.Util.extend(defaultParams, params || {});
@@ -1119,14 +1122,17 @@ function init_map() {
             },
              pane:'topmost'
         });
-
+           if( iso3 === undefined ){
+               iso3 = '';
+           }
            aoi_layer = L.tileLayer.wms('https://esa-rdst-data.servirglobal.net/geoserver/s-cap/wms?service=WMS',
             {
                 layers: ['s-cap:ProtectedAreas'],
                 format: "image/png",
                 styles: '',
 		transparent: true,
-                pane: 'top'
+                pane: 'top',
+                DIM_iso3: iso3
             });
 
         overlays = {
