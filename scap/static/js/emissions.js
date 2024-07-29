@@ -376,10 +376,10 @@ function access_lines(elem, dataset) {
 
     // if (msg.length == 0) {
     if (elem.checked) {
-        show_line_cs(dataset + elem.value);
+        show_line(dataset + elem.value);
 
     } else {
-        hide_line_cs(dataset + elem.value);
+        hide_line(dataset + elem.value);
     }
     // }
     // } else {
