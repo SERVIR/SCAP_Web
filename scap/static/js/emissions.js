@@ -30,8 +30,6 @@ function showDefault_em() {
          checkboxElement = document.getElementsByClassName('AGB_cb');
      myValue = def_agb;
     for (var i = 0; i < checkboxElement.length; i++) {
-        console.log(document.getElementById('AGB' + checkboxElement[i].value).innerHTML);
-        console.log(myValue)
         if (document.getElementById('AGB' + checkboxElement[i].value).innerHTML.trim() === myValue) {
             defaultAGB_em = 'AGB' + checkboxElement[i].value;
             checkboxElement[i].checked = true;
@@ -362,11 +360,8 @@ function show_line(elem) {
         AGB_arr.push('AGB' + checked2[i].value);
     }
     for (var i = 0; i < newseries.length; i++){
-        console.log(newseries[i].name)
         if (LC_arr.includes(newseries[i].name[0]) && AGB_arr.includes(newseries[i].name[1])) {
-            console.log("inside")
-
-             chart.series[i].setVisible(true,false);
+            chart.series[i].setVisible(true,false);
         }
     }
      redraw_mma(chart);
@@ -493,7 +488,6 @@ function get_checked_lcs() {
     $('.LC_checkboxlist input[type="checkbox"]:checked').each(function () {
 
         var temp = $(this).val().split(' ').pop().replace('(', '').replace(')', '');
-        // console.log(temp.replace('L', '').replace('C', ''));
         lcs.push(temp.replace('L', '').replace('C', ''));
     });
     return lcs;

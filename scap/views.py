@@ -320,6 +320,7 @@ def pilot_country(request, country=0):
         json_obj["data_country"] = []
 
     pa = PilotCountry.objects.get(id=country)
+    iso3 = pa.country_code
     aoi = AOIFeature.objects.get(id=pa.aoi_polygon.id)
     pa_name = aoi.name
     colors = get_available_colors()
@@ -343,7 +344,7 @@ def pilot_country(request, country=0):
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
                            'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,
-                           'default_lc': default_lc, 'default_agb': default_agb,
+                           'default_lc': default_lc, 'default_agb': default_agb, 'iso3': iso3,
                            'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
 
 
