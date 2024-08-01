@@ -216,9 +216,11 @@ def map(request, country=0):
         lat_long = [pilot['latitude'], pilot['longitude']]
         break
     pilot_countries = PilotCountry.objects.all().order_by('country_name')
+    iso3 = ''
 
     try:
         if len(pc) > 0:
+            iso3=pc[0]['country_code']
             aois = AOIFeature.objects.filter(iso3=pc[0]['country_code']).exclude(desig_eng='COUNTRY')
             aoi_arr = []
             for aoi in aois:
@@ -272,7 +274,7 @@ def map(request, country=0):
                            'latitude': lat_long[0], 'longitude': lat_long[1],
                            'zoom_level': zoom_level, 'lat_long': lat_long, 'region': '', 'default_lc': default_lc,
                            'default_agb': default_agb,
-                           'fc_colls': fc_colls, 'agb_colls': agb_colls})
+                           'fc_colls': fc_colls, 'agb_colls': agb_colls, 'iso3': iso3})
 
 
 def add_new_collection(request):

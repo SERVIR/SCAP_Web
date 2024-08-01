@@ -1163,16 +1163,18 @@ function init_map() {
 
     }
     else { // if the map is loaded on map explorer page
-        aoi_layer = L.geoJSON(shp_obj['data_pa'], {
-            style: {
-                weight: 2,
-                opacity: 1.0,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.0,
-            },
-            onEachFeature: onEachFeature_aoi,
-            pane: 'top'
-        });
+        if( iso3 === undefined ){
+               iso3 = '';
+           }
+           aoi_layer = L.tileLayer.wms('https://esa-rdst-data.servirglobal.net/geoserver/s-cap/wms?service=WMS',
+            {
+                layers: ['s-cap:ProtectedAreas'],
+                format: "image/png",
+                styles: '',
+		transparent: true,
+                pane: 'top',
+                DIM_iso3: iso3
+            });
         country_layer = L.geoJSON(shp_obj['data_country'], {
             style: {
                 weight: 2,
