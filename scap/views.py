@@ -487,7 +487,7 @@ def protected_aois_custom(request, aoi):
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
                            'agbs_cs': agbs_cs,
                            'region_country': 'CUSTOM AOI', 'country_desc':"",
-                           'tagline': tagline, 'image': "", 'country_id': 0,
+                           'tagline': tagline, 'image':  '/static/assets/img/pexels-2591408.jpg', 'country_id': 0,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
                            'country_name': "", 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
