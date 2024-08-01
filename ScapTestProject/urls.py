@@ -55,6 +55,8 @@ urlpatterns = [
       path('get-series-name/', get_series_name, name='get-series-name'),
       path('aoi/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
       path('aoi/<int:country>/get-min-max-cs/', get_agg_check_cs_pa, name='get-min-max-cs-pa'),
+      path('aoi/<int:country>/custom/get-min-max/', get_agg_check, name='get-min-max'),
+      path('aoi/<int:country>/custom/get-min-max-cs/', get_agg_check_cs_pa, name='get-min-max-cs-pa'),
       path('pilot/<int:country>/get-min-max/', get_agg_check, name='get-min-max'),
       path('pilot/<int:country>/get-min-max-cs/', get_agg_check_cs, name='get-min-max-cs'),
       path('pilot/<int:country>/get-series-name/', get_series_name, name='get_series_name'),
@@ -63,6 +65,7 @@ urlpatterns = [
       path('map/<int:country>/upload-drawn-aoi/', upload_drawn_aoi, name='upload-drawn-aoi'),
 
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
+      path('aoi/<int:country>/custom/get-aoi/', get_AOI, name='get-aoi'),
       path('map/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id'),
       path('pilot/<int:country>/get-aoi-id/',get_aoi_id,name='get-aoi-id-pilot'),
       path('pilot/<int:country>/get-aoi/', get_AOI, name='get-aoi'),
