@@ -87,6 +87,12 @@
      {% endif %}
    var fc_colls={{fc_colls|safe}};
    var agb_colls=undefined;
+   {% if reload %}
+      alert('Your collection is still being processed. Please reload this page.')
+   {% else %}
+      console.log('fail')
+   {% endif %}
+   console.log({{curr_jobs |safe}})
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -303,7 +309,7 @@
                     </div>
                     <div class="col-9" id="emissions_chart_pa" style="height: 500px">
                         <script type="text/javascript">
-                            new Highcharts.Chart({{chart_epa|safe}});
+                            let emissions_chart = new Highcharts.Chart({{chart_epa|safe}});
                         </script>
                     </div>
                 </div>
@@ -352,12 +358,12 @@ This data helps to quantify and visualize the differences in forest cover datase
                     </div>
                     <div class="col-9" id="container_fcpa" style="height: 90%">
                         <script type="text/javascript">
-                            new Highcharts.Chart({{chart_fcpa|safe}});
+                            let forest_cover_chart = new Highcharts.Chart({{chart_fcpa|safe}});
                         </script>
                     </div>
                      <div class="col-9" id="container_deforestation_pa" style="height: 90%;display: none">
                         <script type="text/javascript">
-                            new Highcharts.Chart({{chart_def_pa|safe}});
+                            let deforestation_chart = new Highcharts.Chart({{chart_def_pa|safe}});
                         </script>
                     </div>
 
@@ -432,7 +438,7 @@ This tool helps to quantify and visualize trends from different carbon stock sou
 
                     <div class="col-9" id="cs_container_fcpa" style="height: 500px">
                         <script type="text/javascript">
-                            new Highcharts.Chart({{chart_cs_pa|safe}});
+                            let carbon_stock_chart = new Highcharts.Chart({{chart_cs_pa|safe}});
                         </script>
                     </div>
                       </div>

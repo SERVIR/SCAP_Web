@@ -1,21 +1,24 @@
 import os
 import json
 import logging
+import shapely
+import pandas as pd
+import geopandas as gpd
+
+
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from django.contrib import auth
 from django.core.mail import send_mail
-
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-import pandas as pd
-
 from django.contrib.auth.models import User, Group
-import shapely
+
+from ScapTestProject.celery import app as app
 from scap.api import (fetch_forest_change_charts, fetch_forest_change_charts_by_aoi, fetch_carbon_charts,
                       fetch_carbon_stock_charts,
                       get_available_colors, generate_geodjango_objects_aoi, fetch_deforestation_charts,
@@ -24,9 +27,9 @@ from scap.forms import ForestCoverCollectionForm, AOICollectionForm, AGBCollecti
 from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection, AOICollection, AGBCollection,
                          PilotCountry, AOIFeature, CurrentTask, ForestCoverStatistic)
 
+
 from scap.async_tasks import process_updated_collection
 from scap.getgdalstats import gdal_stats
-import geopandas as gpd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
@@ -353,6 +356,19 @@ def pilot_country(request, country=0):
 def protected_aois(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
+    coll = pa.collection.id
+    reload = False
+
+    curr_jobs = app.control.inspect.active()
+    for worker in curr_jobs:
+        worker_jobs = curr_jobs[worker]
+        for job in worker_jobs:
+            if(job['name'] == 'scap.processing.calculate_zonal_statistics' and job['args'][2] == coll):
+                reload = True
+                break
+        if reload:
+            break
+
     pa_name = pa.name
     vall = '{:20,.1f}'.format(pa.rep_area * 100)
     tagline = 'Total area is ' + str(vall) + ' Ha'
@@ -419,7 +435,7 @@ def protected_aois(request, aoi):
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
                            'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
-                           'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW']})
+                           'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW'], 'reload': reload, 'curr_jobs': str(curr_jobs)})
 
 
 def protected_aois_custom(request, aoi):

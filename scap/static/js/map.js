@@ -14,6 +14,18 @@ let from_map_modal=false;
 let aoi_tooltip;
 let load_tooltip;
 let aoi_nav_dict={};
+let aois_clickable = true;
+
+function enableMapDrag(){
+    map.dragging.enable();
+    aois_clickable = true;
+}
+
+
+function disableMapDrag(){
+    map.dragging.disable();
+    aois_clickable = false;
+}
 
 window.onload = resetMapAction;
 // reset map action to Forest Cover
@@ -419,8 +431,8 @@ function  redraw_based_on_year() {
 
     document.getElementById("loading_spinner_map").style.display = "none";
 
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()')
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()')
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'disableMapDrag()')
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'enableMapDrag()')
     // get statitcics fot info modal
     get_stats_for_map();
 }
@@ -695,8 +707,8 @@ function redraw_map_layers() {
     // Add the THREDDS WMS layers based on usecase, year and dataset selection
     add_thredds_wms_layers(map_modal_action);
 
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'map.dragging.disable()');
-    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'map.dragging.enable()');
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'disableMapDrag()');
+    document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'enableMapDrag()');
     document.getElementById("loading_spinner_map").style.display = "none";
 
     // Get the statistics on every dropdown change in order to update the info modal
@@ -1277,6 +1289,8 @@ function init_map() {
     });
 
     map.on("click", function (e) {
+        if(!aois_clickable){ return };
+        if(aoi_layer._url === undefined){ return };
         load_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Loading available AOIs</p>").openOn(map)        
 
         const url = getFeatureInfoUrl(map, aoi_layer, e.latlng, {
@@ -1344,6 +1358,9 @@ function init_map() {
         aoi_layer.addTo(map);
     }
     if (aoi_layer!=undefined && window.location.href.indexOf("/map/") > -1) {
+        aoi_layer.addTo(map);
+    }
+    if (aoi_layer!=undefined && window.location.href.indexOf("/pilot/") > -1) {
         aoi_layer.addTo(map);
     }
     // load the usecase based on local storage value. If not set, default is to show forest cover layer
