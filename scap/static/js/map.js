@@ -193,6 +193,8 @@ function fill_comparison_years_selector(years) {
         add_option_by_id(select, year, year,years[years.length-1]);
     }
 }
+
+
 // Clear layers added on map
 function clear_map_layers() {
     if (primary_overlay_layer != undefined) {
@@ -215,6 +217,8 @@ function clear_map_layers() {
         map.getPane('left').setAttribute('style', clipLeft);
     }
 }
+
+
 // when a protected area is clicked on the map
 function whenClicked(e) {
     var layer = e.target;
@@ -245,9 +249,10 @@ function whenClicked(e) {
         }
     });
 }
+
+
 // This method is called when protected area layer is added on map
 function onEachFeature_aoi(feature, layer) {
-
     //on layer click
     layer.on({
         click: whenClicked
@@ -279,8 +284,10 @@ function onEachFeature_aoi(feature, layer) {
     });
 }
 
+
 // Redraw map layers when year dropdowns are changed
 function  redraw_based_on_year() {
+    console.log('Also ran')
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
     map_modal_action=localStorage.getItem('map_modal_action');
@@ -439,8 +446,6 @@ function  redraw_based_on_year() {
 
 // This method adds the THREDDS WMS layers on the left and right panes of the map based on dropdown selections
 function add_thredds_wms_layers(map_modal_action) {
-
-
     var thredds_dir = "fc";
     var layer_name = "forest_cover";
     var base_thredds = "";
@@ -471,27 +476,23 @@ function add_thredds_wms_layers(map_modal_action) {
         layer_name = "forest_cover";
         base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
         //Generate the WMS URLs from available data
-        primary_overlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
-        primary_underlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
-        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`;
-        secondary_underlay_url = `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`;
-        // Range is 0.5,2 for ESRI datasets and 0.5,1 for other datasets
-        if (selected_dataset_left == 'esri')
-            fc_scale_range_left = "0.5,2";
-        else
-            fc_scale_range_left = "0.5,1";
-        if (selected_dataset_right == 'esri')
-            fc_scale_range_right = "0.5,2";
-        else fc_scale_range_right = "0.5,1";
+        primary_overlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
+        primary_underlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
+        secondary_overlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
+        secondary_underlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
+        primary_overlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_left}.${selected_year}`
+        primary_underlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_left}.${comparison_year}`
+        secondary_overlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_right}.${comparison_year}`
+        secondary_underlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_right}.${selected_year}`
         // Defining styles/palettes based on dataset selections
         if (selected_dataset_left === selected_dataset_right) {
-            pri_over_style = 'boxfill/crimsonbluegreen';
-            sec_over_style = 'boxfill/cwg';
-            sec_under_style = 'boxfill/redblue';
+            pri_over_style = 's-cap:fc';
+            sec_over_style = 's-cap:new_fc';
+            sec_under_style = 's-cap:fc_loss';
         } else {
-            pri_over_style = 'boxfill/crimsonbluegreen';
-            sec_over_style = 'boxfill/cwg';
-            sec_under_style = 'boxfill/maize';
+            pri_over_style = 's-cap:fc';
+            sec_over_style = 's-cap:new_fc';
+            sec_under_style = 's-cap:fc_loss_distinct';
         }
 
     } else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {     //Carbon Stock or Emissions usecase
@@ -531,37 +532,25 @@ function add_thredds_wms_layers(map_modal_action) {
     }
     // Create Leaflet WMS Urls to add to the panes on the map from the above set variables
     try {
+        if(!(thredds_dir == "fc")){
+            primary_overlay_layer_name = layer_name
+            primary_underlay_layer_name = layer_name
+            secondary_overlay_layer_name = layer_name
+            secondary_underlay_layer_name = layer_name
+        }
         primary_overlay_layer = L.tileLayer.wms(primary_overlay_url,
             {
-                layers: [layer_name],
+                layers: [primary_overlay_layer_name],
                 format: "image/png",
-                colorscalerange: (thredds_dir == "fc") ? fc_scale_range_left : scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
                 styles: pri_over_style,
+                transparent: true,
                 pane: 'left'
             });
 
-
-        primary_underlay_layer = L.tileLayer.wms(primary_underlay_url,
-            {
-                layers: [layer_name],
-                format: "image/png",
-                colorscalerange: scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/cwg',
-                pane: 'left'
-            })
         secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
             {
-                layers: [layer_name],
+                layers: [secondary_overlay_layer_name],
                 format: "image/png",
-                colorscalerange: (thredds_dir == "fc") ? fc_scale_range_right : scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
                 styles: sec_over_style,
                 transparent: true,
                 pane: 'right'
@@ -569,11 +558,8 @@ function add_thredds_wms_layers(map_modal_action) {
 
         secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
             {
-                layers: [layer_name],
+                layers: [secondary_underlay_layer_name],
                 format: "image/png",
-                colorscalerange: (thredds_dir == "fc") ? fc_scale_range_right : scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
                 styles: sec_under_style,
                 transparent: true,
                 pane: 'right'
@@ -1137,7 +1123,7 @@ function init_map() {
            if( iso3 === undefined ){
                iso3 = '';
            }
-           aoi_layer = L.tileLayer.wms('https://esa-rdst-data.servirglobal.net/geoserver/s-cap/wms?service=WMS',
+           aoi_layer = L.tileLayer.wms('https://geodata.servirglobal.net/geoserver/s-cap/wms?service=WMS',
             {
                 layers: ['s-cap:ProtectedAreas'],
                 format: "image/png",
@@ -1178,7 +1164,7 @@ function init_map() {
         if( iso3 === undefined ){
                iso3 = '';
            }
-           aoi_layer = L.tileLayer.wms('https://esa-rdst-data.servirglobal.net/geoserver/s-cap/wms?service=WMS',
+           aoi_layer = L.tileLayer.wms('https://geodata.servirglobal.net/geoserver/s-cap/wms?service=WMS',
             {
                 layers: ['s-cap:ProtectedAreas'],
                 format: "image/png",
@@ -1275,7 +1261,11 @@ function init_map() {
             featureGroup: editableLayers,
             remove: true
         }
-    };
+    };    
+    // add info modal control to the map
+    L.easyButton('fa-info', function (btn, map) {
+        $('#info_modal').modal('show');
+    }, 'Info').addTo(map);
     var drawControl = new L.Control.Draw(drawPluginOptions);
     // add draw polygon control to the map
     map.addControl(drawControl);
@@ -1319,6 +1309,8 @@ function init_map() {
                         return;
                     }
                     let tooltip_content = "<table>"
+                    tooltip_content += "<tr><td style='cursor: default;'>Available AOI Pages:</td></tr>"
+
                     for (const feat of response.features){
                         aoi_nav_dict[feat.id] = feat.properties
                         aoi_nav_dict[feat.id].NAME = decodeURIComponent(escape(aoi_nav_dict[feat.id].NAME))
@@ -1333,11 +1325,7 @@ function init_map() {
                 aoi_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Error requesting AOIs</p>").openOn(map)
             }
         });
-    });    
-    // add info modal control to the map
-    L.easyButton('fa-info', function (btn, map) {
-        $('#info_modal').modal('show');
-    }, 'Info').addTo(map);
+    });
 
     // Add the search control to the map
     map.addControl(new GeoSearch.GeoSearchControl({

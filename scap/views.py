@@ -35,7 +35,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
 config = json.load(f)
 
-logger = logging.getLogger("django")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def map_cog(request, country=0):
@@ -359,8 +360,10 @@ def protected_aois(request, aoi):
     coll = pa.collection.id
     reload = False
 
-    curr_jobs = app.control.inspect.active()
+    curr_jobs = app.control.inspect().active()
+    print(curr_jobs)
     for worker in curr_jobs:
+        reload = True
         worker_jobs = curr_jobs[worker]
         for job in worker_jobs:
             if(job['name'] == 'scap.processing.calculate_zonal_statistics' and job['args'][2] == coll):
@@ -427,6 +430,8 @@ def protected_aois(request, aoi):
     chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
     chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
     chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
+    logger.info(json.dumps(curr_jobs))
+    print(json.dumps(curr_jobs))
     return render(request, 'scap/protected_area.html',
                   context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
@@ -435,7 +440,7 @@ def protected_aois(request, aoi):
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
                            'zoom_level': 10, 'default_lc': default_lc, 'default_agb': default_agb,
                            'country_name': pc_name, 'shp_obj': json_obj, 'fc_colls': fc_colls, 'region': pa_name,
-                           'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW'], 'reload': reload, 'curr_jobs': str(curr_jobs)})
+                           'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW'], 'reload': reload, 'curr_jobs': json.dumps(curr_jobs)})
 
 
 def protected_aois_custom(request, aoi):

@@ -87,12 +87,6 @@
      {% endif %}
    var fc_colls={{fc_colls|safe}};
    var agb_colls=undefined;
-   {% if reload %}
-      alert('Your collection is still being processed. Please reload this page.')
-   {% else %}
-      console.log('fail')
-   {% endif %}
-   console.log({{curr_jobs |safe}})
 </script>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529;height:80px">
@@ -234,7 +228,7 @@
 
 
         </div>
-        {% if country_name.length > 0 %}
+        {% if country_id is not None %}
         <br>
         <div>
             <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">Go to {{country_name}} country page</a>
@@ -322,10 +316,13 @@
         <div class="card" style="width: 100%">
             <h5 class="card-title" style="margin-left: 10px;margin-top:10px">Explore Changes in Forest Cover</h5>
             <p class="card-text" style="margin-left: 10px">
-This data helps to quantify and visualize the differences in forest cover datasets, including those reported by nations to the UNFCCC. Interested in how a region’s carbon emission trends align with net-zero emission goals? Pay attention to trends in both forest gain and forest loss. Use the toggle at the left to change between net change in forest cover to solely deforestation.            </p>
-   <a href="{% url 'map' country=country_id %}" target="_blank" class="btn btn-primary w-25"
-               style="margin-left: 10px">Explore
-                the protected areas inside the country</a>
+                This data helps to quantify and visualize the differences in forest cover datasets, including those reported by nations to the UNFCCC. Interested in how a region’s carbon emission trends align with net-zero emission goals? Pay attention to trends in both forest gain and forest loss. Use the toggle at the left to change between net change in forest cover to solely deforestation.
+            </p>
+            {% if country_id is not None %}
+                <a href="{% url 'map' country=country_id %}" target="_blank" class="btn btn-primary w-25" style="margin-left: 10px">
+                    Explore the protected areas inside the country
+                </a>
+            {% endif %}
             <div class="card-body">
                 <div class="row h-100 ">
                     <div class="col-3 m-auto">
@@ -379,9 +376,11 @@ This data helps to quantify and visualize the differences in forest cover datase
             <p class="card-text" style="margin-left: 10px">
 This tool helps to quantify and visualize trends from different carbon stock sources. To estimate global stocks of forest biomass, we need estimates of (i) forest area, and (ii) AGB stocks. On the left, select the forest area source in combination with biomass source to estimate annual carbon stock.
             </p>
-            <a href="{% url 'map' country=country_id %}" target="_blank" class="btn btn-primary w-25"
-               style="margin-left: 10px">Explore
-                the protected areas inside the country</a>
+            {% if country_id is not None %}
+                <a href="{% url 'map' country=country_id %}" target="_blank" class="btn btn-primary w-25" style="margin-left: 10px">
+                    Explore the protected areas inside the country
+                </a>
+            {% endif %}
 
             <div class="card-body">
                 <div class="row h-100 ">
@@ -532,6 +531,12 @@ This tool helps to quantify and visualize trends from different carbon stock sou
                     <script>
     var def_lc="{{default_lc|safe}}";
 var def_agb="{{default_agb|safe}}";
+{% if reload %}
+      alert('Your collection is still being processed. Please reload this page.')
+   {% else %}
+      console.log('fail')
+   {% endif %}
+   console.log({{curr_jobs|safe}})
                 </script>
 <script src="{% static '/js/emissions_pa.js' %}"></script>
 <script src="{% static '/js/forestchange_pa.js' %}"></script>

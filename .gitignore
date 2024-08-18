@@ -14,3 +14,5 @@ base_stats_file.tif
 water_mask.tif
 s-cap.log
 s-cap.log.*
+scap.log.*
+scap.log

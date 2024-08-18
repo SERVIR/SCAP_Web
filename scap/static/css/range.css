@@ -10,7 +10,6 @@
     min-width: 100px;
     cursor: pointer;
     pointer-events: none;
-    z-index: 999;
 }
 
 .leaflet-sbs-range::-ms-fill-upper {
@@ -42,49 +41,49 @@
     -webkit-appearance: none;
     margin: 0;
     padding: 0;
-    background: #fff;
+    background: #ffc800 !important;
     height: 40px;
     width: 40px;
     border-radius: 20px;
     cursor: ew-resize;
     pointer-events: auto;
-    border: 1px solid #ddd;
-    background-image: url(range-icon.png);
+    border: 1px solid #ffc800 !important;
+    background-image: url(../assets/img/menu-bar.png) !important;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-size: 40px 40px;
+    background-size: cover !important;
 }
 
 .leaflet-sbs-range::-ms-thumb {
     margin: 0;
     padding: 0;
-    background: #fff;
+    background: #ffc800 !important;
     height: 40px;
     width: 40px;
     border-radius: 20px;
     cursor: ew-resize;
     pointer-events: auto;
-    border: 1px solid #ddd;
-    background-image: url(range-icon.png);
+    border: 1px solid #ffc800 !important;
+    background-image: url(../assets/img/menu-bar.png) !important;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-size: 40px 40px;
+    background-size: cover !important;
 }
 
 .leaflet-sbs-range::-moz-range-thumb {
     padding: 0;
     right: 0;
-    background: #fff;
+    background: #ffc800 !important;
     height: 40px;
     width: 40px;
     border-radius: 20px;
     cursor: ew-resize;
     pointer-events: auto;
-    border: 1px solid #ddd;
-    background-image: url(range-icon.png);
+    border: 1px solid #ffc800 !important;
+    background-image: url(../assets/img/menu-bar.png) !important;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-size: 40px 40px;
+    background-size: cover !important;
 }
 
 .leaflet-sbs-range:disabled::-moz-range-thumb {
@@ -109,5 +108,9 @@
 
 .leaflet-sbs-range::-moz-focus-outer {
     border: 0;
+}
+
+.leaflet-sbs-divider {
+    background: #ffc800 !important;
 }
 

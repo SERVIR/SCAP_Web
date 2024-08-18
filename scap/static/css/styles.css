@@ -13124,3 +13124,11 @@ img.leaflet-tile, img.leaflet-marker-icon, img.leaflet-marker-shadow {
 .aoi_link:hover{
     text-decoration: underline;
 }
+
+.leaflet-top, .leaflet-bottom {
+    z-index: 998 !important;
+}
+
+#region_country {
+    text-shadow: -1px -1px 0 #555, 1px -1px 0 #555, -1px 1px 0 #555, 1px 1px 0 #555;
+}
