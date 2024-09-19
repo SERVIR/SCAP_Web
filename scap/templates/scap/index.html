@@ -320,6 +320,16 @@ Different carbon pools (living biomass, litter and debris, and soil) serve vario
                             <button type="button" class="btn btn-lg btn-warning">+ Add Your Own Data</button>
                         </a>
                     </div>
+{% elif user.is_authenticated and not user|has_group:"scap_contributors" %}
+<div class="text-center m-4 p-3">
+                            <button type="button" class="btn btn-lg btn-warning" disabled>Your Contributor status is being reviewed</button>
+                    </div>
+{% elif not user.is_authenticated %}
+<div class="text-center m-4 p-3">
+<a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+                         <button type="button" class="btn btn-lg btn-warning">Login to Upload Data</button>
+                    </a>                    </div>
+
 
                 {% endif %}
 </section>

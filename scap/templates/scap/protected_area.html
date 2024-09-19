@@ -532,9 +532,9 @@ This tool helps to quantify and visualize trends from different carbon stock sou
     var def_lc="{{default_lc|safe}}";
 var def_agb="{{default_agb|safe}}";
 {% if reload %}
-      alert('Your collection is still being processed. Please reload this page.')
+      console.log('reload')
    {% else %}
-      console.log('fail')
+      console.log('fully loaded')
    {% endif %}
    console.log({{curr_jobs|safe}})
                 </script>
