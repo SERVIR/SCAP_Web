@@ -27,9 +27,10 @@ from scap.models import (AOIFeature, ForestCoverFile, CarbonStatistic, ForestCov
                          AOICollection, ForestCoverCollection, AGBCollection, CurrentTask, PilotCountry, UserMessage)
 
 from scap.processing import calculate_zonal_statistics, generate_aoi_file
-
-from scap.async_tasks import process_updated_collection
+from scap.utils import validate_file, upload_tiff_to_geoserver
+from scap.async_tasks import process_updated_collection, validate_uploaded_dataset
 import geopandas as gpd
+from django.core.mail import send_mail
 
 from django.db.models import Count, Max, Min, Avg
 
@@ -65,7 +66,7 @@ def test(request):
 
 
 @csrf_exempt
-def upload_drawn_aoi(request,country):
+def upload_drawn_aoi(request, country):
     user = request.user.username
     if not user:
         return JsonResponse({'error': 'login'})
@@ -200,13 +201,103 @@ def add_tiff_record(request, pk):
         new_tiff = ForestCoverFile()
         new_tiff.collection = existing_coll
         new_tiff.year = request.POST.get('year')
-        new_tiff.file = request.FILES['file']
+        # new_tiff.file = request.FILES['file']
         new_tiff.metadata_link = request.POST.get('metadata_link')
         new_tiff.doi_link = request.POST.get('doi_link')
+
+        validated_file = validate_file(request.FILES['file'], 'fc')
+        if validated_file:
+            new_tiff.validation_status = 'Validated'
+            new_tiff.file = request.FILES['file']
+        else:
+            raise Exception('Please check the CRS and values. The file will not be saved')
         new_tiff.save()
+        name = 'preview.fc.' + request.user.username + '.' + request.POST.get('coll_name') + '.' + str(
+            request.POST.get('year'))
+        path = new_tiff.file.path
+        upload_tiff_to_geoserver(name, path)
     except Exception as e:
         return JsonResponse({"error": str(e)})
     return JsonResponse({"added": "success", "error": ""})
+
+
+@csrf_exempt
+def get_forestcoverfile_stats(request):
+    coll_name = request.POST.get('coll_name')
+    year = request.POST.get('year')
+    import json
+    if request.POST.get('type') == 'fc':
+        coll = ForestCoverCollection.objects.get(name=coll_name)
+        file = ForestCoverFile.objects.get(collection=coll.id, year=year)
+        name = file.file.path
+    elif request.POST.get('type') == 'agb':
+        coll = AGBCollection.objects.get(name=coll_name)
+        name = coll.source_file.path
+    else:
+        coll = AOICollection.objects.get(name=coll_name)
+        name = coll.source_file.path
+    actual_json = json.loads(os.popen('gdalinfo -stats -json ' + name).read())
+    crs = actual_json['coordinateSystem']['wkt'].rsplit('"EPSG","', 1)[-1].split('"')[1]
+    return JsonResponse({'shape': json.dumps(actual_json['size']), 'min': actual_json['bands'][0]['minimum'],
+                         'max': actual_json['bands'][0]['maximum'], 'crs': crs,
+                         'extent': json.dumps(actual_json['wgs84Extent']),
+                         'filename': Path(actual_json['description']).name})
+
+
+@csrf_exempt
+def send_for_admin_review(request, pk=0):
+    if request.POST.get('type') == 'fc':
+        try:
+            existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),
+                                                              owner__username=request.user.username)
+            validate_uploaded_dataset.delay(existing_coll.id, 'fc', request.POST.get('coll_name'),
+                                            request.user.username)
+            existing_coll.approval_status = 'Validating Data'
+            existing_coll.save()
+            return JsonResponse({'success': 'success'})
+        except:
+            return JsonResponse({'error': 'error'})
+        # validate sibling files before changing the status to 'Submitted'
+        # fc_files = ForestCoverFile.objects.filter(collection=existing_coll)
+        # result = True
+        # print(fc_files)
+        # if fc_files.count() == 0:
+        #     existing_coll.approval_status = 'Not Submitted'
+        #     existing_coll.save()
+        #     return JsonResponse({'error': 'No files to validate'})
+        # for file in fc_files:
+        #     if not validate_file(bytes(file.file.read())):
+        #         result = False
+        #         break
+        # if result:
+        #     existing_coll.approval_status = 'Submitted'
+        #     existing_coll.save()
+
+    elif request.POST.get('type') == 'agb':
+        try:
+            existing_coll = AGBCollection.objects.get(name=request.POST.get('coll_name'),
+                                                      owner__username=request.user.username)
+            validate_uploaded_dataset.delay(existing_coll.id, 'agb', request.POST.get('coll_name'),
+                                            request.user.username)
+            existing_coll.approval_status = 'Validating Data'
+            existing_coll.save()
+            return JsonResponse({'success': 'success'})
+        except:
+            return JsonResponse({'error': 'error'})
+        # existing_coll.approval_status = 'Validating Data'
+        # if not validate_file(bytes(existing_coll.source_file.file.read())):
+        #     return JsonResponse({'error': 'error'})
+        # else:
+        #     name = 'preview.agb.' + request.user.username + '.' + request.POST.get('coll_name') + '.' + str(
+        #         existing_coll.year)
+        #     print(existing_coll.source_file.name)
+        #     path = existing_coll.source_file.path
+        #     upload_tiff_to_geoserver(name, path)
+        #     existing_coll.approval_status = 'Submitted'
+        #     existing_coll.save()
+        # return JsonResponse({'success': 'success'})
+    else:
+        return JsonResponse({'error': 'error'})
 
 
 @csrf_exempt
@@ -387,8 +478,8 @@ def fetch_carbon_charts(pa_name, owner, container):
         pivot_table = pd.pivot_table(grouped_data, values='emissions', columns=['fc_index_id', 'agb_index_id'],
                                      index='year_index',
                                      fill_value=None)
-        if pa_name=='Ivory Coast':
-            pa_name="Côte d'Ivoire"
+        if pa_name == 'Ivory Coast':
+            pa_name = "Côte d'Ivoire"
         chart = serialize(pivot_table, render_to=container, output_type='json', type='spline',
                           title='Emission Statistics: ' + pa_name)
         return chart, lcs, agbs
@@ -445,8 +536,8 @@ def fetch_carbon_stock_charts(pa_name, owner, container):
                                         columns=['fc_index_id', 'agb_index_id'],
                                         index='year_index',
                                         fill_value=None)
-        if pa_name=='Ivory Coast':
-            pa_name="Côte d'Ivoire"
+        if pa_name == 'Ivory Coast':
+            pa_name = "Côte d'Ivoire"
         chart_cs = serialize(pivot_table_cs, render_to=container, output_type='json', type='spline',
                              title='Carbon Stock: ' + pa_name)
         return chart_cs, lcs, agbs
@@ -471,8 +562,8 @@ def fetch_forest_change_charts(pa_name, owner, container):
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
-        if pa_name=='Ivory Coast':
-            pa_name="Côte d'Ivoire"
+        if pa_name == 'Ivory Coast':
+            pa_name = "Côte d'Ivoire"
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                              xticks=[],
                              title='Net Forest Change: ' + pa_name, )
@@ -496,6 +587,7 @@ def fetch_forest_change_charts(pa_name, owner, container):
 
     return chart_fc, lcs_defor
 
+
 def fetch_deforestation_charts(pa_name, owner, container):
     df_defor = pd.DataFrame(list(ForestCoverStatistic.objects.filter(aoi_index__name=pa_name).values()))
     lc_names = []
@@ -510,8 +602,8 @@ def fetch_deforestation_charts(pa_name, owner, container):
             ForestCoverCollection.objects.filter(access_level='Public', name__in=lc_names).values())
     lcs_defor = df_lc_defor.to_dict('records')
     if df_defor.empty:
-        if pa_name=='Ivory Coast':
-            pa_name="Côte d'Ivoire"
+        if pa_name == 'Ivory Coast':
+            pa_name = "Côte d'Ivoire"
         chart_fc = serialize(pd.DataFrame([]), render_to=container, output_type='json', type='spline',
                              xticks=[],
                              title='Deforestation: ' + pa_name, )
@@ -567,6 +659,7 @@ def fetch_forest_change_charts_by_aoi(aoi, owner, container):
                           xticks=years_defor,
                           title="Net Forest Change: " + aoi)
     return chart_fc1, lcs_defor
+
 
 def fetch_deforestation_charts_by_aoi(aoi, owner, container):
     # generating highcharts chart object from python using pandas(forest cover change chart)
@@ -951,23 +1044,135 @@ def get_available_aois(collection):
 @csrf_exempt
 def stage_for_processing(request, pk=0):
     collection_type = request.POST.get('type')
+    approve_flag = True
     if collection_type == 'fc':
         fc_collection_name = request.POST.get('coll_name')
         collection = ForestCoverCollection.objects.get(name=fc_collection_name)
+        fcfiles = ForestCoverFile.objects.filter(collection=ForestCoverCollection.objects.get(name=fc_collection_name))
+        for fcfile in fcfiles:
+            if fcfile.validation_status != 'Approved':
+                approve_flag = False
+                break
+        if approve_flag:
+            collection.approval_status = "Approved"
+            collection.processing_status = "Staged"
+            collection.save()
+            try:
+                process_updated_collection.delay(collection.id, collection_type)
+            except Exception as error:
+                print(error)
+            return JsonResponse({'success': 'success'})
+        else:
+            return JsonResponse({'error': 'cannot approve a collection when all the files belonging to it are not '
+                                          'approved. Please approve the individual files and retry.'})
     elif collection_type == 'agb':
         agb_collection_name = request.POST.get('agb_name')
         collection = AGBCollection.objects.get(name=agb_collection_name)
+        collection.approval_status = "Approved"
+        collection.processing_status = "Staged"
+        collection.save()
+        try:
+            process_updated_collection.delay(collection.id, collection_type)
+        except Exception as error:
+            print(error)
+        return JsonResponse({'success': 'success'})
     else:
         aoi_collection_name = request.POST.get('aoi_name')
         collection = AOICollection.objects.get(name=aoi_collection_name)
+        try:
+            process_updated_collection.delay(collection.id, collection_type)
+        except Exception as error:
+            print(error)
+        return JsonResponse({'success': 'success'})
 
+
+@csrf_exempt
+def validate_collection(request, pk=0):
+    collection_type = request.POST.get('type')
+    if collection_type == 'fc':
+        fc_collection_name = request.POST.get('coll_name')
+        collection = ForestCoverCollection.objects.get(name=fc_collection_name)
+        # add validation status check (not validated)
+
+
+@csrf_exempt
+def approve_fc_file(request):
     try:
-        process_updated_collection.delay(collection.id, collection_type)
-    except Exception as error:
-        print(error)
-    collection.processing_status = "Staged"
-    collection.save()
-    return JsonResponse({})
+        collection = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
+        fc_file = ForestCoverFile.objects.get(collection=collection, year=request.POST.get('year'))
+        fc_file.validation_status = "Approved"
+        fc_file.save()
+        return JsonResponse({'success': 'success'})
+    except:
+        return JsonResponse({'error': 'error'})
+
+
+@csrf_exempt
+def validation_list(request, pk=0):
+    collections = ForestCoverCollection.objects.filter(approval_status='Submitted')
+    ids = []
+    names = []
+    years = []
+    bdata = []
+    for c in collections:
+        # if c.boundary_file:
+        #     sFile = c.boundary_file.path
+        #     print(sFile)
+        #     gdf = gpd.read_file(sFile)
+        #     bdata.append({'id':c.id,'gjson':json.loads(json.dumps(gdf.to_json()))})
+        # else:
+        #     bdata.append({'id':c.id,'gjson':None})
+        ids.append(c.id)
+        names.append(c.name)
+        tiff_files = ForestCoverFile.objects.filter(collection=c)
+        tyears = []
+        for tfile in tiff_files:
+            tyears.append(tfile.year)
+        years.append(tyears)
+
+    return JsonResponse({'ids': ids, 'names': names, 'years': years})
+
+
+@csrf_exempt
+def deny_notify_user(request):
+    print(request.POST.get('type'))
+    message = request.POST.get('message')
+    user = User.objects.get(username=request.POST.get('user'))
+    user_email = [user.email]
+    coll_name = request.POST.get('coll_name')
+    email = config['EMAIL_HOST_USER']
+    if request.method == 'POST':
+        if request.POST.get('type') == 'fc':
+            try:
+                if len(request.POST.get('coll_name').split('_')) > 1:
+                    fc_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name').split('_')[2])
+                    fcfile = ForestCoverFile.objects.get(year=request.POST.get('coll_name').split('_')[0],
+                                                         collection=fc_coll)
+                    fcfile.delete()
+                    coll_name = request.POST.get('coll_name').split('_')[2] + ' (File: ' + fcfile.file.name.split('/')[
+                        -1] + ')'
+                else:
+                    fc_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
+                    fc_coll.approval_status = 'Denied'
+                    fc_coll.save()
+
+                if len(user_email) > 0:
+                    send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
+                return JsonResponse({'msg': 'success'})
+            except Exception as e:
+                print(e)
+                return JsonResponse({'msg': 'error'})
+        elif request.POST.get('type') == 'agb':
+            try:
+                agb_coll = AGBCollection.objects.get(name=coll_name)
+                agb_coll.delete()
+                if len(user_email) > 0:
+                    send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
+                return JsonResponse({'msg': 'success'})
+            except Exception as e:
+                print(e)
+                return JsonResponse({'msg': 'error'})
+        # TODO send email to user
 
 
 def add_aoi_data(request):
@@ -975,16 +1180,42 @@ def add_aoi_data(request):
         aoi_coll = AOICollection()
         aoi_coll.name = request.POST.get('aoi_name')
         aoi_coll.description = request.POST.get('aoi_desc')
-        aoi_coll.source_file = request.FILES['file']
         aoi_coll.metadata_link = request.POST.get('metadata_link')
         aoi_coll.doi_link = request.POST.get('doi_link')
-        aoi_coll.access_level = request.POST.get('access')
         aoi_coll.owner = request.user
-        aoi_coll.processing_status = "Staged"
-        aoi_coll.save()
-        process_updated_collection.delay(aoi_coll.id, 'aoi')
+        import zipfile
+        import shapefile
+        client_file = request.FILES['file']
+        shpname = None
+        shxname = None
+        dbfname = None
+        # unzip the zip file to the same directory
+        with zipfile.ZipFile(client_file, 'r') as zip_ref:
+            for x in zip_ref.namelist():
+                if x.endswith('.shp'):
+                    shpname = x
+                if x.endswith('.shx'):
+                    shxname = x
+                if x.endswith('.dbf'):
+                    dbfname = x
+            r = shapefile.Reader(shp=zip_ref.open(shpname),
+                                 shx=zip_ref.open(shxname),
+                                 dbf=zip_ref.open(dbfname), )
+            bbox = r.bbox
+            temp_bbox = [x for x in bbox if -180 <= x <= 180]
+            res = bbox == temp_bbox
+            if r.numShapes > 0 and res:
+                aoi_coll.source_file = request.FILES['file']
+                aoi_coll.access_level = request.POST.get('access')
+                aoi_coll.approval_status = "Approved"
+                aoi_coll.processing_status = "Staged"
+                aoi_coll.save()
+                process_updated_collection.delay(aoi_coll.id, 'aoi')
+            else:
+                return JsonResponse({"error": "Please check the file and retry."})
     except Exception as e:
-        return JsonResponse({"error": str(e)})
+        print(e)
+        return JsonResponse({"error": "Please check the file contents and projection"})
     return JsonResponse({"error": ""})
 
 
@@ -1022,10 +1253,13 @@ def add_agb_data(request, pk=None):
             agb_coll.access_level = request.POST.get('access')
             agb_coll.year = request.POST.get('year')
             agb_coll.owner = request.user
-        agb_coll.processing_status = "Staged"
+        # agb_coll.processing_status = "Staged"
+        agb_coll.processing_status = "Not Processed"
+        agb_coll.approval_status = "Not Submitted"
         agb_coll.save()
         process_updated_collection.delay(agb_coll.id, 'agb')
     except Exception as e:
+        print(str(e))
         return JsonResponse({"error": str(e)})
     return JsonResponse({"error": ""})
 
@@ -1037,14 +1271,13 @@ def save_message_to_db(name, organization, email, role, message):
     message_object.organization = organization
     message_object.email = email
     message_object.role = role
-    message_object.responded_on=None
+    message_object.responded_on = None
     message_object.message = message
     message_object.save()
 
 
 @csrf_exempt
 def send_message_scap(request):
-    from django.core.mail import send_mail
     name = request.POST.get('name')
     organization = request.POST.get('organization')
     email = request.POST.get('email')

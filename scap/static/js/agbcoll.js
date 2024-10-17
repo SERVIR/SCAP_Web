@@ -22,9 +22,30 @@ function stage_for_processing() {
     });
 
 }
-       console.log(location.pathname.split('/')[2]==='edit')
+
+function send_for_admin_review_agb(name){
+    console.log(name)
+    //AJAX call to send the collection name for validation(add a field in fccollection validation_status)
+    $.ajax({
+        type: 'POST',
+        url: 'send-for-admin-review/',
+        data: {'coll_name': name,'type':'agb'},
+        success: function (data) {
+            if(data.error!=undefined){
+                alert(data.error)
+            }
+            else{
+                    alert('Thank you, you will be notified once the data is reviewed.');
+                   location.href = window.location.protocol + "//" + location.host + '/agb-collections/';
+
+            }
+
+        }
+    });
+}
 
 function check_progress_agb(){
+    var agbn="";
 
    if ($('#id_name').val().length>0 && $('#id_description').val().length>0) {
        var upload_form = $('#upload-agb-new')[0];
@@ -50,6 +71,7 @@ function check_progress_agb(){
          else{
               form_data.append('opn', 'add');
          }
+         agbn= $('#id_name').val();
        form_data.append('agb_name', $('#id_name').val());
          form_data.append('year', $('#id_year').val());
        form_data.append('agb_desc', $('#id_description').val());
@@ -94,14 +116,17 @@ function check_progress_agb(){
            },
            success: function (data) {
                if (data.error.length === 0) {
-                   stage_for_processing();
-                   location.href = window.location.protocol + "//" + location.host + '/agb-collections/';
+                   // stage_for_processing();
+                   console.log(agbn)
+ send_for_admin_review_agb(agbn);
+                   // location.href = window.location.protocol + "//" + location.host + '/agb-collections/';
                    console.log("complete")
                } else {
                    alert(data.error)
                }
            },
        });
+
    }
    else{
        alert("Please check if you have entered AGB Name and Description.")

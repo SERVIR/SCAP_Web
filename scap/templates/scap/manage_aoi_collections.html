@@ -46,6 +46,7 @@
                      <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
                     {% if user.is_authenticated %}
+<!--                <li class="nav-item"><a class="nav-link" target="_blank" href="{% url 'validation' type='aoi' %}" >VALIDATE!</a></li>-->
 
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
@@ -89,6 +90,7 @@
                         <th>AOI Description</th>
                         <th>Access Level</th>
                         <th>Processing Status</th>
+                        <th>Approval Status</th>
 
                         <th></th>
                         <th></th>
@@ -103,6 +105,7 @@
                                                  <td><label>{{ aoi.access_level}}</label></td>
 
                               <td><label>{{ aoi.processing_status}}</label></td>
+                             <td><label>{{ aoi.approval_status}}</label></td>
                             <td>
                               {% if aoi.processing_status == 'Staged' or aoi.processing_status == 'In Progress' %}
                                 <button class="btn-secondary btn disabled" title="AOI Shape File is currently being processed"

@@ -46,6 +46,15 @@ class ForestCoverCollection(models.Model):
         ('Available', 'Available')
     )
 
+    VALIDATION_STATES = (
+        ('Not Submitted', 'Not Submitted'),
+        ('Validating Data', 'Validating Data'),
+        ('Submitted', 'Submitted'),
+        ('Approved', 'Approved'),
+        ('Denied', 'Denied'),
+    )
+
+
     name = models.CharField(max_length=100, default="", help_text="Forest Cover Collection Name")
     description = models.TextField(default="", help_text="Forest Cover Collection Description")
 
@@ -64,6 +73,8 @@ class ForestCoverCollection(models.Model):
 
     processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
                                         on_delete=models.SET_NULL)
+    approval_status = models.CharField(max_length=100, default="Not Submitted", help_text="SCAP Collection Approval Status",
+                                          choices=VALIDATION_STATES)
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
@@ -74,11 +85,17 @@ class ForestCoverCollection(models.Model):
 
 
 class ForestCoverFile(models.Model):
+    VALIDATION_CHOICES = (
+        ('Validating', 'Validating'),
+        ('Validated', 'Validated'),
+        ('Approved', 'Approved'),
+    )
     file = models.FileField(upload_to=fc_upload_path)
     year = models.IntegerField(help_text="Year", default=0, )
     collection = models.ForeignKey(ForestCoverCollection, on_delete=models.CASCADE, related_name='yearly_files')
     doi_link = models.CharField(max_length=100, default="", blank=True)
     metadata_link = models.URLField(max_length=100, default="", blank=True)
+    validation_status = models.CharField(max_length=100, default="Validating", help_text="Upload File Validation Status",choices=VALIDATION_CHOICES)
 
     def filename(self):
         return os.path.basename(self.file.name)
@@ -101,6 +118,12 @@ class AOICollection(models.Model):
         ('Processed', 'Processed'),
         ('Available', 'Available')
     )
+    VALIDATION_STATES = (
+        ('Not Submitted', 'Not Submitted'),
+        ('Validating Data', 'Validating Data'),
+        ('Submitted', 'Submitted'),
+        ('Approved', 'Approved'),
+    )
 
     name = models.CharField(max_length=100, default="", help_text="AOI name")
     description = models.TextField(default="", help_text="AOI description")
@@ -118,6 +141,8 @@ class AOICollection(models.Model):
 
     processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
                                         on_delete=models.SET_NULL)
+    approval_status = models.CharField(max_length=100, default="Not Submitted", help_text="SCAP Collection Approval Status",
+                                          choices=VALIDATION_STATES)
 
     class Meta:
         verbose_name_plural = "AOI Collections"
@@ -165,6 +190,12 @@ class AGBCollection(models.Model):
         ('Processed', 'Processed'),
         ('Available', 'Available')
     )
+    VALIDATION_STATES = (
+        ('Not Submitted', 'Not Submitted'),
+        ('Validating Data', 'Validating Data'),
+        ('Submitted', 'Submitted'),
+        ('Approved', 'Approved'),
+    )
 
     name = models.CharField(max_length=100, default="", help_text="Collection Name")
     description = models.CharField(default="", help_text="Collection Description")
@@ -187,6 +218,8 @@ class AGBCollection(models.Model):
 
     processing_task = models.ForeignKey(CurrentTask, verbose_name="Current Processing Task", null=True, blank=True,
                                         on_delete=models.SET_NULL)
+    approval_status = models.CharField(max_length=100, default="Not Submitted", help_text="SCAP Collection Approval Status",
+                                          choices=VALIDATION_STATES)
 
     class Meta:
         verbose_name_plural = "AGB Collections"
@@ -206,7 +239,7 @@ class CarbonStockFile(models.Model):
     statistics = models.TextField(help_text="GDAL Statistics as JSON string")
 
     class Meta:
-        verbose_name_plural = "Carbon Files"
+        verbose_name_plural = "CarbonStock Summary"
 
 
 
@@ -230,7 +263,7 @@ class AGBFile(models.Model):
     statistics = models.TextField(help_text="GDAL Statistics as JSON string")
 
     class Meta:
-        verbose_name_plural = "AGB Files"
+        verbose_name_plural = "AGB Summary"
 
 
 

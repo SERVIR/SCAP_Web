@@ -1,9 +1,10 @@
 function stage_for_processing() {
     var name=$('#id_name').val();
+    console.log(name)
     $.ajax({
         type: 'POST',
         url: 'stage-for-processing/',
-        data: {'type':'aoi','coll_name': name},
+        data: {'type':'aoi','aoi_name': name},
         success: function (data) {
             location.href=window.location.protocol + "//" +location.host+'/aoi-collections/';
         }
@@ -66,7 +67,7 @@ function check_progress_aoi(){
            success: function (data) {
                if (data.error.length === 0) {
                    stage_for_processing();
-                   location.href = window.location.protocol + "//" + location.host + '/aoi-collections/';
+                   // location.href = window.location.protocol + "//" + location.host + '/aoi-collections/';
 
                } else {
                    alert(data.error)

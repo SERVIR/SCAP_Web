@@ -8,9 +8,9 @@ from time import sleep
 
 import scap.processing as processing
 
-from scap.models import ForestCoverCollection, AGBCollection, AOICollection
+from scap.models import ForestCoverCollection, AGBCollection, AOICollection,ForestCoverFile
 from celery.utils.log import get_task_logger
-
+from scap.utils import validate_file,upload_tiff_to_geoserver
 logger = get_task_logger('ScapTestProject.async_tasks')
 
 def log_memory_snapshot():
@@ -54,3 +54,34 @@ def process_updated_collection(self, collection_id, collection_type):
             # TODO Raise error
             logger.info('Error processing updated collection')
             pass
+
+@shared_task(bind=True)
+def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username):
+    print('received a task')
+    if dataset_type == 'fc':
+        existing_coll = ForestCoverCollection.objects.get(name=coll_name,
+                                                          owner__username=username)
+        fc_files = ForestCoverFile.objects.filter(collection=existing_coll)
+        result = True
+        if fc_files.count() == 0:
+            existing_coll.approval_status = 'Not Submitted'
+            existing_coll.save()
+        for file in fc_files:
+            if not validate_file(bytes(file.file.read()),'fc'):
+                result = False
+                break
+        if result:
+            existing_coll.approval_status = 'Submitted'
+            existing_coll.save()
+    else: #agb
+        existing_coll = AGBCollection.objects.get(name=coll_name,
+                                                  owner__username=username)
+        if validate_file(bytes(existing_coll.source_file.file.read()),'agb'):
+            name = 'preview.agb.' + username + '.' + coll_name + '.' + str(
+                existing_coll.year)
+            print(existing_coll.source_file.name)
+            path = existing_coll.source_file.path
+            upload_tiff_to_geoserver(name, path)
+            existing_coll.approval_status = 'Submitted'
+            existing_coll.processing_status = 'Not Processed'
+            existing_coll.save()

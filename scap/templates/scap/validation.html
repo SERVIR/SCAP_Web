@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load i18n %}
+
+{% load socialaccount %}
+{% load auth_extras %}
+{% load static %}
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>SERVIR S-CAP</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+          integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+            integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js"
+            integrity="sha512-E0DKVahIg0p1UHR2Kf9NX7x7TUewJb30mxkxEm2qOYTVJObgsAGpEol9F6iK6oefCbkJiA4/i6fnTHzM6H1kEA=="
+            crossorigin=""></script>
+ <script src="{% static '/js/L.Control.Opacity.js' %}"></script>
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+        <script src="{% static '/js/basemaps.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/wms-capabilities@0.6.0/dist/wms-capabilities.min.js"></script>
+     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css"/>
+        <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<style>
+    .btn.disabled {
+    pointer-events: auto;
+}
+</style>
+</head>
+
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background: #212529">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "home" %}" style="padding-left: 20px"><img
+                src="{% static "assets/img/SERVIR_flat_white2.png" %}" alt="..."/></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsivenew">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'forest-cover-collections' %}">Forest Cover</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'agb-collections' %}">AGB</a></li>
+                 <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
+
+                {% if user.is_authenticated %}
+                  <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" ><span>VALIDATE</span></a>
+                  <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'validation' type='fc' %}">FC</a>
+                            </li>
+                       <li><a class="nav-link" href="{% url 'validation' type='agb' %}">AGB</a>
+                            </li>
+
+                        </ul>
+                </li>
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="/logout/">Logout</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% provider_login_url 'google' %}?next=/">
+                        Login
+                    </a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid" style="margin-top:120px;width:85% ">
+    {% if type == 'fc' %}
+    <h3 class="text-center pb-4">VALIDATE THE FOREST COVER COLLECTIONS</h3>
+    {% else %}
+    <h3 class="text-center pb-4">VALIDATE THE AGB COLLECTIONS</h3>
+    {% endif %}
+    <p>Following is the list of collections that need approval in order to move to processing stage.</p>
+        <p><i>Note to approvers: Approving a collection will approve all the files within the collection and will stage the collection for processing. </i></p>
+
+<!--      <div class="row h-100 w-25" id="to_be_validated">-->
+<!--          -->
+<!--      </div>-->
+     <table id="to_be_validated">
+            <thead>
+            <tr>
+                <th>Owner</th>
+                <th>Collection Name</th>
+                <th>Collection Description</th>
+                {% if type == "fc" %}
+                <th># of Tiff Files</th>
+                {% endif %}
+                <th>Access Level</th>
+                <th>Processing Status</th>
+                <th>Approval Status</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+{% if type == 'fc' %}
+            {% for coll in colls %}
+                <tr>
+                       <td><label>{{ coll.coll.owner|truncatechars:150 }}</label></td>
+                     <td><label>{{ coll.coll.name|truncatechars:150 }}</label></td>
+                     <td><label>{{ coll.coll.description|truncatechars:150 }}</label></td>
+                     <td><label>{{ coll.coll.yearly_files.all.count }}</label></td>
+                     <td><label>{{ coll.coll.access_level}}</label></td>
+                     <td><label>{{ coll.coll.processing_status}}</label></td>
+                     <td><label>{{ coll.coll.approval_status}}</label></td>
+
+                    <td>
+                     <button class="btn-primary btn"
+onclick="populate_tiff_table('{{coll.tiff_files}}')"
+                                style="margin: 10px;margin-top:0px">View Tiffs
+                        </button>
+                    </td>
+                    <td>
+                        {% if coll.approve_flag == False %}
+                         <button class="btn-primary btn disabled"
+
+                                style="margin: 10px;margin-top:0px" onclick="stage_for_processing('{{type}}','{{coll.coll.name}}')" title="Cannot approve a collection when all the files belonging to it are not approved.Please approve the individual files by clicking on 'View Tiffs' and retry">Approve
+                        </button>
+                        {% else %}
+                            <button class="btn-primary btn"
+
+                                style="margin: 10px;margin-top:0px" onclick="stage_for_processing('{{type}}','{{coll.coll.name}}')">Approve
+                        </button>
+                        {% endif %}
+
+                    </td>
+                     <td>
+                         <button class="btn-danger btn fc_deny"
+
+                                style="margin: 10px;margin-top:0px">Deny
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+            {% else %}
+         {% for coll in colls %}
+                <tr>
+                    <td><label>{{ coll.owner|truncatechars:150 }}</label></td>
+                    <td><label>{{ coll.name|truncatechars:150 }}</label></td>
+                    <td><label>{{ coll.description|truncatechars:150 }}</label></td>
+                     <td><label>{{ coll.access_level}}</label></td>
+                       <td><label>{{ coll.processing_status}}</label></td>
+                     <td><label>{{ coll.approval_status}}</label></td>
+
+                    <td>
+                     <button class="btn-primary btn"
+onclick="show_layers_on_map('{{type}}','{{coll.id}}','{{coll.name}}',0,'{{years}}')"
+                                style="margin: 10px;margin-top:0px">View
+                        </button>
+                    </td>
+                    <td>
+                         <button class="btn-primary btn"
+
+                                style="margin: 10px;margin-top:0px" onclick="stage_for_processing('{{type}}','{{coll.name}}')">Approve
+                        </button>
+
+                    </td>
+                     <td>
+                         <button class="btn-danger btn" id="agb_deny"
+
+                                style="margin: 10px;margin-top:0px">Deny
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    <br>
+    {% if type == 'fc' %}
+    <p>Following is a list of Forest Cover files in the selected collection(<i>Click on 'View Tiffs' to see files in a collection</i>)</p>
+     <table id="fc_tiffs_to_be_validated" style="width: 50%">
+                                        <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>File</th>
+                                            <th>DOI</th>
+                                            <th>Metadata</th>
+                                            <th>Validation Status</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="fc_tiffs_to_be_validated_body">
+                                        </tbody>
+                                    </table>
+    {% endif %}
+
+    <br>
+    <div id="show_on_map" style="display: none">
+    <h3>Currently viewing the files in collection: <span id="preview_coll"></span></h3>
+<!--        <button class="btn btn-success" onclick="stage_for_processing()">Approve Collection</button>-->
+<!--                             <button class="btn btn-danger" onclick="notify_user()">Deny and Notify User</button>-->
+
+
+    </div>
+    <div class="row">
+        <p></p>
+        <div class="col"><div id="tfile_validate" style="height: 500px;"></div></div>
+
+         <div class="col">
+             <div class="row">
+<!--                 <div class="col">-->
+<!--                     <p>Select an year to see Forestcover file</p>-->
+<!--                     <div id="years_radiolist" style="height: 500px;overflow-y: scroll"></div>-->
+<!--            </div>-->
+                 <div class="col"><div id="file_summary" style="display: none;">
+                     <p><strong>Boundary file present? </strong>No</p>
+                     <p><strong>File summary</strong>:</p>
+
+                     <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">File</th>
+         <th scope="col">Coordinate System</th>
+         <th scope="col">Shape</th>
+         <th scope="col">Minimum Value</th>
+        <th scope="col">Maximum Value</th>
+        <th scope="col">Extent</th>
+        </tr>
+  </thead>
+                         <tbody>
+    <tr>
+      <td><span id="tif_filename"></span></td>
+        <td><span id="tif_crs"></span></td>
+        <td><span id="tif_shape"></span></td>
+        <td><span id="tif_min"></span></td>
+        <td><span id="tif_max"></span></td>
+        <td><span id="tif_extent"></span></td>
+    </tr>
+                         </tbody>
+                     </table>
+
+
+
+
+
+
+
+                 </div>
+
+
+             </div>
+
+
+        </div>
+         </div>
+
+    </div>
+
+
+</div>
+<div class="modal" tabindex="-1" id="email_message_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enter the message for user:</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+           <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="email_opt1">
+        <label class="form-check-label" for="email_opt1" id="email_opt1_label">
+          The file is not in right CRS
+        </label>
+               <br>
+               <input class="form-check-input" type="checkbox" id="email_opt2" >
+        <label class="form-check-label" for="email_opt2"  id="email_opt2_label">
+          The file bounds are incorrect
+        </label>
+               <br>
+               <input class="form-check-input" type="checkbox" id="email_opt3">
+        <label class="form-check-label" for="email_opt3"  id="email_opt3_label">
+          Add some more info
+        </label>
+
+      </div>
+          <textarea id="text_for_email" rows="10" style="margin: auto;width: 100%;display: none"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="send_email_to_user" onclick=" notify_user('{{type}}');">Notify User</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/validation.js' %}"></script>
+<script src="{% static "js/datatables.js" %}"></script>
+
+</body>
+</html>

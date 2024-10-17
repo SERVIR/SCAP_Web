@@ -47,6 +47,19 @@
                  <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
                 {% if user.is_authenticated %}
+<!--                <li class="nav-item"><a class="nav-link" target="_blank" href="{% url 'validation' type='agb' %}" >VALIDATE!</a></li>-->
+
+                 <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" ><span>VALIDATE</span></a>
+                  <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'validation' type='fc' %}">FC</a>
+                            </li>
+                       <li><a class="nav-link" href="{% url 'validation' type='agb' %}">AGB</a>
+                            </li>
+
+                        </ul>
+                </li>
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
@@ -90,6 +103,7 @@
                 <th>AGB Description</th>
                 <th>Access Level</th>
                  <th>Processing Status</th>
+                <th>Approval Status</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -103,6 +117,7 @@
                                          <td><label>{{ agb.access_level}}</label></td>
 
                      <td><label>{{ agb.processing_status}}</label></td>
+                    <td><label>{{ agb.approval_status}}</label></td>
                     <td>
                             {% if agb.processing_status == 'Staged' or agb.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"
@@ -114,6 +129,7 @@
                         </button>
                         {% endif %}
                     </td>
+
                     <td>
                            {% if agb.processing_status == 'Staged' or agb.processing_status == 'In Progress' %}
                         <button class="btn-secondary btn disabled" title="AGB Dataset is currently being processed"

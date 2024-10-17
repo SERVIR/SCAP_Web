@@ -68,6 +68,7 @@
                 {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
                 {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" target="_blank" href="{% url 'validation' type='agb' %}" >VALIDATE!</a></li>
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
@@ -200,7 +201,10 @@
                             </div>
 
                             <div class=" mt-3">
-                                <input id="agb_stage_processing" type="button" class="btn-primary btn" value="Stage for processing" onclick="check_progress_agb()"/> <a
+<!--                                <input id="agb_stage_processing" type="button" class="btn-primary btn" value="Stage for processing" onclick="check_progress_agb()"/> -->
+                                                                 <a id="send_for_review_agb"  class="btn-primary btn" onclick="check_progress_agb()">Send for review</a>
+
+                                <a
                                     class="btn btn-outline-warning" href="{% url 'agb-collections' %}">Go to the list</a>
                             </div>
 

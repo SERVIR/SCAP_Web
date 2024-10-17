@@ -20,7 +20,7 @@ class PilotCountryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class ForestCoverFileAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'collection', 'file')
+    list_display = ('id', 'collection', 'file','validation_status')
     list_filter = ('collection',)
 
 
@@ -38,7 +38,7 @@ class ForestCoverFileInline(admin.TabularInline):
 
 
 class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('name', 'boundary_file','owner','access_level')
+    list_display = ('name', 'boundary_file','owner','access_level','approval_status')
     inlines = [ ForestCoverFileInline, ]
 
 

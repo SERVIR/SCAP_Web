@@ -105,22 +105,44 @@ document.getElementById('tiff_doi').onchange = function() {
 
 };
 function stage_for_processing() {
-    var name=$('#current_coll').html();
-    if(name==undefined){
-        alert("Please save collection first")
-    }
-    else {
-        $.ajax({
-            type: 'POST',
-            url: 'stage-for-processing/',
-            data: {'type': 'fc', 'coll_name': name},
-            success: function (data) {
-                location.href = window.location.protocol + "//" + location.host + '/forest-cover-collections/';
-            }
-        });
-    }
+    // var name=$('#current_coll').html();
+    // if(name==undefined){
+    //     alert("Please save collection first")
+    // }
+    // else {
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: 'stage-for-processing/',
+    //         data: {'type': 'fc', 'coll_name': name},
+    //         success: function (data) {
+    //             location.href = window.location.protocol + "//" + location.host + '/forest-cover-collections/';
+    //         }
+    //     });
+    // }
 
 }
+
+function send_for_admin_review(){
+    //AJAX call to send the collection name for validation(add a field in fccollection validation_status)
+    $.ajax({
+        type: 'POST',
+        url: 'send-for-admin-review/',
+        data: {'coll_name': $('#current_coll').html(),'type':'fc'},
+        success: function (data) {
+            if(data.error!=undefined){
+                alert(data.error)
+            }
+            else{
+                    alert('Thank you, you will be notified once the data is reviewed.');
+                   location.href = window.location.protocol + "//" + location.host + '/forest-cover-collections/';
+
+            }
+
+        }
+    });
+}
+
+
 
 function validate_all_fields(year, file,doi_link) {
     var res = true;
@@ -239,7 +261,7 @@ function storeTiffs() {
         success: function (data) {
             console.log(data.error);
             if(data.error.length>0) {
-                alert("Year exists, please change year");
+                alert(data.error);
                 show_tiffs($('#current_coll').html());
             }
             else {

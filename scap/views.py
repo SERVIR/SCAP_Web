@@ -532,6 +532,67 @@ def updateColl(request, coll_name):
         arr.append({"name": c['collection_name'], "desc": c['collection_description']})
     return render(request, 'scap/userdata.html', {"coll_list": arr})
 
+def validation(request,type):
+    colls=[]
+    if type=='fc':
+        collections = ForestCoverCollection.objects.filter(approval_status='Submitted')
+        ids = []
+        names = []
+        years = []
+        bdata = []
+        for c in collections:
+            # if c.boundary_file:
+            #     sFile = c.boundary_file.path
+            #     print(sFile)
+            #     gdf = gpd.read_file(sFile)
+            #     bdata.append({'id':c.id,'gjson':json.loads(json.dumps(gdf.to_json()))})
+            # else:
+            #     bdata.append({'id':c.id,'gjson':None})
+            ids.append(c.id)
+            names.append(c.name)
+            tiff_files = ForestCoverFile.objects.filter(collection=c)
+            tyears = []
+            tfiles=[]
+            a_flag=True
+
+            for tfile in tiff_files:
+                tyears.append(tfile.year)
+                tfiles.append({"year": tfile.year,"cname":c.name,"cid":c.id,"file": Path(tfile.file.name).name, "metadata_link": tfile.metadata_link,"doi_link": tfile.doi_link,"validation_status": tfile.validation_status})
+            for tfile in tiff_files:
+                if tfile.validation_status!='Approved':
+                    a_flag=False
+                    break
+            colls.append({'coll': c, 'tiff_files': json.dumps(tfiles),'approve_flag':a_flag})
+            years.append({'cid':c.id,'years':tyears})
+
+        return render(request, 'scap/validation.html', {'type':type,'colls':colls,'years':json.dumps(years)})
+    elif type=='agb':
+        collections = AGBCollection.objects.filter(approval_status='Submitted')
+        ids = []
+        names = []
+        years = []
+        bdata = []
+        for c in collections:
+            # if c.boundary_file:
+            #     sFile = c.boundary_file.path
+            #     print(sFile)
+            #     gdf = gpd.read_file(sFile)
+            #     bdata.append({'id':c.id,'gjson':json.loads(json.dumps(gdf.to_json()))})
+            # else:
+            #     bdata.append({'id':c.id,'gjson':None})
+            ids.append(c.id)
+            names.append(c.name)
+            years.append({'cid': c.id, 'years': [c.year]})
+        return render(request, 'scap/validation.html', {'type':type,'colls': collections, 'years': json.dumps(years)})
+    elif type=='aoi':
+        collections= AOICollection.objects.filter(approval_status='Submitted')
+        ids = []
+        names = []
+        for c in collections:
+            ids.append(c.id)
+            names.append(c.name)
+        return render(request, 'scap/validation.html', {'type':type,'colls': collections,'years':json.dumps([])})
+
 
 def page_not_found_view(request, exception):
     return render(request, 'scap/404.html', status=404)

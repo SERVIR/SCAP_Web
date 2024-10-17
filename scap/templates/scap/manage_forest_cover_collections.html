@@ -47,7 +47,17 @@
                  <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
                 {% if user.is_authenticated %}
+ <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" ><span>VALIDATE</span></a>
+                  <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'validation' type='fc' %}">FC</a>
+                            </li>
+                       <li><a class="nav-link" href="{% url 'validation' type='agb' %}">AGB</a>
+                            </li>
 
+                        </ul>
+                </li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
@@ -91,6 +101,7 @@
                 <th># of Tiff Files</th>
                 <th>Access Level</th>
                 <th>Processing Status</th>
+                <th>Approval Status</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -104,6 +115,7 @@
                     <td><label>{{ coll.yearly_files.all.count }}</label></td>
                      <td><label>{{ coll.access_level}}</label></td>
                        <td><label>{{ coll.processing_status}}</label></td>
+                     <td><label>{{ coll.approval_status}}</label></td>
 
                     <td>
                         {% if coll.processing_status == 'Staged' or coll.processing_status == 'In Progress' %}
