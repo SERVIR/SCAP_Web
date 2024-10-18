@@ -87,6 +87,7 @@
                     <thead>
                     <tr>
                         <th>AOI Name</th>
+                        <th>Link to AOI page</th>
                         <th>AOI Description</th>
                         <th>Access Level</th>
                         <th>Processing Status</th>
@@ -101,6 +102,7 @@
                     {% for aoi in object_list %}
                         <tr>
                             <td><label>{{ aoi.name|truncatechars:150 }}</label></td>
+                            <td><a href="{% url 'aoi_page_custom' aoi=aoi.id">{{ aoi.id}}</a></td>
                             <td><label>{{ aoi.description|truncatechars:150 }}</label></td>
                                                  <td><label>{{ aoi.access_level}}</label></td>
 
