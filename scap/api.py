@@ -1204,6 +1204,13 @@ def add_aoi_data(request):
             bbox = r.bbox
             temp_bbox = [x for x in bbox if -180 <= x <= 180]
             res = bbox == temp_bbox
+            res=False
+            for x in bbox:
+                if x>=-90 and x <= 90:
+                    res=True
+                else:
+                    res=False
+                    break
             if r.numShapes > 0 and res:
                 aoi_coll.source_file = request.FILES['file']
                 aoi_coll.access_level = request.POST.get('access')

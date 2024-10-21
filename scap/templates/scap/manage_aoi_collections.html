@@ -102,7 +102,7 @@
                     {% for aoi in object_list %}
                         <tr>
                             <td><label>{{ aoi.name|truncatechars:150 }}</label></td>
-                            <td><a href="{% url 'aoi_page_custom' aoi=aoi.id">{{ aoi.id}}</a></td>
+                            <td><a href="{% url 'aoi_page' aoi=aoi.id %}" target="_blank">Go to AOI page</a></td>
                             <td><label>{{ aoi.description|truncatechars:150 }}</label></td>
                                                  <td><label>{{ aoi.access_level}}</label></td>
 
