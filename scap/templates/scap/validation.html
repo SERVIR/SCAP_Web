@@ -140,7 +140,7 @@ onclick="populate_tiff_table('{{coll.tiff_files}}')"
                     </td>
                     <td>
                         {% if coll.approve_flag == False %}
-                         <button class="btn-primary btn disabled"
+                         <button class="btn-secondary btn disabled"
 
                                 style="margin: 10px;margin-top:0px" onclick="stage_for_processing('{{type}}','{{coll.coll.name}}')" title="Cannot approve a collection when all the files belonging to it are not approved.Please approve the individual files by clicking on 'View Tiffs' and retry">Approve
                         </button>
