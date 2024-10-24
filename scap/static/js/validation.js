@@ -25,7 +25,8 @@ function approve_fc_file(fc_file) {
     });
 }
 
-function populate_tiff_table(tiff_files){
+function populate_tiff_table(owner,tiff_files){
+    console.log(owner)
     document.getElementById('fc_tiffs_to_be_validated_body').innerHTML="";
     var tiff_files=JSON.parse(tiff_files);
         var tiff_table = document.getElementById("fc_tiffs_to_be_validated_body");
@@ -33,6 +34,7 @@ function populate_tiff_table(tiff_files){
             console.log(tiff_files[i])
             var tiff_file=tiff_files[i];
             var tr = document.createElement('tr');
+            var td0 = document.createElement('td');
             var td1 = document.createElement('td');
             var td2 = document.createElement('td');
             var td3 = document.createElement('td');
@@ -41,7 +43,7 @@ function populate_tiff_table(tiff_files){
             var td6 = document.createElement('td');
             var td7 = document.createElement('td');
             var td8 = document.createElement('td');
-
+var text0 = document.createTextNode(owner);
             var text1 = document.createTextNode(tiff_file.year);
             var text3 = document.createTextNode(tiff_file.doi_link);
             var text4 = document.createTextNode(tiff_file.metadata_link);
@@ -58,8 +60,7 @@ function populate_tiff_table(tiff_files){
                               var pos1 = this.id.indexOf('_');
                               var pos2 = this.id.indexOf('_', pos1 + 1);
                               var coll = this.id.substring(pos2 + 1)
-                               var user=this.parentNode.parentNode.cells[0].firstChild.innerHTML;
-                              show_layers_on_map('fc', user,this.id.split('_')[1], coll, this.id.split('_')[0]);
+                              show_layers_on_map('fc', owner,this.id.split('_')[1], coll, this.id.split('_')[0]);
                           });
 
         viewButton.style="margin: 10px;margin-top:0px";
@@ -92,7 +93,7 @@ function populate_tiff_table(tiff_files){
 
         denyButton.style="margin: 10px;margin-top:0px";
         denyButton.className="btn-danger btn";
-
+ td0.appendChild(text0);
             td1.appendChild(text1);
             td2.appendChild(text2);
             td3.appendChild(text3);
@@ -101,7 +102,7 @@ function populate_tiff_table(tiff_files){
             td6.appendChild(viewButton);
              td7.appendChild(approveButton);
               td8.appendChild(denyButton);
-
+tr.appendChild(td0);
             tr.appendChild(td1);
             tr.appendChild(td2);
             tr.appendChild(td3);

@@ -160,13 +160,14 @@
                             <input type="hidden" name="owner" value=" {{ owner }}">
                             {% if operation == 'ADD' %}
                                 <input type="submit" class="btn-primary btn" value="Save Collection"/>
+                                <p class="text-secondary"><i>Note: You will be able to add forest cover tiff files once you save the collection.</i></p>
                             {% else %}
                                 <input type="submit" class="btn-primary btn" value="Update Collection"/>
                             {% endif %}
-                           
+
                              {% if operation == 'EDIT' %}
-                         
-                            
+
+
                             <div class="mb-3 common">
                                 <label class="form-label"><b>Upload Yearly Land Cover Tiff
                                     files:</b> </label>
@@ -220,7 +221,7 @@
 {#                                       onclick="updateFields(this,form.id )"><span class="text-secondary fst-italic">You can add tiff files after saving the collection</span>#}
                                 {% endif %}
                             </div>
-                            <br>
+
 <!--                            <a id="stage_processing"  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a>-->
                                  <a id="send_for_review"  class="btn-primary btn" onclick="send_for_admin_review()">Send for review</a>
                             <a id="go_to_list" class="btn btn-outline-warning" href="{% url 'forest-cover-collections' %}">Go to the list</a>

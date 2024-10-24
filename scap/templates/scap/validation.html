@@ -134,7 +134,7 @@
 
                     <td>
                      <button class="btn-primary btn"
-onclick="populate_tiff_table('{{coll.tiff_files}}')"
+onclick="populate_tiff_table('{{coll.coll.owner}}','{{coll.tiff_files}}')"
                                 style="margin: 10px;margin-top:0px">View Tiffs
                         </button>
                     </td>
@@ -175,7 +175,7 @@ onclick="populate_tiff_table('{{coll.tiff_files}}')"
 
                     <td>
                      <button class="btn-primary btn"
-onclick="show_layers_on_map('{{type}}','{{coll.id}}','{{coll.name}}',0,'{{years}}')"
+onclick="show_layers_on_map('{{type}}','{{coll.owner}}','{{coll.id}}','{{coll.name}}',0,'{{years}}')"
                                 style="margin: 10px;margin-top:0px">View
                         </button>
                     </td>
@@ -206,6 +206,7 @@ onclick="show_layers_on_map('{{type}}','{{coll.id}}','{{coll.name}}',0,'{{years}
      <table id="fc_tiffs_to_be_validated" style="width: 50%">
                                         <thead>
                                         <tr>
+                                            <th>Owner</th>
                                             <th>Year</th>
                                             <th>File</th>
                                             <th>DOI</th>
