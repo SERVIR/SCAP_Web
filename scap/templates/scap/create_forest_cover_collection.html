@@ -163,6 +163,10 @@
                             {% else %}
                                 <input type="submit" class="btn-primary btn" value="Update Collection"/>
                             {% endif %}
+                           
+                             {% if operation == 'EDIT' %}
+                         
+                            
                             <div class="mb-3 common">
                                 <label class="form-label"><b>Upload Yearly Land Cover Tiff
                                     files:</b> </label>
@@ -199,7 +203,8 @@
                                 </div>
 
                                 <script type="application/javascript">var opn='{{ operation }}';</script>
-                                 {% if operation == 'EDIT' %}
+{#                            {% endif %}#}
+{#                                 {% if operation == 'EDIT' %}#}
                                 <input type="button" class="btn btn-primary" id="save_year" value="Add to list"
                                        onclick="addFields('{{ user.username }}','{{ operation }}' )">
                                 <input type="hidden" value="0" id="tiff_id_to_update">
@@ -207,14 +212,15 @@
                                 <input type="hidden" class="btn btn-primary " id="update_tiff" value="Update"
                                        onclick="updateFields(this,form.id )">
 
-                                {% else %}
-                                <input type="button" class="btn btn-secondary disabled" value="Add to list"
-                                       onclick="addFields('{{ user.username }}','{{ operation }}' )">
-                                <input type="hidden" value="0" >
-                                <input type="hidden" class="btn btn-primary disabled " value="Update"
-                                       onclick="updateFields(this,form.id )"><span class="text-secondary fst-italic">You can add tiff files after saving the collection</span>
+{#                                {% else %}#}
+{#                                <input type="button" class="btn btn-secondary disabled" value="Add to list"#}
+{#                                       onclick="addFields('{{ user.username }}','{{ operation }}' )">#}
+{#                                <input type="hidden" value="0" >#}
+{#                                <input type="hidden" class="btn btn-primary disabled " value="Update"#}
+{#                                       onclick="updateFields(this,form.id )"><span class="text-secondary fst-italic">You can add tiff files after saving the collection</span>#}
                                 {% endif %}
                             </div>
+                            <br>
 <!--                            <a id="stage_processing"  class="btn-primary btn" onclick="stage_for_processing()">Stage for processing</a>-->
                                  <a id="send_for_review"  class="btn-primary btn" onclick="send_for_admin_review()">Send for review</a>
                             <a id="go_to_list" class="btn btn-outline-warning" href="{% url 'forest-cover-collections' %}">Go to the list</a>

@@ -253,6 +253,7 @@ def send_for_admin_review(request, pk=0):
             validate_uploaded_dataset.delay(existing_coll.id, 'fc', request.POST.get('coll_name'),
                                             request.user.username)
             existing_coll.approval_status = 'Validating Data'
+            existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
             return JsonResponse({'success': 'success'})
         except:
@@ -280,6 +281,7 @@ def send_for_admin_review(request, pk=0):
             validate_uploaded_dataset.delay(existing_coll.id, 'agb', request.POST.get('coll_name'),
                                             request.user.username)
             existing_coll.approval_status = 'Validating Data'
+            existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
             return JsonResponse({'success': 'success'})
         except:
@@ -1098,13 +1100,16 @@ def validate_collection(request, pk=0):
 @csrf_exempt
 def approve_fc_file(request):
     try:
+        print(request.POST.get('coll_name'))
+
         collection = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'))
         fc_file = ForestCoverFile.objects.get(collection=collection, year=request.POST.get('year'))
         fc_file.validation_status = "Approved"
         fc_file.save()
         return JsonResponse({'success': 'success'})
-    except:
-        return JsonResponse({'error': 'error'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)})
 
 
 @csrf_exempt
@@ -1143,9 +1148,14 @@ def deny_notify_user(request):
     email = config['EMAIL_HOST_USER']
     if request.method == 'POST':
         if request.POST.get('type') == 'fc':
+            print(request.POST.get('coll_name'))
             try:
                 if len(request.POST.get('coll_name').split('_')) > 1:
-                    fc_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name').split('_')[2])
+                    us_arr = [pos for pos, char in enumerate(request.POST.get('coll_name')) if char == '_']
+                    print(request.POST.get('coll_name').split('_')[0])
+
+
+                    fc_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name')[us_arr[1]+1:])
                     fcfile = ForestCoverFile.objects.get(year=request.POST.get('coll_name').split('_')[0],
                                                          collection=fc_coll)
                     fcfile.delete()
@@ -1156,22 +1166,26 @@ def deny_notify_user(request):
                     fc_coll.approval_status = 'Denied'
                     fc_coll.save()
 
-                if len(user_email) > 0:
+                if len(user_email[0]) > 0:
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
+                else:
+                    return JsonResponse({'msg': 'No email address is associated with the user'})
                 return JsonResponse({'msg': 'success'})
             except Exception as e:
                 print(e)
-                return JsonResponse({'msg': 'error'})
+                return JsonResponse({'msg': str(e)})
         elif request.POST.get('type') == 'agb':
             try:
                 agb_coll = AGBCollection.objects.get(name=coll_name)
                 agb_coll.delete()
-                if len(user_email) > 0:
+                if len(user_email[0]) > 0:
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
+                else:
+                    return JsonResponse({'msg': 'No email address is associated with the user'})
                 return JsonResponse({'msg': 'success'})
             except Exception as e:
                 print(e)
-                return JsonResponse({'msg': 'error'})
+                return JsonResponse({'msg': str(e)})
         # TODO send email to user
 
 

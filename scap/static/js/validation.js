@@ -1,73 +1,15 @@
-var bmap;
 var tmap;
 var fc_name_for_email='';
 var agb_name_for_email='';
 var fc_filename_for_email='';
-function change_wms_tif(year){
-        if(tmap!=undefined) {
-        tmap.eachLayer(function (layer) {
-            tmap.removeLayer(layer);
-        });
-        darkmap.addTo(tmap);
-    }
-    var coll=document.getElementById('preview_coll').innerText;
-         layer_name = 'preview.fc.gtondapu.' + coll + '.'+year;
-        console.log(layer_name);
-        var xmlString = "https://geodata.servirglobal.net/geoserver/s-cap/wms?service=wms&version=1.1.1&request=GetCapabilities"
-        fetch(xmlString)
-            .then((response) => response.text())
-            .then((text) => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, "text/xml");
-                var floor = doc.getElementsByTagName("Layer");
-                for (var i = 0; i < floor.length; i++) {
-                    if (floor[i].childNodes[1].textContent === layer_name) {
-                        const param = floor[i].childNodes[11];
-                        var minx = param.getAttribute('minx');
-                        var miny = param.getAttribute('miny');
-                        var maxx = param.getAttribute('maxx');
-                        var maxy = param.getAttribute('maxy');
-                        break;
-                    }
-                }
-
-                var mywms = L.tileLayer.wms("https://geodata.servirglobal.net/geoserver/s-cap/wms", {
-                    layers: layer_name,
-                    format: 'image/png',
-                    transparent: true,
-                    version: '1.1.0',
-                    attribution: "myattribution"
-                });
-
-                mywms.addTo(tmap);
-                var bounds = [
-                    [miny, minx],
-                    [maxy, maxx]
-                ];
-                // var rectangle = L.rectangle(bounds, {color: "#ff7800", weight: 3}).addTo(tmap);
-                tmap.fitBounds(bounds);
-            });
-          $.ajax({
-              type: 'POST',
-              url: 'get-forestcoverfile-stats/',
-              data: {'year':year,'coll_name':coll},
-              success: function (data) {
-                  document.getElementById('tif_shape').innerText=data.shape;
-                   document.getElementById('tif_crs').innerText=data.crs;
-                    document.getElementById('tif_min').innerText=data.min;
-                     document.getElementById('tif_max').innerText=data.max;
-                     console.log(data.extent)
-                     document.getElementById('tif_extent').innerText=data.extent;
-
-              }
-          });
-
-}
+var username_for_email='';
 
 function approve_fc_file(fc_file) {
     var year = fc_file.split('_')[0]
     var name = fc_file.split('_')[1]
-    var coll = fc_file.split('_')[2]
+    var pos1=fc_file.indexOf('_');
+    var pos2=fc_file.indexOf('_',pos1+1);
+    var coll = fc_file.substring(pos2+1)
     $.ajax({
         type: 'POST',
         url: 'approve-fc-file/',
@@ -81,32 +23,6 @@ function approve_fc_file(fc_file) {
 
         }
     });
-}
-
-function generate_years_radiobuttons(years){
-    var container=document.getElementById('years_radiolist');
-for(var i=0;i<years.length;i++){
-    const input = document.createElement('input');
-    input.type = 'radio';
-    input.className = "form-check-input";
-    input.value = years[i];
-    input.id = years[i];
-    input.name = 'radio_years';
-     input.addEventListener("click", function (event) {
-         change_wms_tif(this.id);
-     });
-    //
-    const label = document.createElement('label');
-    label.className='form-check-label';
-    label.style='margin-left:10px';
-    // label.for = name;
-    label.textContent = years[i]
-
-    container.appendChild(input);
-    container.appendChild(label);
-    container.appendChild(document.createElement('br'))
-
-}
 }
 
 function populate_tiff_table(tiff_files){
@@ -139,8 +55,12 @@ function populate_tiff_table(tiff_files){
                     viewButton.classList = "btn btn-primary";
 
                           viewButton.addEventListener("click", function (event) {
-           show_layers_on_map('fc',this.id.split('_')[1],this.id.split('_')[2],this.id.split('_')[0]);
-                });
+                              var pos1 = this.id.indexOf('_');
+                              var pos2 = this.id.indexOf('_', pos1 + 1);
+                              var coll = this.id.substring(pos2 + 1)
+                               var user=this.parentNode.parentNode.cells[0].firstChild.innerHTML;
+                              show_layers_on_map('fc', user,this.id.split('_')[1], coll, this.id.split('_')[0]);
+                          });
 
         viewButton.style="margin: 10px;margin-top:0px";
         viewButton.className="btn-primary btn";
@@ -197,7 +117,7 @@ function populate_tiff_table(tiff_files){
 
 }
 
-function show_layers_on_map(type,cid,coll,year=0,yrs="[]") {
+function show_layers_on_map(type,user,cid,coll,year=0,yrs="[]") {
     document.getElementById('file_summary').style.display='block';
 
 
@@ -234,15 +154,11 @@ function show_layers_on_map(type,cid,coll,year=0,yrs="[]") {
 
         for (var i = 0; i < years.length; i++) {
                 if(type==='fc') {
-     layer_name = 'preview.fc.gtondapu.' + coll + '.' + years[i];
+     layer_name = 'preview.fc.'+user+'.' + coll + '.' + years[i];
      console.log(layer_name)
     }
     else if(type == 'agb'){
-        layer_name = 'preview.agb.gtondapu.' + coll + '.' + years[i];
-    }
-
-    else if(type == 'aoi'){
-layer_name = 'preview.aoi.gtondapu.' + coll + '.' + years[i];
+        layer_name = 'preview.agb.'+user+'.'  + coll + '.' + years[i];
     }
 
             console.log(layer_name);
@@ -359,7 +275,7 @@ function notify_user(type){
     // alert("An email will be sent to the user.");
     // location.href = window.location.protocol + "//" + location.host + '/forest-cover-collections/';
     var message=email_content+ "\n"+document.getElementById('text_for_email').value;
-    var user='gtondapu';
+    var user=username_for_email;
       var name=type==='fc'?(fc_filename_for_email.length>0?fc_filename_for_email:fc_name_for_email):agb_name_for_email;
       if(message.length==0 && document.getElementById('text_for_email').value==""){
           alert("Please enter a message or select an option for the email");
@@ -372,6 +288,11 @@ function notify_user(type){
               success: function (data) {
                   if (data.msg === 'success')
                       location.reload();
+                  else {
+                      alert(data.msg);
+                      location.reload();
+
+                  }
               }
           });
       }
@@ -382,12 +303,14 @@ $('.fc_deny').click(function(){
 $('#text_for_email').val('');
     $('#email_message_modal').modal('show');
  fc_name_for_email=this.parentNode.parentNode.cells[1].firstChild.innerHTML;
+ username_for_email=this.parentNode.parentNode.cells[0].firstChild.innerHTML;
 });
 
 $('#agb_deny').click(function(){
     $('#text_for_email').val('');
     $('#email_message_modal').modal('show');
        agb_name_for_email=this.parentNode.parentNode.cells[1].firstChild.innerHTML;
+       username_for_email=this.parentNode.parentNode.cells[0].firstChild.innerHTML;
 });
 
 

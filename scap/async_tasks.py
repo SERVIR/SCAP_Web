@@ -72,6 +72,7 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username)
                 break
         if result:
             existing_coll.approval_status = 'Submitted'
+            existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
     else: #agb
         existing_coll = AGBCollection.objects.get(name=coll_name,
@@ -81,7 +82,6 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username)
                 existing_coll.year)
             print(existing_coll.source_file.name)
             path = existing_coll.source_file.path
-            upload_tiff_to_geoserver(name, path)
             existing_coll.approval_status = 'Submitted'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()

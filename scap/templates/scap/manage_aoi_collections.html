@@ -46,9 +46,18 @@
                      <li class="nav-item"><a class="nav-link" href="{% url 'aoi-collections' %}">AOI</a></li>
 
                     {% if user.is_authenticated %}
-<!--                <li class="nav-item"><a class="nav-link" target="_blank" href="{% url 'validation' type='aoi' %}" >VALIDATE!</a></li>-->
-
                         <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" ><span>VALIDATE</span></a>
+                  <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'validation' type='fc' %}">FC</a>
+                            </li>
+                       <li><a class="nav-link" href="{% url 'validation' type='agb' %}">AGB</a>
+                            </li>
+
+                        </ul>
+                </li>
+ <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                                aria-haspopup="true" aria-expanded="false">{{ user.username }} <span
                                     class="caret"></span></a>
@@ -117,7 +126,7 @@
                                 <button class="btn-primary btn" onclick="location.href='{% url 'edit-aoi-collection' aoi.pk %}'"
                                         style="margin: 10px;width:80px;margin-top:0px">Edit
                                 </button>
-                                {% endif %}
+                                {% endif %} 
                             </td>
                             <td>
                                     {% if aoi.processing_status == 'Staged' or aoi.processing_status == 'In Progress' %}

@@ -1,0 +1,7 @@
+INFO, 21/Oct/2024 22:40:32, autoreload, 22282, 138769745327936, Watching for file changes with StatReloader
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769344759360, "GET /aoi-collections/ HTTP/1.1" 200 6981
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769334273600, "GET /static/assets/img/SERVIR_flat_white2.png HTTP/1.1" 200 36700
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769344759360, "GET /static/css/styles.css HTTP/1.1" 200 274827
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769250387520, "GET /static/js/datatables.js HTTP/1.1" 200 499
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769344759360, "GET /static/js/scripts.js HTTP/1.1" 200 1659
+INFO, 21/Oct/2024 22:40:36, basehttp, 22282, 138769344759360, "GET /static/assets/favicon.ico HTTP/1.1" 200 23462
