@@ -6,13 +6,19 @@ from celery.utils.log import get_task_logger
 from celery import shared_task
 from time import sleep
 
+from django.core.mail import send_mail
+
 import scap.processing as processing
 
 from scap.models import ForestCoverCollection, AGBCollection, AOICollection,ForestCoverFile
 from celery.utils.log import get_task_logger
 from scap.utils import validate_file,upload_tiff_to_geoserver
 logger = get_task_logger('ScapTestProject.async_tasks')
-
+from pathlib import Path
+import json
+BASE_DIR = Path(__file__).resolve().parent.parent
+f = open(str(BASE_DIR) + '/data.json', )
+config = json.load(f)
 def log_memory_snapshot():
     snapshot=tracemalloc.take_snapshot()
     key_type='lineno'
@@ -56,7 +62,7 @@ def process_updated_collection(self, collection_id, collection_type):
             pass
 
 @shared_task(bind=True)
-def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username):
+def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,email):
     print('received a task')
     if dataset_type == 'fc':
         existing_coll = ForestCoverCollection.objects.get(name=coll_name,
@@ -74,6 +80,16 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username)
             existing_coll.approval_status = 'Submitted'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
+            message = (
+                'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                'if the dataset is approved/denied.')
+            send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
+                      [email])
+        else:
+            message = (
+                'Your data failed the initial validation. Cannot submit for admin review. Please verify your data and retry')
+            send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
+                      [email])
     else: #agb
         existing_coll = AGBCollection.objects.get(name=coll_name,
                                                   owner__username=username)
@@ -82,6 +98,17 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username)
                 existing_coll.year)
             print(existing_coll.source_file.name)
             path = existing_coll.source_file.path
+            upload_tiff_to_geoserver(name,path)
             existing_coll.approval_status = 'Submitted'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
+            message = (
+                'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                'if the dataset is approved/denied.')
+            send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
+                      [email])
+        else:
+            message = (
+                'Your data failed the initial validation. Cannot submit for admin review. Please verify your data and retry')
+            send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
+                      [email])

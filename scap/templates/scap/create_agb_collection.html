@@ -68,8 +68,17 @@
                 {#                        <li class="nav-item"><a class="nav-link" href="#contact"></a></li>#}
 
                 {% if user.is_authenticated %}
-                <li class="nav-item"><a class="nav-link" target="_blank" href="{% url 'validation' type='agb' %}" >VALIDATE!</a></li>
+                 <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" ><span>VALIDATE</span></a>
+                  <ul class="dropdown-menu bg-black">
+                            <li><a class="nav-link" href="{% url 'validation' type='fc' %}">FC</a>
+                            </li>
+                       <li><a class="nav-link" href="{% url 'validation' type='agb' %}">AGB</a>
+                            </li>
 
+                        </ul>
+                </li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }} <span

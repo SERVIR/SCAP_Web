@@ -10,6 +10,7 @@ import logging
 import doi
 import requests
 import pandas as pd
+from allauth.account.utils import user_email
 from osgeo import ogr
 from itertools import product
 from datetime import datetime
@@ -251,53 +252,36 @@ def send_for_admin_review(request, pk=0):
             existing_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name'),
                                                               owner__username=request.user.username)
             validate_uploaded_dataset.delay(existing_coll.id, 'fc', request.POST.get('coll_name'),
-                                            request.user.username)
+                                            request.user.username,request.user.email)
             existing_coll.approval_status = 'Validating Data'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
+            message = (
+                'Your data is being validated. Please wait for an email notification to verify the intial checks '
+                'passed and the collection will then be submitted for admin review.')
+            send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'],
+                      [request.user.email])
             return JsonResponse({'success': 'success'})
         except:
             return JsonResponse({'error': 'error'})
-        # validate sibling files before changing the status to 'Submitted'
-        # fc_files = ForestCoverFile.objects.filter(collection=existing_coll)
-        # result = True
-        # print(fc_files)
-        # if fc_files.count() == 0:
-        #     existing_coll.approval_status = 'Not Submitted'
-        #     existing_coll.save()
-        #     return JsonResponse({'error': 'No files to validate'})
-        # for file in fc_files:
-        #     if not validate_file(bytes(file.file.read())):
-        #         result = False
-        #         break
-        # if result:
-        #     existing_coll.approval_status = 'Submitted'
-        #     existing_coll.save()
 
     elif request.POST.get('type') == 'agb':
         try:
             existing_coll = AGBCollection.objects.get(name=request.POST.get('coll_name'),
                                                       owner__username=request.user.username)
+            print('after coll')
             validate_uploaded_dataset.delay(existing_coll.id, 'agb', request.POST.get('coll_name'),
-                                            request.user.username)
+                                            request.user.username,request.user.email)
             existing_coll.approval_status = 'Validating Data'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
+            message=('Your data is being validated. Please wait for an email notification to verify the intial checks '
+                     'passed and the collection will then be submitted for admin review.')
+            send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'], [request.user.email])
             return JsonResponse({'success': 'success'})
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({'error': 'error'})
-        # existing_coll.approval_status = 'Validating Data'
-        # if not validate_file(bytes(existing_coll.source_file.file.read())):
-        #     return JsonResponse({'error': 'error'})
-        # else:
-        #     name = 'preview.agb.' + request.user.username + '.' + request.POST.get('coll_name') + '.' + str(
-        #         existing_coll.year)
-        #     print(existing_coll.source_file.name)
-        #     path = existing_coll.source_file.path
-        #     upload_tiff_to_geoserver(name, path)
-        #     existing_coll.approval_status = 'Submitted'
-        #     existing_coll.save()
-        # return JsonResponse({'success': 'success'})
     else:
         return JsonResponse({'error': 'error'})
 
@@ -1063,6 +1047,11 @@ def stage_for_processing(request, pk=0):
                 process_updated_collection.delay(collection.id, collection_type)
             except Exception as error:
                 print(error)
+            user_email= User.objects.get(username=collection.owner).email
+            message = (
+                "Congratulations! Your Forest Cover Collection '"+fc_collection_name+"' is approved by the admin reviewers.")
+            send_mail('[S-CAP] - Message about your collection: ' + fc_collection_name, message, config['EMAIL_HOST_USER'],
+                      [user_email])
             return JsonResponse({'success': 'success'})
         else:
             return JsonResponse({'error': 'cannot approve a collection when all the files belonging to it are not '
@@ -1077,6 +1066,11 @@ def stage_for_processing(request, pk=0):
             process_updated_collection.delay(collection.id, collection_type)
         except Exception as error:
             print(error)
+        user_email = User.objects.get(username=collection.owner).email
+        message = (
+            "Congratulations! Your AGB Collection '"+agb_collection_name+"' is approved by the admin reviewers.")
+        send_mail('[S-CAP] - Message about your collection: ' + agb_collection_name, message, config['EMAIL_HOST_USER'],
+                  [user_email])
         return JsonResponse({'success': 'success'})
     else:
         aoi_collection_name = request.POST.get('aoi_name')
@@ -1106,6 +1100,11 @@ def approve_fc_file(request):
         fc_file = ForestCoverFile.objects.get(collection=collection, year=request.POST.get('year'))
         fc_file.validation_status = "Approved"
         fc_file.save()
+        message=("Your Forest Cover File belonging to the year "+str(fc_file.year)+" in the collection '"+request.POST.get('coll_name')
+                 +"' is approved by the admin reviewers. Please know the collection will not be approved "
+                  "until all the Forest Cover Files inside the collection are approved individually.")
+        user_email=[User.objects.get(username=collection.owner).email]
+        send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'], user_email)
         return JsonResponse({'success': 'success'})
     except Exception as e:
         print(e)
