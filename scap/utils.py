@@ -12,7 +12,6 @@ def validate_file(file,type):
 
     with MemoryFile(file) as memfile:
         with memfile.open() as dataset:
-            data_array = dataset.read()
             meta = dataset.meta
             print(meta['crs'])
             stats = dataset.statistics(bidx=1, approx=True)  # min, max, mean, std

@@ -285,7 +285,7 @@ function notify_user(type){
           $.ajax({
               type: 'POST',
               url: 'deny-notify-user/',
-              data: {'type': type, 'coll_name': name, 'message': message, 'user': user},
+              data: {'type': type, 'coll_name': name, 'message': message, 'user': user,'fc_type':fc_filename_for_email.length>0?'fc_file':'fc_coll'},
               success: function (data) {
                   if (data.msg === 'success')
                       location.reload();

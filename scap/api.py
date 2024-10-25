@@ -1149,7 +1149,7 @@ def deny_notify_user(request):
         if request.POST.get('type') == 'fc':
             print(request.POST.get('coll_name'))
             try:
-                if len(request.POST.get('coll_name').split('_')) > 1:
+                if request.POST.get('fc_type') == 'fc_file':
                     us_arr = [pos for pos, char in enumerate(request.POST.get('coll_name')) if char == '_']
                     print(request.POST.get('coll_name').split('_')[0])
 
@@ -1166,6 +1166,7 @@ def deny_notify_user(request):
                     fc_coll.save()
 
                 if len(user_email[0]) > 0:
+                    message="Your collection is denied because of the following reason(s):\n"+message
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
                 else:
                     return JsonResponse({'msg': 'No email address is associated with the user'})
@@ -1178,6 +1179,7 @@ def deny_notify_user(request):
                 agb_coll = AGBCollection.objects.get(name=coll_name)
                 agb_coll.delete()
                 if len(user_email[0]) > 0:
+                    message = "Your collection is denied because of the following reason(s):\n" + message
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
                 else:
                     return JsonResponse({'msg': 'No email address is associated with the user'})
