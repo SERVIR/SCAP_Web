@@ -88,11 +88,13 @@ var text0 = document.createTextNode(owner);
                               fc_filename_for_email=this.id;
                               $('#text_for_email').html('');
     $('#email_message_modal').modal('show');
+    console.log()
+    username_for_email=owner;
                               // notify_user('fc');
                 });
 
         denyButton.style="margin: 10px;margin-top:0px";
-        denyButton.className="btn-danger btn";
+        denyButton.className="btn-danger btn fc_file_deny";
  td0.appendChild(text0);
             td1.appendChild(text1);
             td2.appendChild(text2);

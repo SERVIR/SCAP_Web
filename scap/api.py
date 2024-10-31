@@ -256,9 +256,10 @@ def send_for_admin_review(request, pk=0):
             existing_coll.approval_status = 'Validating Data'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
-            message = (
-                'Your data is being validated. Please wait for an email notification to verify the intial checks '
+            msg= (
+                'Your data is being validated. Please wait for an email notification to verify the initial checks '
                 'passed and the collection will then be submitted for admin review.')
+            message="""Hi {0}!\n{1}\nThank you for using SCAP!""".format(request.user.username, msg)
             send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'],
                       [request.user.email])
             return JsonResponse({'success': 'success'})
@@ -275,8 +276,10 @@ def send_for_admin_review(request, pk=0):
             existing_coll.approval_status = 'Validating Data'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
-            message=('Your data is being validated. Please wait for an email notification to verify the intial checks '
+            msg=('Your data is being validated. Please wait for an email notification to verify the initial checks '
                      'passed and the collection will then be submitted for admin review.')
+            message="""Hi {0}!\n{1}\nThank you for using SCAP!""".format(request.user.username, msg)
+
             send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'], [request.user.email])
             return JsonResponse({'success': 'success'})
         except Exception as e:
@@ -1047,11 +1050,12 @@ def stage_for_processing(request, pk=0):
                 process_updated_collection.delay(collection.id, collection_type)
             except Exception as error:
                 print(error)
-            user_email= User.objects.get(username=collection.owner).email
-            message = (
+            user= User.objects.get(username=collection.owner)
+            msg = (
                 "Congratulations! Your Forest Cover Collection '"+fc_collection_name+"' is approved by the admin reviewers.")
+            message = """Hi {0}!\n{1}\nThank you for using SCAP!""".format(user.username, msg)
             send_mail('[S-CAP] - Message about your collection: ' + fc_collection_name, message, config['EMAIL_HOST_USER'],
-                      [user_email])
+                      [user.email])
             return JsonResponse({'success': 'success'})
         else:
             return JsonResponse({'error': 'cannot approve a collection when all the files belonging to it are not '
@@ -1066,11 +1070,12 @@ def stage_for_processing(request, pk=0):
             process_updated_collection.delay(collection.id, collection_type)
         except Exception as error:
             print(error)
-        user_email = User.objects.get(username=collection.owner).email
-        message = (
+        user = User.objects.get(username=collection.owner)
+        msg = (
             "Congratulations! Your AGB Collection '"+agb_collection_name+"' is approved by the admin reviewers.")
+        message = """Hi {0}!\n{1}\nThank you for using SCAP!""".format(user.username, msg)
         send_mail('[S-CAP] - Message about your collection: ' + agb_collection_name, message, config['EMAIL_HOST_USER'],
-                  [user_email])
+                  [user.email])
         return JsonResponse({'success': 'success'})
     else:
         aoi_collection_name = request.POST.get('aoi_name')
@@ -1100,11 +1105,12 @@ def approve_fc_file(request):
         fc_file = ForestCoverFile.objects.get(collection=collection, year=request.POST.get('year'))
         fc_file.validation_status = "Approved"
         fc_file.save()
-        message=("Your Forest Cover File belonging to the year "+str(fc_file.year)+" in the collection '"+request.POST.get('coll_name')
+        msg=("Your Forest Cover File belonging to the year "+str(fc_file.year)+" in the collection '"+request.POST.get('coll_name')
                  +"' is approved by the admin reviewers. Please know the collection will not be approved "
                   "until all the Forest Cover Files inside the collection are approved individually.")
-        user_email=[User.objects.get(username=collection.owner).email]
-        send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'], user_email)
+        user=User.objects.get(username=collection.owner)
+        message = """Hi {0}!\n{1}\nThank you for using SCAP!""".format(user.username, msg)
+        send_mail('[S-CAP] - Message about your collection: ' + request.POST.get('coll_name'), message, config['EMAIL_HOST_USER'], [user.email])
         return JsonResponse({'success': 'success'})
     except Exception as e:
         print(e)
@@ -1150,11 +1156,13 @@ def deny_notify_user(request):
             print(request.POST.get('coll_name'))
             try:
                 if request.POST.get('fc_type') == 'fc_file':
+                    print("inside")
                     us_arr = [pos for pos, char in enumerate(request.POST.get('coll_name')) if char == '_']
-                    print(request.POST.get('coll_name').split('_')[0])
+                    print(us_arr)
 
 
                     fc_coll = ForestCoverCollection.objects.get(name=request.POST.get('coll_name')[us_arr[1]+1:])
+                    print()
                     fcfile = ForestCoverFile.objects.get(year=request.POST.get('coll_name').split('_')[0],
                                                          collection=fc_coll)
                     fcfile.delete()
@@ -1166,7 +1174,7 @@ def deny_notify_user(request):
                     fc_coll.save()
 
                 if len(user_email[0]) > 0:
-                    message="Your collection is denied because of the following reason(s):\n"+message
+                    message = """Hi {0}!\nYour collection is denied because of the following reason(s):\n{1}\nThank you for using SCAP!""".format(user.username, message)
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
                 else:
                     return JsonResponse({'msg': 'No email address is associated with the user'})
@@ -1179,7 +1187,8 @@ def deny_notify_user(request):
                 agb_coll = AGBCollection.objects.get(name=coll_name)
                 agb_coll.delete()
                 if len(user_email[0]) > 0:
-                    message = "Your collection is denied because of the following reason(s):\n" + message
+                    message="""Hi {0}!\nYour collection is denied because of the following reason(s):\n{1}\nThank you for using SCAP!""".format(user.username,message)
+
                     send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, email, user_email)
                 else:
                     return JsonResponse({'msg': 'No email address is associated with the user'})
@@ -1187,7 +1196,6 @@ def deny_notify_user(request):
             except Exception as e:
                 print(e)
                 return JsonResponse({'msg': str(e)})
-        # TODO send email to user
 
 
 def add_aoi_data(request):
