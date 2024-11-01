@@ -961,26 +961,30 @@ function get_stats_for_map() {
                 document.getElementById('right_source').innerHTML = agb_name_right.split('-').join(' ').toUpperCase() + ' (AGB)';
 
                 type = map_modal_action;
-                if (data.agb_left.length > 0) {
-                    min_left = data.agb_left[0].min;
-                    max_left = data.agb_left[0].max;
-                    min_right = data.agb_right[0].min;
-                    max_right = data.agb_right[0].max;
-                } else {
-                    min_left = 1;
-                    min_right = 1;
-                    max_left = 550;
-                    max_right = 550;
-                }
-                if (min_left == 0 && min_right == 0) {
-                    min_left = 1
-                    min_right = 1
-                }
-                if (max_left == 0 && max_right == 0) {
-                    max_left = 550
-                    max_right = 550
-
-                }
+                // if (data.agb_left.length > 0) {
+                //     min_left = data.agb_left[0].min;
+                //     max_left = data.agb_left[0].max;
+                //     min_right = data.agb_right[0].min;
+                //     max_right = data.agb_right[0].max;
+                // } else {
+                //     min_left = 1;
+                //     min_right = 1;
+                //     max_left = 550;
+                //     max_right = 550;
+                // }
+                // if (min_left == 0 && min_right == 0) {
+                //     min_left = 1
+                //     min_right = 1
+                // }
+                // if (max_left == 0 && max_right == 0) {
+                //     max_left = 550
+                //     max_right = 550
+                //
+                // }
+                     min_left= 0;
+                    max_left = 750;
+                    min_right = 0;
+                    max_right = 750;
                 palette = "scap-agb";
                 title = "Above Ground Biomass Estimation Comparison";
                 document.getElementById('modal_usecase_title').innerHTML = title;
