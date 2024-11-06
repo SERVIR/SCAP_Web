@@ -147,6 +147,7 @@ def user_information(request):
 
                        User Profile: <a href='https://s-cap.servirglobal.net/admin/auth/user/{user.id}/change/'>{user.id}</a>
                        Name: {user.get_full_name() or user.username}
+                       Email Address: {user.email}
                        Access Needed for : {role}
                        """
             if role == 'Other' and other_explanation:
