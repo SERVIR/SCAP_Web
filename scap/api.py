@@ -1225,15 +1225,20 @@ def add_aoi_data(request):
                                  shx=zip_ref.open(shxname),
                                  dbf=zip_ref.open(dbfname), )
             bbox = r.bbox
-            temp_bbox = [x for x in bbox if -180 <= x <= 180]
-            res = bbox == temp_bbox
             res=False
-            for x in bbox:
-                if x>=-90 and x <= 90:
-                    res=True
+            for x in range(len(bbox)):
+                if x==0 or x==2:
+                    if -180.0 <= bbox[x] <= 180.0:
+                        res=True
+                    else:
+                        res=False
+                        break
                 else:
-                    res=False
-                    break
+                    if -90.0 <= bbox[x] <= 90.0:
+                        res = True
+                    else:
+                        res = False
+                        break
             if r.numShapes > 0 and res:
                 aoi_coll.source_file = request.FILES['file']
                 aoi_coll.access_level = request.POST.get('access')
