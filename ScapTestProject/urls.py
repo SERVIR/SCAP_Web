@@ -25,9 +25,10 @@ from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, 
                       updatetomodel, get_yearly_forest_cover_files, get_aoi_list,
                       get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
-                      get_aoi_id,add_aoi_data,add_agb_data,update_boundary_file,test,upload_drawn_aoi,
-                      send_message_scap,get_agg_check_cs,get_agg_check_cs_pa,get_statistics_for_map, validation_list,send_for_admin_review,
-                      deny_notify_user,get_forestcoverfile_stats,approve_fc_file)
+                      get_aoi_id, add_aoi_data, add_agb_data, update_boundary_file, test, upload_drawn_aoi,
+                      send_message_scap, get_agg_check_cs, get_agg_check_cs_pa, get_statistics_for_map, validation_list,
+                      send_for_admin_review,
+                      deny_notify_user, get_forestcoverfile_stats, approve_fc_file, get_user_drawn_aoi_ids)
 
 from scap.views import (home, protected_aois, map, pilot_country, updateColl, page_not_found_view, add_new_collection, \
                         ManageForestCoverCollections, ManageAOICollections, ManageAGBCollections, \
@@ -108,7 +109,7 @@ urlpatterns = [
       path('aoi-collections/add/stage-for-processing/', stage_for_processing, name='stage-aoi-data'),
       path('aoi-collections/edit/<int:pk>/send-for-admin-review/', send_for_admin_review,
                          name='send-for-admin-review'),
-
+      path('aoi-collections/get-aoi-ids/',get_user_drawn_aoi_ids,name='get-aoi-ids'),
       path('agb-collections/', ManageAGBCollections.as_view(), name='agb-collections'),
       path('agb-collections/add/', CreateAGBCollection.as_view(), name='create-agb-collection'),
       path('agb-collections/edit/<int:pk>/', EditAGBCollection.as_view(), name='edit-agb-collection'),

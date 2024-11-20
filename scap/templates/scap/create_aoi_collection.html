@@ -151,7 +151,11 @@
 </div>
                                 <div class="mb-3 common">
                                      {% if operation == 'ADD' %}
-    <label class="form-label">Upload your AOI Shape file </label>
+    <label class="form-label">Upload your AOI Shape file 
+        <br>(<i style="white-space: normal">
+        Expected fields: 'wdpa_pid':'STRING', 'name':'STRING',' orig_name':'STRING', 'desig_eng':'STRING', 'desig_type':'STRING', 'rep_area':'FLOAT, 'gis_area':'FLOAT',  'iso3':'STRING', 'geom': 'MULTIPOLYGON'
+    </i>)</label>
+                                      
                                 {{ form.source_file }}
     {% else %}
                {% if source_file %}

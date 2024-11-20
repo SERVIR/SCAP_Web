@@ -111,7 +111,18 @@
                     {% for aoi in object_list %}
                         <tr>
                             <td><label>{{ aoi.name|truncatechars:150 }}</label></td>
-                            <td><a href="{% url 'aoi_page' aoi=aoi.id %}" target="_blank">Go to AOI page</a></td>
+{#                            <td><a href="{% url 'aoi_page' aoi=aoi.id %}" target="_blank">Go to AOI page</a></td>#}
+                            <td>
+                                <div class="dropdown">
+  <a class="btn btn-warning dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Select AOI
+  </a>
+
+  <ul class="dropdown-menu" id="list_of_aois_{{ aoi.id }}">
+{#    <li><a class="dropdown-item" href="#" target="_blank">Action</a></li>#}
+  </ul>
+</div>
+                            </td>
                             <td><label>{{ aoi.description|truncatechars:150 }}</label></td>
                                                  <td><label>{{ aoi.access_level}}</label></td>
 

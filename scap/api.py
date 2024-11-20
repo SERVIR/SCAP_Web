@@ -1413,3 +1413,15 @@ def get_statistics_for_map(request, country):
                   'agb_doi_left': agb_doi_left,
                   'fc_doi_right': fc_doi_right, 'agb_doi_right': agb_doi_right}
     return JsonResponse(result_obj)
+
+@csrf_exempt
+def get_user_drawn_aoi_ids(request):
+    aoi_arr=[]
+    aoi_json=[]
+    aoi_coll=AOICollection.objects.get(name=request.POST.get('aoi_name'))
+    aoi_features=list(AOIFeature.objects.filter(collection=aoi_coll).values('id'))
+    if len(aoi_features)>0:
+        for aoi in aoi_features:
+            aoi_arr.append(aoi['id'])
+
+    return JsonResponse({'aoi_coll_id':aoi_coll.id,'aois':aoi_arr})

@@ -53,3 +53,81 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
 });
+
+
+var table = document.getElementById("myTable");
+for (var i = 1;i<=table.rows.length; i++) {
+
+    //iterate through rows
+    var mainrow = table.rows[i];
+    if (mainrow !== undefined) {
+        var ch1 = mainrow.getElementsByTagName('td')[0];
+
+        var ch2 = ch1.children[0];
+
+        $.ajax({
+            type: 'POST',
+            url: 'get-aoi-ids/', data: {'aoi_name': ch2.textContent},
+            success: function (data) {
+                console.log(data)
+
+                const ul = document.getElementById("list_of_aois" + "_" + data.aoi_coll_id);
+
+                for (var j = 0; j < data.aois.length; j++) {
+                    var aoi_id = data.aois[j];
+                    if (aoi_id > 0) {
+
+
+// Create a new LI element
+                        const newLi = document.createElement("li");
+
+                        const anchor = document.createElement('a');
+
+                        // Set the href attribute
+                        anchor.href = window.location.origin + '/aoi/' + aoi_id + '/';
+                        anchor.target = '_blank';
+
+                        // Set the text content of the anchor
+                        anchor.textContent = "Go to AOI " + aoi_id;
+
+                        // Append the anchor element to the li element
+                        newLi.appendChild(anchor);
+
+// Append the new LI element to the UL element
+                        if (ul !== null)
+                            ul.appendChild(newLi);
+                    }
+                }
+
+            }
+        });
+    }
+
+}
+
+
+
+
+
+const ul = document.getElementById("list_of_aois");
+
+// Create a new LI element
+const newLi = document.createElement("li");
+
+const anchor = document.createElement('a');
+
+  // Set the href attribute
+  anchor.href = '#'; // Replace with the actual URL you want to link to
+  anchor.target='_blank';
+
+  // Set the text content of the anchor
+  anchor.textContent = newLi.textContent;
+
+  // Clear the existing content of the li element
+  newLi.innerHTML = '';
+
+  // Append the anchor element to the li element
+  newLi.appendChild(anchor);
+
+// Append the new LI element to the UL element
+ul.appendChild(newLi);
