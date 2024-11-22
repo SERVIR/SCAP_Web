@@ -74,21 +74,30 @@ for (var i = 1;i<=table.rows.length; i++) {
                 const ul = document.getElementById("list_of_aois" + "_" + data.aoi_coll_id);
 
                 for (var j = 0; j < data.aois.length; j++) {
-                    var aoi_id = data.aois[j];
+                    var aoi_id = data.aois[j].id;
+                    var aoi_name=data.aois[j].name;
                     if (aoi_id > 0) {
 
 
 // Create a new LI element
                         const newLi = document.createElement("li");
+                        newLi.style.width='200px';
 
                         const anchor = document.createElement('a');
 
                         // Set the href attribute
                         anchor.href = window.location.origin + '/aoi/' + aoi_id + '/';
                         anchor.target = '_blank';
+                        if(aoi_name.length<13){
+                             // Set the text content of the anchor
+                        anchor.textContent = "Go to AOI: " + aoi_name;
+                        }
 
-                        // Set the text content of the anchor
-                        anchor.textContent = "Go to AOI " + aoi_id;
+                        else{
+                             // Set the text content of the anchor
+                        anchor.textContent = "Go to AOI: " + aoi_name.substr(0,13)+'...';
+                        }
+
 
                         // Append the anchor element to the li element
                         newLi.appendChild(anchor);
@@ -108,26 +117,26 @@ for (var i = 1;i<=table.rows.length; i++) {
 
 
 
-
-const ul = document.getElementById("list_of_aois");
-
-// Create a new LI element
-const newLi = document.createElement("li");
-
-const anchor = document.createElement('a');
-
-  // Set the href attribute
-  anchor.href = '#'; // Replace with the actual URL you want to link to
-  anchor.target='_blank';
-
-  // Set the text content of the anchor
-  anchor.textContent = newLi.textContent;
-
-  // Clear the existing content of the li element
-  newLi.innerHTML = '';
-
-  // Append the anchor element to the li element
-  newLi.appendChild(anchor);
-
-// Append the new LI element to the UL element
-ul.appendChild(newLi);
+//
+// const ul = document.getElementById("list_of_aois");
+//
+// // Create a new LI element
+// const newLi = document.createElement("li");
+//
+// const anchor = document.createElement('a');
+//
+//   // Set the href attribute
+//   anchor.href = '#'; // Replace with the actual URL you want to link to
+//   anchor.target='_blank';
+//
+//   // Set the text content of the anchor
+//   anchor.textContent = newLi.textContent;
+//
+//   // Clear the existing content of the li element
+//   newLi.innerHTML = '';
+//
+//   // Append the anchor element to the li element
+//   newLi.appendChild(anchor);
+//
+// // Append the new LI element to the UL element
+// ul.appendChild(newLi);

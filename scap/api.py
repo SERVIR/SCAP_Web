@@ -1419,9 +1419,9 @@ def get_user_drawn_aoi_ids(request):
     aoi_arr=[]
     aoi_json=[]
     aoi_coll=AOICollection.objects.get(name=request.POST.get('aoi_name'))
-    aoi_features=list(AOIFeature.objects.filter(collection=aoi_coll).values('id'))
+    aoi_features=list(AOIFeature.objects.filter(collection=aoi_coll).values('id','name'))
     if len(aoi_features)>0:
         for aoi in aoi_features:
-            aoi_arr.append(aoi['id'])
+            aoi_arr.append({'id':aoi['id'],'name':aoi['name']})
 
     return JsonResponse({'aoi_coll_id':aoi_coll.id,'aois':aoi_arr})
