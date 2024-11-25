@@ -42,9 +42,9 @@ function createLayer(layer_name, layer_style, layer_pane){
 
 function getLayerName(dataset_type, user_id, dataset_name, selected_year){
     if (dataset_type == 'agb'){
-        return `s-cap:${dataset_type}.${user_id}.${dataset_name}.`
+        return `s-cap:${dataset_type}.${user_id}.${dataset_name}`
     } else {
-        return `s-cap:${dataset_type}.${user_id}.${dataset_name}.${selected_year}.`
+        return `s-cap:${dataset_type}.${user_id}.${dataset_name}.${selected_year}`
     }
 }
 
@@ -62,13 +62,13 @@ function setPrimaryLayers(use_case){
 
     if (use_case == 'fc'){
         layer_name = getLayerName(use_case, 1, selected_dataset, selected_year)
-        layer_style = 'scap:fc';
+        layer_style = 'fc';
     } else if (use_case == 'emissions' || use_case == 'carbon-stock'){
         layer_name = getLayerName(use_case, 1, `${selected_dataset}_${selected_dataset_agb}`, selected_year);
-        layer_style = `scap:${use_case}`;
+        layer_style = `${use_case}`;
     } else {
         layer_name = getLayerName(use_case, 1, selected_dataset_agb, undefined);
-        layer_style = 'scap:agb';
+        layer_style = 'agb';
     }
 
     primary_overlay_layer = createLayer(layer_name, layer_style, 'left');
@@ -94,19 +94,19 @@ function setComparisonLayers(use_case){
 
     if (use_case == 'fc'){
         layer_name = getLayerName(use_case, 1, selected_dataset_right, comparison_year)
-        layer_style = 'scap:new_fc';
+        layer_style = 'new_fc';
         underlayer_name = getLayerName(use_case, 1, selected_dataset_left, selected_year)
         if (selected_dataset_left == selected_dataset_right){
-            underlayer_style = 'scap:fc_loss';
+            underlayer_style = 'fc_loss';
         } else{
-            underlayer_style = 'scap:fc_loss_distinct';
+            underlayer_style = 'fc_loss_distinct';
         }
     } else if (use_case == 'emissions' || use_case == 'carbon-stock'){
         layer_name = getLayerName(use_case, 1, `${selected_dataset_right}_${selected_dataset_right_agb}`, comparison_year);
-        layer_style = `scap:${use_case}`;
+        layer_style = `${use_case}`;
     } else {
         layer_name = getLayerName(use_case, 1, selected_dataset_right_agb, undefined);
-        layer_style = 'scap:agb';
+        layer_style = 'agb';
     }
 
     secondary_overlay_layer = createLayer(layer_name, layer_style, 'right');
@@ -126,12 +126,13 @@ function addMapLayers(){
     setComparisonLayers(use_case)
 
     primary_overlay_layer.addTo(map);
-    secondary_overlay_layer.addTo(map);
 
     if (use_case == 'fc'){
         secondary_underlay_layer.addTo(map);
+        secondary_overlay_layer.addTo(map);
         comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     } else{
+        secondary_overlay_layer.addTo(map);
         comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
     }
 }
@@ -1201,6 +1202,9 @@ $(function () {
     //Map Initialization
     init_map()
     map_modal_action = localStorage.getItem('map_modal_action');
+    
+    //populate the dropdowns based on the map modal action that is set above
+    get_available_years(map_modal_action);
     if (window.location.href.indexOf("/map/0/") > -1) {
 
     } else {
