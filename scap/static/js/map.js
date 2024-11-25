@@ -203,6 +203,8 @@ function divFilter(elem) {
 // Method is called when a usecase is selected
 function set_map_action(anchor,text,from_modal=false) {
     localStorage.setItem('map_modal_action', text);
+    document.getElementById('usecase_name').nextElementSibling.classList.remove('show');
+    document.getElementById('usecase_name').nextElementSibling.style = '';
 
     if (from_modal === true) {
         from_map_modal = true;
@@ -329,7 +331,7 @@ function clear_map_layers() {
     if (secondary_overlay_layer != undefined) {
         map.removeLayer(secondary_overlay_layer);
     }
-    if (secondary_overlay_layer != undefined) {
+    if (secondary_underlay_layer != undefined) {
         map.removeLayer(secondary_underlay_layer);
     }
     if (comparison_control != undefined) {
@@ -488,9 +490,12 @@ function display_usecase_selectors(){
     
     if (fill_years && fill_agb_years) {
         // Populate years based on FC and AGB selections
+        let primary_index = (map_modal_action == 'emissions') ? 1 : 0;
         let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+	years = years.slice(primary_index, years.length);
         fill_years_selector(years);
         let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+	c_years = c_years.slice(primary_index, c_years.length);
         fill_comparison_years_selector(c_years);
         // Set the default year
         document.getElementById('selected_year').value = years[0];
@@ -608,11 +613,14 @@ function get_available_years(map_modal_action) {
     }
     // Carbon Stock or Emissions:Populate years, FC dropdowns and AGB dropdowns
     else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions'){
+        let primary_index = (map_modal_action == 'emissions') ? 1 : 0;
         fill_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
         let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+	years = years.slice(primary_index, years.length);
         fill_years_selector(years);
         fill_comparison_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
         let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+	c_years = c_years.slice(primary_index, c_years.length);
         fill_comparison_years_selector(c_years);
         document.getElementById('selected_year').value = years[0];
         document.getElementById('comparison_year').value = c_years[c_years.length - 1];
@@ -1045,10 +1053,10 @@ function init_map() {
             '    Displaying: Forest cover\n' +
             '  </button>\n' +
             '  <ul class="dropdown-menu">\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_targets\')">Forest cover</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'agb\')">Above Ground Biomass (AGB)</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#"  onclick="set_map_action(this,\'emissions\')">Emission estimations</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'carbon-stock\')">Carbon stock</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'deforestation_targets\')">Forest cover</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'agb\')">Above Ground Biomass (AGB)</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#"  onclick="event.stopPropagation();set_map_action(this,\'emissions\')">Emission estimations</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'carbon-stock\')">Carbon stock</a></li>\n' +
             '  </ul>\n' +
             '</div>';
         div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
@@ -1106,6 +1114,7 @@ function init_map() {
 
     map.on("click", function (e) {
         if(!aois_clickable){ return };
+	if(!aoi_layer){ return };
         if(aoi_layer._url === undefined){ return };
         load_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Loading available AOIs</p>").openOn(map)        
 
