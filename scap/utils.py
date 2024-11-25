@@ -30,7 +30,7 @@ def upload_tiff_to_geoserver(name, path):
         os.chmod(file_path, 0o777)
         print(layer_name)
         from geo.Geoserver import Geoserver
-        geo = Geoserver('https://geodata.servirglobal.net/geoserver/', username=config['GEOSERVER_USERNAME'], password=config['GEOSERVER_PASSWORD'])
+        geo = Geoserver(config['GEOSERVER_HOST'], username=config['GEOSERVER_USERNAME'], password=config['GEOSERVER_PASSWORD'])
         geo.create_coveragestore(layer_name=layer_name, path=file_path, workspace='s-cap')
         geo.publish_style(layer_name=layer_name + '.', style_name='fc', workspace='s-cap')
     except Exception as e:

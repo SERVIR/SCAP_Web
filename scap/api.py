@@ -1081,7 +1081,8 @@ def stage_for_processing(request, pk=0):
         aoi_collection_name = request.POST.get('aoi_name')
         collection = AOICollection.objects.get(name=aoi_collection_name)
         try:
-            process_updated_collection.delay(collection.id, collection_type)
+            pass
+            # process_updated_collection.delay(collection.id, collection_type)
         except Exception as error:
             print(error)
         return JsonResponse({'success': 'success'})
@@ -1425,3 +1426,12 @@ def get_user_drawn_aoi_ids(request):
             aoi_arr.append({'id':aoi['id'],'name':aoi['name']})
 
     return JsonResponse({'aoi_coll_id':aoi_coll.id,'aois':aoi_arr})
+
+def check_vals(path):
+    vals = set()
+    with rio.open(path) as raster:
+        for (_, window) in raster.block_windows(1):
+            base_arr = raster.read(1, window=window)
+            block_vals = np.unique(base_arr.flatten())
+            vals = vals.union(set(block_vals))
+    return vals

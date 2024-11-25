@@ -75,6 +75,7 @@ class ForestCoverCollection(models.Model):
                                         on_delete=models.SET_NULL)
     approval_status = models.CharField(max_length=100, default="Not Submitted", help_text="SCAP Collection Approval Status",
                                           choices=VALIDATION_STATES)
+    geom = models.MultiPolygonField(srid=4326, null=True)
 
     class Meta:
         verbose_name_plural = "Forest Cover Collections"
@@ -220,6 +221,7 @@ class AGBCollection(models.Model):
                                         on_delete=models.SET_NULL)
     approval_status = models.CharField(max_length=100, default="Not Submitted", help_text="SCAP Collection Approval Status",
                                           choices=VALIDATION_STATES)
+    geom = models.MultiPolygonField(srid=4326, null=True)
 
     class Meta:
         verbose_name_plural = "AGB Collections"
@@ -305,6 +307,26 @@ class ForestCoverStatistic(models.Model):
 
     class Meta:
         verbose_name_plural = "Forest Cover Statistics"
+
+
+class StatsTask(models.Model):
+    id = models.CharField(max_length=100, default="", help_text="Task ID", primary_key=True)
+    fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
+    agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE)
+    aoi_index = models.ForeignKey(AOICollection, default=1, help_text="AOI Source",
+                                  on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Unfinished Stats Tasks"
+
+
+class MapTask(models.Model):
+    id = models.CharField(max_length=100, default="", help_text="Task ID", primary_key=True)
+    fc_index = models.ForeignKey(ForestCoverCollection, verbose_name="Forest Cover Source", on_delete=models.CASCADE)
+    agb_index = models.ForeignKey(AGBCollection, verbose_name="AGB Source", on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name_plural = "Unfinished Map Tasks"
 
 
 class PilotCountry(models.Model):
