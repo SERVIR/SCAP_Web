@@ -13,6 +13,7 @@ import os
 from celery.utils.log import get_task_logger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.gis.utils import LayerMapping
+from django.contrib.auth.models import User
 from celery.utils.log import get_task_logger
 from celery import shared_task, group, chord
 from django.core.mail import send_mail
@@ -83,7 +84,8 @@ def ensure_ownership(task_id):
     
 
 @shared_task(bind=True)
-def notify_user_complete(self, collection_name, collection_type, user):
+def notify_user_complete(self, collection_name, collection_type, user_id):
+    user = User.objects.get(id=user_id)
     message="""Hi {},\n\nYour S-CAP {} collection, {}, has been fully processed. Please check the site for more details.\n\nThank you for using S-CAP!""".format(user.username, collection_type, collection_name)
     send_mail('[S-CAP] - Message about your collection: ' + collection_name, message, config['EMAIL_HOST_USER'], [user.email])
 
@@ -213,7 +215,7 @@ def load_to_VEDA(raster_path):
 def load_for_visualization(self, raster_path, variable_name, year):
     if not ensure_ownership(self.request.id):
         return 'Duped'
-    final_load_path = raster_path.replace('temp/', '').replace('data/', 'cogs/')
+    final_load_path = raster_path.replace('temp/', '').replace('data/', 'cogs/public/')
 
     logger.info('Loading {} for visualization'.format(final_load_path))
 
@@ -612,7 +614,7 @@ def generate_stocks_and_emissions_files(self, collection_id, collection_type):
     mark_available_task = mark_available.si(collection.id, collection_type).set(queue='management')
 
     collection_type_str ='Forest Cover' if collection_type == 'fc' else 'Above Ground Biomass'
-    notification_task = notify_user_complete.si(collection.name, collection_type_str, collection.owner)
+    notification_task = notify_user_complete.si(collection.name, collection_type_str, collection.owner.id)
 
     # Will execute in order after primary task completes
     task_list = [mark_available_task, stats_generation_task, mark_completion_task, notification_task]
@@ -663,7 +665,7 @@ def generate_forest_cover_files(fc_collection_id):
             stitch_geotiffs(target_dir, target_filepath)
 
         stats_task, vis_task, delete_task = generate_scap_source_files(dataset_info, yearly_file, is_public,
-                                                                       'forest_cover', yearly_file.year, target_filepath)
+                                                                       'fc', yearly_file.year, target_filepath)
 
         change_task = None
         if yearly_file != baseline_file:
@@ -788,7 +790,7 @@ def generate_aoi_features(aoi_collection_id):
     mark_available_task = mark_available.si(aoi_collection_id, 'aoi').set(queue='management')
 
     collection_type_str = 'Area of Interest'
-    notification_task = notify_user_complete.si(aoi_collection.name, collection_type_str, aoi_collection.owner)
+    notification_task = notify_user_complete.si(aoi_collection.name, collection_type_str, aoi_collection.owner.id)
 
         
     # Will execute in order after primary task completes

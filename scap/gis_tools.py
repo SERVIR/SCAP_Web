@@ -190,7 +190,7 @@ def reproject_latlon(source, outputpath):
 
 
 def generate_cog(source, outputpath):
-    subprocess.run("rio cogeo create {} {}".format(source, outputpath), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run("{} cogeo create {} {}".format(config['RIO_PATH'], source, outputpath), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def is_snapped_mollweide(source):
