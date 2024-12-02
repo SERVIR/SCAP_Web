@@ -1119,7 +1119,7 @@ function init_map() {
                 weight: 2,
                 opacity: 1,
                 color: '#D3D3D3',  //Outline color
-                fillOpacity: 0.2,
+                fillOpacity: 0.5,
                  strokeWidth: 0,
             },
              pane:'topmost'
@@ -1147,13 +1147,14 @@ function init_map() {
     else if (window.location.href.indexOf("/aoi/") > -1) { // if the map is loaded on protected area page
         aoi_layer = L.geoJSON(shp_obj['data_pa'], {
             style: {
-                weight: 2,
-                opacity: 1.0,
-                color: 'cyan',  //Outline color
-                fillOpacity: 0.0,
+                 weight: 2,
+                opacity: 1,
+                color: '#D3D3D3',  //Outline color
+                fillOpacity: 0.5,
+                strokeWidth: 0,
             },
-            onEachFeature: onEachFeature_aoi,
-            pane:'top'
+            // onEachFeature: onEachFeature_aoi,
+            pane:'topmost'
         });
               // list of overlays
         overlays = {
@@ -1182,7 +1183,7 @@ function init_map() {
                 weight: 2,
                 opacity: 1,
                 color: '#D3D3D3',  //Outline color
-                fillOpacity: 0.2,
+                fillOpacity: 0.5,
                 strokeWidth: 0,
             },
             pane: 'topmost'

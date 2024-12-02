@@ -222,7 +222,8 @@ def map(request, country=0):
         break
     pilot_countries = PilotCountry.objects.all().order_by('country_name')
     iso3 = ''
-
+    lcs = []
+    agbs = []
     try:
         if len(pc) > 0:
             iso3=pc[0]['country_code']
@@ -250,8 +251,7 @@ def map(request, country=0):
         else:
             json_obj["data_pa"] = []
             json_obj["data_country"] = []
-        lcs = []
-        agbs = []
+
         if request.user.is_authenticated:
             df_lc_owner = ForestCoverCollection.objects.filter(owner=request.user).values()
             df_lc_public = ForestCoverCollection.objects.filter(access_level='Public').values()
@@ -372,7 +372,7 @@ def protected_aois(request, aoi):
                 break
         if reload:
             break
-
+    print(pa.name)
     pa_name = pa.name
     vall = '{:20,.1f}'.format(pa.rep_area * 100)
     tagline = 'Total area is ' + str(vall) + ' Ha'
@@ -395,7 +395,19 @@ def protected_aois(request, aoi):
         aoi_geojson['properties'] = {'name': pa_name, 'ISO3': pa.iso3, 'desig_eng': pa.desig_eng}
 
         json_obj["data_pa"] = [aoi_geojson]
-    except:
+
+        # aoi_arr = []
+        # aoi_arr.append(aoi_geojson)
+        # aoi_shp = AOIFeature.objects.filter(iso3=pa[0]['country_code']).exclude(desig_eng='COUNTRY').last()
+
+        aoi_geojson['coordinates'] = [[[[-179, 70],
+                                            [-179, -70],
+                                            [179, -70],
+                                            [179, 70],
+                                            [-179, 70]]] + aoi_geojson['coordinates'][0]]
+        json_obj["data_pa"] = [aoi_geojson]
+    except Exception as e:
+        print(e)
         json_obj["data_pa"] = []
     colors = get_available_colors()
     pc = PilotCountry.objects.filter(country_code=pa.iso3).first()
@@ -434,7 +446,8 @@ def protected_aois(request, aoi):
     logger.info(json.dumps(curr_jobs))
     print(json.dumps(curr_jobs))
     return render(request, 'scap/protected_area.html',
-                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
+                  context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors,
+                           'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
                            'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
                            'region_country': region_country, 'country_desc': country_description,
                            'tagline': tagline, 'image': hero_image, 'country_id': country_id,
