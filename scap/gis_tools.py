@@ -182,16 +182,15 @@ def reproject_mollweide(source, outputpath):
 
 
 def reproject_latlon(source, outputpath):
-    resampling_alg = 'sum' if '/carbon-stock' in outputpath or '/emissions' in outputpath else 'average'
+    resampling_alg = 'nearest'
 
-    shutil.copyfile(str(BASE_DIR) + '/base_vis_file.tif', outputpath)
-    gt = gdal.Open(outputpath).GetGeoTransform()
-
-    affine_str = str(gt).replace('(','').replace(')','').replace(' ','')
-
-    subprocess.run("/opt/anaconda3/envs/SCAP/bin/gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -wo affine={} -r {} {} {}".format(affine_str, resampling_alg, source, outputpath), shell=True)
+    subprocess.run("/opt/anaconda3/envs/SCAP/bin/gdalwarp -t_srs EPSG:4326 -wo src_nodata=0 -wo dst_nodata=0 -r {} {} {}".format(resampling_alg, source, outputpath), shell=True)
 
     return outputpath
+
+
+def generate_cog(source, outputpath):
+    subprocess.run("{} cogeo create {} {}".format(config['RIO_PATH'], source, outputpath), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def is_snapped_mollweide(source):

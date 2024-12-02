@@ -27,6 +27,117 @@ function disableMapDrag(){
     aois_clickable = false;
 }
 
+
+function createLayer(layer_name, layer_style, layer_pane){
+    url = "https://geodata.servirglobal.net/geoserver/s-cap/wms?"
+    return L.tileLayer.wms(url, {
+            layers: [layer_name],
+            format: "image/png",
+            styles: layer_style,
+            transparent: true,
+            pane: layer_pane
+        });
+}
+
+
+function getLayerName(dataset_type, user_id, dataset_name, selected_year){
+    if (dataset_type == 'agb'){
+        return `s-cap:${dataset_type}.${user_id}.${dataset_name}`
+    } else {
+        return `s-cap:${dataset_type}.${user_id}.${dataset_name}.${selected_year}`
+    }
+}
+
+
+function setPrimaryLayers(use_case){
+    let selected_year = document.getElementById('selected_year').value;
+    let selected_dataset = document.getElementById('selected_region').value;
+    let selected_dataset_agb = "";
+    let layer_name;
+    let layer_style;
+
+    if (agb_colls != undefined) {
+        selected_dataset_agb = document.getElementById('selected_agb').value;
+    }
+
+    if (use_case == 'fc'){
+        layer_name = getLayerName(use_case, 1, selected_dataset, selected_year)
+        layer_style = 'fc';
+    } else if (use_case == 'emissions' || use_case == 'carbon-stock'){
+        layer_name = getLayerName(use_case, 1, `${selected_dataset}_${selected_dataset_agb}`, selected_year);
+        layer_style = `${use_case}`;
+    } else {
+        layer_name = getLayerName(use_case, 1, selected_dataset_agb, undefined);
+        layer_style = 'agb';
+    }
+
+    primary_overlay_layer = createLayer(layer_name, layer_style, 'left');
+}
+
+
+function setComparisonLayers(use_case){
+    let selected_year = document.getElementById('selected_year').value;
+    let comparison_year = document.getElementById('comparison_year').value;
+    let selected_dataset_left = document.getElementById('selected_region').value;
+    let selected_dataset_right = document.getElementById('comparing_region').value;
+    let selected_dataset_left_agb = "";
+    let selected_dataset_right_agb = "";
+    let layer_name;
+    let layer_style;
+    let underlayer_name;
+    let underlayer_style;
+
+    if (agb_colls != undefined) {
+        selected_dataset_left_agb = document.getElementById('selected_agb').value;
+        selected_dataset_right_agb = document.getElementById('comparing_agb').value;
+    }
+
+    if (use_case == 'fc'){
+        layer_name = getLayerName(use_case, 1, selected_dataset_right, comparison_year)
+        layer_style = 'new_fc';
+        underlayer_name = getLayerName(use_case, 1, selected_dataset_left, selected_year)
+        if (selected_dataset_left == selected_dataset_right){
+            underlayer_style = 'fc_loss';
+        } else{
+            underlayer_style = 'fc_loss_distinct';
+        }
+    } else if (use_case == 'emissions' || use_case == 'carbon-stock'){
+        layer_name = getLayerName(use_case, 1, `${selected_dataset_right}_${selected_dataset_right_agb}`, comparison_year);
+        layer_style = `${use_case}`;
+    } else {
+        layer_name = getLayerName(use_case, 1, selected_dataset_right_agb, undefined);
+        layer_style = 'agb';
+    }
+
+    secondary_overlay_layer = createLayer(layer_name, layer_style, 'right');
+    if (use_case == 'fc'){
+        secondary_underlay_layer = createLayer(underlayer_name, underlayer_style, 'right')
+    }
+}
+
+
+function addMapLayers(){
+    let use_case = localStorage.getItem('map_modal_action');
+    if (use_case == 'deforestation_targets'){
+        use_case = 'fc';
+    }
+
+    setPrimaryLayers(use_case)
+    setComparisonLayers(use_case)
+
+    primary_overlay_layer.addTo(map);
+
+    if (use_case == 'fc'){
+        secondary_underlay_layer.addTo(map);
+        secondary_overlay_layer.addTo(map);
+        comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+    } else{
+        secondary_overlay_layer.addTo(map);
+        comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
+    }
+}
+
+
 window.onload = resetMapAction;
 // reset map action to Forest Cover
 function resetMapAction() {
@@ -34,24 +145,25 @@ function resetMapAction() {
         localStorage.clear();
         localStorage.setItem('map_modal_action', 'deforestation_targets');
     }
-        map_modal_action = localStorage.getItem('map_modal_action');
- if (window.location.href.indexOf("/map/") > -1) {
-     if (map_modal_action == 'carbon-stock') {
-         document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
-     } else if (map_modal_action == 'emissions') {
-         document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
-     } else if (map_modal_action == 'deforestation_targets') {
-         document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
-     } else {
-         document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
-     }
-     ;
- }
+    map_modal_action = localStorage.getItem('map_modal_action');
+    if (window.location.href.indexOf("/map/") > -1) {
+        if (map_modal_action == 'carbon-stock') {
+            document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
+        } else if (map_modal_action == 'emissions') {
+            document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
+        } else if (map_modal_action == 'deforestation_targets') {
+            document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
+        } else {
+            document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
+        }
+    }
 
     if (!$('#country_selection_modal').hasClass('show')) {
         get_available_years(map_modal_action);
     }
 }
+
+
 //method used to add dropdown selector options
 function add_option_by_id(selector, value, label,defalt) {
     let opt = document.createElement('option');
@@ -63,6 +175,8 @@ function add_option_by_id(selector, value, label,defalt) {
     opt.innerHTML = label;
     selector.appendChild(opt);
 }
+
+
 //method used by set_map_action
 function getAllSiblings(elem, filter) {
     var sibs = [];
@@ -73,6 +187,8 @@ function getAllSiblings(elem, filter) {
     } while (elem = elem.nextSibling)
     return sibs;
 }
+
+
 //method used by set_map_action
 function divFilter(elem) {
     switch (elem.nodeName.toUpperCase()) {
@@ -82,9 +198,13 @@ function divFilter(elem) {
             return false;
     }
 }
+
+
 // Method is called when a usecase is selected
 function set_map_action(anchor,text,from_modal=false) {
     localStorage.setItem('map_modal_action', text);
+    document.getElementById('usecase_name').nextElementSibling.classList.remove('show');
+    document.getElementById('usecase_name').nextElementSibling.style = '';
 
     if (from_modal === true) {
         from_map_modal = true;
@@ -120,10 +240,12 @@ function set_map_action(anchor,text,from_modal=false) {
 
     }
 }
+
+
 //AGB
 function fill_agb_selector(agb_data) {
-     let select = document.getElementById('selected_agb');
-     let compare = document.getElementById('comparing_agb');
+    let select = document.getElementById('selected_agb');
+    let compare = document.getElementById('comparing_agb');
     if (agb_data != null) {
         select = document.getElementById('selected_agb');
         select.innerHTML = "";
@@ -139,6 +261,8 @@ function fill_agb_selector(agb_data) {
         }
     }
 }
+
+
 //Populate Fc/AGB in selection dropdown
 function fill_dataset_selector(fc_data,agb_data) {
     let select = document.getElementById('selected_region');
@@ -156,10 +280,11 @@ function fill_dataset_selector(fc_data,agb_data) {
         }
     }
 }
+
+
 //Populate Fc/AGB in comparison dropdown
 function fill_comparison_dataset_selector(fc_data,agb_data){
-
-  let select = document.getElementById('comparing_region');
+    let select = document.getElementById('comparing_region');
     select.innerHTML = "";
     for (let i = 0; i < fc_data.length; i++) {
         let ds = fc_data[i];
@@ -174,6 +299,8 @@ function fill_comparison_dataset_selector(fc_data,agb_data){
         }
     }
 }
+
+
 // Populate selected year(left) in dropdown
 function fill_years_selector(years) {
     let select = document.getElementById('selected_year');
@@ -183,6 +310,7 @@ function fill_years_selector(years) {
         add_option_by_id(select, year, year,years[0]);
     }
 }
+
 
 // Populate comparison year(right) in dropdown
 function fill_comparison_years_selector(years) {
@@ -203,7 +331,7 @@ function clear_map_layers() {
     if (secondary_overlay_layer != undefined) {
         map.removeLayer(secondary_overlay_layer);
     }
-    if (secondary_overlay_layer != undefined) {
+    if (secondary_underlay_layer != undefined) {
         map.removeLayer(secondary_underlay_layer);
     }
     if (comparison_control != undefined) {
@@ -287,149 +415,10 @@ function onEachFeature_aoi(feature, layer) {
 
 // Redraw map layers when year dropdowns are changed
 function  redraw_based_on_year() {
-    console.log('Also ran')
     document.getElementById("loading_spinner_map").style.display = "block";
     clear_map_layers();
-    map_modal_action=localStorage.getItem('map_modal_action');
-    var thredds_dir="fc";
-    var pri_over_style = '';
-    var sec_under_style = '';
-    var sec_over_style = '';
-    let selected_dataset_left = document.getElementById('selected_region').value;
-    let selected_dataset_right = document.getElementById('comparing_region').value;
-    let selected_dataset_left_agb ="";
-    let selected_dataset_right_agb="";
-    if(agb_colls!=undefined) {
-         selected_dataset_left_agb = document.getElementById('selected_agb').value;
-         selected_dataset_right_agb = document.getElementById('comparing_agb').value;
-    }
-    var scale_range="0.5,1";
-    var fc_scale_range_left = "";
-    var fc_scale_range_right="";
-    if (map_modal_action=='deforestation_targets') { //ForestCover use case
-        thredds_dir = "fc";
-        if(selected_dataset_left=='esri')
-            fc_scale_range_left="0.5,2";
-        else
-            fc_scale_range_left="0.5,1";
-        if(selected_dataset_right=='esri')
-            fc_scale_range_right="0.5,2"
-        else fc_scale_range_right="0.5,1"
-        if (selected_dataset_left === selected_dataset_right) {
-            pri_over_style = 'boxfill/crimsonbluegreen';
-            sec_over_style = 'boxfill/cwg';
-            sec_under_style = 'boxfill/redblue';
-        } else {
-            pri_over_style = 'boxfill/crimsonbluegreen';
-            sec_over_style = 'boxfill/cwg';
-            sec_under_style = 'boxfill/maize';
-        }
-    }
-    else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions') { //Carbon Stock or Emissions usecase
-        thredds_dir = map_modal_action;
-        scale_range = "0,50000"
-        if (map_modal_action == 'carbon-stock') {
-            pri_over_style = 'boxfill/crimsonyellowred';
-            sec_over_style = 'boxfill/crimsonyellowred';
-        } else {
-            pri_over_style = 'boxfill/scap-agb';
-            sec_over_style = 'boxfill/scap-agb';
-        }
+    addMapLayers();
 
-    }
-    let selected_year = document.getElementById('selected_year').value;
-    let comparison_year = document.getElementById('comparison_year').value;
-    var base_thredds="https://scapwms.servirglobal.net/thredds/wms/scap/public/"+thredds_dir+"/1";
-    var layer_name=(thredds_dir=="fc")?"forest_cover":thredds_dir;
-    primary_overlay_url=(thredds_dir=="fc")?
-            `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
-            :
-                        `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`
-
-    primary_overlay_layer = L.tileLayer.wms(primary_overlay_url,
-            {
-                layers: [layer_name],
-                format: "image/png",
-                colorscalerange: (thredds_dir=="fc")?fc_scale_range_left:scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: pri_over_style,
-                pane: 'left'
-            });
-
-    primary_underlay_url=(thredds_dir=="fc")?
-            `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
-            :
-                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`
-
-    primary_underlay_layer = L.tileLayer.wms(primary_underlay_url,
-            {
-                layers: [layer_name],
-                format: "image/png",
-                colorscalerange: scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                transparent: true,
-                styles: 'boxfill/cwg',
-                pane: 'left'
-            })
-    secondary_overlay_url=(thredds_dir=="fc")?
-            `${base_thredds}/${selected_dataset_right}/${thredds_dir}.1.${selected_dataset_right}.${comparison_year}.nc4?service=WMS`
-            :
-                        `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`
-
-    secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
-            {
-                layers: [layer_name],
-                format: "image/png",
-                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                styles: sec_over_style,
-                transparent: true,
-                pane: 'right'
-            });
-
-    var  secondary_underlay_url=(thredds_dir=="fc")?
-            `${base_thredds}/${selected_dataset_left}/${thredds_dir}.1.${selected_dataset_left}.${selected_year}.nc4?service=WMS`
-            :
-                        `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`
-
-    secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
-            {
-                layers: [layer_name],
-                format: "image/png",
-                colorscalerange: (thredds_dir=="fc")?fc_scale_range_right:scale_range,
-                abovemaxcolor: 'transparent',
-                belowmincolor: 'transparent',
-                styles: sec_under_style,
-                transparent: true,
-                pane: 'right'
-            })
-        // Add layers based on usecase
-        if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
-            primary_overlay_layer.addTo(map);
-            secondary_underlay_layer.addTo(map);
-            secondary_overlay_layer.addTo(map);
-            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-        } else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') { // Carbon Stock or Emissions usecase
-            primary_overlay_layer.addTo(map);
-            secondary_overlay_layer.addTo(map);
-            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
-        }
-        else{ // AGB usecase
-            thredds_dir = map_modal_action;
-            layer_name = thredds_dir;
-            base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
-            scale_range = "1,550";
-            primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
-            secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
-             pri_over_style = 'boxfill/scap-agb';
-            sec_over_style = 'boxfill/scap-agb';
-            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
-
-    }
     // display order of layers via panes on map
     map.getPane("left").style.zIndex = "360";
     map.getPane("right").style.zIndex = "360";
@@ -444,254 +433,98 @@ function  redraw_based_on_year() {
     get_stats_for_map();
 }
 
-// This method adds the THREDDS WMS layers on the left and right panes of the map based on dropdown selections
-function add_thredds_wms_layers(map_modal_action) {
-    var thredds_dir = "fc";
-    var layer_name = "forest_cover";
-    var base_thredds = "";
-    var primary_overlay_url = "";
-    var primary_underlay_url = "";
-    var secondary_overlay_url = "";
-    var secondary_underlay_url = "";
-    // years and datasets from dropdowns
-    let selected_year = document.getElementById('selected_year').value;
-    let comparison_year = document.getElementById('comparison_year').value;
-    let selected_dataset_left = document.getElementById('selected_region').value;
-    let selected_dataset_right = document.getElementById('comparing_region').value;
-    let selected_dataset_left_agb = "";
-    let selected_dataset_right_agb = "";
-    if (agb_colls != undefined) {
-        selected_dataset_left_agb = document.getElementById('selected_agb').value;
-        selected_dataset_right_agb = document.getElementById('comparing_agb').value;
+
+function display_usecase_selectors(){
+    map_modal_action = localStorage.getItem('map_modal_action');
+
+    let agb_display;
+    let fc_display;
+    let year_display;
+    let fill_years;
+    let fill_agb_years;
+
+    if (map_modal_action == 'deforestation_targets'){
+        fc_display = 'block';
+        agb_display = 'none';
+        year_display = 'block';
+        fill_years = true;
+        fill_agb_years = false;
+    } else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {
+        fc_display = 'block';
+        agb_display = 'block';
+        year_display = 'block';
+        fill_years = true;
+        fill_agb_years = true;
+    } else {
+        fc_display = 'none';
+        agb_display = 'block';
+        year_display = 'none';
+        fill_years = false;
+        fill_agb_years = false;
     }
-    // Defining styles/palettes based on dataset selections
-    var pri_over_style = '';
-    var sec_under_style = '';
-    var sec_over_style = '';
-    var scale_range = "0.5,1";
-    var fc_scale_range_left = "";
-    var fc_scale_range_right = "";
-    if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
-        thredds_dir = "fc";
-        layer_name = "forest_cover";
-        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
-        //Generate the WMS URLs from available data
-        primary_overlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
-        primary_underlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
-        secondary_overlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
-        secondary_underlay_url = `https://geodata.servirglobal.net/geoserver/s-cap/wms?`;
-        primary_overlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_left}.${selected_year}`
-        primary_underlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_left}.${comparison_year}`
-        secondary_overlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_right}.${comparison_year}`
-        secondary_underlay_layer_name = `s-cap:${thredds_dir}.1.${selected_dataset_right}.${selected_year}`
-        // Defining styles/palettes based on dataset selections
-        if (selected_dataset_left === selected_dataset_right) {
-            pri_over_style = 's-cap:fc';
-            sec_over_style = 's-cap:new_fc';
-            sec_under_style = 's-cap:fc_loss';
-        } else {
-            pri_over_style = 's-cap:fc';
-            sec_over_style = 's-cap:new_fc';
-            sec_under_style = 's-cap:fc_loss_distinct';
-        }
 
-    } else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') {     //Carbon Stock or Emissions usecase
-        thredds_dir = map_modal_action;
-        layer_name = thredds_dir;
-        //Generate the WMS URLs from available data
-        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
-          selected_dataset_left_agb = document.getElementById('selected_agb').value;
-        selected_dataset_right_agb = document.getElementById('comparing_agb').value;
-        primary_overlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
-        primary_underlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`;
-        secondary_overlay_url = `${base_thredds}/${selected_dataset_right}_${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right}_${selected_dataset_right_agb}.${comparison_year}.nc4?service=WMS`;
-        secondary_underlay_url = `${base_thredds}/${selected_dataset_left}_${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left}_${selected_dataset_left_agb}.${selected_year}.nc4?service=WMS`;
-        scale_range = "0,50000";
-        // Defining styles/palettes based on dataset selections
-        if (map_modal_action == 'carbon-stock') {
-            pri_over_style = 'boxfill/crimsonyellowred';
-            sec_over_style = 'boxfill/crimsonyellowred';
-        } else {
-            pri_over_style = 'boxfill/scap-agb';
-            sec_over_style = 'boxfill/scap-agb';
-        }
-
-    } else {// AGB usecase
-        thredds_dir = map_modal_action;
-        layer_name = thredds_dir;
-        scale_range = "1,550";
-        //Generate the WMS URLs from available data
-        base_thredds = "https://scapwms.servirglobal.net/thredds/wms/scap/public/" + thredds_dir + "/1";
-        selected_dataset_left_agb = document.getElementById('selected_agb').value;
-        selected_dataset_right_agb = document.getElementById('comparing_agb').value;
-        primary_overlay_url = `${base_thredds}/${selected_dataset_left_agb}/${thredds_dir}.1.${selected_dataset_left_agb}.nc4?service=WMS`;
-        secondary_overlay_url = `${base_thredds}/${selected_dataset_right_agb}/${thredds_dir}.1.${selected_dataset_right_agb}.nc4?service=WMS`;
-        // Defining styles/palettes based on dataset selections
-        pri_over_style = 'boxfill/scap-agb';
-        sec_over_style = 'boxfill/scap-agb';
-    }
-    // Create Leaflet WMS Urls to add to the panes on the map from the above set variables
-    try {
-        if(!(thredds_dir == "fc")){
-            primary_overlay_layer_name = layer_name
-            primary_underlay_layer_name = layer_name
-            secondary_overlay_layer_name = layer_name
-            secondary_underlay_layer_name = layer_name
-        }
-        primary_overlay_layer = L.tileLayer.wms(primary_overlay_url,
-            {
-                layers: [primary_overlay_layer_name],
-                format: "image/png",
-                styles: pri_over_style,
-                transparent: true,
-                pane: 'left'
-            });
-
-        secondary_overlay_layer = L.tileLayer.wms(secondary_overlay_url,
-            {
-                layers: [secondary_overlay_layer_name],
-                format: "image/png",
-                styles: sec_over_style,
-                transparent: true,
-                pane: 'right'
-            })
-
-        secondary_underlay_layer = L.tileLayer.wms(secondary_underlay_url,
-            {
-                layers: [secondary_underlay_layer_name],
-                format: "image/png",
-                styles: sec_under_style,
-                transparent: true,
-                pane: 'right'
-            })
-
-        // Add secondary underlay layer only for Forest Cover usecase
-        if (map_modal_action == 'deforestation_targets') {
-            primary_overlay_layer.addTo(map);
-            secondary_underlay_layer.addTo(map);
-            secondary_overlay_layer.addTo(map);
-            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
-
-        } else {
-            primary_overlay_layer.addTo(map);
-            secondary_overlay_layer.addTo(map);
-            comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
-        }
-    } catch (e) {
-        console.log("Script error: ")
-        console.log(e)
+    if (document.getElementById('selected_agb') != null)
+        document.getElementById('selected_agb').style.display = agb_display;
+    if (document.getElementById('comparing_agb') != null)
+        document.getElementById('comparing_agb').style.display = agb_display;
+    if (document.getElementById('comparing_agb_label') != null)
+        document.getElementById('comparing_agb_label').style.display = agb_display;
+    if (document.getElementById('selected_agb_label') != null)
+        document.getElementById('selected_agb_label').style.display = agb_display;
+    if (document.getElementById('selected_year') != null)
+        document.getElementById('selected_year').style.display = year_display;
+    if (document.getElementById('selected_year_label') != null)
+        document.getElementById('selected_year_label').style.display = year_display;
+    if (document.getElementById('comparison_year') != null)
+        document.getElementById('comparison_year').style.display = year_display;
+    if (document.getElementById('comparison_year_label') != null)
+        document.getElementById('comparison_year_label').style.display = year_display;
+    if (document.getElementById('comparing_region') != null)
+        document.getElementById('comparing_region').style.display = fc_display;
+    if (document.getElementById('comparing_region_label') != null)
+        document.getElementById('comparing_region_label').style.display = fc_display;
+    if (document.getElementById('selected_region_label') != null)
+        document.getElementById('selected_region_label').style.display = fc_display;
+    if (document.getElementById('selected_region') != null)
+        document.getElementById('selected_region').style.display = fc_display;  
+    
+    if (fill_years && fill_agb_years) {
+        // Populate years based on FC and AGB selections
+        let primary_index = (map_modal_action == 'emissions') ? 1 : 0;
+        let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+	years = years.slice(primary_index, years.length);
+        fill_years_selector(years);
+        let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+	c_years = c_years.slice(primary_index, c_years.length);
+        fill_comparison_years_selector(c_years);
+        // Set the default year
+        document.getElementById('selected_year').value = years[0];
+        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
+    } else if (fill_years) {
+        // Populate the years for FC on both sides
+        let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
+        fill_years_selector(years);
+        let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
+        fill_comparison_years_selector(c_years);
+        
+        // Set the default year
+        document.getElementById('selected_year').value = years[0];
+        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
     }
 }
+
 
 // This method adds WMS layers when dropdown selections change
 function redraw_map_layers() {
     map_modal_action = localStorage.getItem('map_modal_action');
 
     document.getElementById("loading_spinner_map").style.display = "block";
-    clear_map_layers();
-    if (map_modal_action == 'deforestation_targets') { // Forest Cover usecase
-        /* Display the dropdowns that are required for the usecase and hide the rest */
-        if (document.getElementById('selected_agb') != null)
-            document.getElementById('selected_agb').style.display = 'none';
-        if (document.getElementById('comparing_agb') != null)
-            document.getElementById('comparing_agb').style.display = 'none';
-        if (document.getElementById('comparing_agb_label') != null)
-            document.getElementById('comparing_agb_label').style.display = 'none';
-        if (document.getElementById('selected_agb_label') != null)
-            document.getElementById('selected_agb_label').style.display = 'none';
-        if (document.getElementById('selected_year') != null)
-            document.getElementById('selected_year').style.display = 'block';
-        if (document.getElementById('selected_year_label') != null)
-            document.getElementById('selected_year_label').style.display = 'block';
-        if (document.getElementById('comparison_year') != null)
-            document.getElementById('comparison_year').style.display = 'block';
-        if (document.getElementById('comparison_year_label') != null)
-            document.getElementById('comparison_year_label').style.display = 'block';
-        if (document.getElementById('comparing_region') != null)
-            document.getElementById('comparing_region').style.display = 'block';
-        if (document.getElementById('comparing_region_label') != null)
-            document.getElementById('comparing_region_label').style.display = 'block';
-        if (document.getElementById('selected_region_label') != null)
-            document.getElementById('selected_region_label').style.display = 'block';
-        if (document.getElementById('selected_region') != null)
-            document.getElementById('selected_region').style.display = 'block';
-        // Populate the years for FC on both sides
-        let years = get_years_for_name_no_agb(fc_colls, document.getElementById('selected_region').value);
-        fill_years_selector(years);
-        let c_years = get_years_for_name_no_agb(fc_colls, document.getElementById('comparing_region').value);
-        fill_comparison_years_selector(c_years);
-        // Set the default year
-        document.getElementById('selected_year').value = years[0];
-        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
-    } else if (map_modal_action == 'carbon-stock' || map_modal_action == 'emissions') { // Carbon Stock or Emissions usecase
-        /* Display the dropdowns that are required for the usecase and hide the rest */
 
-        if (document.getElementById('selected_agb') != null)
-            document.getElementById('selected_agb').style.display = 'block';
-        if (document.getElementById('comparing_agb') != null)
-            document.getElementById('comparing_agb').style.display = 'block';
-        if (document.getElementById('comparing_agb_label') != null)
-            document.getElementById('comparing_agb_label').style.display = 'block';
-        if (document.getElementById('selected_agb_label') != null)
-            document.getElementById('selected_agb_label').style.display = 'block';
-        if (document.getElementById('selected_year') != null)
-            document.getElementById('selected_year').style.display = 'block';
-        if (document.getElementById('selected_year_label') != null)
-            document.getElementById('selected_year_label').style.display = 'block';
+    display_usecase_selectors();
 
-        if (document.getElementById('comparison_year') != null)
-            document.getElementById('comparison_year').style.display = 'block';
-        if (document.getElementById('comparison_year_label') != null)
-            document.getElementById('comparison_year_label').style.display = 'block';
-        if (document.getElementById('comparing_region') != null)
-            document.getElementById('comparing_region').style.display = 'block';
-        if (document.getElementById('comparing_region_label') != null)
-            document.getElementById('comparing_region_label').style.display = 'block';
-        if (document.getElementById('selected_region_label') != null)
-            document.getElementById('selected_region_label').style.display = 'block';
-        if (document.getElementById('selected_region') != null)
-            document.getElementById('selected_region').style.display = 'block';
-        // Populate years based on FC and AGB selections
-        let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
-        fill_years_selector(years);
-        let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
-        fill_comparison_years_selector(c_years);
-        // Set the default year
-        document.getElementById('selected_year').value = years[0];
-        document.getElementById('comparison_year').value = c_years[c_years.length - 1];
-    } else { // AGB usecase
-        /* Display the dropdowns that are required for the usecase and hide the rest */
-
-        if (document.getElementById('comparing_agb') != null)
-            document.getElementById('comparing_agb').style.display = 'block';
-        if (document.getElementById('comparing_agb_label') != null)
-            document.getElementById('comparing_agb_label').style.display = 'block';
-        if (document.getElementById('selected_agb_label') != null)
-            document.getElementById('selected_agb_label').style.display = 'block';
-        if (document.getElementById('selected_agb') != null)
-            document.getElementById('selected_agb').style.display = 'block';
-
-        if (document.getElementById('comparing_region') != null)
-            document.getElementById('comparing_region').style.display = 'none';
-        if (document.getElementById('comparing_region_label') != null)
-            document.getElementById('comparing_region_label').style.display = 'none';
-        if (document.getElementById('selected_region_label') != null)
-            document.getElementById('selected_region_label').style.display = 'none';
-        if (document.getElementById('selected_region') != null)
-            document.getElementById('selected_region').style.display = 'none';
-
-        if (document.getElementById('selected_year') != null)
-            document.getElementById('selected_year').style.display = 'none';
-        if (document.getElementById('selected_year_label') != null)
-            document.getElementById('selected_year_label').style.display = 'none';
-
-        if (document.getElementById('comparison_year') != null)
-            document.getElementById('comparison_year').style.display = 'none';
-        if (document.getElementById('comparison_year_label') != null)
-            document.getElementById('comparison_year_label').style.display = 'none';
-    }
     // Add the THREDDS WMS layers based on usecase, year and dataset selection
-    add_thredds_wms_layers(map_modal_action);
+    clear_map_layers();
+    addMapLayers();
 
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseover', 'disableMapDrag()');
     document.getElementsByClassName('leaflet-sbs-range')[0].setAttribute('onmouseout', 'enableMapDrag()');
@@ -701,6 +534,8 @@ function redraw_map_layers() {
     if (window.location.href.indexOf("/map/") > -1)
         get_stats_for_map();
 }
+
+
 //Get dataset names
 function get_names_from_obj(obj){
         if(obj===undefined)
@@ -711,14 +546,18 @@ function get_names_from_obj(obj){
     }
     return names;
 }
+
+
 // Get list of years based on FC selection
 function get_years_for_name_no_agb(obj,name){
-     let years = [];
-        for (var i = 0; i < obj.length; i++) {
-            if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase())
-                return obj[i].years.sort();
-        }
+    let years = [];
+    for (var i = 0; i < obj.length; i++) {
+        if (name.toLowerCase() === obj[i].name.split(' ').join('-').toLowerCase())
+            return obj[i].years.sort();
+    }
 }
+
+
 // Get list of years based on FC/AGB selection
 function get_years_for_name(obj,name) {
     let years = [];
@@ -755,6 +594,8 @@ function get_years_for_name(obj,name) {
 
     return years.sort();
 }
+
+
 //populate data in dropdowns
 function get_available_years(map_modal_action) {
     map_modal_action=localStorage.getItem('map_modal_action');
@@ -772,11 +613,14 @@ function get_available_years(map_modal_action) {
     }
     // Carbon Stock or Emissions:Populate years, FC dropdowns and AGB dropdowns
     else if (map_modal_action=='carbon-stock' || map_modal_action=='emissions'){
+        let primary_index = (map_modal_action == 'emissions') ? 1 : 0;
         fill_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
         let years = get_years_for_name(fc_colls, document.getElementById('selected_region').value);
+	years = years.slice(primary_index, years.length);
         fill_years_selector(years);
         fill_comparison_dataset_selector(get_names_from_obj(fc_colls),get_names_from_obj(agb_colls));
         let c_years = get_years_for_name(fc_colls, document.getElementById('comparing_region').value);
+	c_years = c_years.slice(primary_index, c_years.length);
         fill_comparison_years_selector(c_years);
         document.getElementById('selected_year').value = years[0];
         document.getElementById('comparison_year').value = c_years[c_years.length - 1];
@@ -785,6 +629,8 @@ function get_available_years(map_modal_action) {
         fill_agb_selector(get_names_from_obj(agb_colls));
     }
 }
+
+
 // Get selected LCs when user draws AOI
 function get_checked_lcs() {
     var lcs = [];
@@ -795,6 +641,8 @@ function get_checked_lcs() {
     });
     return lcs;
 }
+
+
 // Get selected AGBS when user draws AOI
 function get_checked_agbs() {
     var agbs = [];
@@ -804,6 +652,7 @@ function get_checked_agbs() {
     });
     return agbs;
 }
+
 
 // Send user drawn AOI along with selected LCs and AGBs to database and redirect to the AOI page
 function send_to_backend(){
@@ -828,6 +677,7 @@ function send_to_backend(){
         alert("Please select atleast one Land Cover and one Above Ground Biomass dataset");
     }
 }
+
 
 // Get statistics for map info modal
 function get_stats_for_map() {
@@ -961,30 +811,10 @@ function get_stats_for_map() {
                 document.getElementById('right_source').innerHTML = agb_name_right.split('-').join(' ').toUpperCase() + ' (AGB)';
 
                 type = map_modal_action;
-                // if (data.agb_left.length > 0) {
-                //     min_left = data.agb_left[0].min;
-                //     max_left = data.agb_left[0].max;
-                //     min_right = data.agb_right[0].min;
-                //     max_right = data.agb_right[0].max;
-                // } else {
-                //     min_left = 1;
-                //     min_right = 1;
-                //     max_left = 550;
-                //     max_right = 550;
-                // }
-                // if (min_left == 0 && min_right == 0) {
-                //     min_left = 1
-                //     min_right = 1
-                // }
-                // if (max_left == 0 && max_right == 0) {
-                //     max_left = 550
-                //     max_right = 550
-                //
-                // }
-                     min_left= 0;
-                    max_left = 750;
-                    min_right = 0;
-                    max_right = 750;
+                min_left= 0;
+                max_left = 750;
+                min_right = 0;
+                max_right = 750;
                 palette = "scap-agb";
                 title = "Above Ground Biomass Estimation Comparison";
                 document.getElementById('modal_usecase_title').innerHTML = title;
@@ -1106,7 +936,7 @@ function init_map() {
         "Satellite": satellite,
         "Keep Default": darkmap
     };
-    var overlays ;
+    var overlays;
     // list of overlays based on the URL
     if(country_id===0) { // if the map is loaded on map page without any pilot country selected
         overlays = {
@@ -1224,10 +1054,10 @@ function init_map() {
             '    Displaying: Forest cover\n' +
             '  </button>\n' +
             '  <ul class="dropdown-menu">\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'deforestation_targets\')">Forest cover</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'agb\')">Above Ground Biomass (AGB)</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#"  onclick="set_map_action(this,\'emissions\')">Emission estimations</a></li>\n' +
-            '    <li><a class="dropdown-item text-secondary" href="#" onclick="set_map_action(this,\'carbon-stock\')">Carbon stock</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'deforestation_targets\')">Forest cover</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'agb\')">Above Ground Biomass (AGB)</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#"  onclick="event.stopPropagation();set_map_action(this,\'emissions\')">Emission estimations</a></li>\n' +
+            '    <li><a class="dropdown-item text-secondary" href="#" onclick="event.stopPropagation();set_map_action(this,\'carbon-stock\')">Carbon stock</a></li>\n' +
             '  </ul>\n' +
             '</div>';
         div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
@@ -1285,6 +1115,7 @@ function init_map() {
 
     map.on("click", function (e) {
         if(!aois_clickable){ return };
+	if(!aoi_layer){ return };
         if(aoi_layer._url === undefined){ return };
         load_tooltip = L.popup().setLatLng(e.latlng).setContent("<p>Loading available AOIs</p>").openOn(map)        
 
@@ -1366,6 +1197,7 @@ function init_map() {
     get_available_years(map_modal_action);
 }
 
+
 //zoom to selected pilot country
 function zoomtoArea(id){
     if (id!==0) {
@@ -1374,29 +1206,20 @@ function zoomtoArea(id){
     }
 }
 
+
 // Starts here
 $(function () {
     //Map Initialization
     init_map()
-     map_modal_action=localStorage.getItem('map_modal_action');
-       // if (map_modal_action == 'carbon-stock') {
-       //      document.getElementById('usecase_name').innerHTML = 'Displaying: Carbon stock';
-       //  } else if (map_modal_action == 'emissions') {
-       //      document.getElementById('usecase_name').innerHTML = 'Displaying: Emission estimations';
-       //  } else if (map_modal_action == 'deforestation_targets') {
-       //      document.getElementById('usecase_name').innerHTML = 'Displaying: Forest cover';
-       //  } else {
-       //      document.getElementById('usecase_name').innerHTML = 'Displaying: Above Ground Biomass (AGB)';
-       //  };
- if (window.location.href.indexOf("/map/0/") > -1)
-     {
-         // localStorage.clear();
-         // localStorage.setItem('map_modal_action','deforestation_targets');
+    map_modal_action = localStorage.getItem('map_modal_action');
+    
+    //populate the dropdowns based on the map modal action that is set above
+    get_available_years(map_modal_action);
+    if (window.location.href.indexOf("/map/0/") > -1) {
 
-     }
-     else{
-         map_modal_action=localStorage.getItem('map_modal_action');
-         redraw_map_layers();
+    } else {
+        map_modal_action=localStorage.getItem('map_modal_action');
+        redraw_map_layers();
     }
 
     var id = window.location.pathname.split('/')[2];
@@ -1411,6 +1234,11 @@ $(function () {
             console.log(e)
         }
     }
+
+    $('#usecase_name').click(function (e){
+        console.log('click')
+        e.stopPropagation();
+    })
 });
 
 

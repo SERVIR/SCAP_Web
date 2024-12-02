@@ -13,20 +13,24 @@ import os
 from celery.utils.log import get_task_logger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.gis.utils import LayerMapping
+from django.contrib.auth.models import User
 from celery.utils.log import get_task_logger
 from celery import shared_task, group, chord
+from django.core.mail import send_mail
 from celery.exceptions import Ignore
+from geo.Geoserver import Geoserver
 from collections import OrderedDict
 from django.conf import settings
 from itertools import product
 from pathlib import Path
+from celery import uuid
 
 from scap.models import (ForestCoverCollection, ForestCoverFile, AGBCollection, AOICollection, AOIFeature,
-                         ForestCoverStatistic, CarbonStatistic, CurrentTask)
+                         ForestCoverStatistic, CarbonStatistic, CurrentTask, MapTask, StatsTask)
 
 from scap.gis_tools import (calculate_change_file, generate_carbon_gtiff, rasterize_aoi, add_collection_name_field,
                             sum_overlapping_pixels, count_overlapping_pixels, copy_mollweide, copy_latlon, mask_water,
-                            stitch_geotiffs)
+                            stitch_geotiffs, generate_cog)
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,6 +65,13 @@ def assign_task(collection, task_id):
     collection.save()
 
 
+def assign_map_task(fc_collection, agb_collection, task_id):
+    task = MapTask.objects.create(id=task_id)
+    task.fc_index = fc_collection.id
+    task.agb_index = agb_collection.id or None
+
+
+
 def ensure_ownership(task_id):
     try:
         task = CurrentTask.objects.create(id=task_id)
@@ -70,6 +81,13 @@ def ensure_ownership(task_id):
         raise Ignore
         logger.info('Error exiting task')
         return False
+    
+
+@shared_task(bind=True)
+def notify_user_complete(self, collection_name, collection_type, user_id):
+    user = User.objects.get(id=user_id)
+    message="""Hi {},\n\nYour S-CAP {} collection, {}, has been fully processed. Please check the site for more details.\n\nThank you for using S-CAP!""".format(user.username, collection_type, collection_name)
+    send_mail('[S-CAP] - Message about your collection: ' + collection_name, message, config['EMAIL_HOST_USER'], [user.email])
 
 
 def set_stage(collection, current_stage, total_stages):
@@ -180,9 +198,10 @@ def unzip(zip_filepath, target_directory):
 
 
 def get_shp_file(dir):
-    for file in os.listdir(dir):
-        if '.shp' in file:
-            return os.path.join(dir, file)
+    for dirpath, dirnames, filenames in os.walk(dir):
+        for file in filenames:
+            if '.shp' in file:
+                return os.path.join(dirpath, file)
 
     # TODO Error
     return None
@@ -196,7 +215,7 @@ def load_to_VEDA(raster_path):
 def load_for_visualization(self, raster_path, variable_name, year):
     if not ensure_ownership(self.request.id):
         return 'Duped'
-    final_load_path = raster_path.replace('temp/', '').replace('data/', 'public/').replace('.tif', '.nc4')
+    final_load_path = raster_path.replace('temp/', '').replace('data/', 'cogs/public/')
 
     logger.info('Loading {} for visualization'.format(final_load_path))
 
@@ -212,87 +231,23 @@ def load_for_visualization(self, raster_path, variable_name, year):
     reprojection_load_path = os.path.join(split_path[0], 'latlon_' + split_path[1])
 
     copy_latlon(str(raster_path), str(reprojection_load_path))
+    generate_cog(str(reprojection_load_path), str(final_load_path))
 
     try:
-        with xr.open_dataset(reprojection_load_path, engine="rasterio", chunks=dict(band=1,x=256, y=256), mask_and_scale=False) as file:
-            ds = file.isel(band=0).rename({'band_data': variable_name})
-
-        # Set default timestamps
-        start_time = datetime.datetime.strptime('{}{}{}'.format(year, 1, 1), '%Y%m%d')
-        end_time = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
-        ds_time_index = datetime.datetime.strptime('{}{}{}'.format(year, 12, 31), '%Y%m%d')
-
-        # Add the time dimension as a new coordinate.
-        ds = ds.assign_coords(time=ds_time_index).expand_dims(dim='time', axis=0)
-        ds['time_bnds'] = xr.DataArray([[start_time, end_time]], dims=['time', 'nbnds'])
-        # 3) Rename and add attributes to this dataset.
-        ds = ds.rename({'y': 'latitude', 'x': 'longitude'})
-        ds = ds.assign_coords(latitude=np.around(ds.latitude.values, decimals=6),
-                              longitude=np.around(ds.longitude.values, decimals=6))
-
-        # 4) Reorder latitude dimension into ascending order
-        if ds.latitude.values[1] - ds.latitude.values[0] < 0:
-            ds = ds.reindex(latitude=ds.latitude[::-1])
-
-        lat_attr = OrderedDict([('long_name', 'latitude'), ('units', 'degrees_north'), ('axis', 'Y')])
-        lon_attr = OrderedDict([('long_name', 'longitude'), ('units', 'degrees_east'), ('axis', 'X')])
-
-        time_attr = OrderedDict([('long_name', 'time'), ('axis', 'T'), ('bounds', 'time_bnds')])
-        time_bounds_attr = OrderedDict([('long_name', 'time_bounds')])
-
-        metadata_dict = {'description': 'Filler', 'contact': 'Contact Filler', 'version': '1', 'reference': 'Reference',
-                         'temporal_resolution': 'Resolution', 'spatial_resolution': 'Spatial Resolution', 'source': 'None',
-                         'south': np.min(ds.latitude.values), 'north': np.max(ds.latitude.values),
-                         'east': np.max(ds.longitude.values), 'west': np.min(ds.longitude.values)}
-
-        file_attr = OrderedDict([('Description', metadata_dict['description']),
-                                 ('DateCreated', pd.Timestamp.now().strftime('%Y-%m-%dT%H:%M:%SZ')),
-                                 ('Contact', metadata_dict['contact']),
-                                 ('Source', metadata_dict['source']),
-                                 ('Version', metadata_dict['version']),
-                                 ('Reference', metadata_dict['reference']),
-                                 ('RangeStartTime', datetime.date(year=year, month=1, day=1).strftime('%Y-%m-%dT%H:%M:%SZ')),
-                                 ('RangeEndTime', datetime.date(year=year, month=12, day=31).strftime('%Y-%m-%dT%H:%M:%SZ')),
-                                 ('SouthernmostLatitude', metadata_dict['south']),
-                                 ('NorthernmostLatitude', metadata_dict['north']),
-                                 ('WesternmostLongitude', metadata_dict['west']),
-                                 ('EasternmostLongitude', metadata_dict['east']),
-                                 ('TemporalResolution', metadata_dict['temporal_resolution']),
-                                 ('SpatialResolution', metadata_dict['spatial_resolution'])])
-
-
-        time_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
-        time_bounds_encoding = {'units': 'seconds since 1970-01-01T00:00:00Z', 'dtype': np.dtype('int32')}
-
-        # Set the Attributes
-        ds.latitude.attrs = lat_attr
-        ds.longitude.attrs = lon_attr
-        ds.time.attrs = time_attr
-        ds.time_bnds.attrs = time_bounds_attr
-        ds.time.encoding = time_encoding
-        ds.time_bnds.encoding = time_bounds_encoding
-
-        ds.attrs = file_attr
-
-        ds[variable_name].attrs = OrderedDict([('long_name', variable_name),
-                                               ('units', 'None'),
-                                               ('accumulation_interval', 'yearly'),
-                                               ('comment', 'SCAP Dataset')])# TODO
-
-        ds_dtype = ds[variable_name].dtype
-        logger.info(ds_dtype)
-        ds[variable_name].encoding = OrderedDict([('dtype', ds_dtype),
-                                                  ('_FillValue', np.zeros(1,ds_dtype)[0]),
-                                                  ('chunksizes', (1, 256, 256)),
-                                                  ('missing_value', np.zeros(1,ds_dtype)[0]),
-                                                  ('zlib', True),
-                                                  ('complevel', 3)])
-
-
-        dask_future = ds.to_netcdf(final_load_path, unlimited_dims='time', compute=False)
-        dask_future.compute()
-
-        del ds
+        geoserver_host = config['GEOSERVER_HOST']
+        geoserver_user = config['GEOSERVER_USERNAME']
+        geoserver_pass = config['GEOSERVER_PASSWORD']
+        geo = Geoserver(geoserver_host, username=geoserver_user, password=geoserver_pass)
+        layer_name = os.path.splitext(os.path.basename(final_load_path))[0]
+        try:
+            valid_name = layer_name + '.'
+            geo.get_layer(layer_name=valid_name)
+            geo.delete_layer(layer_name=valid_name)
+            logger.info("Layer {} previously existed in Geoserver instance. It has been deleted.".format(layer_name))
+        except:
+            logger.info("Layer {} did not previously exist in Geoserver instance".format(layer_name))
+        geo.create_coveragestore(layer_name=layer_name, path=final_load_path, workspace='s-cap')
+        geo.publish_style(layer_name=layer_name+'.', style_name=variable_name, workspace='s-cap')
     except Exception as error:
         logger.info(error)
 
@@ -383,7 +338,7 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
     # TODO Add filters for aoi feature, specific fc years for user drawn aois (api.py)
 
     logger.info('Generating zonal stats')
-
+    
     fc_collection = get_collection_by_type(fc_collection_id, 'fc')
     if agb_collection_id:
         agb_collection = get_collection_by_type(agb_collection_id, 'agb')
@@ -391,6 +346,11 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
         agb_collection = None
     aoi_collection = get_collection_by_type(aoi_collection_id, 'aoi')
 
+    if fc_collection.geom and agb_collection and agb_collection.geom:
+        if not fc_collection.geom.intersects(agb_collection.geom):
+            logger.info('Skipping zonal stat calculation; AGB {} ({}) and FC {} ({}) boundaries do not intersect.'.format(agb_collection.name, agb_collection.id, fc_collection.name, fc_collection.id))
+            return
+    
     fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
     aoi_dataset_name = get_filesystem_dataset_name(aoi_collection.name)
     yearly_fc_files = fc_collection.yearly_files.all()
@@ -406,10 +366,14 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
 
         yearly_fc_files = fc_collection.yearly_files.filter(year__gte=agb_calibration_year)
 
+    # TODO Add boundary intersection checks
     aoi_features = aoi_collection.features.all()
 
     possible_combinations = list(product(yearly_fc_files, aoi_features))
     for yearly_fc_file, aoi_feature in possible_combinations:
+        if fc_collection.geom and not aoi_feature.geom.intersects(fc_collection.geom):
+            logger.info('AOI Feature {} ({}) does not intersect FC Collection {} ({})'.format(aoi_feature.name, aoi_feature.id, fc_collection.name, fc_collection.id))
+            continue
         feature_name = get_filesystem_dataset_name(aoi_feature.name)
 
         fc_filepath = get_full_filepath('fc', fc_collection.owner.id,
@@ -420,6 +384,10 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
                                          aoi_dataset_name, feature_name)
 
         if agb_collection:
+            if agb_collection.geom and not aoi_feature.geom.intersects(agb_collection.geom):
+                logger.info('AOI Feature {} ({}) does not intersect AGB Collection {} ({})'.format(aoi_feature.name, aoi_feature.id, agb_collection.name, agb_collection.id))
+                continue
+        
             carbon_filepath = get_full_filepath('carbon-stock', agb_collection.owner.id,
                                                 carbon_dataset_name, str(yearly_fc_file.year))
             emissions_filepath = get_full_filepath('emissions', agb_collection.owner.id,
@@ -436,18 +404,32 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
                                                                                                   aoi_filepath))
                 continue
 
-            statistic = CarbonStatistic()
+            try:
+                logger.info("Updating existing CarbonStatistic {} | {} | {} | {}".format(fc_collection, agb_collection, aoi_feature.id, yearly_fc_file.year))
+                stat_instance = CarbonStatistic.objects.get(fc_index=fc_collection_id,
+                                                            agb_index=agb_collection_id,
+                                                            aoi_index=aoi_feature.id,
+                                                            year_index=yearly_fc_file.year)
+                stat_instance.final_carbon_stock = final_carbon_stock
+                stat_instance.emissions = emissions
+                stat_instance.agb_value = agb_value
+                stat_instance.processing_time = processing_time
 
-            statistic.fc_index = fc_collection
-            statistic.aoi_index = aoi_feature
-            statistic.agb_index = agb_collection
-            statistic.year_index = yearly_fc_file.year
-            statistic.final_carbon_stock = final_carbon_stock
-            statistic.emissions = emissions
-            statistic.agb_value = agb_value
-            statistic.processing_time = processing_time
+                stat_instance.save()
+            except:
+                logger.info("Creating new CarbonStatistic {} | {} | {} | {}".format(fc_collection, agb_collection, aoi_feature.id, yearly_fc_file.year))
+                statistic = CarbonStatistic()
 
-            statistic.save()
+                statistic.fc_index = fc_collection
+                statistic.aoi_index = aoi_feature
+                statistic.agb_index = agb_collection
+                statistic.year_index = yearly_fc_file.year
+                statistic.final_carbon_stock = final_carbon_stock
+                statistic.emissions = emissions
+                statistic.agb_value = agb_value
+                statistic.processing_time = processing_time
+
+                statistic.save()
 
         else:
             try:
@@ -459,17 +441,32 @@ def calculate_zonal_statistics(self, fc_collection_id, agb_collection_id, aoi_co
                 logger.info('Error generating FC statistics for files: {} {}'.format(aoi_filepath, fc_filepath))
                 continue
 
-            statistic = ForestCoverStatistic()
+            try:
+                logger.info("Updating existing ForestCoverStatistic {} | {} | {}".format(fc_collection, aoi_feature, yearly_fc_file.year))
+                stat_instance = ForestCoverStatistic.objects.get(fc_index=fc_collection_id,
+                                                                 aoi_index=aoi_feature.id,
+                                                                 year_index=yearly_fc_file.year)
+                
+                stat_instance.final_forest_area = fc_area
+                stat_instance.forest_gain = fc_gain_area
+                stat_instance.forest_loss = fc_loss_area
+                stat_instance.processing_time = processing_time
 
-            statistic.fc_index = fc_collection
-            statistic.aoi_index = aoi_feature
-            statistic.year_index = yearly_fc_file.year
-            statistic.final_forest_area = fc_area
-            statistic.forest_gain = fc_gain_area
-            statistic.forest_loss = fc_loss_area
-            statistic.processing_time = processing_time
+                stat_instance.save()
+            except:
+                logger.info("Creating new ForestCoverStatistic {} | {} | {}".format(fc_collection, aoi_feature, yearly_fc_file.year))
 
-            statistic.save()
+                statistic = ForestCoverStatistic()
+
+                statistic.fc_index = fc_collection
+                statistic.aoi_index = aoi_feature
+                statistic.year_index = yearly_fc_file.year
+                statistic.final_forest_area = fc_area
+                statistic.forest_gain = fc_gain_area
+                statistic.forest_loss = fc_loss_area
+                statistic.processing_time = processing_time
+
+                statistic.save()
 
 
 @shared_task(bind=True)
@@ -542,6 +539,10 @@ def generate_carbon_files(self, fc_collection_id, agb_collection_id, user_id, ca
     fc_collection = get_collection_by_type(fc_collection_id, 'fc')
     agb_collection = get_collection_by_type(agb_collection_id, 'agb')
 
+    if fc_collection.geom and agb_collection.geom:
+        if not fc_collection.geom.intersects(agb_collection.geom):
+            logger.info('Skipping carbon file generation; AGB {} ({}) and FC {} ({}) boundaries do not intersect.'.format(agb_collection.name, agb_collection.id, fc_collection.name, fc_collection.id))
+
     fc_dataset_name = get_filesystem_dataset_name(fc_collection.name)
     agb_dataset_name = get_filesystem_dataset_name(agb_collection.name)
     carbon_dataset_name = get_filesystem_dataset_name(fc_collection.name, agb_collection.name)
@@ -612,8 +613,11 @@ def generate_stocks_and_emissions_files(self, collection_id, collection_type):
     mark_completion_task = mark_complete.si(collection.id, collection_type).set(queue='management')
     mark_available_task = mark_available.si(collection.id, collection_type).set(queue='management')
 
+    collection_type_str ='Forest Cover' if collection_type == 'fc' else 'Above Ground Biomass'
+    notification_task = notify_user_complete.si(collection.name, collection_type_str, collection.owner.id)
+
     # Will execute in order after primary task completes
-    task_list = [mark_available_task, stats_generation_task, mark_completion_task]
+    task_list = [mark_available_task, stats_generation_task, mark_completion_task, notification_task]
     chord(group(carbon_tasks))(task_scheduler.si(task_list))
 
 
@@ -661,7 +665,7 @@ def generate_forest_cover_files(fc_collection_id):
             stitch_geotiffs(target_dir, target_filepath)
 
         stats_task, vis_task, delete_task = generate_scap_source_files(dataset_info, yearly_file, is_public,
-                                                          'forest_cover', yearly_file.year, target_filepath)
+                                                                       'fc', yearly_file.year, target_filepath)
 
         change_task = None
         if yearly_file != baseline_file:
@@ -784,8 +788,12 @@ def generate_aoi_features(aoi_collection_id):
     stats_generation_task = generate_zonal_statistics.si(aoi_collection_id, 'aoi').set(queue='management')
     mark_completion_task = mark_complete.si(aoi_collection_id, 'aoi').set(queue='management')
     mark_available_task = mark_available.si(aoi_collection_id, 'aoi').set(queue='management')
+
+    collection_type_str = 'Area of Interest'
+    notification_task = notify_user_complete.si(aoi_collection.name, collection_type_str, aoi_collection.owner.id)
+
         
     # Will execute in order after primary task completes
-    task_list = [mark_available_task, delete_tasks, stats_generation_task, mark_completion_task]
+    task_list = [mark_available_task, delete_tasks, stats_generation_task, mark_completion_task, notification_task]
     chord(group(file_tasks))(task_scheduler.si(task_list))
 

@@ -777,8 +777,6 @@ class CreateAOICollection(CreateView):
         self.object = form.save()
         collection_type = 'aoi'
         collection = AOICollection.objects.get(name=form.instance.name)
-        process_updated_collection.delay(collection.id, collection_type)
-
         collection.processing_status = "Staged"
         collection.save()
         return HttpResponseRedirect(self.get_success_url())

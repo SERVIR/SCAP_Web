@@ -3,6 +3,57 @@ from import_export.admin import ImportExportModelAdmin
 from scap.models import (AOIFeature, AOICollection, ForestCoverCollection, AGBCollection, CurrentTask,
                          ForestCoverStatistic, CarbonStatistic, ForestCoverFile, PilotCountry, CarbonStockFile, EmissionFile,UserMessage,AGBFile)
 
+from django.contrib import admin
+from django.contrib.gis.geos import GEOSGeometry
+
+import scap.api as api
+import scap.processing as processing
+
+import geopandas as gpd
+import logging
+import shutil
+import os
+
+from shapely.geometry.polygon import Polygon
+from shapely.geometry.multipolygon import MultiPolygon
+
+logger = logging.getLogger("django")
+
+@admin.action(description="Load uploaded boundary shapefile to geometry field")
+def load_boundary_geometry(modeladmin, request, queryset):
+    for instance in queryset:
+        boundary_file = instance.boundary_file
+        if not boundary_file:
+            logger.error('Attempted to load non-existent boundary file.')
+
+        bf_path = boundary_file.path
+        if not os.path.isfile(bf_path):
+            logger.error('Boundary file field is not a valid file.')
+
+        dir_path, ext = os.path.splitext(bf_path)
+        if ext != '.zip':
+            logger.error('Boundary file is not a .zip file.')
+
+        if os.path.isdir(dir_path):
+            logger.info('Deleting previous directory with same name as zip file')
+            shutil.rmtree(dir_path)
+
+        os.makedirs(dir_path)
+        processing.unzip(bf_path, dir_path)
+        shp_path = processing.get_shp_file(dir_path)
+        if not shp_path:
+            logger.error('No .shp file exists in .zip file')
+
+        boundary_gdf = gpd.read_file(shp_path)
+        union_geom = boundary_gdf.geometry.union_all()
+
+        if isinstance(union_geom, Polygon):
+            union_geom = MultiPolygon([union_geom])
+
+        geom = GEOSGeometry(union_geom.wkt)
+
+        instance.geom = geom
+        instance.save()
 
 class AOIFeatureAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name','orig_name','iso3','desig_eng')
@@ -29,6 +80,7 @@ class AOICollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class AGBCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name','owner','access_level')
+    actions = [load_boundary_geometry]
 
 
 class ForestCoverFileInline(admin.TabularInline):
@@ -40,6 +92,7 @@ class ForestCoverFileInline(admin.TabularInline):
 class ForestCoverCollectionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name', 'boundary_file','owner','access_level','approval_status')
     inlines = [ ForestCoverFileInline, ]
+    actions = [load_boundary_geometry]
 
 
 class CarbonStocksAdmin(ImportExportModelAdmin, admin.ModelAdmin):
