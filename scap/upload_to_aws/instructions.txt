@@ -1,0 +1,18 @@
+Author: Githika Tondapu
+Date: 11/11/2024
+
+Following are the steps to follow in order to upload SCAP data from server to S3 bucket.
+
+1. Make sure the environment is activated as the needed libraries are available inside the environment. Otherwise you can just run "conda activate SCAP" to activate the environment.
+
+2. Once you are in the environment, make sure you are in the correct directory(/upload_to_aws) that has the aws_script.py and mfa_auth.sh
+
+3. For the next command you need to have an AWS SMCE account and access to the S3 bucket with permissions. If you have access already, please run "source mfa_auth.sh". This will ask for MFA code that could be obtained from the account holder's authernticator app. Please provide the code and hit Enter to continue.
+
+4. Once MFA authorization is completed, run the python script using the command "python aws_script.py".
+
+5. You will be asked to provide origin/source directory path on the server, name of the S3 bucket you would like to put the data and the destination path on S3 bucket.
+
+Note:
+a) For source path, please provide full path except the file name. All the files in the source path will be uploaded to S3 bucket.
+b) For destination path, please provide the name of directory or path to the subdirectory that you intend to use/create. If you provide path starting with '/', new path will be created under the root S3 bucket.
