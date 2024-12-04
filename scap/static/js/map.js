@@ -1112,7 +1112,34 @@ function init_map() {
         $('#drawing_modal').modal('show');
         drawn_aoi = json;
     });
+if ((window.location.href.indexOf("/aoi/") > -1) || (window.location.href.indexOf("/pilot/")>-1 )){
+    L.easyButton('fa-download', function (btn, map) {
+        var id = 0;
+        var country_or_aoi = "aoi";
+        if (window.location.href.indexOf("/aoi/") > -1) {
+            id = window.location.href.split("/")[4];
+            console.log(id);
+        } else if (window.location.href.indexOf("/pilot/") > -1) {
+            id = window.location.href.split("/")[4];
+            console.log(id);
+            country_or_aoi = "country";
+        }
+        let req = ajax_call("export-aoi", {'id': id, 'country_or_aoi': country_or_aoi});
+        req.done(function (result) {
+            var data = result['data'];
+            // Stringify the GeoJson
+            var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
 
+
+            var link = document.createElement("a");
+            link.setAttribute('href', 'data:' + convertedData);
+            link.setAttribute('download', 'scap_aoi.geojson');
+            document.body.appendChild(link); // required for firefox
+            link.click();
+            link.remove();
+        });
+    }, 'Download').addTo(map);
+}
     map.on("click", function (e) {
         if(!aois_clickable){ return };
 	if(!aoi_layer){ return };

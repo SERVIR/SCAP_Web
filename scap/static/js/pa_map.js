@@ -146,3 +146,28 @@ req.done(function (result) {
 
 });
 $("#datasource_select") .trigger('change');
+
+
+document.getElementById('export_geojson').onclick = function (e) {
+    var id=0;
+    var country_or_aoi="aoi";
+     if (window.location.href.indexOf("/aoi/") > -1){
+         id=window.location.href.split("/")[4];
+         console.log(id);
+     }
+     else if (window.location.href.indexOf("/pilot/") > -1){
+         id=window.location.href.split("/")[4];
+         console.log(id);
+         country_or_aoi="country";
+     }
+    let req = ajax_call("export-aoi", {'id':id,'country_or_aoi':country_or_aoi});
+    req.done(function (result) {
+        var data = result['data'];
+        // Stringify the GeoJson
+        var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+        // Create export
+        document.getElementById('export_geojson').setAttribute('href', 'data:' + convertedData);
+        document.getElementById('export_geojson').setAttribute('download', 'scap_aoi.geojson');
+    });
+};

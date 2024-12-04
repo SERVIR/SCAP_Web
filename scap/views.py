@@ -344,10 +344,11 @@ def pilot_country(request, country=0):
     if pa_name == 'Ivory Coast':
         pa_name = "Côte d'Ivoire"
     return render(request, 'scap/pilot_country.html',
-                  context={'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors, 'chart_fc': chart_fc,
-                           'chart_cs': chart_cs, 'chart_def': chart_def,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,
-                           'agbs_cs': agbs_cs, 'name': pa_name,
+                  context={
+                      'chart': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors,
+                           'chart_fc': chart_fc,'chart_cs': chart_cs, 'chart_def': chart_def,
+                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor, 'lcs_cs': lcs_cs,'agbs_cs': agbs_cs,
+                           'name': pa_name,
                            'desc': pa.country_description, 'tagline': pa.country_tagline, 'image': pa.hero_image.url,
                            'latitude': pa.latitude, 'longitude': pa.longitude, 'zoom_level': pa.zoom_level,
                            'shp_obj': json_obj, 'country': pa.id, 'region': '', 'fc_colls': fc_colls,
@@ -461,7 +462,10 @@ def protected_aois_custom(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
-    vall = '{:20,.1f}'.format(pa.rep_area * 100)
+    if pa.desig_eng == 'DRAWN':
+        vall = '{:20,.1f}'.format(pa.rep_area * 100)
+    else:
+        vall = '{:20,.1f}'.format(pa.rep_area * 100)
     tagline = 'Total area is ' + str(vall) + ' Ha'
 
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')

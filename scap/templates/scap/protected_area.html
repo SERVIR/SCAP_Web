@@ -13,6 +13,7 @@
     <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}"/>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css"/>
@@ -228,12 +229,15 @@
 
 
         </div>
-        {% if country_id is not None %}
         <br>
         <div>
-            <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">Go to {{country_name}} country page</a>
+        {% if country_id is not None %}
+    
+            <a class="btn btn-outline-primary" href="{% url 'pilot_country' country=country_id %}">View protected areas in {{country_name}}</a>
+       {% endif %}
+{#        <a class="btn btn-secondary float-end" id="export_geojson" href="#">Export GeoJSON</a>#}
         </div>
-        {% endif %}
+        
     </div>
 
 </section>

@@ -23,7 +23,7 @@ from scap.validation import doi_valid
 
 from scap.api import (save_forest_cover_file, is_forest_cover_collection_valid, get_forest_cover_collections,
                       updatetomodel, get_yearly_forest_cover_files, get_aoi_list,
-                      get_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
+                      get_AOI, export_AOI, get_tiff_data, get_updated_series, get_series_name, get_agg_check,
                       stage_for_processing, delete_tiff_record, get_tiff_id, add_tiff_record, update_tiff_record,
                       get_aoi_id, add_aoi_data, add_agb_data, update_boundary_file, test, upload_drawn_aoi,
                       send_message_scap, get_agg_check_cs, get_agg_check_cs_pa, get_statistics_for_map, validation_list,
@@ -66,6 +66,9 @@ urlpatterns = [
       path('pilot/<int:country>/get-series-name/', get_series_name, name='get_series_name'),
 
       path('map/get-aoi/', get_AOI, name='get-aoi'),
+      path('aoi/<int:aoi>/export-aoi/', export_AOI, name='export-aoi'),
+      path('aoi/<int:aoi>/custom/export-aoi/', export_AOI, name='export-aoi'),
+      path('pilot/<int:country>/export-aoi/', export_AOI, name='export-aoi'),
       path('map/<int:country>/upload-drawn-aoi/', upload_drawn_aoi, name='upload-drawn-aoi'),
 
       path('aoi/<int:country>/get-aoi/', get_AOI, name='get-aoi'),

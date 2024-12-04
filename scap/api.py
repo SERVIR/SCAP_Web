@@ -420,6 +420,19 @@ def get_AOI(request, country=1):
         return JsonResponse({})
     return JsonResponse(json_obj)
 
+@csrf_exempt
+def export_AOI(request,country=0,aoi=0):
+    json_obj = {}
+    if request.POST['country_or_aoi'] == "aoi":
+        aoi = AOIFeature.objects.filter(id=request.POST['id']).first()
+    else:
+        pc = PilotCountry.objects.get(id=request.POST['id'])
+        aoi_obj = AOIFeature.objects.get(id=pc.aoi_polygon.id)
+        aoi = AOIFeature.objects.filter(id=aoi_obj.id, desig_eng='COUNTRY').first()
+    vec = gpd.read_file(aoi.geom.geojson, driver='GeoJSON')
+    json_obj["data"] = json_lib.loads(vec.to_json())
+    return JsonResponse(json_obj)
+
 
 def fetch_carbon_charts(pa_name, owner, container):
     # TODO Add charts for carbon stock and AGB in addition to emissions
