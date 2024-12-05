@@ -30,6 +30,7 @@ from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection
 
 from scap.async_tasks import process_updated_collection
 from scap.getgdalstats import gdal_stats
+from scap.processing import get_dataset_item_relative_filepath
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
@@ -373,9 +374,27 @@ def protected_aois(request, aoi):
                 break
         if reload:
             break
-    print(pa.name)
     pa_name = pa.name
-    vall = '{:20,.1f}'.format(pa.rep_area * 100)
+    if pa.desig_eng == 'DRAWN':
+        final_dir = os.path.join(config['DATA_DIR'])
+        aoi_coll=AOICollection.objects.get(name=pa.name)
+        user_id=aoi_coll.owner.id
+        relative_path = get_dataset_item_relative_filepath('aoi', user_id, pa.name,pa.name)
+        full_filepath = os.path.join(final_dir, relative_path)
+        import rasterio
+
+        with rasterio.open(full_filepath) as src:
+            data = src.read(1)  # Read the first band
+
+            import numpy
+            unique_values = numpy.unique(data)
+
+            print(unique_values)
+            count = (data != 0).sum()
+
+        vall = '{:20,.1f}'.format(count)
+    else:
+        vall = '{:20,.1f}'.format(pa.rep_area * 100)
     tagline = 'Total area is ' + str(vall) + ' Ha'
 
     df = gpd.read_file(pa.geom.geojson, driver='GeoJSON')
@@ -441,15 +460,15 @@ def protected_aois(request, aoi):
         hero_image = '/static/assets/img/pexels-2591408.jpg'
 
     chart, lcs, agbs = fetch_carbon_charts(pa_name, request.user, 'emissions_chart_pa')
-    chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
-    chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
-    chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
+    # chart_fc1, lcs_defor = fetch_forest_change_charts_by_aoi(pa_name, request.user, 'container_fcpa')
+    # chart_cs, lcs_cs, agbs_cs = fetch_carbon_stock_charts(pa_name, request.user, 'cs_container_fcpa')
+    # chart_def_pa, lcs_defor = fetch_deforestation_charts_by_aoi(pa_name, request.user, 'container_deforestation_pa')
     logger.info(json.dumps(curr_jobs))
     print(json.dumps(curr_jobs))
     return render(request, 'scap/protected_area.html',
                   context={'chart_epa': chart, 'lcs': lcs, 'agbs': agbs, 'colors': colors,
-                           'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
-                           'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
+                           # 'chart_fcpa': chart_fc1,'chart_cs_pa': chart_cs,'chart_def_pa':chart_def_pa,
+                           # 'lcs_defor': json.dumps(lcs_defor), 'lc_data': lcs_defor,'lcs_cs':lcs_cs,'agbs_cs':agbs_cs,
                            'region_country': region_country, 'country_desc': country_description,
                            'tagline': tagline, 'image': hero_image, 'country_id': country_id,
                            'latitude': float(df['lat'].iloc[0]), 'longitude': float(df['lon'].iloc[0]),
@@ -462,7 +481,12 @@ def protected_aois_custom(request, aoi):
     json_obj = {}
     pa = AOIFeature.objects.get(id=aoi)
     pa_name = pa.name
+    print('outside')
     if pa.desig_eng == 'DRAWN':
+        print('inside')
+        from django.contrib.gis.db.models.functions import Area
+        pa_for_area = AOIFeature.objects.filter(id=aoi).annotate(area=Area('geom'))
+        print(pa_for_area.area.sq_km)
         vall = '{:20,.1f}'.format(pa.rep_area * 100)
     else:
         vall = '{:20,.1f}'.format(pa.rep_area * 100)
