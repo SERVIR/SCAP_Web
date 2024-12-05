@@ -30,7 +30,7 @@ from scap.models import (CarbonStatistic, ForestCoverFile, ForestCoverCollection
 
 from scap.async_tasks import process_updated_collection
 from scap.getgdalstats import gdal_stats
-from scap.processing import get_dataset_item_relative_filepath
+from scap.processing import get_dataset_item_relative_filepath, get_filesystem_dataset_name
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 f = open(str(BASE_DIR) + '/data.json', )
@@ -379,17 +379,14 @@ def protected_aois(request, aoi):
         final_dir = os.path.join(config['DATA_DIR'])
         aoi_coll=AOICollection.objects.get(name=pa.name)
         user_id=aoi_coll.owner.id
-        relative_path = get_dataset_item_relative_filepath('aoi', user_id, pa.name,pa.name)
+        dataset_name = get_filesystem_dataset_name(aoi_coll.name)
+        feature_name = get_filesystem_dataset_name(pa.name)
+        relative_path = get_dataset_item_relative_filepath('aoi', user_id, dataset_name,feature_name)
         full_filepath = os.path.join(final_dir, relative_path)
         import rasterio
 
         with rasterio.open(full_filepath) as src:
             data = src.read(1)  # Read the first band
-
-            import numpy
-            unique_values = numpy.unique(data)
-
-            print(unique_values)
             count = (data != 0).sum()
 
         vall = '{:20,.1f}'.format(count)
