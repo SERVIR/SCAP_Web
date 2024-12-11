@@ -134,7 +134,7 @@
 
                     <td>
                      <button class="btn-primary btn"
-onclick="populate_tiff_table('{{coll.coll.owner}}','{{coll.tiff_files}}')"
+onclick="populate_tiff_table('{{coll.coll.owner}}','{{coll.tiff_files}}','{{coll.coll.boundary_file}}')"
                                 style="margin: 10px;margin-top:0px">View Tiffs
                         </button>
                     </td>
@@ -175,7 +175,7 @@ onclick="populate_tiff_table('{{coll.coll.owner}}','{{coll.tiff_files}}')"
 
                     <td>
                      <button class="btn-primary btn"
-onclick="show_layers_on_map('{{type}}','{{coll.owner}}','{{coll.id}}','{{coll.name}}',0,'{{years}}')"
+onclick="show_layers_on_map('{{type}}','{{coll.owner}}','{{coll.id}}','{{coll.name}}',0,'{{years}}','{{coll.boundary_file}}')"
                                 style="margin: 10px;margin-top:0px">View
                         </button>
                     </td>
@@ -241,7 +241,7 @@ onclick="show_layers_on_map('{{type}}','{{coll.owner}}','{{coll.id}}','{{coll.na
 <!--                     <div id="years_radiolist" style="height: 500px;overflow-y: scroll"></div>-->
 <!--            </div>-->
                  <div class="col"><div id="file_summary" style="display: none;">
-                     <p><strong>Boundary file present? </strong>No</p>
+                     <p><strong>Boundary file present? </strong><span id="b_file_yesno"></span></p>
                      <p><strong>File summary</strong>:</p>
 
                      <table class="table table-bordered">

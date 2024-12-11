@@ -64,53 +64,53 @@ for (var i = 1;i<=table.rows.length; i++) {
         var ch1 = mainrow.getElementsByTagName('td')[0];
 
         var ch2 = ch1.children[0];
+        if (window.location.href.indexOf("/aoi-collections/") > -1) {
+            $.ajax({
+                type: 'POST',
+                url: 'get-aoi-ids/', data: {'aoi_name': ch2.textContent},
+                success: function (data) {
+                    console.log(data)
 
-        $.ajax({
-            type: 'POST',
-            url: 'get-aoi-ids/', data: {'aoi_name': ch2.textContent},
-            success: function (data) {
-                console.log(data)
+                    const ul = document.getElementById("list_of_aois" + "_" + data.aoi_coll_id);
 
-                const ul = document.getElementById("list_of_aois" + "_" + data.aoi_coll_id);
-
-                for (var j = 0; j < data.aois.length; j++) {
-                    var aoi_id = data.aois[j].id;
-                    var aoi_name=data.aois[j].name;
-                    if (aoi_id > 0) {
+                    for (var j = 0; j < data.aois.length; j++) {
+                        var aoi_id = data.aois[j].id;
+                        var aoi_name = data.aois[j].name;
+                        if (aoi_id > 0) {
 
 
 // Create a new LI element
-                        const newLi = document.createElement("li");
-                        newLi.style.width='200px';
+                            const newLi = document.createElement("li");
+                            newLi.style.width = '200px';
 
-                        const anchor = document.createElement('a');
+                            const anchor = document.createElement('a');
 
-                        // Set the href attribute
-                        anchor.href = window.location.origin + '/aoi/' + aoi_id + '/';
-                        anchor.target = '_blank';
-                        if(aoi_name.length<13){
-                             // Set the text content of the anchor
-                        anchor.textContent = "Go to AOI: " + aoi_name;
-                        }
-
-                        else{
-                             // Set the text content of the anchor
-                        anchor.textContent = "Go to AOI: " + aoi_name.substr(0,13)+'...';
-                        }
+                            // Set the href attribute
+                            anchor.href = window.location.origin + '/aoi/' + aoi_id + '/';
+                            anchor.target = '_blank';
+                            if (aoi_name.length < 13) {
+                                // Set the text content of the anchor
+                                anchor.textContent = "Go to AOI: " + aoi_name;
+                            } else {
+                                // Set the text content of the anchor
+                                anchor.textContent = "Go to AOI: " + aoi_name.substr(0, 13) + '...';
+                            }
 
 
-                        // Append the anchor element to the li element
-                        newLi.appendChild(anchor);
+                            // Append the anchor element to the li element
+                            newLi.appendChild(anchor);
 
 // Append the new LI element to the UL element
-                        if (ul !== null)
-                            ul.appendChild(newLi);
+                            if (ul !== null)
+                                ul.appendChild(newLi);
+                        }
                     }
-                }
 
-            }
-        });
+                }
+            });
+        }
     }
+
 
 }
 

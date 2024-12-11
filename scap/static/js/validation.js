@@ -25,7 +25,7 @@ function approve_fc_file(fc_file) {
     });
 }
 
-function populate_tiff_table(owner,tiff_files){
+function populate_tiff_table(owner,tiff_files,boundary_file){
     console.log(owner)
     document.getElementById('fc_tiffs_to_be_validated_body').innerHTML="";
     var tiff_files=JSON.parse(tiff_files);
@@ -60,7 +60,7 @@ var text0 = document.createTextNode(owner);
                               var pos1 = this.id.indexOf('_');
                               var pos2 = this.id.indexOf('_', pos1 + 1);
                               var coll = this.id.substring(pos2 + 1)
-                              show_layers_on_map('fc', owner,this.id.split('_')[1], coll, this.id.split('_')[0]);
+                              show_layers_on_map('fc', owner,this.id.split('_')[1], coll, this.id.split('_')[0],"[]",boundary_file);
                           });
 
         viewButton.style="margin: 10px;margin-top:0px";
@@ -120,8 +120,15 @@ tr.appendChild(td0);
 
 }
 
-function show_layers_on_map(type,user,cid,coll,year=0,yrs="[]") {
+function show_layers_on_map(type,user,cid,coll,year=0,yrs="[]",boundary_file) {
     document.getElementById('file_summary').style.display='block';
+    console.log(boundary_file)
+    if (boundary_file==='' || boundary_file===undefined){
+        document.getElementById('b_file_yesno').innerHTML='No';
+    }
+    else{
+        document.getElementById('b_file_yesno').innerHTML='Yes';
+    }
 
 
     // populate_tiff_table(tiff_files);

@@ -69,6 +69,17 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
         existing_coll = ForestCoverCollection.objects.get(name=coll_name,
                                                           owner__username=username)
         fc_files = ForestCoverFile.objects.filter(collection=existing_coll)
+        boundary_file=existing_coll.boundary_file
+        print('boudary file')
+        print(boundary_file)
+        boundary_file_valid=False
+        boundary_file_exists=False
+        if boundary_file is not None:
+            boundary_file_exists=True
+            if not validate_file(bytes(boundary_file.file.read()),'fc_boundary'):
+                boundary_file_valid = True
+
+
         result = True
         if fc_files.count() == 0:
             existing_coll.approval_status = 'Not Submitted'
@@ -81,9 +92,14 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
             existing_coll.approval_status = 'Submitted'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
-            message = (
-                'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
-                'if the dataset is approved/denied.')
+            if boundary_file_exists and boundary_file_valid:
+                message = (
+                    'Your data along with boundary file passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                    'if the dataset is approved/denied.')
+            else:
+                message = (
+                    'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                    'if the dataset is approved/denied.')
             send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
                       [email])
             # send notification to scap_sysadmins
@@ -103,6 +119,14 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
     else: #agb
         existing_coll = AGBCollection.objects.get(name=coll_name,
                                                   owner__username=username)
+        boundary_file = existing_coll.boundary_file
+        print(boundary_file)
+        boundary_file_valid = False
+        boundary_file_exists = False
+        if boundary_file is not None:
+            boundary_file_exists = True
+            if not validate_file(bytes(boundary_file.file.read()), 'agb_boundary'):
+                boundary_file_valid = True
         if validate_file(bytes(existing_coll.source_file.file.read()),'agb'):
             name = 'preview.agb.' + username + '.' + coll_name + '.' + str(
                 existing_coll.year)
@@ -112,9 +136,14 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
             existing_coll.approval_status = 'Submitted'
             existing_coll.processing_status = 'Not Processed'
             existing_coll.save()
-            message = (
-                'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
-                'if the dataset is approved/denied.')
+            if boundary_file_exists and boundary_file_valid:
+                message = (
+                    'Your data along with boundary file passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                    'if the dataset is approved/denied.')
+            else:
+                message = (
+                    'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                    'if the dataset is approved/denied.')
             send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
                       [email])
             # send notification to scap_sysadmins
