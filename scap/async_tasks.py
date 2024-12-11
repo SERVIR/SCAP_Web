@@ -2,6 +2,7 @@ import os
 import logging
 import linecache
 import tracemalloc
+
 from celery.utils.log import get_task_logger
 from celery import shared_task
 from time import sleep
@@ -9,7 +10,7 @@ from time import sleep
 from django.core.mail import send_mail
 
 import scap.processing as processing
-
+from django.contrib.auth.models import User, Group
 from scap.models import ForestCoverCollection, AGBCollection, AOICollection,ForestCoverFile
 from celery.utils.log import get_task_logger
 from scap.utils import validate_file,upload_tiff_to_geoserver
@@ -85,6 +86,15 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
                 'if the dataset is approved/denied.')
             send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
                       [email])
+            # send notification to scap_sysadmins
+            approver_group = Group.objects.get(name='scap_sysadmins')
+            approvers = approver_group.user_set.all()
+            approvers_emails = [approver.email for approver in approvers if approver.email]
+            url = 'https://' + config['ALLOWED_HOSTS'][1] + '/validation/fc/'
+            admin_message = 'Hi,\nUser data passed the initial validation. Please review the collection and take appropriate action. Follow this link in order to review '+url
+            send_mail('[S-CAP] - Message about user collection: ' + coll_name, admin_message,
+                      config['EMAIL_HOST_USER'],
+                      approvers_emails)
         else:
             message = (
                 'Your data failed the initial validation. Cannot submit for admin review. Please verify your data and retry')
@@ -107,6 +117,15 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
                 'if the dataset is approved/denied.')
             send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
                       [email])
+            # send notification to scap_sysadmins
+            approver_group = Group.objects.get(name='scap_sysadmins')
+            approvers = approver_group.user_set.all()
+            approvers_emails = [approver.email for approver in approvers if approver.email]
+            url='https://'+config['ALLOWED_HOSTS'][1]+'/validation/agb/'
+            admin_message = 'Hi,\nUser data passed the initial validation. Please review the collection and take appropriate action. Follow this link in order to review '+url
+            send_mail('[S-CAP] - Message about user collection: ' + coll_name, admin_message,
+                      config['EMAIL_HOST_USER'],
+                      approvers_emails)
         else:
             message = (
                 'Your data failed the initial validation. Cannot submit for admin review. Please verify your data and retry')
