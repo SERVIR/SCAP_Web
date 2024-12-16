@@ -125,7 +125,7 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
         boundary_file_exists = False
         if boundary_file is not None:
             boundary_file_exists = True
-            if not validate_file(bytes(boundary_file.file.read()), 'agb_boundary'):
+            if validate_file((boundary_file.file), 'agb_boundary'):
                 boundary_file_valid = True
         if validate_file(bytes(existing_coll.source_file.file.read()),'agb'):
             name = 'preview.agb.' + username + '.' + coll_name + '.' + str(
@@ -133,28 +133,52 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
             print(existing_coll.source_file.name)
             path = existing_coll.source_file.path
             upload_tiff_to_geoserver(name,path)
-            existing_coll.approval_status = 'Submitted'
-            existing_coll.processing_status = 'Not Processed'
-            existing_coll.save()
-            if boundary_file_exists and boundary_file_valid:
-                message = (
-                    'Your data along with boundary file passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
-                    'if the dataset is approved/denied.')
+
+            if boundary_file_exists:
+                if boundary_file_valid:
+                    message = (
+                        'Your data along with boundary file passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
+                        'if the dataset is approved/denied.')
+                    send_mail('[S-CAP] - Message about your collection: ' + coll_name, message,
+                              config['EMAIL_HOST_USER'],
+                              [email])
+                    # send notification to scap_sysadmins
+                    approver_group = Group.objects.get(name='scap_sysadmins')
+                    approvers = approver_group.user_set.all()
+                    approvers_emails = [approver.email for approver in approvers if approver.email]
+                    url = 'https://' + config['ALLOWED_HOSTS'][1] + '/validation/agb/'
+                    admin_message = 'Hi,\nUser data passed the initial validation. Please review the collection and take appropriate action. Follow this link in order to review ' + url
+                    send_mail('[S-CAP] - Message about user collection: ' + coll_name, admin_message,
+                              config['EMAIL_HOST_USER'],
+                              approvers_emails)
+                    existing_coll.approval_status = 'Submitted'
+                    existing_coll.processing_status = 'Not Processed'
+                    existing_coll.save()
+                else:
+                    message = (
+                        'Your boundary file did not pass the initial validation. Cannot submit for admin review. Please verify your data and retry')
+                    send_mail('[S-CAP] - Message about your collection: ' + coll_name, message,
+                              config['EMAIL_HOST_USER'],
+                              [email])
             else:
                 message = (
                     'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
                     'if the dataset is approved/denied.')
-            send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
-                      [email])
-            # send notification to scap_sysadmins
-            approver_group = Group.objects.get(name='scap_sysadmins')
-            approvers = approver_group.user_set.all()
-            approvers_emails = [approver.email for approver in approvers if approver.email]
-            url='https://'+config['ALLOWED_HOSTS'][1]+'/validation/agb/'
-            admin_message = 'Hi,\nUser data passed the initial validation. Please review the collection and take appropriate action. Follow this link in order to review '+url
-            send_mail('[S-CAP] - Message about user collection: ' + coll_name, admin_message,
-                      config['EMAIL_HOST_USER'],
-                      approvers_emails)
+                send_mail('[S-CAP] - Message about your collection: ' + coll_name, message, config['EMAIL_HOST_USER'],
+                          [email])
+                # send notification to scap_sysadmins
+                approver_group = Group.objects.get(name='scap_sysadmins')
+                approvers = approver_group.user_set.all()
+                approvers_emails = [approver.email for approver in approvers if approver.email]
+                url = 'https://' + config['ALLOWED_HOSTS'][1] + '/validation/agb/'
+                admin_message = 'Hi,\nUser data passed the initial validation. Please review the collection and take appropriate action. Follow this link in order to review ' + url
+                send_mail('[S-CAP] - Message about user collection: ' + coll_name, admin_message,
+                          config['EMAIL_HOST_USER'],
+                          approvers_emails)
+                existing_coll.approval_status = 'Submitted'
+                existing_coll.processing_status = 'Not Processed'
+                existing_coll.save()
+
         else:
             message = (
                 'Your data failed the initial validation. Cannot submit for admin review. Please verify your data and retry')
