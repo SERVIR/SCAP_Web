@@ -148,8 +148,11 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
         boundary_file_exists = False
         if boundary_file is not None:
             boundary_file_exists = True
-            if validate_file((boundary_file.file), 'agb_boundary'):
-                boundary_file_valid = True
+            try:
+                if validate_file(boundary_file.file, 'fc_boundary'):
+                    boundary_file_valid = True
+            except ValueError as e:
+                boundary_file_exists = False
         if validate_file(bytes(existing_coll.source_file.file.read()),'agb'):
             name = 'preview.agb.' + username + '.' + coll_name + '.' + str(
                 existing_coll.year)
