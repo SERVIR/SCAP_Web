@@ -70,16 +70,16 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
                                                           owner__username=username)
         fc_files = ForestCoverFile.objects.filter(collection=existing_coll)
         boundary_file=existing_coll.boundary_file
-        print('boudary file')
         print(boundary_file)
         boundary_file_valid=False
         boundary_file_exists=False
         if boundary_file is not None:
             boundary_file_exists=True
-            if validate_file(boundary_file.file,'fc_boundary'):
-                boundary_file_valid = True
-
-
+            try:
+                if validate_file(boundary_file.file,'fc_boundary'):
+                    boundary_file_valid = True
+            except ValueError as e:
+                    boundary_file_exists=False
         result = True
         if fc_files.count() == 0:
             existing_coll.approval_status = 'Not Submitted'
@@ -89,9 +89,6 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
                 result = False
                 break
         if result:
-            # existing_coll.approval_status = 'Submitted'
-            # existing_coll.processing_status = 'Not Processed'
-            # existing_coll.save()
             if boundary_file_exists:
                 if boundary_file_valid:
                     message = (
@@ -120,6 +117,9 @@ def validate_uploaded_dataset(self, dataset_id, dataset_type,coll_name,username,
                               [email])
 
             else:
+                existing_coll.approval_status = 'Submitted'
+                existing_coll.processing_status = 'Not Processed'
+                existing_coll.save()
                 message = (
                     'Your data passed the initial validation. Submitted for admin review. Please wait for an email that will let you know '
                     'if the dataset is approved/denied.')
