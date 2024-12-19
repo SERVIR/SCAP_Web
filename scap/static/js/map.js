@@ -16,6 +16,7 @@ let load_tooltip;
 let aoi_nav_dict={};
 let aois_clickable = true;
 
+
 function enableMapDrag(){
     map.dragging.enable();
     aois_clickable = true;
@@ -130,7 +131,11 @@ function addMapLayers(){
     if (use_case == 'fc'){
         secondary_underlay_layer.addTo(map);
         secondary_overlay_layer.addTo(map);
-        comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
+ // comparison_control = L.control.sideBySide([], []).addTo(map);
+        console.log(comparison_control);
+        comparison_control.setLeftLayers([primary_overlay_layer]);
+        comparison_control.setRightLayers([secondary_overlay_layer, secondary_underlay_layer]);
+        // comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     } else{
         secondary_overlay_layer.addTo(map);
         comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
@@ -334,16 +339,16 @@ function clear_map_layers() {
     if (secondary_underlay_layer != undefined) {
         map.removeLayer(secondary_underlay_layer);
     }
-    if (comparison_control != undefined) {
-        document.getElementsByClassName('leaflet-sbs-range')[0].value = 1;
-        let clipX = comparison_control._range.value;
-        map.removeControl(comparison_control);
-        comparison_control = undefined;
-        let nw = map.containerPointToLayerPoint([0, 0]);
-        let se = map.containerPointToLayerPoint(map.getSize());
-        let clipLeft = 'rect(' + [nw.y, clipX, se.y, nw.x].join('px,') + 'px)';
-        map.getPane('left').setAttribute('style', clipLeft);
-    }
+    // if (comparison_control != undefined) {
+    //     document.getElementsByClassName('leaflet-sbs-range')[0].value = 1;
+    //     let clipX = comparison_control._range.value;
+    //     map.removeControl(comparison_control);
+    //     comparison_control = undefined;
+    //     let nw = map.containerPointToLayerPoint([0, 0]);
+    //     let se = map.containerPointToLayerPoint(map.getSize());
+    //     let clipLeft = 'rect(' + [nw.y, clipX, se.y, nw.x].join('px,') + 'px)';
+    //     map.getPane('left').setAttribute('style', clipLeft);
+    // }
 }
 
 
@@ -1043,6 +1048,7 @@ function init_map() {
     map.createPane('top');
     map.createPane('topmost');
     map.zoomControl.setPosition('topleft');
+
     //add the default layers to show
     darkmap.addTo(map);
     // button added at the bottom left to switch usecase
@@ -1220,8 +1226,12 @@ if ((window.location.href.indexOf("/aoi/") > -1) || (window.location.href.indexO
     {
         map_modal_action='deforestation_targets';
     }
+
+
     //populate the dropdowns based on the map modal action that is set above
     get_available_years(map_modal_action);
+     comparison_control = L.control.sideBySide([L.tileLayer('')], [L.tileLayer('')]).addTo(map);
+     console.log(comparison_control);
 }
 
 
@@ -1238,8 +1248,9 @@ function zoomtoArea(id){
 $(function () {
     //Map Initialization
     init_map()
+
     map_modal_action = localStorage.getItem('map_modal_action');
-    
+
     //populate the dropdowns based on the map modal action that is set above
     get_available_years(map_modal_action);
     if (window.location.href.indexOf("/map/0/") > -1) {
