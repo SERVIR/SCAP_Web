@@ -122,7 +122,6 @@ function addMapLayers(){
     if (use_case == 'deforestation_targets'){
         use_case = 'fc';
     }
-
     setPrimaryLayers(use_case)
     setComparisonLayers(use_case)
 
@@ -138,7 +137,9 @@ function addMapLayers(){
         // comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer, secondary_underlay_layer]).addTo(map);
     } else{
         secondary_overlay_layer.addTo(map);
-        comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]).addTo(map);
+        // comparison_control = L.control.sideBySide([primary_overlay_layer], [secondary_overlay_layer]);
+         comparison_control.setLeftLayers([primary_overlay_layer]);
+        comparison_control.setRightLayers([secondary_overlay_layer]);
     }
 }
 
