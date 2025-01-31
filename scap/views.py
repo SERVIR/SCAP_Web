@@ -177,15 +177,32 @@ def home(request):
         del request.session['is_new_user']
         return HttpResponseRedirect('user_information')
     pilot_countries = []
+    private_lcs=None
+    private_agbs=None
+    public_lcs=None
+    public_agbs=None
     new_user_list = None
     try:
         pilot_countries = PilotCountry.objects.all().order_by('country_name')
         today = date.today()
         seven_day_before = today - timedelta(days=30)
         new_user_list = User.objects.filter(date_joined__gte=seven_day_before)
+        df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Private').values('name','description','owner'))
+        private_lcs = df_lc.to_dict('records')
+        df_lc = pd.DataFrame(ForestCoverCollection.objects.filter(access_level='Public').values('name','description','owner'))
+        public_lcs=df_lc.to_dict('records')
+        df_agb = pd.DataFrame(
+            AGBCollection.objects.filter(access_level='Private').values('name','description','owner'))  # Get the AGB dataset data
+        private_agbs = df_agb.to_dict('records')
+        df_agb = pd.DataFrame(
+            AGBCollection.objects.filter(access_level='Public').values('name','description','owner'))  # Get the AGB dataset data
+        public_agbs=df_agb.to_dict('records')
     except:
         pass
-    context = {'pilot_countries': pilot_countries, 'new_user_list': new_user_list}
+    context = {'pilot_countries': pilot_countries, 'new_user_list': new_user_list,
+               'global_list': ['CCI', 'ESRI', 'JAXA', 'MODIS', 'WorldCover', 'GFW'],
+               'private_lcs':private_lcs,'private_agbs':private_agbs,
+               'public_lcs':public_lcs,'public_agbs':public_agbs}
     if hasattr(request, 'new_users'):
         context['new_users'] = request.new_users
     return render(request, 'scap/index.html', context=context)

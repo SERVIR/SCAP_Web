@@ -760,50 +760,60 @@ Initial results from S-CAP were compared against each pilot country’s most rec
                                  alt="Forest Loss"/>
 
                             <div>
-                                <p class="h4">Global</p>
+
                                 <ul class="list-inline">
-                                    <li><strong>CCI:</strong>
+                                    {% for lc in private_lcs %}
+                                        {% if lc.name in global_list %}
+                                            <li><i class="fa-solid fa-globe  pr-3" title="Indicates a Global dataset"></i>
+                                                {% if  lc.owner == 1 %}
+                                                <i class="fa-solid fa-award  pr-3" title="Indicates system provided data"></i>
+                                                {%  else %}
+                                                    <i class="fa-solid fa-lock pr-3" title="Indicates user contributed private data"></i>
+                                                {% endif %}
+                                                <strong>{{lc.name}}:</strong>
+                                                {{lc.description}}
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <i class="fa-regular fa-map  pr-3" title="Indicates a Regional dataset"></i>
+                                                {% if  lc.owner == 1 %}
+                                                <i class="fa-solid fa-award  pr-3" title="Indicates system provided data"></i>
+                                                {%  else %}
+                                                    <i class="fa-solid fa-lock  pr-3" title="Indicates user contributed private data"></i>
+                                                {% endif %}
+                                                <strong>{{lc.name}}:</strong>
+                                                {{lc.description}}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% for lc in public_lcs %}
+                                        {% if lc.name in global_list %}
 
-                                       ESA's Climate Change initiative (CCI) land cover product is based on SAR imagery at 300m resolution and covers 2000-2020. Classes were reclassified to forest/nonforest.
-                                    </li>
-                                        <li><strong>ESRI:</strong>
+                                            <li>
 
-ESRI's 10m Sentinel-based land use and land cover map covering 2017-2021. The original 10-class product was reclassed to forest/nonforest.
-                                        </li>
+                                          <i class="fa-solid fa-globe pr-3" title="Indicates a Global dataset"></i>
+                                                {% if  lc.owner == 1 %}
+                                                <i class="fa-solid fa-award pr-3" title="Indicates system provided data"></i>
+                                                {%  else %}
+                                                    <i class="fa-solid fa-user pr-3" title="Indicates user provided public data"></i>
+                                                {% endif %}
+                                                <strong>{{lc.name}}:</strong>
+                                                {{lc.description}}
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <i class="fa-regular fa-map  pr-3" title="Indicates a Regional dataset"></i>
+                                                {% if  lc.owner == 1 %}
+                                                <i class="fa-solid fa-award  pr-3" title="Indicates system provided data"></i>
+                                                {%  else %}
+                                                    <i class="fa-solid fa-user  pr-3" title="Indicates user provided public data"></i>
+                                                {% endif %}
+                                                <strong>{{lc.name}}:</strong>
+                                                {{lc.description}}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
 
-                                        <li><strong>JAXA:</strong>
-
-JAXA's 25m PALSAR-based forest map covering 2007-2020. The original 3-class product (2007-2017) and 4-class product (2017-2020) was reclassed to only forest/nonforest by masking out water. Gaps in the data are due to ALOS issues.                                     </li>
-
-                                   <li><strong>MODIS:</strong>
-
-MODIS MCD12Q1 500m land cover generated through combined imagery from Terra and Aqua satellites covers 2001-2020. The 17 classes of LC_Type1 was reclassfied to forest/non forest.
-                                   </li>
-                                   <li><strong>WorldCover:</strong>
-
-ESA Worldcover's 10m Sentinel-1 & Sentinel-2 based product provides global coverage for 2020 and 2021. The treecover classification was labeled as forest with all others as nonforest
-
-                                </li>
-                                     <li><strong>GFW:</strong>
- Hansen's Global Forest Change dataset, generated using a time-series of Landsat imagery at 30m, was processed in Google Earth Engine to estimate annual tree cover from 2001-2020.
-                                </li>
-                                </ul>
-
-                                <p class="h4">Regional</p>
-                                <ul class="list-inline">
-                                    <li><strong>MAGA:</strong> Guatemala’s “Determination of Vegetated Cover and Land Use at scale 1:50,000 for the Republic of Guatemala” for year 2020 was created based on imagery from Sentinel-1A from 2020 </li>
-                                       <li><strong>MapBiomass:</strong> Collection-4 land cover maps for the Amazon Basin covering 2000-2021 at 30m Landsat resolution and reclassified to forest/nonforest
-                                       </li>
-                                       <li><strong>NLCMS:</strong> Nepal's National Land Cover Monitoring System, developed with support from SERVIR-HKH provides annual coverage of 2000-2019 at 30m resolution.
-                                       </li>
-                                       <li><strong>RCMRD:</strong> The Regional Centre for Mapping of Resources for Development (RCMRD) generated land use and land cover maps at the regional scale for Eastern and Southern Africa. These 30m resolution maps cover 2000-2017 and are reclassified to forest/nonforest.
-                                       </li>
-                                    <li><strong>RLCMS_HKH:</strong> The Regional Land Cover Monitoring System (RLCMS) for the Hindu Kush Himalaya (HKH) region provides annual land cover maps from 2000-2021 and are reclassified to forest/nonforest	The Regional Land Cover Monitoring System (RLCMS) for the Hindu Kush Himalaya (HKH) region provides annual land cover maps from 2000-2021 and are reclassified to forest/nonforest
-                                    </li>
-                                       <li><strong>RLCMS_SEA:</strong> The Regional Land Cover Monitoring System (RLCMS) for the Southeast Asia (SEA) region provides annual land cover maps from 2000-2018 and are reclassified to forest/nonforest
-                                    </li>
-                                     <li><strong>USGS:</strong> A joint initiative with the US Geological Survey produced 3 land use land cover maps (1975, 2000, 2013) over West Africa at a 2-km resolution. This classification was reclassed to forest/nonforest.
-                                    </li>
 
                                 </ul>
 <!--                                <p class="h4">Algorithm</p>-->
@@ -848,58 +858,30 @@ ESA Worldcover's 10m Sentinel-1 & Sentinel-2 based product provides global cover
                                  src="{% static "assets/img/about/logs-free-photo-of-portret-van-omgehakte-bomen.jpg" %}"
                                  alt="Logging"/>
                             <div>
-                                <p class="h4">Global</p>
-                                <ul class="list-inline">
-                                    <li><strong>Baccini_2:</strong> Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 300m and resampled to 1ha. Dataset includes non-forest land coverage.
+                                    <ul class="list-inline">
+                                    {% for agb in private_agbs %}
+                                        <li>
+                                        {% if agb.owner == 1 %}
+                                            <i class="fa-solid fa-award pr-3" title="Indicates system provided data"></i>
+                                           
+                                        {% else %}
+                                                <i class="fa-solid fa-lock pr-3" title="Indicates user contributed private data"></i>
+                                        {% endif %}
+                                        <strong>{{agb.name}}:</strong>
+                                        {{agb.description}}
+                                           </li>
+                                    {% endfor %}
+                                {% for agb in public_agbs %}
+                                        <li>
+                                         {% if agb.owner == 1 %}
+                                           <i class="fa-solid fa-award  pr-3" title="Indicates system provided data"></i>
+                                        {% else %}
+                                                <i class="fa-solid fa-user  pr-3" title="Indicates user provided public data"></i>
+                                        {% endif %}
+                                        <strong>{{agb.name}}:</strong>
+                                        {{agb.description}}
                                     </li>
-                                    <li><strong>CCI_Biomass:</strong>
- Multi-year year global coverage of aboveground biomass (2010/2017/2018/2019/2020). Original Spatial Resolution: 100 and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Geocarbon:</strong>
- Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Globiomass:</strong>
- Single year global coverage of aboveground biomass (2010). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Hu:</strong>
- Single year global coverage of aboveground biomass (2004). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Kindermann:</strong>
- Single year global coverage of aboveground biomass (2005). Original Spatial Resolution: 50km and resampled to 1ha. Dataset excludes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Liu:</strong>
- Multi-year global coverage of aboveground biomass (2000-2012). Original Spatial Resolution: 25km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                    <li><strong>Ruesch_Gibbs:</strong>
- Single year global coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                       <li><strong>Spawn:</strong>
- Single year global coverage of aboveground biomass (2010). Original Spatial Resolution: 300m and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                       <li><strong>Xu:</strong>
- Single year global coverage of aboveground biomass (2000/2010/2019). Original Spatial Resolution: 10km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                       <li><strong>Yang:</strong>
- Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset excludes non-forest land coverage.
-                                    </li>
-                                      <li><strong>Zhang_Liang:</strong>
- Single year global coverage of aboveground biomass (2003). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                </ul>
-                                <p class="h4">Tropics</p>
-                                <ul class="list-inline">
-                                    <li><strong>Avitable:</strong>
- Single year tropical coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                     <li><strong>Baccini_1:</strong>
- Single year tropical coverage of aboveground biomass (2008). Original Spatial Resolution: 500m and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                     <li><strong>Gedi:</strong>
- Single year tropical coverage of aboveground biomass (2020). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
-                                     <li><strong>Saatchi:</strong>
- Single year tropical coverage of aboveground biomass (2000). Original Spatial Resolution: 1km and resampled to 1ha. Dataset includes non-forest land coverage.
-                                    </li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                             <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
