@@ -523,8 +523,8 @@ server {
 
 ### Science Team
 
-- Emil Cherrington (NASA/UAH)
-- Christine Evans (NASA/UAH)
+- [Emil Cherrington (NASA/UAH)](https://github.com/bzgeo)
+- [Christine Evans (NASA/UAH)](https://github.com/christineaevans)
 - Eric Anderson (NASA)
 
 
