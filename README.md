@@ -1,4 +1,4 @@
-# SCAP_Web
+# SERVIR CArbon Pilot web interface (S-CAP_Web)
 
 [![Django: 4.x](https://img.shields.io/badge/Django-4.x-blue)](https://www.djangoproject.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
